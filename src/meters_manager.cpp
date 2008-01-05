@@ -57,7 +57,7 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 	LcdOptions = tabWidget->widget(3);
 	switch(MeterWindows[currentMeter]->getMeterType())
 	{
-		case THERMO:
+		case QRL_MeterWindow::THERMO:
 			tabWidget->removeTab(3);
 			tabWidget->removeTab(2);
 	
@@ -71,11 +71,11 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 			connect( alarmLevelCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeAlarmLevel(double) ) );
 			connect( directionComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeThermoDirection(int) ) );
 			break;
-		case DIAL:
+		case QRL_MeterWindow::DIAL:
 			tabWidget->removeTab(1);
 			tabWidget->removeTab(3);
 			break;
-		case LCD:
+		case QRL_MeterWindow::LCD:
 			tabWidget->removeTab(1);
 			tabWidget->removeTab(2);
 			break;
@@ -175,17 +175,17 @@ void QRL_MetersManager::changeMeter(int type)
 		case 0: //thermo
 			tabWidget->removeTab(1);
 			tabWidget->addTab(ThermoOptions,tr("Options"));
-			MeterWindows[currentMeter]->setMeter(THERMO);
+			MeterWindows[currentMeter]->setMeter(QRL_MeterWindow::THERMO);
 			break;
 		case 1: //dial
 			tabWidget->removeTab(1);
 			tabWidget->addTab(DialOptions,tr("Options"));
-			MeterWindows[currentMeter]->setMeter(DIAL);
+			MeterWindows[currentMeter]->setMeter(QRL_MeterWindow::DIAL);
 			break;
 		case 2: //lcd
 			tabWidget->removeTab(1);
 			tabWidget->addTab(DialOptions,tr("Options"));
-			MeterWindows[currentMeter]->setMeter(LCD);
+			MeterWindows[currentMeter]->setMeter(QRL_MeterWindow::LCD);
 			break;
 		default:break;
 	}

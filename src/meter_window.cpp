@@ -123,7 +123,7 @@ QRL_MeterWindow::~QRL_MeterWindow()
 * @param metertype meter typ
 */
 
-void QRL_MeterWindow::setMeter(qrl_types::Meter_Type metertype)
+void QRL_MeterWindow::setMeter(Meter_Type metertype)
 {
 	MeterType=metertype;
 	switch (MeterType){

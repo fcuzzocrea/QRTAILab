@@ -71,7 +71,7 @@ TargetThread::~TargetThread(){
 	//	delete[] Get_Meter_Data_Thread;
 	
 }
-
+/*
 double TargetThread::get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx)
 {
 	switch (p.data_class) {
@@ -91,7 +91,7 @@ double TargetThread::get_parameter(Target_Parameters_T p, int nr, int nc, int *v
 			return (0.0);
 	}
 }
-
+*/
 long TargetThread::try_to_connect(const char *IP)
 {
 	int counter = 0;

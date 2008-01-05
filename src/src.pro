@@ -5,6 +5,8 @@
 TEMPLATE = app
 TARGET = qrtailab
 DESTDIR = ../
+MOC_DIR           = moc
+OBJECTS_DIR       = obj
 DEPENDPATH += . /usr/local/qwt-5.0.2/lib
 INCLUDEPATH += . /usr/realtime/include /usr/local/qwt-5.0.2/include/
 LIBS += -L/usr/local/qwt-5.0.2/lib -lqwt

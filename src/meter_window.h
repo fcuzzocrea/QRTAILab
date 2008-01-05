@@ -35,7 +35,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 class QRL_MeterWindow : public QMdiSubWindow
 {
    Q_OBJECT
+   Q_ENUMS( Meter_Type )
 public:
+   enum Meter_Type {	THERMO,	DIAL,	LCD};
    QRL_MeterWindow(QWidget *parent = 0,char* name=NULL);
    ~QRL_MeterWindow();
    double getRefreshRate(){return RefreshRate;}
@@ -43,7 +45,7 @@ public:
    void setValue(float);
    void setMin(double);
    void setMax(double);
-   void setMeter(qrl_types::Meter_Type);
+   void setMeter(Meter_Type);
    void setThermoColor1(const QColor&);
    void setThermoColor2(const QColor&);
    void setPipeWith(double);
@@ -53,7 +55,7 @@ public:
    void setGradientEnabled(bool);
    void setAlarmLevel(double);
    void setThermoDirection(Qt::Orientation o);
-   qrl_types::Meter_Type getMeterType(){return MeterType;}
+   Meter_Type getMeterType(){return MeterType;}
 protected slots:
   void closeEvent ( QCloseEvent * event ){event->ignore(); this->hide(); }
 private:
@@ -63,7 +65,7 @@ private:
   QLCDNumber *Lcd;
   double RefreshRate;
   double Max,Min;
-  qrl_types::Meter_Type MeterType;
+  Meter_Type MeterType;
   QColor thermoColor1,thermoColor2,alarmThermoColor1,alarmThermoColor2;
   bool gradientEnabled;
   int pipeWidth;
