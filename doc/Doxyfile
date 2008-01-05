@@ -77,27 +77,28 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 INPUT                  = ../
 INPUT_ENCODING         = UTF-8
-FILE_PATTERNS          = 
+FILE_PATTERNS          = *.cpp \
+			 *.h
 RECURSIVE              = NO
-EXCLUDE                = moc_leds_manager.cpp \
-                         moc_led_window.cpp \
-                         moc_main_window.cpp \
-                         moc_meters_manager.cpp \
-                         moc_meter_window.cpp \
-                         moc_parameters_manager.cpp \
-                         moc_qrtailab.cpp \
-                         moc_scopes_manager.cpp \
-                         moc_scope_window.cpp \
-                         parameters_manager.cpp \
-                         ui_qrl_connectdialog.h \
-                         ui_qrl_leds_manager.h \
-                         ui_qrl_meters_manager.h \
-                         ui_qrl_parameters_manager.h \
-                         ui_qrl_scopes_manager.h \
-                         ui_qrtailab.h \
-                         moc_main_window.cpp \
-                         ui_qrl_main_window.h \
-                         qrc_qrtailab.cpp
+EXCLUDE                = ../moc_leds_manager.cpp \
+                         ../moc_led_window.cpp \
+                         ../moc_main_window.cpp \
+                         ../moc_meters_manager.cpp \
+                         ../moc_meter_window.cpp \
+                         ../moc_parameters_manager.cpp \
+                         ../moc_qrtailab.cpp \
+                         ../moc_scopes_manager.cpp \
+                         ../moc_scope_window.cpp \
+                         ../parameters_manager.cpp \
+                         ../ui_qrl_connectdialog.h \
+                         ../ui_qrl_leds_manager.h \
+                         ../ui_qrl_meters_manager.h \
+                         ../ui_qrl_parameters_manager.h \
+                         ../ui_qrl_scopes_manager.h \
+                         ../ui_qrtailab.h \
+                         ../moc_main_window.cpp \
+                         ../ui_qrl_main_window.h \
+                         ../qrc_qrtailab.cpp
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXCLUDE_SYMBOLS        = 
@@ -124,7 +125,8 @@ VERBATIM_HEADERS       = YES
 #---------------------------------------------------------------------------
 ALPHABETICAL_INDEX     = YES
 COLS_IN_ALPHA_INDEX    = 5
-IGNORE_PREFIX          = 
+IGNORE_PREFIX          = Qrl \
+			 Q
 #---------------------------------------------------------------------------
 # configuration options related to the HTML output
 #---------------------------------------------------------------------------
