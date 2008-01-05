@@ -8,7 +8,7 @@ Requirements
 
 Install
 =========
-1) The path to qwt and rtai has to changed in qrtailab.pro.
+1) The path to qwt and rtai has to changed in qrtailab.config.
 2) qmake
 3) make
 
