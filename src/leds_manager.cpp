@@ -39,7 +39,7 @@ QRL_LedsManager::QRL_LedsManager(QWidget *parent,TargetThread* targetthread)
 	setupUi(this);
 	Num_Leds=targetThread->getLedNumber();
 	Leds=targetThread->getLeds();
-	const QIcon LedIcon = QIcon("icons/led_icon.xpm");
+	const QIcon LedIcon =QIcon(QString::fromUtf8(":/icons/icons/led_icon.xpm"));
 	int i;
 	LedWindows = new QRL_LedWindow* [Num_Leds]; 
 	for (i=0; i<Num_Leds; ++i){

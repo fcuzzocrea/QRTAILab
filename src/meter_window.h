@@ -59,6 +59,7 @@ public:
 protected slots:
   void closeEvent ( QCloseEvent * event ){event->ignore(); this->hide(); }
 private:
+  // void setDistance(const QwtThermo* const);
   float Value;
   QwtThermo *Thermo;
   QwtDial *Dial;
@@ -68,7 +69,7 @@ private:
   Meter_Type MeterType;
   QColor thermoColor1,thermoColor2,alarmThermoColor1,alarmThermoColor2;
   bool gradientEnabled;
-  int pipeWidth;
+  int pipeWidth,pipeDistance;
   double alarmLevel;
   QBrush brush;
   QLinearGradient gradient,alarmGradient;

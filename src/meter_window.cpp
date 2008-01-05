@@ -49,7 +49,7 @@ if (this->objectName().isEmpty())
 	Max=1.;
 	MeterType=THERMO;
 	pipeWidth=14;
-	
+
     Thermo = new QwtThermo(this);
     Thermo->setObjectName(QString::fromUtf8("Thermo"));
     Thermo->setGeometry(QRect(50, 20, 52, 261));
@@ -59,6 +59,8 @@ if (this->objectName().isEmpty())
      Thermo->setAutoScale();
      Thermo->setScaleMaxMajor(5);
     Thermo->setScaleMaxMinor(10);
+	pipeDistance=Thermo->minimumSizeHint().width()-Thermo->pipeWidth()-Thermo->borderWidth()*2;
+	setPipeWith(pipeWidth);
     thermoColor2=Qt::black;
     thermoColor1=Qt::red;
      gradient=QLinearGradient(47, 0, 52, 0);
@@ -70,13 +72,13 @@ Thermo->setFillBrush(QBrush(gradient));
 
 	alarmThermoColor1=Qt::blue;
 	alarmThermoColor2=Qt::black;
-alarmGradient=QLinearGradient(QPointF(40+pipeWidth/2,0), QPointF(40+pipeWidth,0));
+alarmGradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
      		alarmGradient.setColorAt(0, alarmThermoColor1);
      		alarmGradient.setColorAt(1, alarmThermoColor2);
      		alarmGradient.setSpread(QGradient::ReflectSpread);
 		Thermo->setAlarmBrush(QBrush(alarmGradient));
 	alarmLevel=1.;
-	
+	  this->setWidget(Thermo);
 	gradientEnabled=true;
 
  Dial = new QwtDial(this);
@@ -103,10 +105,9 @@ alarmGradient=QLinearGradient(QPointF(40+pipeWidth/2,0), QPointF(40+pipeWidth,0)
 	Lcd->setSegmentStyle(QLCDNumber::Flat);
 	Lcd->hide();
 
-    this->setWidget(Thermo);
+  
 
     this->setWindowTitle(QApplication::translate("QRL_MeterWindow", name, 0, QApplication::UnicodeUTF8));
-
 
 }
 
@@ -144,6 +145,7 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 		Lcd->hide();
 		this->setWidget(Thermo);
 		Thermo->show();
+		pipeDistance=Thermo->pos().x();
 		//delete Dial;
 		break;
 	case LCD:
@@ -191,9 +193,22 @@ void QRL_MeterWindow::changeRefreshRate(double rr)
 void QRL_MeterWindow::setMax(double max)
 {
 	Max=max;
-	Thermo->setMaxValue(Max);	
+	Thermo->setMaxValue(Max);
+	pipeDistance=Thermo->minimumSizeHint().width()-Thermo->pipeWidth()-Thermo->borderWidth()*2;
+	setPipeWith(pipeWidth);
 	Dial->setRange(Min,Max);
 }
+/*
+void QRL_MeterWindow::setDistance(const QwtThermo* const t){
+
+	int Start,End;
+	QFont font;
+	//t->scaleDraw()->getBorderDistHint(font,Start,End);;
+	printf("BorderWith %d\n",t->borderWidth());
+	printf("Pipewidth %d\n",t->pipeWidth());
+	printf("Sizehint w %d h %d\n",t->sizeHint().width(),t->sizeHint().height());
+}
+*/
 
 /**
 * @brief setting the minimal range
@@ -203,6 +218,8 @@ void QRL_MeterWindow::setMin(double min)
 {
 	Min=min;
 	Thermo->setMinValue(Min);
+	pipeDistance=Thermo->minimumSizeHint().width()-Thermo->pipeWidth()-Thermo->borderWidth()*2;
+	setPipeWith(pipeWidth);
 	Dial->setRange(Min,Max);
 }
 
@@ -211,7 +228,7 @@ void QRL_MeterWindow::setThermoColor1(const QColor& c1)
 	thermoColor1=c1;
 	//Thermo->setFillColor(thermoColor1);
 	
-	  gradient=QLinearGradient(QPointF(40+pipeWidth/2,0), QPointF(40+pipeWidth,0));
+	  gradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
 	if(gradientEnabled)
      		gradient.setColorAt(1, thermoColor2);
 	else
@@ -227,7 +244,7 @@ void QRL_MeterWindow::setThermoColor2(const QColor& c2)
 	thermoColor2=c2;
 	//Thermo->setFillColor(c2);
 	
-	  gradient=QLinearGradient(QPointF(40+pipeWidth/2,0), QPointF(40+pipeWidth,0));
+	  gradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
 	if(gradientEnabled)
      		gradient.setColorAt(1, thermoColor2);
 	else
@@ -241,12 +258,12 @@ void QRL_MeterWindow::setPipeWith(double pipewidth)
 {
 	pipeWidth=(int)pipewidth;
 	Thermo->setPipeWidth(pipeWidth);
-	 this->resize(52+pipeWidth,261);
-	 gradient.setStart(QPointF(40+pipeWidth/2,0));
-	 gradient.setFinalStop(QPointF(40+pipeWidth,0));
+	 this->resize(pipeDistance+pipeWidth+2*Thermo->borderWidth()+50,261);
+	 gradient.setStart(QPointF(pipeDistance+pipeWidth/2,0));
+	 gradient.setFinalStop(QPointF(pipeDistance+pipeWidth,0));
 	Thermo->setFillBrush(QBrush(gradient));
-	alarmGradient.setStart(QPointF(40+pipeWidth/2,0));
-	 alarmGradient.setFinalStop(QPointF(40+pipeWidth,0));
+	alarmGradient.setStart(QPointF(pipeDistance+pipeWidth/2,0));
+	 alarmGradient.setFinalStop(QPointF(pipeDistance+pipeWidth,0));
 	Thermo->setAlarmBrush(QBrush(alarmGradient));
 }
 
@@ -254,7 +271,7 @@ void QRL_MeterWindow::setAlarmThermoColor1(const QColor& c1)
 {
 	alarmThermoColor1=c1;
 	//Thermo->setFillColor(thermoColor1);
-	  alarmGradient=QLinearGradient(QPointF(40+pipeWidth/2,0), QPointF(40+pipeWidth,0));
+	  alarmGradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
 	if(gradientEnabled)
      		     alarmGradient.setColorAt(1, alarmThermoColor2);
 	else
@@ -269,7 +286,7 @@ void QRL_MeterWindow::setAlarmThermoColor2(const QColor& c2)
 {
 	alarmThermoColor2=c2;
 	//Thermo->setFillColor(c2);
-	  alarmGradient=QLinearGradient(QPointF(40+pipeWidth/2,0), QPointF(40+pipeWidth,0));
+	  alarmGradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
 	if(gradientEnabled)
      		     alarmGradient.setColorAt(1, alarmThermoColor2);
 	else
@@ -284,7 +301,7 @@ void QRL_MeterWindow::setThermoAlarm(int state)
 	if (state==Qt::Checked){
 		Thermo->setAlarmEnabled(true);
 		Thermo->setAlarmLevel(alarmLevel);
-		alarmGradient=QLinearGradient(QPointF(40+pipeWidth/2,0), QPointF(40+pipeWidth,0));
+		alarmGradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
 		if(gradientEnabled)
      		alarmGradient.setColorAt(1, alarmThermoColor2);
 		else
@@ -300,26 +317,26 @@ void QRL_MeterWindow::setGradientEnabled(bool b)
 {
 	gradientEnabled=b;
 	if(!gradientEnabled){
-		alarmGradient=QLinearGradient(QPointF(40+pipeWidth/2,0), QPointF(40+pipeWidth,0));
+		alarmGradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
      		alarmGradient.setColorAt(0, alarmThermoColor1);
      		alarmGradient.setColorAt(1, alarmThermoColor1);
      		alarmGradient.setSpread(QGradient::ReflectSpread);
 		Thermo->setAlarmBrush(QBrush(alarmGradient));
 
-		gradient=QLinearGradient(QPointF(40+pipeWidth/2,0), QPointF(40+pipeWidth,0));
+		gradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
     		gradient.setColorAt(0, thermoColor1);
      		gradient.setColorAt(1, thermoColor1);
      		gradient.setSpread(QGradient::ReflectSpread);
 		Thermo->setFillBrush(QBrush(gradient));
 	} else {
 
-		alarmGradient=QLinearGradient(QPointF(40+pipeWidth/2,0), QPointF(40+pipeWidth,0));
+		alarmGradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
      		alarmGradient.setColorAt(0, alarmThermoColor1);
      		alarmGradient.setColorAt(1, alarmThermoColor2);
      		alarmGradient.setSpread(QGradient::ReflectSpread);
 		Thermo->setAlarmBrush(QBrush(alarmGradient));
 
-		gradient=QLinearGradient(QPointF(40+pipeWidth/2,0), QPointF(40+pipeWidth,0));
+		gradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
     		gradient.setColorAt(0, thermoColor1);
      		gradient.setColorAt(1, thermoColor2);
      		gradient.setSpread(QGradient::ReflectSpread);
