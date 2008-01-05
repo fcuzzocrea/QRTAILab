@@ -35,7 +35,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 class QRL_ParametersManager : public QDialog, private Ui::QRL_ParametersManager
 {
    Q_OBJECT
+   Q_ENUMS (Param_Class)
 public:
+   enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
    QRL_ParametersManager(QWidget *parent = 0,  TargetThread* targetthread=NULL);
    ~QRL_ParametersManager();
    void update();

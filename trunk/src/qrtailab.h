@@ -321,26 +321,9 @@ typedef enum {
 	B_COLOR
 } RGB_Colors;
 */
-typedef enum {
-	rt_SCALAR,
-	rt_VECTOR,
-	rt_MATRIX_ROW_MAJOR,
-	rt_MATRIX_COL_MAJOR,
-	rt_MATRIX_COL_MAJOR_ND
-} Param_Class;
 
-typedef enum {
-	CONNECT_TO_TARGET,
-	CONNECT_TO_TARGET_WITH_PROFILE,
-	DISCONNECT_FROM_TARGET,
-	START_TARGET,
-	STOP_TARGET,
-	UPDATE_PARAM,
-	GET_TARGET_TIME,
-	BATCH_DOWNLOAD,
-	GET_PARAMS,
-	CLOSE
-} Commands;
+
+/*
 
 typedef enum {
 	GEOMETRY_PREF,
@@ -348,22 +331,7 @@ typedef enum {
 	PROFILES_PREF,
 	PROFILE_PREF
 } Pref_Type;
-
-typedef enum {
-	PARAMS_MANAGER,
-	SCOPES_MANAGER,
-	LOGS_MANAGER,
-	ALOGS_MANAGER,
-	LEDS_MANAGER,
-	METERS_MANAGER,
-	SYNCHS_MANAGER
-} Manager_Type;
-
-typedef enum {
-	THERMO,
-	DIAL,
-	LCD
-} Meter_Type;
+*/
 
 }
 
@@ -375,7 +343,11 @@ using namespace qrl_types;
 class TargetThread : public QThread
  {
  Q_OBJECT
+ Q_ENUMS( Manager_Type )
+ Q_ENUMS( Commands )
  public:
+    enum Manager_Type {PARAMS_MANAGER,SCOPES_MANAGER,LOGS_MANAGER,ALOGS_MANAGER,LEDS_MANAGER,METERS_MANAGER,SYNCHS_MANAGER};
+ enum Commands{	CONNECT_TO_TARGET,	CONNECT_TO_TARGET_WITH_PROFILE,	DISCONNECT_FROM_TARGET,	START_TARGET,	STOP_TARGET,	UPDATE_PARAM,	GET_TARGET_TIME,	BATCH_DOWNLOAD,	GET_PARAMS,	CLOSE} ;
     ~TargetThread();
     void run();
     void setPreferences(Preferences_T);
