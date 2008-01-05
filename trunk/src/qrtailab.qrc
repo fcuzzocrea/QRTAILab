@@ -7,30 +7,20 @@
         <file>icons/connect_wprofile_icon.xpm</file>
         <file>icons/del_profile_icon.xpm</file>
         <file>icons/disconnect_icon.xpm</file>
-        <file>icons/editcopy</file>
-        <file>icons/editcut</file>
-        <file>icons/editpaste</file>
         <file>icons/exit_icon.xpm</file>
-        <file>icons/filenew</file>
-        <file>icons/fileopen</file>
-        <file>icons/filesave</file>
         <file>icons/folder_asmall.xpm</file>
         <file>icons/folder_small.xpm</file>
         <file>icons/led_icon.xpm</file>
         <file>icons/log_icon.xpm</file>
         <file>icons/meter_icon.xpm</file>
         <file>icons/parameters_icon.xpm</file>
-        <file>icons/print</file>
         <file>icons/profile_icon.xpm</file>
-        <file>icons/redo</file>
         <file>icons/save_profile_icon.xpm</file>
         <file>icons/scope_icon.xpm</file>
-        <file>icons/searchfind</file>
         <file>icons/session_open_icon.xpm</file>
         <file>icons/session_save_icon.xpm</file>
         <file>icons/start_icon.xpm</file>
         <file>icons/stop_icon.xpm</file>
         <file>icons/synchronoscope_icon.xpm</file>
-        <file>icons/undo</file>
     </qresource>
 </RCC>
