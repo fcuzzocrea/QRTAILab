@@ -87,6 +87,11 @@ struct Trace_Options_Struct
 /**
  * @brief Display Scope
  * @todo implement moving time axis
+ * @todo add legend
+ * @todo add offset mark
+ * @todo add curser 
+ * @todo add parameter labels 
+ * @todo add trigger label
  */
 
 class QRL_ScopeWindow : public QMdiSubWindow

@@ -38,7 +38,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
 	setupUi(this);
 	Num_Scopes=targetThread->getScopeNumber();
 	Scopes=targetThread->getScopes();
-	QIcon ScopeIcon = QIcon("icons/scope_icon.xpm");
+	QIcon ScopeIcon =QIcon(QString::fromUtf8(":/icons/icons/scope_icon.xpm"));
 	int i;
 	ScopeWindows = new QRL_ScopeWindow* [Num_Scopes]; 
 	for (i=0; i<Num_Scopes; ++i){
@@ -265,11 +265,14 @@ void QRL_ScopesManager::changeDisplayModus(int mode)
 	switch(mode)
 	{
 	case 0:	
+		ScopeWindows[currentScope]->setDirection(Qt::RightToLeft);
 		ScopeWindows[currentScope]->setOverwriteMode(false);
+		emit directionComboBox->setCurrentIndex(0);
 		break;
 	case 1:
-		ScopeWindows[currentScope]->setDirection(Qt::RightToLeft);
+		ScopeWindows[currentScope]->setDirection(Qt::LeftToRight);
 		ScopeWindows[currentScope]->setOverwriteMode(true);
+		emit directionComboBox->setCurrentIndex(1);
 		break;
 	default:
 		break;

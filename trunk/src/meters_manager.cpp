@@ -35,7 +35,7 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 	setupUi(this);
 	Num_Meters=targetThread->getMeterNumber();
 	Meters=targetThread->getMeters();
-	const QIcon MeterIcon = QIcon("icons/meter_icon.xpm");
+	const QIcon MeterIcon =QIcon(QString::fromUtf8(":/icons/icons/meter_icon.xpm"));
 	int i;
 	MeterWindows = new QRL_MeterWindow* [Num_Meters]; 
 	for (i=0; i<Num_Meters; ++i){

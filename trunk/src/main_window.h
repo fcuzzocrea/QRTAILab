@@ -51,7 +51,6 @@ public slots:
 
 /**
  * @brief Main Window
- * @todo handling of rt_task_init
  * @todo save and load settings
  * @bug its no possible to save numbers higher then 999
  */
