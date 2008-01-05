@@ -119,7 +119,7 @@
   </widget>
   <action name="actionConnect" >
    <property name="icon" >
-    <iconset>icons/connect_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/icons/connect_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Connect</string>
@@ -135,7 +135,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>icons/disconnect_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/icons/disconnect_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Disconnect</string>
@@ -143,7 +143,7 @@
   </action>
   <action name="actionExit" >
    <property name="icon" >
-    <iconset>icons/exit_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/icons/exit_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>&amp;Quit</string>
@@ -151,7 +151,7 @@
   </action>
   <action name="actionStart" >
    <property name="icon" >
-    <iconset>icons/start_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/icons/start_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Start</string>
@@ -159,7 +159,7 @@
   </action>
   <action name="actionStop" >
    <property name="icon" >
-    <iconset>icons/stop_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/icons/stop_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Stop</string>
