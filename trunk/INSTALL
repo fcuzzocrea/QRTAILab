@@ -1,0 +1,21 @@
+Requirements
+=============
+
+- rtai-kernel
+- rtai in /usr/realtime
+- Qt4
+- qwt
+
+Install
+=========
+1) The path to qwt and rtai has to changed in qrtailab.pro.
+2) qmake
+3) make
+
+Use
+====
+1) load rtai modules
+2) generate an diagram with simulink or scicos and compile it.
+3) execute the programm
+4) Insteat of xrtailab, qrtailab can be used to connect to the realtime programm
+5) have fun!
