@@ -6,9 +6,15 @@
 # modify it under the terms of the LGPL
 ##############################################
 
+include( qrtailab.config )
+
 TEMPLATE = subdirs
 
 SUBDIRS = \
     src
+
+contains(CONFIG, QRLtests ) {
+    SUBDIRS += tests
+}
 
 

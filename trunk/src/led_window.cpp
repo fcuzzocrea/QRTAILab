@@ -27,8 +27,8 @@ QLed::QLed(QWidget *parent)
     : QWidget(parent)
 {
    m_value=false;
-   m_color=Red;
-   setMinimumSize(QSize(50,50));
+   m_color=Qt::red;
+   setMinimumSize(QSize(20,20));
    //setFocusPolicy(Qt::StrongFocus);
    
 }
@@ -49,25 +49,8 @@ void QLed::paintEvent(QPaintEvent *)
       QRadialGradient radialGrad(QPointF(-80, -80), 200);
       radialGrad.setColorAt(0, Qt::white);
  
-      QColor color;
-      switch(m_color)
-      {
-      	 case Red: 
-      	 color=QColor(Qt::red);
-      	 break;
-      	 case Green: 
-      	 color=QColor(Qt::green);
-      	 break;
-      	 case Blue: 
-      	 color=QColor(Qt::blue);
-      	 break;
-      	 case Yellow: 
-      	 color=QColor(Qt::yellow);
-      	 break;
-      	 default: 
-      	 color=QColor(Qt::red);
-      	 break;      	 
-      }
+      QColor color=m_color;
+      
       
       radialGrad.setColorAt(1, color);
    	  QBrush brush(radialGrad);
@@ -87,7 +70,7 @@ void QLed::paintEvent(QPaintEvent *)
     }	
 }
 
-void QLed::setColor(LedColor newColor)
+void QLed::setColor(QColor newColor)
 {
    m_color=newColor;
    update();
@@ -105,40 +88,64 @@ void QLed::toggleValue()
 { 
 	m_value=!m_value;
 	update();
-	return; 
 }
 
 
-QRL_LedWindow::QRL_LedWindow(QWidget *parent)
-	:QMdiSubWindow(parent)
+QRL_LedWindow::QRL_LedWindow(QWidget *parent,int num,char* name)
+	:QMdiSubWindow(parent),num_leds(num)
 {
 	if (this->objectName().isEmpty())
         this->setObjectName(QString::fromUtf8("QRL_LedWindow"));
     this->resize(122, 119);
-    Led = new QLed(this);
-    Led->setObjectName(QString::fromUtf8("Led"));
-    Led->setGeometry(QRect(20, 20, 101, 23));
-    Led->setValue(false);
-    this->setWidget(Led);
-    this->setWindowTitle(QApplication::translate("QRL_LedWindow", "Dialog", 0, QApplication::UnicodeUTF8));
+	frame=new QFrame(this);
+	frame->resize(122, 119);
+   // layout=new QGridLayout(this);
+   // this->setLayout(layout);
+    Leds = new QLed* [num_leds];
+    for(int i=0;i<num_leds;++i){
+	Leds[i] = new QLed(frame);
+	//Leds[i]->setObjectName(QString::fromUtf8("Led"));
+	Leds[i]->setGeometry(QRect(10, 20+i*35, 30, 30));
+	Leds[i]->setValue(false);
+	//layout->addWidget(Leds[i],i,1);
+	//this->setWidget(Leds[i]);
+    }
+	this->setWidget(frame);
+    this->setMinimumSize(30,50+num_leds*35+10);
+    
+    this->setWindowTitle(QApplication::translate("QRL_LedWindow", name, 0, QApplication::UnicodeUTF8));
    // Led->setText(QApplication::translate("QRL_LedWindow", "Led1", 0, QApplication::UnicodeUTF8));
     this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/icons/led_icon.xpm")));
     this->setWindowFlags(windowFlags() ^ Qt::WindowMaximizeButtonHint );
 }
 
+QRL_LedWindow::~QRL_LedWindow(){
+//Plotting_Scope_Data_Thread->stopThread();
+//Plotting_Scope_Data_Thread->wait();
+//delete Plotting_Scope_Data_Thread;
+//delete mY;
+for (unsigned int j=0;j<num_leds;j++){
+	delete Leds[j];
+}
+delete[] Leds;
+delete frame;
+}
 
+void QRL_LedWindow::setLedColor(QColor c)
+{
+	 for (int i = 0; i < num_leds; i++) {
+		Leds[i]->setColor(c);
+	}
+
+}
 
 void QRL_LedWindow::setValue(unsigned int v)
 {
-	if (v)
-		emit Led->setValue(true);
-	else
-		emit Led->setValue(false);
-//         for (int i = 0; i < num_leds; i++) {
-// 		if (Led_Mask & (1 << i)) {
-// 			activate_led(i);
-// 		} else {
-// 			deactivate_led(i);
-// 		}
-// 	}
+        for (int i = 0; i < num_leds; i++) {
+		if (v & (1 << i)) {
+			Leds[i]->setValue(true);
+		} else {
+			Leds[i]->setValue(false);
+		}
+	}
 }

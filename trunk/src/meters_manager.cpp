@@ -36,9 +36,8 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 	Num_Meters=targetThread->getMeterNumber();
 	Meters=targetThread->getMeters();
 	const QIcon MeterIcon =QIcon(QString::fromUtf8(":/icons/icons/meter_icon.xpm"));
-	int i;
 	MeterWindows = new QRL_MeterWindow* [Num_Meters]; 
-	for (i=0; i<Num_Meters; ++i){
+	for (int i=0; i<Num_Meters; ++i){
 		new QListWidgetItem(MeterIcon,tr((Meters)[i].name), meterListWidget);
 		MeterWindows[i]=new QRL_MeterWindow(parent,Meters[i].name);
 	}
@@ -88,8 +87,7 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 
 QRL_MetersManager::~QRL_MetersManager()
 {
-	int i;
-	for (i=0; i<Num_Meters; ++i){
+	for (int i=0; i<Num_Meters; ++i){
 		MeterWindows[i]->hide();
 	}
 	delete[] MeterWindows;
@@ -104,7 +102,7 @@ QRL_MetersManager::~QRL_MetersManager()
 void QRL_MetersManager::startMeterThreads()
 {
 	for (int n = 0; n < Num_Meters; n++) {
-		unsigned int msg;
+		//unsigned int msg;
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup((targetThread->getPreferences()).Target_Meter_Mbx_ID);

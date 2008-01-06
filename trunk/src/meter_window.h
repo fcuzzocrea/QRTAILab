@@ -31,13 +31,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 /**
  * @brief Display Meter 
+ * @todo calculate lineargradient for horizontal layout
  */
 class QRL_MeterWindow : public QMdiSubWindow
 {
    Q_OBJECT
    Q_ENUMS( Meter_Type )
 public:
-   enum Meter_Type {	THERMO,	DIAL,	LCD};
+   enum Meter_Type {THERMO,	DIAL,	LCD};
    QRL_MeterWindow(QWidget *parent = 0,char* name=NULL);
    ~QRL_MeterWindow();
    double getRefreshRate(){return RefreshRate;}
