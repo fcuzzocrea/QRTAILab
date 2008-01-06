@@ -5,15 +5,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>388</width>
-    <height>277</height>
+    <width>303</width>
+    <height>228</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Leds Manager</string>
   </property>
-  <layout class="QHBoxLayout" >
-   <item>
+  <layout class="QGridLayout" >
+   <item rowspan="2" row="0" column="0" >
     <widget class="QListWidget" name="ledListWidget" >
      <property name="baseSize" >
       <size>
@@ -23,100 +23,24 @@
      </property>
     </widget>
    </item>
-   <item>
-    <layout class="QVBoxLayout" >
-     <item>
-      <widget class="QTabWidget" name="tabWidget" >
-       <property name="currentIndex" >
-        <number>0</number>
-       </property>
-       <widget class="QWidget" name="tab" >
-        <attribute name="title" >
-         <string>Led</string>
-        </attribute>
-        <layout class="QGridLayout" >
-         <item row="0" column="0" >
-          <layout class="QVBoxLayout" >
-           <item>
-            <widget class="QCheckBox" name="showCheckBox" >
-             <property name="text" >
-              <string>Show/Hide</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" >
-             <item>
-              <widget class="QLabel" name="minLabel" >
-               <property name="text" >
-                <string>Minimum:</string>
-               </property>
-               <property name="buddy" >
-                <cstring>minLineEdit</cstring>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="minLineEdit" >
-               <property name="layoutDirection" >
-                <enum>Qt::RightToLeft</enum>
-               </property>
-               <property name="text" >
-                <string>-1</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" >
-             <item>
-              <widget class="QLabel" name="maxLabel" >
-               <property name="text" >
-                <string>Maximum:</string>
-               </property>
-               <property name="buddy" >
-                <cstring>maxLineEdit</cstring>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="maxLineEdit" >
-               <property name="layoutDirection" >
-                <enum>Qt::RightToLeft</enum>
-               </property>
-               <property name="text" >
-                <string>1</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QComboBox" name="meterComboBox" />
-           </item>
-           <item>
-            <spacer>
-             <property name="orientation" >
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" >
-              <size>
-               <width>207</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" >
-       <item>
+   <item row="0" column="1" colspan="4" >
+    <widget class="QTabWidget" name="tabWidget" >
+     <property name="currentIndex" >
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab" >
+      <attribute name="title" >
+       <string>Led</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <item rowspan="2" row="0" column="0" colspan="3" >
+        <widget class="QCheckBox" name="showCheckBox" >
+         <property name="text" >
+          <string>Show/Hide</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
@@ -129,49 +53,119 @@
          </property>
         </spacer>
        </item>
-       <item>
-        <widget class="QPushButton" name="helpButton" >
+       <item row="2" column="0" >
+        <widget class="QLabel" name="colorLabel" >
          <property name="text" >
-          <string>Help</string>
+          <string>Led color</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="2" column="1" colspan="2" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeHint" >
           <size>
-           <width>16</width>
+           <width>40</width>
            <height>20</height>
           </size>
          </property>
         </spacer>
        </item>
-       <item>
-        <widget class="QPushButton" name="closeButton" >
-         <property name="text" >
-          <string>Close Manager</string>
-         </property>
+       <item row="3" column="0" >
+        <widget class="QComboBox" name="ledColorComboBox" >
+         <item>
+          <property name="text" >
+           <string>Red</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Green</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Blue</string>
+          </property>
+         </item>
+         <item>
+          <property name="text" >
+           <string>Yellow</string>
+          </property>
+         </item>
         </widget>
        </item>
-       <item>
+       <item row="3" column="1" colspan="2" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeHint" >
           <size>
-           <width>16</width>
+           <width>40</width>
            <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>40</height>
           </size>
          </property>
         </spacer>
        </item>
       </layout>
-     </item>
-    </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>16</width>
+       <height>27</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="2" >
+    <widget class="QPushButton" name="helpButton" >
+     <property name="text" >
+      <string>Help</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>16</width>
+       <height>27</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="4" >
+    <widget class="QPushButton" name="closeButton" >
+     <property name="text" >
+      <string>close</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

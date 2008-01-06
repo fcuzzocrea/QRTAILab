@@ -40,8 +40,7 @@ QRL_ParametersManager::QRL_ParametersManager(QWidget *parent, TargetThread* targ
 	connect( uploadPushButton, SIGNAL( pressed() ), this, SLOT( uploadParameters() ) );
 	connect( downloadPushButton, SIGNAL( pressed() ), this, SLOT( downloadBatchParameters() ) );
 	const QIcon BlockIcon = QIcon("icons/block_icon.xpm");
-	int i;
-	for (i=0; i<Num_Tunable_Blocks; ++i){
+	for (int i=0; i<Num_Tunable_Blocks; ++i){
 		new QListWidgetItem(BlockIcon,tr(Tunable_Blocks[i].name), blockListWidget);
 	}
 	batchModus=0;
@@ -114,7 +113,7 @@ int QRL_ParametersManager::update_parameter(int idx, int mat_idx, double val)
 
 void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item ) 
 {
-	int j,jend,val_idx;
+	int jend,val_idx;
 	int blk =blockListWidget->currentRow() ;
 	int prm = item->row();
 	int ind = 0;
@@ -124,7 +123,7 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 		jend=Num_Tunable_Parameters - Tunable_Blocks[blk].offset;
 	else
 		jend=Tunable_Blocks[blk+1].offset-Tunable_Blocks[blk].offset;
-	for (j = 0; j <  jend; j++) {
+	for (int j = 0; j <  jend; j++) {
 		unsigned int ncols = Tunable_Parameters[Tunable_Blocks[blk].offset+j].n_cols;
 		unsigned int nrows = Tunable_Parameters[Tunable_Blocks[blk].offset+j].n_rows;
 		for (unsigned int nr = 0; nr < nrows; nr++) {
@@ -171,7 +170,7 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 	parameterTableWidget->blockSignals(true);
 	int i = blockListWidget->row(item);
 	parameterTableWidget->clear();
-	int j,jend,val_idx;
+	int jend,val_idx;
 	double data_value;
 	const QIcon BlockIcon = QIcon("icons/parameters_icon.xpm");
 	if (i == Num_Tunable_Blocks - 1) 
@@ -182,7 +181,7 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 	parameterTableWidget->setColumnCount(2);
 	QTableWidgetItem *newItem;
 	int table_row=0;
-	for (j = 0; j <  jend; j++) {
+	for (int j = 0; j <  jend; j++) {
 		newItem = new QTableWidgetItem(tr(Tunable_Parameters[Tunable_Blocks[i].offset+j].param_name));
 		newItem->setFlags(!Qt::ItemIsEditable|!Qt::ItemIsSelectable);
 		parameterTableWidget->setItem(table_row,0,newItem);

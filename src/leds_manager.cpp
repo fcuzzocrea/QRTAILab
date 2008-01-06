@@ -40,13 +40,13 @@ QRL_LedsManager::QRL_LedsManager(QWidget *parent,TargetThread* targetthread)
 	Num_Leds=targetThread->getLedNumber();
 	Leds=targetThread->getLeds();
 	const QIcon LedIcon =QIcon(QString::fromUtf8(":/icons/icons/led_icon.xpm"));
-	int i;
 	LedWindows = new QRL_LedWindow* [Num_Leds]; 
-	for (i=0; i<Num_Leds; ++i){
+	for (int i=0; i<Num_Leds; ++i){
 		new QListWidgetItem(LedIcon,tr(Leds[i].name), ledListWidget);
-		LedWindows[i]=new QRL_LedWindow(parent);
+		LedWindows[i]=new QRL_LedWindow(parent,Leds[i].n_leds,Leds[i].name);
 	}
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showLed(int) ) );
+	connect( ledColorComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeLedColor(int) ) );
 	currentLed=0;
 	tabWidget->setTabText(0,tr(Leds[currentLed].name));
 
@@ -55,8 +55,7 @@ QRL_LedsManager::QRL_LedsManager(QWidget *parent,TargetThread* targetthread)
 
 QRL_LedsManager::~QRL_LedsManager()
 {
-	int i;
-	for (i=0; i<Num_Leds; ++i){
+	for (int i=0; i<Num_Leds; ++i){
 		LedWindows[i]->hide();
 	}
 	delete[] LedWindows;
@@ -65,6 +64,28 @@ QRL_LedsManager::~QRL_LedsManager()
 		delete[] Get_Led_Data_Thread;
 	
 }
+
+void QRL_LedsManager::changeLedColor(int color)
+{
+	switch(color){
+	case 0:
+		LedWindows[currentLed]->setLedColor(QColor(Qt::red));
+		break;
+	case 1:
+		LedWindows[currentLed]->setLedColor(QColor(Qt::green));
+		break;
+	case 2:
+		LedWindows[currentLed]->setLedColor(QColor(Qt::blue));
+		break;
+	case 3:
+		LedWindows[currentLed]->setLedColor(QColor(Qt::yellow));
+		break;
+	default:
+		LedWindows[currentLed]->setLedColor(QColor(Qt::red));
+		break;
+	}
+}
+
 /**
 * @brief starting all led threads
 */
@@ -101,14 +122,7 @@ void QRL_LedsManager::stopLedThreads()
 
 }
 
-/**
-* @brief closes the led dialog
-*/
-void QRL_LedsManager::close() 
-{
 
-
-}
 /**
 * @brief update manager dialog for the choosen led
 * @param item led number
@@ -129,9 +143,9 @@ void QRL_LedsManager::showLedOptions( QListWidgetItem * item ){
 void QRL_LedsManager::showLed(int state) 
 {
 	if(state==Qt::Checked){
-		LedWindows[0]->show();
+		LedWindows[currentLed]->show();
 	} else {
-		LedWindows[0]->hide();
+		LedWindows[currentLed]->hide();
 	}
 
 }

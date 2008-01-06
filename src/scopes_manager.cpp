@@ -39,9 +39,8 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
 	Num_Scopes=targetThread->getScopeNumber();
 	Scopes=targetThread->getScopes();
 	QIcon ScopeIcon =QIcon(QString::fromUtf8(":/icons/icons/scope_icon.xpm"));
-	int i;
 	ScopeWindows = new QRL_ScopeWindow* [Num_Scopes]; 
-	for (i=0; i<Num_Scopes; ++i){
+	for (int i=0; i<Num_Scopes; ++i){
 		new QListWidgetItem(ScopeIcon,tr(Scopes[i].name), scopeListWidget);
 		ScopeWindows[i]=new QRL_ScopeWindow(parent,&Scopes[i],i);
 		connect( ScopeWindows[i], SIGNAL( stopSaving(int) ), this, SLOT( stopSaving(int) ) );
@@ -69,7 +68,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
 	tabWidget->setTabText(0,tr(Scopes[currentScope].name));
 	fileLineEdit->setText(tr(Scopes[currentScope].name));
 	//tabWidget->setTabText(1,tr("Trace 1"));
-	for(i=0; i<Scopes[currentScope].ntraces; ++i){
+	for(int i=0; i<Scopes[currentScope].ntraces; ++i){
 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
 		traceComboBox->addItem(tr("Trace ")+tr("%1").arg(i+1));
 	}
@@ -87,8 +86,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
 
 QRL_ScopesManager::~QRL_ScopesManager()
 {
-	int i;
-	for (i=0; i<Num_Scopes; ++i){
+	for (int i=0; i<Num_Scopes; ++i){
 		ScopeWindows[i]->hide();
 	}
 	delete[] ScopeWindows;
@@ -102,7 +100,7 @@ QRL_ScopesManager::~QRL_ScopesManager()
 void QRL_ScopesManager::startScopeThreads()
 {
 	for (int n = 0; n < Num_Scopes; n++) {
-		unsigned int msg;
+		//unsigned int msg;
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup((targetThread->getPreferences()).Target_Scope_Mbx_ID);

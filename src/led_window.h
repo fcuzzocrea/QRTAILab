@@ -31,24 +31,22 @@ class QColor;
 class  QLed : public QWidget
 {
  Q_OBJECT
-    Q_ENUMS( LedColor )
 	Q_PROPERTY(bool value READ value WRITE setValue);
-	Q_PROPERTY(LedColor color READ color WRITE setColor);
+	Q_PROPERTY(QColor color READ color WRITE setColor);
 
 public: 
-    enum LedColor {Red=7,Green=8,Blue=9,Yellow=12};
     QLed(QWidget *parent = 0);
     bool value() const { return m_value; }
-    LedColor color() const { return m_color; }
+    QColor color() const { return m_color; }
 public slots:
 	void setValue(bool);
-	void setColor(LedColor);
+	void setColor(QColor);
 	void toggleValue();
 
 
 protected:
     bool m_value;
-    LedColor m_color;
+    QColor m_color;
     void paintEvent(QPaintEvent *event);
 
 };
@@ -60,14 +58,19 @@ class QRL_LedWindow : public QMdiSubWindow
 {
    Q_OBJECT
 public:
-   QRL_LedWindow(QWidget *parent = 0);
+   QRL_LedWindow(QWidget *parent = 0,int num=0,char* name=NULL);
+   ~QRL_LedWindow();
    void setValue(unsigned int);
+   void setLedColor(QColor);
 protected slots:
   void closeEvent ( QCloseEvent * event ){event->ignore(); this->hide(); }
 private:
   float Value;
-  QLed *Led;
+  QLed **Leds;
+  QFrame * frame;
   int num_leds;
+  
+
   
 };
 

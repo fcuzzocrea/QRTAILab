@@ -30,7 +30,7 @@ QRL_MeterWindow::QRL_MeterWindow(QWidget *parent,char* name)
 if (this->objectName().isEmpty())
         this->setObjectName(QString::fromUtf8("QRL_MeterWindow"));
     this->move(20,70);
-    //this->resize(100,261);
+    this->resize(50,261);
     QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     //sizePolicy.setHorizontalStretch(0);
     //sizePolicy.setVerticalStretch(0);
@@ -54,13 +54,13 @@ if (this->objectName().isEmpty())
     Thermo->setObjectName(QString::fromUtf8("Thermo"));
     Thermo->setGeometry(QRect(50, 20, 52, 261));
     Thermo->setRange(Min,Max);
-    Thermo->setScale(Min,Max);
+  //  Thermo->setScale(Min,Max);
     Thermo->setPipeWidth(pipeWidth);
      Thermo->setAutoScale();
      Thermo->setScaleMaxMajor(5);
     Thermo->setScaleMaxMinor(10);
 	pipeDistance=Thermo->minimumSizeHint().width()-Thermo->pipeWidth()-Thermo->borderWidth()*2;
-	setPipeWith(pipeWidth);
+	
     thermoColor2=Qt::black;
     thermoColor1=Qt::red;
      gradient=QLinearGradient(47, 0, 52, 0);
@@ -79,6 +79,7 @@ alarmGradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeD
 		Thermo->setAlarmBrush(QBrush(alarmGradient));
 	alarmLevel=1.;
 	  this->setWidget(Thermo);
+setPipeWith(pipeWidth);
 	gradientEnabled=true;
 
  Dial = new QwtDial(this);
@@ -258,7 +259,7 @@ void QRL_MeterWindow::setPipeWith(double pipewidth)
 {
 	pipeWidth=(int)pipewidth;
 	Thermo->setPipeWidth(pipeWidth);
-	 this->resize(pipeDistance+pipeWidth+2*Thermo->borderWidth()+50,261);
+	 this->resize(pipeDistance+pipeWidth+2*Thermo->borderWidth()+50,this->size().height());
 	 gradient.setStart(QPointF(pipeDistance+pipeWidth/2,0));
 	 gradient.setFinalStop(QPointF(pipeDistance+pipeWidth,0));
 	Thermo->setFillBrush(QBrush(gradient));
