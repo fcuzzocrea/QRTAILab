@@ -37,6 +37,8 @@ class GetLedDataThread : public QThread
  Q_OBJECT
  public:
     void run();
+QWaitCondition threadStarted;
+QMutex mutex;
 //signals:
     //void value(int,float);
  public slots:

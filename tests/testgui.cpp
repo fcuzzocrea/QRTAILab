@@ -42,6 +42,7 @@ void TestQrtaiLab::testProfile()
 	expected=1;
 	QCOMPARE(targetthread->getIsTargetConnected(),expected);
 
+	
 
 	emit mainWin.saveProfile();
 	

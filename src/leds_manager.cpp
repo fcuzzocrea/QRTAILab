@@ -23,8 +23,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include "leds_manager.h"
 
 
-QWaitCondition LedThreadStarted;
-QMutex LedMutex;
+
 
 
 /**
@@ -100,12 +99,12 @@ void QRL_LedsManager::startLedThreads()
 		thr_args.y = 290;
 		thr_args.w = 250;
 		thr_args.h = 250;
-		LedMutex.lock();
+		Get_Led_Data_Thread[n].mutex.lock();
 		//pthread_create(&Get_Led_Data_Thread[n], NULL, rt_get_led_data, &thr_args);
 		Get_Led_Data_Thread[n].start(&thr_args,targetThread,LedWindows[n]);
 		//rt_receive(0, &msg);
-		LedThreadStarted.wait(&LedMutex);
-		LedMutex.unlock();
+		Get_Led_Data_Thread[n].threadStarted.wait(&Get_Led_Data_Thread[n].mutex);
+		Get_Led_Data_Thread[n].mutex.unlock();
 		LedWindows[n]->hide();
 	}
 }
@@ -211,9 +210,9 @@ void GetLedDataThread::run()
 
 
 	
-	LedMutex.lock();
-	LedThreadStarted.wakeAll();
-	LedMutex.unlock();
+	mutex.lock();
+	threadStarted.wakeAll();
+	mutex.unlock();
 
 	//rt_send(Target_Interface_Task, 0);
 	mlockall(MCL_CURRENT | MCL_FUTURE);
@@ -229,11 +228,11 @@ void GetLedDataThread::run()
 		//for (n = 0; n < MsgData; n++) {
 			//Led_Mask = MsgBuf[n];
 			Led_Mask = MsgBuf[0];
-			//LedMutex.lock();
+			//mutex.lock();
 			////targetThread->setLedValue(index,Led_Mask);
 			if (LedWindow)
 			    LedWindow->setValue(Led_Mask);
-			//ledMutex.unlock();
+			//mutex.unlock();
 			//Led_Win->led_mask(Led_Mask);
 			//Led_Win->led_on_off();
 			//Led_Win->update();

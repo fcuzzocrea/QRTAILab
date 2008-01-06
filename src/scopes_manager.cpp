@@ -23,9 +23,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include "scopes_manager.h"
 
 
-QWaitCondition ScopeThreadStarted;
-QMutex ScopeMutex;
-
 /**
 * @brief Initialize Scopes Manager
 */
@@ -61,6 +58,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
 	connect( offsetCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeOffset(double) ) );
 	connect( offsetWheel, SIGNAL( valueChanged(double) ), this, SLOT( changeOffset(double) ) );
         connect( dyCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDy(double) ) );
+	connect( tabWidget, SIGNAL( currentChanged(int) ), this, SLOT( changeTraceOptions(int) ) );
 	currentScope=0;
 	for(int i=0; i<1; ++i){
 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
@@ -74,11 +72,12 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
     offsetWheel->setTotalAngle(360.0*2e6);
     offsetWheel->setFixedHeight(30);
 	dxComboBox->setCompleter(0);
-	
+	tabWidget->setCurrentIndex(0);
 	dxComboBox->setValidator(new QDoubleValidator(this));
 	tabWidget->setCurrentIndex(0);
-}
+//	tabWidget->addTab(traceWidget,tr("trace %1").arg(Scopes[currentScope].ntraces));
 
+}
 QRL_ScopesManager::~QRL_ScopesManager()
 {
 	for (int i=0; i<Num_Scopes; ++i){
@@ -103,10 +102,10 @@ void QRL_ScopesManager::startScopeThreads()
 		thr_args.y = 290;
 		thr_args.w = 250;
 		thr_args.h = 250;
-		ScopeMutex.lock();
+		Get_Scope_Data_Thread[n].mutex.lock();
 		Get_Scope_Data_Thread[n].start(&thr_args,targetThread,ScopeWindows[n]);
-		ScopeThreadStarted.wait(&ScopeMutex);
-		ScopeMutex.unlock();
+		Get_Scope_Data_Thread[n].threadStarted.wait(&Get_Scope_Data_Thread[n].mutex);
+		Get_Scope_Data_Thread[n].mutex.unlock();
 		//rt_receive(0, &msg);
 		//((QMainWindow*)mainWindow)->addDockWidget(Qt::NoDockWidgetArea,ScopeWindows[n]);
 		ScopeWindows[n]->hide();
@@ -192,6 +191,12 @@ void QRL_ScopesManager::stopSaving(int index)
 	}
 }
 
+void QRL_ScopesManager::changeTraceOptions(int index)
+{
+	if(index>0){
+		currentTrace=index-1;
+	}
+}
 
 
 /**
@@ -398,9 +403,9 @@ void GetScopeDataThread::run()
 // 		for (int i=0; i<10000;i++)
 // 			temp2[j][i]=0.;	
 // 	}
-	ScopeMutex.lock();
-	ScopeThreadStarted.wakeAll();
-	ScopeMutex.unlock();
+	mutex.lock();
+	threadStarted.wakeAll();
+	mutex.unlock();
 	//rt_send(Target_Interface_Task, 0);
 	mlockall(MCL_CURRENT | MCL_FUTURE);
 	n=Ndistance;

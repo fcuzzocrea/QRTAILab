@@ -40,6 +40,8 @@ class GetScopeDataThread : public QThread
  public:
     void run();
     int setDt(double);
+QWaitCondition threadStarted;
+QMutex mutex;
  //signals:
     //void value(int,int,float);
  public slots:
@@ -85,6 +87,7 @@ public slots:
   void changeDy(double);
   void changeDisplayModus(int);
   void changeDirection(int);
+  void changeTraceOptions(int);
 private:
   int Num_Scopes;
   Target_Scopes_T *Scopes;
