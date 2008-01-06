@@ -21,9 +21,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include "scopes_manager.h"
-#include "main_window.h"
-
-//extern QRtaiLab *mainWin;
 
 
 QWaitCondition ScopeThreadStarted;
@@ -38,7 +35,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
 	setupUi(this);
 	Num_Scopes=targetThread->getScopeNumber();
 	Scopes=targetThread->getScopes();
-	QIcon ScopeIcon =QIcon(QString::fromUtf8(":/icons/icons/scope_icon.xpm"));
+	QIcon ScopeIcon =QIcon(QString::fromUtf8(":/icons/scope_icon.xpm"));
 	ScopeWindows = new QRL_ScopeWindow* [Num_Scopes]; 
 	for (int i=0; i<Num_Scopes; ++i){
 		new QListWidgetItem(ScopeIcon,tr(Scopes[i].name), scopeListWidget);
@@ -46,7 +43,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
 		connect( ScopeWindows[i], SIGNAL( stopSaving(int) ), this, SLOT( stopSaving(int) ) );
 	}
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showScope(int) ) );
-	//connect( scopeListWidget, SIGNAL( itemActivated( QListWidgetItem * ) ), this, SLOT( showScopeOptions( QListWidgetItem *  ) ) );
+	connect( scopeListWidget, SIGNAL( itemActivated( QListWidgetItem * ) ), this, SLOT( showScopeOptions( QListWidgetItem *  ) ) );
 	connect( scopeListWidget, SIGNAL( itemClicked( QListWidgetItem * ) ), this, SLOT( showScopeOptions( QListWidgetItem *  ) ) );
 	//connect( rrLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeRefreshRate(const QString&) ) );
 	connect( rrCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeRefreshRate(double) ) );
@@ -65,14 +62,12 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
 	connect( offsetWheel, SIGNAL( valueChanged(double) ), this, SLOT( changeOffset(double) ) );
         connect( dyCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDy(double) ) );
 	currentScope=0;
-	tabWidget->setTabText(0,tr(Scopes[currentScope].name));
-	fileLineEdit->setText(tr(Scopes[currentScope].name));
-	//tabWidget->setTabText(1,tr("Trace 1"));
-	for(int i=0; i<Scopes[currentScope].ntraces; ++i){
+	for(int i=0; i<1; ++i){
 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
 		traceComboBox->addItem(tr("Trace ")+tr("%1").arg(i+1));
 	}
-	currentTrace=0;
+	if (Num_Scopes > 0) emit showScopeOptions(scopeListWidget->item(currentScope));
+	
 	if (Num_Scopes > 0) Get_Scope_Data_Thread = new GetScopeDataThread [Num_Scopes];
 		offsetWheel->setMass(0.5);
     offsetWheel->setRange(-1e6, 1e6, 0.25);
@@ -156,6 +151,7 @@ void QRL_ScopesManager::changeDataPoints(double dp)
 	//double rr=text.toDouble();
 	ScopeWindows[currentScope]->changeDataPoints(dp);
 	Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
+	if (Num_Scopes > 0) emit showScopeOptions(scopeListWidget->item(currentScope));
 
 }
 void QRL_ScopesManager::changeSaveTime(double time)

@@ -40,7 +40,7 @@ if (this->objectName().isEmpty())
     //this->setWindowFlags(windowFlags() ^ Qt::WindowMinMaxButtonsHint  );
 
   //  this->setOption(RubberBandMove,true);
-    //this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/icons/meter_icon.xpm")));
+    this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/meter_icon.xpm")));
 
 //dockingwindow
 //this->setAllowedAreas(Qt::NoDockWidgetArea);

@@ -40,7 +40,6 @@ public:
    enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
    QRL_ParametersManager(QWidget *parent = 0,  TargetThread* targetthread=NULL);
    ~QRL_ParametersManager();
-   void update();
 public slots:
   void batchMode(int);
   void  showTunableParameter( QListWidgetItem * item );

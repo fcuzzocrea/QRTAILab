@@ -12,6 +12,9 @@
   <property name="windowTitle" >
    <string>Meters Manager</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="qrtailab.qrc" >:/icons/meter_icon.xpm</iconset>
+  </property>
   <layout class="QGridLayout" >
    <item rowspan="2" row="0" column="0" >
     <widget class="QListWidget" name="meterListWidget" >
@@ -422,7 +425,29 @@
    <header>qwt_counter.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <tabstops>
+  <tabstop>meterListWidget</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>pipeWithCounter</tabstop>
+  <tabstop>alarmLevelCounter</tabstop>
+  <tabstop>colorComboBox</tabstop>
+  <tabstop>thermoColor1PushButton</tabstop>
+  <tabstop>thermoColor2PushButton</tabstop>
+  <tabstop>alarmThermoColor1PushButton</tabstop>
+  <tabstop>alarmThermoColor2PushButton</tabstop>
+  <tabstop>directionComboBox</tabstop>
+  <tabstop>closeButton</tabstop>
+  <tabstop>alarmCheckBox</tabstop>
+  <tabstop>helpButton</tabstop>
+  <tabstop>minCounter</tabstop>
+  <tabstop>showCheckBox</tabstop>
+  <tabstop>rrCounter</tabstop>
+  <tabstop>maxCounter</tabstop>
+  <tabstop>meterComboBox</tabstop>
+ </tabstops>
+ <resources>
+  <include location="qrtailab.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>closeButton</sender>

@@ -12,6 +12,9 @@
   <property name="windowTitle" >
    <string>Parameters Manager</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="qrtailab.qrc" >:/icons/parameters_icon.xpm</iconset>
+  </property>
   <layout class="QGridLayout" >
    <item rowspan="3" row="0" column="0" >
     <widget class="QListWidget" name="blockListWidget" >
@@ -126,7 +129,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="qrtailab.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>closeButton</sender>

@@ -21,9 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include "leds_manager.h"
-#include "main_window.h"
 
-//extern QRtaiLab *mainWin;
 
 QWaitCondition LedThreadStarted;
 QMutex LedMutex;
@@ -39,7 +37,7 @@ QRL_LedsManager::QRL_LedsManager(QWidget *parent,TargetThread* targetthread)
 	setupUi(this);
 	Num_Leds=targetThread->getLedNumber();
 	Leds=targetThread->getLeds();
-	const QIcon LedIcon =QIcon(QString::fromUtf8(":/icons/icons/led_icon.xpm"));
+	const QIcon LedIcon =QIcon(QString::fromUtf8(":/icons/led_icon.xpm"));
 	LedWindows = new QRL_LedWindow* [Num_Leds]; 
 	for (int i=0; i<Num_Leds; ++i){
 		new QListWidgetItem(LedIcon,tr(Leds[i].name), ledListWidget);
@@ -47,10 +45,11 @@ QRL_LedsManager::QRL_LedsManager(QWidget *parent,TargetThread* targetthread)
 	}
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showLed(int) ) );
 	connect( ledColorComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeLedColor(int) ) );
-	currentLed=0;
-	tabWidget->setTabText(0,tr(Leds[currentLed].name));
+	connect( ledListWidget, SIGNAL( itemActivated( QListWidgetItem * ) ), this, SLOT( showLedOptions( QListWidgetItem *  ) ) );
+	connect( ledListWidget, SIGNAL( itemClicked( QListWidgetItem * ) ), this, SLOT( showLedOptions( QListWidgetItem *  ) ) );
 
 	if (Num_Leds > 0) Get_Led_Data_Thread = new GetLedDataThread [Num_Leds];
+	if (Num_Leds > 0) emit showLedOptions(ledListWidget->item(0));
 }
 
 QRL_LedsManager::~QRL_LedsManager()
@@ -131,11 +130,14 @@ void QRL_LedsManager::showLedOptions( QListWidgetItem * item ){
 
 	currentLed= ledListWidget->row(item);
 	tabWidget->setTabText(0,tr(Leds[currentLed].name));
+
 	if(LedWindows[currentLed]->isVisible())
 		showCheckBox->setCheckState(Qt::Checked);
 	else
 		showCheckBox->setCheckState(Qt::Unchecked);
 }
+
+
 /**
 * @brief show scope windows
 * @param state set display status

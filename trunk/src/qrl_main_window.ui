@@ -119,7 +119,7 @@
   </widget>
   <action name="actionConnect" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/icons/connect_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/connect_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Connect</string>
@@ -135,7 +135,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/icons/disconnect_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/disconnect_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Disconnect</string>
@@ -143,7 +143,7 @@
   </action>
   <action name="actionExit" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/icons/exit_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/exit_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>&amp;Quit</string>
@@ -151,7 +151,7 @@
   </action>
   <action name="actionStart" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/icons/start_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/start_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Start</string>
@@ -159,7 +159,7 @@
   </action>
   <action name="actionStop" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/icons/stop_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/stop_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Stop</string>
@@ -167,7 +167,7 @@
   </action>
   <action name="actionShowMeter" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/icons/meter_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/meter_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Meter</string>
@@ -175,7 +175,7 @@
   </action>
   <action name="actionShowScope" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/icons/scope_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/scope_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Scope</string>
@@ -183,7 +183,7 @@
   </action>
   <action name="actionShowLed" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/icons/led_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/led_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Led</string>
@@ -191,7 +191,7 @@
   </action>
   <action name="actionShowParameter" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/icons/parameters_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/parameters_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Parameter</string>
@@ -199,7 +199,7 @@
   </action>
   <action name="actionConnect_WProfile" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/icons/connect_wprofile_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/connect_wprofile_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Connect With Profile</string>
@@ -207,7 +207,7 @@
   </action>
   <action name="actionSaveProfile" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/icons/save_profile_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/save_profile_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Save Profile</string>
@@ -215,7 +215,7 @@
   </action>
   <action name="actionDeleteProfile" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/icons/del_profile_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/del_profile_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Delete Profile</string>

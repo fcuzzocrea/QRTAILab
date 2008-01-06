@@ -21,9 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include "meters_manager.h"
-#include "main_window.h"
 
-//extern QRtaiLab *mainWin;
 extern unsigned long qrl::get_an_id(const char *root);
 QWaitCondition threadStarted;
 QMutex mutex;
@@ -35,7 +33,7 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 	setupUi(this);
 	Num_Meters=targetThread->getMeterNumber();
 	Meters=targetThread->getMeters();
-	const QIcon MeterIcon =QIcon(QString::fromUtf8(":/icons/icons/meter_icon.xpm"));
+	const QIcon MeterIcon =QIcon(QString::fromUtf8(":/icons/meter_icon.xpm"));
 	MeterWindows = new QRL_MeterWindow* [Num_Meters]; 
 	for (int i=0; i<Num_Meters; ++i){
 		new QListWidgetItem(MeterIcon,tr((Meters)[i].name), meterListWidget);
@@ -46,11 +44,12 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 	connect( minCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeMin(double) ) );
 	connect( maxCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeMax(double) ) );
 	connect( meterListWidget, SIGNAL( itemActivated( QListWidgetItem * ) ), this, SLOT( showMeterOptions( QListWidgetItem *  ) ) );
+	connect( meterListWidget, SIGNAL( itemClicked( QListWidgetItem * ) ), this, SLOT( showMeterOptions( QListWidgetItem *  ) ) );
 	connect( meterComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeMeter(int) ) );
-	currentMeter=0;
-	tabWidget->setTabText(0,tr(Meters[currentMeter].name));
+	
 	if (Num_Meters > 0) Get_Meter_Data_Thread = new GetMeterDataThread [Num_Meters];
-
+	if (Num_Meters > 0)
+	emit showMeterOptions(meterListWidget->item(0));
 	ThermoOptions = tabWidget->widget(1);
 	DialOptions = tabWidget->widget(2);
 	LcdOptions = tabWidget->widget(3);
@@ -316,7 +315,6 @@ void GetMeterDataThread::start(void* arg,TargetThread* targetthread,QRL_MeterWin
 */
 int GetMeterDataThread::setRefreshRate(double rr)
 {
-	int oldMsgLen=MsgLen;
 	if (rr>0. && rr<50.){
 		RefreshRate=rr;
 		MsgLen = (((int)(DataBytes/RefreshRate*(1./(targetThread->getMeters())[index].dt)))/DataBytes)*DataBytes;

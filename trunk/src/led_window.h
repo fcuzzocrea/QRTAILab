@@ -63,7 +63,7 @@ public:
    void setValue(unsigned int);
    void setLedColor(QColor);
 protected slots:
-  void closeEvent ( QCloseEvent * event ){event->ignore(); this->hide(); }
+  void closeEvent ( QCloseEvent * event );
 private:
   float Value;
   QLed **Leds;

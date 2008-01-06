@@ -21,11 +21,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include "parameters_manager.h"
-#include "main_window.h"
 
-//extern QRtaiLab *mainWin;
-
-///  Initialize Parameters Manager
+/**
+ * @brief Initialize Parameters Manager
+ */
 QRL_ParametersManager::QRL_ParametersManager(QWidget *parent, TargetThread* targetthread)
 	:QDialog(parent),targetThread(targetthread)
 {
@@ -34,25 +33,32 @@ QRL_ParametersManager::QRL_ParametersManager(QWidget *parent, TargetThread* targ
 	Num_Tunable_Blocks=targetThread->getBlockNumber();
 	Tunable_Blocks=targetThread->getBlocks();
 	Tunable_Parameters=targetThread->getParamters();
-	connect( blockListWidget, SIGNAL( itemActivated( QListWidgetItem * ) ), this, SLOT( showTunableParameter( QListWidgetItem *  ) ) );
+	connect( blockListWidget, SIGNAL(itemEntered( QListWidgetItem * ) ), this, SLOT( showTunableParameter( QListWidgetItem *  ) ) );
+	connect( blockListWidget, SIGNAL(itemActivated( QListWidgetItem * ) ), this, SLOT( showTunableParameter( QListWidgetItem *  ) ) );
 	connect( parameterTableWidget, SIGNAL( itemChanged( QTableWidgetItem * ) ), this, SLOT( changeTunableParameter( QTableWidgetItem *  ) ) );
 	connect( batchCheckBox, SIGNAL( stateChanged( int  ) ), this, SLOT( batchMode( int  ) ) );
 	connect( uploadPushButton, SIGNAL( pressed() ), this, SLOT( uploadParameters() ) );
 	connect( downloadPushButton, SIGNAL( pressed() ), this, SLOT( downloadBatchParameters() ) );
-	const QIcon BlockIcon = QIcon("icons/block_icon.xpm");
+	const QIcon BlockIcon =QIcon(QString::fromUtf8(":/icons/block_icon.xpm"));
 	for (int i=0; i<Num_Tunable_Blocks; ++i){
 		new QListWidgetItem(BlockIcon,tr(Tunable_Blocks[i].name), blockListWidget);
 	}
 	batchModus=0;
 }
 
+/**
+ * @brief Delete Parameters Manager
+ */
 QRL_ParametersManager::~QRL_ParametersManager()
 {
 	blockListWidget->clear();
 	parameterTableWidget->clear();
 }
 
-
+/**
+ * @brief Enable batchmode. In batchmode, changed parameters will be downloaded to the program only by activating the uploading button
+ * @param state enables batchmode
+ */
 void QRL_ParametersManager::batchMode(int state){
 	if(state==Qt::Checked){
 		downloadPushButton->setEnabled(true);
@@ -63,13 +69,18 @@ void QRL_ParametersManager::batchMode(int state){
 		uploadParameters();
 	}
 }
+/**
+ * @brief Upload all parameters from the program, and updates the parameter in the widget
+ */
 void QRL_ParametersManager::uploadParameters()
 {
 	targetThread->uploadParameters();
 	targetThread->resetBatchMode();
 	emit showTunableParameter(blockListWidget->currentItem());
 }
-
+/**
+ * @brief Download all changed parameters to the program.
+ */
 void QRL_ParametersManager::downloadBatchParameters()
 {
 	if(batchModus)
@@ -77,14 +88,14 @@ void QRL_ParametersManager::downloadBatchParameters()
 
 }
 
-void QRL_ParametersManager::update()
-{
-	Num_Tunable_Parameters=targetThread->getParameterNumber();
-	Num_Tunable_Blocks=targetThread->getBlockNumber();
-	Tunable_Blocks=targetThread->getBlocks();
-	Tunable_Parameters=targetThread->getParamters();
-}
-
+/**
+ * @brief Gets the Pameter value for a given entry. 
+ * @param p Parameter Struct
+ * @param nr parameter number
+ * @param nr row
+ * @param nc column
+ * @param *val_idx returns the array index
+ */
 double QRL_ParametersManager::get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx)
 {
 	switch (p.data_class) {
@@ -104,13 +115,20 @@ double QRL_ParametersManager::get_parameter(Target_Parameters_T p, int nr, int n
 			return (0.0);
 	}
 }
-
+/**
+ * @brief Change one Parameter entry in the Parameter structure
+ * @param idx map_offset = Tunable_Blocks[blk].offset + prm;
+ * @param mat_idx  array index(val_idx)
+ * @param val new value
+ */
 int QRL_ParametersManager::update_parameter(int idx, int mat_idx, double val)
 {
 	Tunable_Parameters[idx].data_value[mat_idx] = val;
 	return 1;
 }
-
+/**
+ * @brief Updates a changed parameter
+ */
 void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item ) 
 {
 	int jend,val_idx;
@@ -164,7 +182,9 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 
 	delete DoubleTest;
 }
-
+/**
+ * @brief show all parameter for a given parameter block
+ */
 void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item ) 
 {
 	parameterTableWidget->blockSignals(true);
@@ -172,7 +192,7 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 	parameterTableWidget->clear();
 	int jend,val_idx;
 	double data_value;
-	const QIcon BlockIcon = QIcon("icons/parameters_icon.xpm");
+	//const QIcon BlockIcon =QIcon(QString::fromUtf8(":/icons/parameters_icon.xpm"));
 	if (i == Num_Tunable_Blocks - 1) 
 		jend=Num_Tunable_Parameters - Tunable_Blocks[i].offset;
 	else
