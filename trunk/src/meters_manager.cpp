@@ -23,8 +23,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include "meters_manager.h"
 
 extern unsigned long qrl::get_an_id(const char *root);
-QWaitCondition threadStarted;
-QMutex mutex;
+
 
 ///  Initialize Meters Manager
 QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
@@ -110,11 +109,11 @@ void QRL_MetersManager::startMeterThreads()
 		thr_args.w = 300;
 		thr_args.h = 200;
 		//pthread_create(&Get_Meter_Data_Thread[n], NULL, rt_get_meter_data, &thr_args);
-		mutex.lock();
+		Get_Meter_Data_Thread[n].mutex.lock();
 		Get_Meter_Data_Thread[n].start(&thr_args,targetThread,MeterWindows[n]);
 		//wait until thread is initialized
-		threadStarted.wait(&mutex);
-		mutex.unlock();
+		Get_Meter_Data_Thread[n].threadStarted.wait(&Get_Meter_Data_Thread[n].mutex);
+		Get_Meter_Data_Thread[n].mutex.unlock();
 		//rt_receive(0, &msg);
 	}
 

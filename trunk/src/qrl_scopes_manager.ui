@@ -35,7 +35,7 @@
    <item row="0" column="1" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="Scope" >
       <attribute name="title" >
@@ -304,7 +304,7 @@
       <widget class="QPushButton" name="traceColorPushButton" >
        <property name="geometry" >
         <rect>
-         <x>180</x>
+         <x>120</x>
          <y>20</y>
          <width>83</width>
          <height>27</height>
@@ -317,7 +317,7 @@
       <widget class="QwtCounter" name="lineWidthCounter" >
        <property name="geometry" >
         <rect>
-         <x>180</x>
+         <x>110</x>
          <y>100</y>
          <width>74</width>
          <height>23</height>
@@ -339,8 +339,8 @@
       <widget class="QwtCounter" name="dyCounter" >
        <property name="geometry" >
         <rect>
-         <x>180</x>
-         <y>170</y>
+         <x>110</x>
+         <y>150</y>
          <width>74</width>
          <height>23</height>
         </rect>
@@ -386,7 +386,7 @@
       <widget class="QLabel" name="widthLabel" >
        <property name="geometry" >
         <rect>
-         <x>180</x>
+         <x>110</x>
          <y>80</y>
          <width>64</width>
          <height>18</height>
@@ -412,8 +412,8 @@
       <widget class="QLabel" name="dyLabel" >
        <property name="geometry" >
         <rect>
-         <x>180</x>
-         <y>150</y>
+         <x>120</x>
+         <y>130</y>
          <width>64</width>
          <height>18</height>
         </rect>
