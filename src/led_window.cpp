@@ -115,7 +115,7 @@ QRL_LedWindow::QRL_LedWindow(QWidget *parent,int num,char* name)
     
     this->setWindowTitle(QApplication::translate("QRL_LedWindow", name, 0, QApplication::UnicodeUTF8));
    // Led->setText(QApplication::translate("QRL_LedWindow", "Led1", 0, QApplication::UnicodeUTF8));
-    this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/icons/led_icon.xpm")));
+    this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/led_icon.xpm")));
     this->setWindowFlags(windowFlags() ^ Qt::WindowMaximizeButtonHint );
 }
 
@@ -148,4 +148,10 @@ void QRL_LedWindow::setValue(unsigned int v)
 			Leds[i]->setValue(false);
 		}
 	}
+}
+
+  void QRL_LedWindow::closeEvent ( QCloseEvent * event )
+{
+	event->ignore(); 
+	this->hide(); 
 }

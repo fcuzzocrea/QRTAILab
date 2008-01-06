@@ -39,7 +39,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
     sizePolicy.setVerticalStretch(0);
     sizePolicy.setHeightForWidth(this->sizePolicy().hasHeightForWidth());
     this->setSizePolicy(sizePolicy);
-    this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/icons/scope_icon.xpm")));
+    this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/scope_icon.xpm")));
     this->setWindowFlags(windowFlags() ^ Qt::WindowMaximizeButtonHint );
     qwtPlot = new QwtPlot(this);
     //qwtPlot=this;

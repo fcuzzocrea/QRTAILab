@@ -12,6 +12,9 @@
   <property name="windowTitle" >
    <string>Leds Manager</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="qrtailab.qrc" >:/icons/led_icon.xpm</iconset>
+  </property>
   <layout class="QGridLayout" >
    <item rowspan="2" row="0" column="0" >
     <widget class="QListWidget" name="ledListWidget" >
@@ -169,7 +172,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="qrtailab.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>closeButton</sender>

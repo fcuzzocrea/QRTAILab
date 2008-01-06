@@ -17,3 +17,4 @@ CONFIG += QwtPlot QwtWidgets qtestlib
 HEADERS += ../src/qrtailab.h ../src/meter_window.h ../src/meters_manager.h ../src/led_window.h ../src/leds_manager.h ../src/scope_window.h ../src/scopes_manager.h ../src/main_window.h ../src/parameters_manager.h
 FORMS += ../src/qrl_connectdialog.ui  ../src/qrl_main_window.ui  ../src/qrl_meters_manager.ui  ../src/qrl_leds_manager.ui  ../src/qrl_scopes_manager.ui ../src/qrl_parameters_manager.ui
 SOURCES += ../src/qrtailab.cpp ../src/meter_window.cpp ../src/meters_manager.cpp ../src/led_window.cpp ../src/leds_manager.cpp ../src/scope_window.cpp ../src/scopes_manager.cpp ../src/main_window.cpp ../src/parameters_manager.cpp testgui.cpp
+RESOURCES += ../src/qrtailab.qrc
