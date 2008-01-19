@@ -57,6 +57,9 @@ close();
 QRL_MainWindow::QRL_MainWindow()
 {
     setupUi(this);
+
+
+
 //  unsigned int msg;
     // signals/slots mechanism in action
 	ScopesManager=NULL;
@@ -89,8 +92,8 @@ QRL_MainWindow::QRL_MainWindow()
 
    rt_allow_nonroot_hrt();
    if (!(RLG_Main_Task = rt_task_init_schmod(qrl::get_an_id("RLGM"), 99, 0, 0, SCHED_FIFO, 0xFF))) {
-                printf("Cannot init RTAI-Lab GUI main task\n");
-                close();
+               printf("Cannot init RTAI-Lab GUI main task\n");
+               close();
     }
 
     targetthread = new TargetThread();
@@ -166,6 +169,7 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
  void QRL_MainWindow::connectDialog() 
 {
 if(targetthread->getIsTargetConnected()==0){
+
   //QRL_connectDialog *connectDialog = new QRL_connectDialog(this);
   //connectDialog->exec();
 	targetthread->connectToTarget();
@@ -284,8 +288,15 @@ if(targetthread->getIsTargetConnected()==0){
  void QRL_MainWindow::disconnectDialog() 
 {
 	targetthread->disconnectFromTarget();
-	if (MetersManager) 
+	if (MetersManager) {
 		MetersManager->stopMeterThreads();
+	}
+	if (ScopesManager) {
+		ScopesManager->stopScopeThreads();
+	}
+	if (LedsManager) {
+		LedsManager->stopLedThreads();
+	}
 	if (targetthread->getIsTargetConnected()==0){
 		enableActionDisconnect(false);
 		enableActionConnect(true);
@@ -294,6 +305,7 @@ if(targetthread->getIsTargetConnected()==0){
 		enableActionStart(false);
 		enableActionStop(false);
 	}
+	
 }
  
 void QRL_MainWindow::connect_WProfile() {
