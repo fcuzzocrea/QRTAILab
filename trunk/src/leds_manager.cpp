@@ -24,15 +24,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 
 
-
-
 /**
 * @brief Initialize Meters Manager
 */
 QRL_LedsManager::QRL_LedsManager(QWidget *parent,TargetThread* targetthread)
 	:QDialog(parent),targetThread(targetthread)
 {
-	mainWindow=parent;
 	setupUi(this);
 	Num_Leds=targetThread->getLedNumber();
 	Leds=targetThread->getLeds();

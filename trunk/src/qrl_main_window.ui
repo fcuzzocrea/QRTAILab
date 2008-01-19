@@ -24,6 +24,9 @@
   <property name="windowTitle" >
    <string>Rtai-Lab Graphical User Interface</string>
   </property>
+  <property name="autoFillBackground" >
+   <bool>false</bool>
+  </property>
   <property name="animated" >
    <bool>false</bool>
   </property>

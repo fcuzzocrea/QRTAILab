@@ -52,21 +52,23 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 	ThermoOptions = tabWidget->widget(1);
 	DialOptions = tabWidget->widget(2);
 	LcdOptions = tabWidget->widget(3);
+	connect( thermoColor1PushButton, SIGNAL( pressed() ), this, SLOT( changeThermoColor1() ) );
+	connect( thermoColor2PushButton, SIGNAL( pressed() ), this, SLOT( changeThermoColor2() ) );
+	connect( pipeWithCounter, SIGNAL( valueChanged(double) ), this, SLOT( changePipeWith(double) ) );
+	connect( alarmThermoColor1PushButton, SIGNAL( pressed() ), this, SLOT( changeAlarmThermoColor1() ) );
+	connect( alarmThermoColor2PushButton, SIGNAL( pressed() ), this, SLOT( changeAlarmThermoColor2() ) );
+	connect( alarmCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( enableThermoAlarm(int) ) );
+	connect( colorComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeThermoColorType(int) ) );
+	connect( alarmLevelCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeAlarmLevel(double) ) );
+	connect( directionComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeThermoDirection(int) ) );
+	currentMeter=0;
 	switch(MeterWindows[currentMeter]->getMeterType())
 	{
 		case QRL_MeterWindow::THERMO:
 			tabWidget->removeTab(3);
 			tabWidget->removeTab(2);
 	
-			connect( thermoColor1PushButton, SIGNAL( pressed() ), this, SLOT( changeThermoColor1() ) );
-			connect( thermoColor2PushButton, SIGNAL( pressed() ), this, SLOT( changeThermoColor2() ) );
-			connect( pipeWithCounter, SIGNAL( valueChanged(double) ), this, SLOT( changePipeWith(double) ) );
-			connect( alarmThermoColor1PushButton, SIGNAL( pressed() ), this, SLOT( changeAlarmThermoColor1() ) );
-			connect( alarmThermoColor2PushButton, SIGNAL( pressed() ), this, SLOT( changeAlarmThermoColor2() ) );
-			connect( alarmCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( enableThermoAlarm(int) ) );
-			connect( colorComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeThermoColorType(int) ) );
-			connect( alarmLevelCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeAlarmLevel(double) ) );
-			connect( directionComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeThermoDirection(int) ) );
+			
 			break;
 		case QRL_MeterWindow::DIAL:
 			tabWidget->removeTab(1);
@@ -180,7 +182,7 @@ void QRL_MetersManager::changeMeter(int type)
 			break;
 		case 2: //lcd
 			tabWidget->removeTab(1);
-			tabWidget->addTab(DialOptions,tr("Options"));
+			tabWidget->addTab(LcdOptions,tr("Options"));
 			MeterWindows[currentMeter]->setMeter(QRL_MeterWindow::LCD);
 			break;
 		default:break;

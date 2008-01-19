@@ -60,6 +60,7 @@ QMutex mutex;
  * @brief Managed all Scope windows
  * @todo add trigger mechanism
  * @todo add own color dialog
+ * @todo fixe window size
  */
 class QRL_ScopesManager : public QDialog, private Ui::QRL_ScopesManager
 {
@@ -72,7 +73,9 @@ public:
   QRL_ScopeWindow** getScopeWindows(){return ScopeWindows;}
 public slots:
   void  showScope(int);
-  void showScopeOptions( QListWidgetItem * item );
+  void showScopeOptions( int );
+  void showSelectedOptions();
+   void showOptions( QListWidgetItem * item );
   void changeRefreshRate(double);
   void changeDataPoints(double);
   void changeSaveTime(double);
@@ -80,14 +83,14 @@ public slots:
   void startSaving();
   void stopSaving(int);
   void setOptions(int);
-  void setCurrentTrace(int);
   void changeTraceColor();
   void changeTraceWidth(double);
   void changeOffset(double);
   void changeDy(double);
   void changeDisplayModus(int);
   void changeDirection(int);
-  void changeTraceOptions(int);
+  void showTraceOptions(int);
+  void changeScopeList(int);
 private:
   int Num_Scopes;
   Target_Scopes_T *Scopes;
@@ -96,6 +99,7 @@ private:
   TargetThread* targetThread;
   QRL_ScopeWindow** ScopeWindows;
   int currentTrace;
+  QList<QListWidgetItem *> scopeItems,traceItems;
 };
 
 

@@ -78,7 +78,6 @@ private:
   GetLedDataThread* Get_Led_Data_Thread;
   TargetThread* targetThread;
   QRL_LedWindow** LedWindows;
-  QWidget *mainWindow;
 };
 
 

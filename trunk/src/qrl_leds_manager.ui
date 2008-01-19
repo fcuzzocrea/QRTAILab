@@ -9,6 +9,18 @@
     <height>228</height>
    </rect>
   </property>
+  <property name="minimumSize" >
+   <size>
+    <width>303</width>
+    <height>228</height>
+   </size>
+  </property>
+  <property name="maximumSize" >
+   <size>
+    <width>303</width>
+    <height>228</height>
+   </size>
+  </property>
   <property name="windowTitle" >
    <string>Leds Manager</string>
   </property>
