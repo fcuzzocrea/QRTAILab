@@ -72,6 +72,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 #define FLTK_EVENTS_TICK        0.05
 #define QT_EVENTS_TICK          50
+#define  TEN_MS_IN_NS 10000000LL
+#define  ONE_MS_IN_NS 1000000LL
 
 #define MAX_MSG_LEN             (MAX_MSG_SIZE - 100)
 #define REFRESH_RATE            0.05

@@ -1,23 +1,29 @@
+/***************************************************************************
+ *   Copyright (C) 2008 by Holger Nahrstaedt                               *
+ *                                                                         *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by  the Free Software Foundation; either version 2       *
+ *   of the License, or  (at your option) any later version.               *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
+
 /*
  file:		leds_manager.cpp
  describtion:
    file for the classes GetScopeDataThread and  QRL_ScopesManager
-
- Copyright (C) 2007 Holger Nahrstaedt
-
- This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include "leds_manager.h"
@@ -183,7 +189,7 @@ void GetLedDataThread::run()
 	int n;
 
 	rt_allow_nonroot_hrt();
-	if (!(GetLedDataTask = rt_task_init_schmod(qrl::get_an_id("HGE"), 99, 0, 0, SCHED_RR, 0xFF))) {
+	if (!(GetLedDataTask = rt_task_init_schmod(qrl::get_an_id("HGE"), 98, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetLedData Task\n");
 		//return (void *)1;
 		exit(1);
@@ -219,7 +225,8 @@ void GetLedDataThread::run()
 		while (RT_mbx_receive_if(targetThread->getTargetNode(), GetLedDataPort, GetLedDataMbx, &MsgBuf, MsgLen)) {
 			if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) goto end;
 
-			msleep(12);
+			//msleep(12);
+			rt_sleep(nano2count(TEN_MS_IN_NS));
 		}
 		//Fl::lock();
 		//for (n = 0; n < MsgData; n++) {

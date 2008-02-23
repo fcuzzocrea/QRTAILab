@@ -480,7 +480,7 @@ void TargetThread::run()
 
 	rt_allow_nonroot_hrt();
 
-	if (!(Target_Interface_Task = rt_task_init_schmod(qrl::get_an_id("HTI"), 98, 0, 0, SCHED_FIFO, 0xFF))) {
+	if (!(Target_Interface_Task = rt_task_init_schmod(qrl::get_an_id("HTI"), 97, 0, 0, SCHED_FIFO, 0xFF))) {
 		printf("Cannot init Target_Interface_Task\n");
 		exit(1);
 	}

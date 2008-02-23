@@ -1,23 +1,28 @@
+/***************************************************************************
+ *   Copyright (C) 2008 by Holger Nahrstaedt                               *
+ *                         P. Sereno                                       *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by  the Free Software Foundation; either version 2       *
+ *   of the License, or  (at your option) any later version.               *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
 /*
  file:		led_window.cpp
  describtion:
-   file for the classes QRL_LedWindow
-
- Copyright (C) 2007 Holger Nahrstaedt
-
- This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+   file for the classes QRL_LedWindow QLed
 */
 
 #include "led_window.h"
@@ -35,39 +40,39 @@ QLed::QLed(QWidget *parent)
 
 void QLed::paintEvent(QPaintEvent *)
 {
+
+
 	QPainter painter(this);
-	painter.setWindow( -500,-500,1000,1000);
+	painter.setRenderHint(QPainter::Antialiasing, true);
+	painter.setWindow( -50,-50,100,100);
 	
 	painter.setPen(Qt::white);
-	painter.drawArc(-250,-250,500,500,0,5670);
-	painter.drawArc(-333+1,-333,666,666,0,5670);
+	painter.drawArc(-25,-25,50,50,0,5670);
+	painter.drawArc(-32,-33,66,66,0,5670);
 	painter.setPen(Qt::darkGray);
-	painter.drawArc(-333-1,-333,666,666,3400,3000);
+	painter.drawArc(-34,-33,66,66,3400,3000);
 	
     if(m_value)
     {
-      QRadialGradient radialGrad(QPointF(-80, -80), 200);
+      QRadialGradient radialGrad(QPointF(-8, -8), 20);
       radialGrad.setColorAt(0, Qt::white);
- 
-      QColor color=m_color;
-      
-      
-      radialGrad.setColorAt(1, color);
+       
+      radialGrad.setColorAt(1, m_color);
    	  QBrush brush(radialGrad);
       painter.setBrush(brush);
       painter.setPen(Qt::black);
-	  painter.drawEllipse(-250,-250,500,500);
+	  painter.drawEllipse(-25,-25,50,50);
     }
     else
     {
-      QRadialGradient radialGrad(QPointF(-80, -80), 200);
+      QRadialGradient radialGrad(QPointF(-8, -8), 20);
       radialGrad.setColorAt(0, Qt::white);
       radialGrad.setColorAt(1, Qt::lightGray);
    	  QBrush brush(radialGrad);
       painter.setBrush(brush);
-      //painter.setPen(Qt::black);
-	  painter.drawEllipse(-250,-250,500,500);
+	  painter.drawEllipse(-25,-25,50,50);
     }	
+
 }
 
 void QLed::setColor(QColor newColor)
@@ -102,11 +107,16 @@ QRL_LedWindow::QRL_LedWindow(QWidget *parent,int num,char* name)
    // layout=new QGridLayout(this);
    // this->setLayout(layout);
     Leds = new QLed* [num_leds];
+    ledLabels = new QLabel* [num_leds];
     for(int i=0;i<num_leds;++i){
 	Leds[i] = new QLed(frame);
 	//Leds[i]->setObjectName(QString::fromUtf8("Led"));
 	Leds[i]->setGeometry(QRect(10, 20+i*35, 30, 30));
 	Leds[i]->setValue(false);
+
+	ledLabels[i] = new QLabel(frame);
+	ledLabels[i]->setGeometry(QRect(10+40, 20+i*35, 30, 30));
+	ledLabels[i]->setText(tr("%1").arg(i+1));
 	//layout->addWidget(Leds[i],i,1);
 	//this->setWidget(Leds[i]);
     }
