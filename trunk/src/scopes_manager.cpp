@@ -412,7 +412,7 @@ void GetScopeDataThread::run()
 	int save_idx = 0;
 
 	rt_allow_nonroot_hrt();
-	if (!(GetScopeDataTask = rt_task_init_schmod(qrl::get_an_id("HGS"), 99, 0, 0, SCHED_RR, 0xFF))) {
+	if (!(GetScopeDataTask = rt_task_init_schmod(qrl::get_an_id("HGS"), 98, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetScopeData Task\n");
 		//return (void *)1;
 	}
@@ -457,7 +457,8 @@ void GetScopeDataThread::run()
 		if (targetThread->getEndApp() || ! targetThread->getIsTargetConnected()) break;
 		while (RT_mbx_receive_if(targetThread->getTargetNode(), GetScopeDataPort, GetScopeDataMbx, &MsgBuf, MsgLen)) {
 			if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) goto end;
-			msleep(10);
+			rt_sleep(nano2count(TEN_MS_IN_NS));
+			//msleep(10);
 		}
 		//Fl::lock();
 // 		js = 1;

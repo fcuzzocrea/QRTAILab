@@ -341,7 +341,7 @@ void GetMeterDataThread::run()
 	float MsgBuf[MAX_MSG_LEN/sizeof(float)];
 	long int n;
 	rt_allow_nonroot_hrt();
-	if (!(GetMeterDataTask = rt_task_init_schmod(qrl::get_an_id("HGM"), 99, 0, 0, SCHED_RR, 0xFF))) {
+	if (!(GetMeterDataTask = rt_task_init_schmod(qrl::get_an_id("HGM"), 98, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetMeterData Task %d\n",index);
 		//return (void *)1;
 		exit(1);
@@ -380,7 +380,8 @@ void GetMeterDataThread::run()
 		while (RT_mbx_receive_if(targetThread->getTargetNode(), GetMeterDataPort, GetMeterDataMbx, &MsgBuf, MsgLen)) {
 			if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) goto end;
 
-			msleep(12); //waits for new Data from the mailbox
+			//msleep(12); //waits for new Data from the mailbox
+			rt_sleep(nano2count(TEN_MS_IN_NS));
 		}
 		//Fl::lock();
 	//	for (n = 0; n < MsgData; n++) {
