@@ -1,23 +1,29 @@
+/***************************************************************************
+ *   Copyright (C) 2008 by Holger Nahrstaedt                               *
+ *                                                                         *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by  the Free Software Foundation; either version 2       *
+ *   of the License, or  (at your option) any later version.               *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
+
 /*
  file:		meter_window.h
  describtion:
    file for the class QRL_MeterWindow
-
- Copyright (C) 2007 Holger Nahrstaedt
-
- This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #ifndef _METER_WINDOW_H
@@ -28,6 +34,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 #include <qwt_scale_engine.h>
 #include <qwt_dial.h>
 #include <qwt_dial_needle.h>
+//#include "qmeter.h"
+
 
 /**
  * @brief Display Meter 
@@ -56,6 +64,8 @@ public:
    void setGradientEnabled(bool);
    void setAlarmLevel(double);
    void setThermoDirection(Qt::Orientation o);
+   void setLcdFont(const QFont& font);
+   void setNeedleColor(const QColor&);
    Meter_Type getMeterType(){return MeterType;}
 protected slots:
   void closeEvent ( QCloseEvent * event ){event->ignore(); this->hide(); }
@@ -64,7 +74,9 @@ private:
   float Value;
   QwtThermo *Thermo;
   QwtDial *Dial;
-  QLCDNumber *Lcd;
+ // QMeter *Dial;
+//  QLCDNumber *Lcd;
+  QLabel *Lcd;
   double RefreshRate;
   double Max,Min;
   Meter_Type MeterType;
@@ -74,6 +86,7 @@ private:
   double alarmLevel;
   QBrush brush;
   QLinearGradient gradient,alarmGradient;
+  QwtDialSimpleNeedle *needle;
 };
 
 

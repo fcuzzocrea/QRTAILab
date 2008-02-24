@@ -1,23 +1,28 @@
+/***************************************************************************
+ *   Copyright (C) 2008 by Holger Nahrstaedt                               *
+ *                                                                         *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by  the Free Software Foundation; either version 2       *
+ *   of the License, or  (at your option) any later version.               *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
 /*
  file:		scopes_window.cpp
  describtion:
    file for the classes QRL_ScopeWindow
-
- Copyright (C) 2007 Holger Nahrstaedt
-
- This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include "scope_window.h"
@@ -49,7 +54,8 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
     this->setWindowTitle(QApplication::translate("QRL_ScopeWindow", Scope->name, 0, QApplication::UnicodeUTF8));
 
 	direction=Qt::RightToLeft;
-	overwrite=false;
+	overwrite=false;trigger=false;hold=false;
+	triggerSearch=true;triggerUp=true;triggerChannel=0;triggerLevel=0;
        yMajorTicks=10;dy=1.; yOffset=0.; 
 	ymin=yOffset-0.5*(yMajorTicks*dy);
        ymax=yOffset+0.5*(yMajorTicks*dy);
@@ -374,6 +380,72 @@ void QRL_ScopeWindow::setValue( int nn, float v)
 //int time2=ScopeData[nn].time2;
 //if (time2>=(dt/Scope->dt)){
 //	time2=0;
+if (hold) {
+	return;
+}
+if (trigger){
+	if (triggerSearch){ //search for next trigger event
+	  if (nn==triggerChannel) {
+		double y= (double)v;
+		if (triggerUp){
+			if (y>triggerLevel && lastValue<triggerLevel){
+				triggerSearch=false;
+				for (int n=0;n<Ncurve;n++){ // reset time counter
+					if (Qt::LeftToRight==direction)
+					ScopeData[n].time=0;
+					else
+					ScopeData[n].time=NDataSoll-1;
+				}
+			}
+		} else {
+			if (y<triggerLevel && lastValue>triggerLevel){
+				triggerSearch=false;
+				for (int n=0;n<Ncurve;n++){ //reset time counter
+					if (Qt::LeftToRight==direction)
+					ScopeData[n].time=0;
+					else
+					ScopeData[n].time=NDataSoll-1;
+				}
+			}
+		}
+		lastValue=y;
+	  } else { // plot last data for the other traces
+		int time=ScopeData[nn].time;
+		if (time>0 && time <NDataSoll-1){
+			ScopeData[nn].d_y[time]=((double)v+TraceOptions[nn].offset)/TraceOptions[nn].dy;
+			if (Qt::LeftToRight==direction)
+				time++;
+			else
+				time--;
+			ScopeData[nn].time=time;
+		}
+
+	  }
+	} else {
+	int time=ScopeData[nn].time;
+	ScopeData[nn].d_y[time]=((double)v+TraceOptions[nn].offset)/TraceOptions[nn].dy;
+	if (Qt::LeftToRight==direction)
+		time++;
+	else
+		time--;
+	if (time<0){
+		time=NDataSoll-1;
+		if (nn==triggerChannel){// start searching
+			triggerSearch=true;
+			lastValue=(double)v;
+		}
+	}
+	if(time>NDataSoll-1){
+		time=0;
+		if (nn==triggerChannel){ // start searching
+			triggerSearch=true;
+			lastValue=(double)v;
+		}
+	}
+	ScopeData[nn].time=time;
+	}
+	return;
+}
 
 if (overwrite)
 {
@@ -390,7 +462,7 @@ if (overwrite)
 	ScopeData[nn].time=time;
 
 
-}else{
+}else {
 	int time=ScopeData[nn].time;
 	ScopeData[nn].d_yt[time]=((double)v+TraceOptions[nn].offset)/TraceOptions[nn].dy;
 	time++;

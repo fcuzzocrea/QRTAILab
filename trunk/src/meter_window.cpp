@@ -1,23 +1,29 @@
+/***************************************************************************
+ *   Copyright (C) 2008 by Holger Nahrstaedt                               *
+ *                                                                         *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by  the Free Software Foundation; either version 2       *
+ *   of the License, or  (at your option) any later version.               *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
+
 /*
  file:		meter_window.cpp
  describtion:
    file for the class QRL_MeterWindow
-
- Copyright (C) 2007 Holger Nahrstaedt
-
- This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include "meter_window.h"
@@ -72,38 +78,55 @@ Thermo->setFillBrush(QBrush(gradient));
 
 	alarmThermoColor1=Qt::blue;
 	alarmThermoColor2=Qt::black;
-alarmGradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
+	alarmGradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
      		alarmGradient.setColorAt(0, alarmThermoColor1);
      		alarmGradient.setColorAt(1, alarmThermoColor2);
      		alarmGradient.setSpread(QGradient::ReflectSpread);
 		Thermo->setAlarmBrush(QBrush(alarmGradient));
 	alarmLevel=1.;
-	  this->setWidget(Thermo);
-setPipeWith(pipeWidth);
+	this->setWidget(Thermo);
+	setPipeWith(pipeWidth);
 	gradientEnabled=true;
 
- Dial = new QwtDial(this);
-    //Dial->setObjectName(QString::fromUtf8("Dial"));
-   	 Dial->setGeometry(QRect(50, 20, 52, 50));
+ 	Dial = new QwtDial(this);
+        //Dial->setObjectName(QString::fromUtf8("Dial"));
+   	Dial->setGeometry(QRect(50, 20, 52, 50));
 	Dial->setScaleArc(40.,320.);
 	Dial->setRange(Min,Max);
-	QwtDialSimpleNeedle *needle = new QwtDialSimpleNeedle(
-           QwtDialSimpleNeedle::Arrow, true, Qt::red, 
-           QColor(Qt::gray).light(130));
+	needle = new QwtDialSimpleNeedle(
+        QwtDialSimpleNeedle::Arrow, true, Qt::red, 
+        QColor(Qt::gray).light(130));
 	Dial->setNeedle(needle);
-	Dial->scaleDraw()->setSpacing(0);
+	Dial->scaleDraw()->setSpacing(2);
 	//Dial->scaleDraw()->setRadius(5);
 	//printf("radius %d\n",Dial->scaleDraw()->radius());
 	Dial->setWrapping(false);
     	Dial->setReadOnly(true);
     	Dial->setScaleTicks(0, 4, 8);
 	Dial->setScale(5,10);
+	//Dial->setScale(1, 2, 0.25);
+	Dial->setScaleOptions(QwtDial::ScaleTicks | QwtDial::ScaleLabel);
+	Dial->setFrameShadow(QwtDial::Sunken);
+	Dial->scaleDraw()->setPenWidth(2);
+        //Dial->setLineWidth(1);
 	Dial->hide();
 
-	Lcd = new QLCDNumber(this);
+/*	Dial = new QMeter(this);
+	Dial->setStartAngle(230);
+	Dial->setEndAngle(-40);
+	Dial->setMinValue(Min);
+	Dial->setMaxValue(Max);
+	Dial->setPrecision(1);
+	Dial->hide();*/
+
+	/*Lcd = new QLCDNumber(this);
 	Lcd->setSmallDecimalPoint(true);
 	Lcd->setNumDigits(5);
 	Lcd->setSegmentStyle(QLCDNumber::Flat);
+	Lcd->hide();*/
+	Lcd = new QLabel(this);
+	 QFont font("Helvetica", 15, QFont::DemiBold);
+ 	Lcd->setFont(font);
 	Lcd->hide();
 
   
@@ -166,15 +189,19 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 */
 void QRL_MeterWindow::setValue(float v)
 {
+	QString str;
 	switch (MeterType){
 	case DIAL:
-		Dial->setValue(v);
+		Dial->setValue((double)v);
 		break;
 	case THERMO:
 		Thermo->setValue(v);
 		break;
 	case LCD:
-		Lcd->display((double)v);
+		str.setNum(v,'g',4);
+		if (v >= 0)
+			str.insert(0,QString(" "));
+		Lcd->setText(str);
 		break;
 	default:
 		break;
@@ -359,5 +386,13 @@ void  QRL_MeterWindow::setThermoDirection(Qt::Orientation o)
 		Thermo->setOrientation(o, QwtThermo::LeftScale);
 	else
 		Thermo->setOrientation(o, QwtThermo::BottomScale);
+}
+
+   void QRL_MeterWindow::setLcdFont(const QFont& font){
+	Lcd->setFont(font);
+
+}
+   void QRL_MeterWindow::setNeedleColor(const QColor& c){
+	needle->setPalette(c);
 }
 
