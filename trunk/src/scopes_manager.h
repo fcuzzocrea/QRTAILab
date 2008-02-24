@@ -36,8 +36,6 @@
 
 /**
  * @brief QThread for reading Scope data
- * @bug data transfer to scope window stocks, if window is changing
- * @bug	plotting bug for less datapoints 
  */
 
 class GetScopeDataThread : public QThread
@@ -64,7 +62,6 @@ QMutex mutex;
 
 /**
  * @brief Managed all Scope windows
- * @todo add trigger mechanism
  * @todo add own color dialog
  */
 class QRL_ScopesManager : public QDialog, private Ui::QRL_ScopesManager
@@ -97,7 +94,9 @@ public slots:
   void showTraceOptions(int);
   void changeScopeList(int);
   void changeTriggerLevel(double);
-  void manuelTrigger();
+  void manualTrigger();
+  void changeSingleMode(int);
+  void startSingleRun();
 private:
   int Num_Scopes;
   Target_Scopes_T *Scopes;

@@ -56,6 +56,8 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 	direction=Qt::RightToLeft;
 	overwrite=false;trigger=false;hold=false;
 	triggerSearch=true;triggerUp=true;triggerChannel=0;triggerLevel=0;
+	singleMode=false;
+	singleModeRunning=true;
        yMajorTicks=10;dy=1.; yOffset=0.; 
 	ymin=yOffset-0.5*(yMajorTicks*dy);
        ymax=yOffset+0.5*(yMajorTicks*dy);
@@ -343,6 +345,12 @@ double  QRL_ScopeWindow::getTraceDy(int trace)
 	return 1.;
 }
 
+
+void QRL_ScopeWindow::startSingleRun(){
+	singleModeRunning=true;
+
+}
+
 void QRL_ScopeWindow::setValue( int nn, float v)
 {			
 
@@ -387,9 +395,11 @@ if (trigger){
 	if (triggerSearch){ //search for next trigger event
 	  if (nn==triggerChannel) {
 		double y= (double)v;
-		if (triggerUp){
+		if (!singleModeRunning && singleMode) {
+			// do nothing
+		} else 	if (triggerUp){
 			if (y>triggerLevel && lastValue<triggerLevel){
-				triggerSearch=false;
+				triggerSearch=false;singleModeRunning=false;
 				for (int n=0;n<Ncurve;n++){ // reset time counter
 					if (Qt::LeftToRight==direction)
 					ScopeData[n].time=0;
@@ -399,7 +409,7 @@ if (trigger){
 			}
 		} else {
 			if (y<triggerLevel && lastValue>triggerLevel){
-				triggerSearch=false;
+				triggerSearch=false;singleModeRunning=false;
 				for (int n=0;n<Ncurve;n++){ //reset time counter
 					if (Qt::LeftToRight==direction)
 					ScopeData[n].time=0;

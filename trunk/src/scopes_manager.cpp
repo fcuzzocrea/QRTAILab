@@ -67,8 +67,11 @@ itemSelectionChanged() ), this, SLOT( showSelectedOptions() ) );
         connect( dyCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDy(double) ) );
 	connect( tabWidget, SIGNAL( currentChanged(int) ), this, SLOT( changeScopeList(int) ) );
 	 connect( triggerCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeTriggerLevel(double) ) );
-	connect( triggerPushButton, SIGNAL( pressed()), this, SLOT(manuelTrigger()));
-	
+	connect( triggerPushButton, SIGNAL( pressed()), this, SLOT(manualTrigger()));
+	connect( oneShotCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( changeSingleMode(int) ) );
+	connect( startTriggerPushButton, SIGNAL( pressed()), this, SLOT(startSingleRun()));
+
+
 	currentScope=0;
 // 	for(int i=0; i<1; ++i){
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
@@ -303,11 +306,22 @@ void QRL_ScopesManager::showScope(int state)
 	ScopeWindows[currentScope]->setTriggerLevel(l);
 
 }
-void QRL_ScopesManager::manuelTrigger(){
+void QRL_ScopesManager::manualTrigger(){
 
+	ScopeWindows[currentScope]->manualTriggerSignal();
+}
+void QRL_ScopesManager::startSingleRun(){
 
-ScopeWindows[currentScope]->manuelTriggerSignal();
+	ScopeWindows[currentScope]->startSingleRun();
 
+}
+
+void QRL_ScopesManager::changeSingleMode(int state){
+	if(state==Qt::Checked){
+		ScopeWindows[currentScope]->setSingleMode(true);
+	} else {
+		ScopeWindows[currentScope]->setSingleMode(false);
+	}
 
 }
 
