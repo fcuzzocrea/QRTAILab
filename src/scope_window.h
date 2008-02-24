@@ -134,8 +134,10 @@ public:
    void setHoldMode(bool b){hold=b;}
    void setTriggerMode(bool b){trigger=b;triggerSearch=true;}
    void setTriggerUpDirection(bool b){triggerUp=b;}
-   void manuelTriggerSignal(){triggerSearch=false;}
+   void manualTriggerSignal(){triggerSearch=false;}
    void setTriggerLevel(double l){triggerLevel=l;}
+   void setSingleMode(bool b){singleMode=b;}
+   void startSingleRun();
    //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
 signals:
    void stopSaving(int);
@@ -167,7 +169,7 @@ private:
   double yStep, yOffset, dy ,ymin,ymax;
   Trace_Options_T *TraceOptions;
   Qt::LayoutDirection direction;
-  bool overwrite,hold,trigger,triggerSearch,triggerUp;
+  bool overwrite,hold,trigger,triggerSearch,triggerUp,singleMode,singleModeRunning;
   double triggerLevel,lastValue;int triggerChannel;
   //PlottingScopeDataThread* Plotting_Scope_Data_Thread;
 };
