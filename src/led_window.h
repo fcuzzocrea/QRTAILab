@@ -60,7 +60,6 @@ protected:
 };
 /**
  * @brief LedWindow
- * @todo  implement multiple leds
  */
 class QRL_LedWindow : public QMdiSubWindow
 {

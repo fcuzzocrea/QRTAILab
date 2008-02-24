@@ -179,6 +179,9 @@
        </property>
       </widget>
       <widget class="QComboBox" name="directionComboBox" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
        <property name="geometry" >
         <rect>
          <x>10</x>
@@ -363,11 +366,37 @@
       <attribute name="title" >
        <string>Options</string>
       </attribute>
+      <widget class="QPushButton" name="dialColorPushButton" >
+       <property name="geometry" >
+        <rect>
+         <x>60</x>
+         <y>50</y>
+         <width>111</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>needle color</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="LcdOptions" >
       <attribute name="title" >
        <string>Options</string>
       </attribute>
+      <widget class="QPushButton" name="fontPushButton" >
+       <property name="geometry" >
+        <rect>
+         <x>60</x>
+         <y>70</y>
+         <width>97</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Change Fonts</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </item>

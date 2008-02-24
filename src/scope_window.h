@@ -1,23 +1,28 @@
+/***************************************************************************
+ *   Copyright (C) 2008 by Holger Nahrstaedt                               *
+ *                                                                         *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by  the Free Software Foundation; either version 2       *
+ *   of the License, or  (at your option) any later version.               *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
 /*
  file:		scopes_window.h
  describtion:
    file for the classes QRL_ScopeWindow
-
- Copyright (C) 2007 Holger Nahrstaedt
-
- This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 #ifndef _SCOPE_WINDOW_H
 #define _SCOPE_WINDOW_H 1
@@ -126,6 +131,11 @@ public:
    double getTraceDy(int);
    void setDirection(Qt::LayoutDirection d){direction=d;}
    void setOverwriteMode(bool o){overwrite=o;}
+   void setHoldMode(bool b){hold=b;}
+   void setTriggerMode(bool b){trigger=b;triggerSearch=true;}
+   void setTriggerUpDirection(bool b){triggerUp=b;}
+   void manuelTriggerSignal(){triggerSearch=false;}
+   void setTriggerLevel(double l){triggerLevel=l;}
    //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
 signals:
    void stopSaving(int);
@@ -157,7 +167,8 @@ private:
   double yStep, yOffset, dy ,ymin,ymax;
   Trace_Options_T *TraceOptions;
   Qt::LayoutDirection direction;
-  bool overwrite;
+  bool overwrite,hold,trigger,triggerSearch,triggerUp;
+  double triggerLevel,lastValue;int triggerChannel;
   //PlottingScopeDataThread* Plotting_Scope_Data_Thread;
 };
 

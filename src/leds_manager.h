@@ -59,7 +59,6 @@ QMutex mutex;
 
 /**
  * @brief Managed all Led windows
- * @todo reorganize window options
  */
 
 class QRL_LedsManager : public QDialog, private Ui::QRL_LedsManager

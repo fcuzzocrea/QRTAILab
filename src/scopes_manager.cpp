@@ -1,23 +1,28 @@
+/***************************************************************************
+ *   Copyright (C) 2008 by Holger Nahrstaedt                               *
+ *                                                                         *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by  the Free Software Foundation; either version 2       *
+ *   of the License, or  (at your option) any later version.               *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
 /*
  file:		scopes_manager.cpp
  describtion:
    file for the classes GetScopeDataThread and  QRL_ScopesManager
-
- Copyright (C) 2007 Holger Nahrstaedt
-
- This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include "scopes_manager.h"
@@ -61,6 +66,9 @@ itemSelectionChanged() ), this, SLOT( showSelectedOptions() ) );
 	connect( offsetWheel, SIGNAL( valueChanged(double) ), this, SLOT( changeOffset(double) ) );
         connect( dyCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDy(double) ) );
 	connect( tabWidget, SIGNAL( currentChanged(int) ), this, SLOT( changeScopeList(int) ) );
+	 connect( triggerCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeTriggerLevel(double) ) );
+	connect( triggerPushButton, SIGNAL( pressed()), this, SLOT(manuelTrigger()));
+	
 	currentScope=0;
 // 	for(int i=0; i<1; ++i){
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
@@ -291,6 +299,18 @@ void QRL_ScopesManager::showScope(int state)
 
 }
 
+  void QRL_ScopesManager::changeTriggerLevel(double l) {
+	ScopeWindows[currentScope]->setTriggerLevel(l);
+
+}
+void QRL_ScopesManager::manuelTrigger(){
+
+
+ScopeWindows[currentScope]->manuelTriggerSignal();
+
+
+}
+
 void QRL_ScopesManager::changeDirection(int d)
 {
 	switch(d)
@@ -315,12 +335,37 @@ void QRL_ScopesManager::changeDisplayModus(int mode)
 	case 0:	
 		ScopeWindows[currentScope]->setDirection(Qt::RightToLeft);
 		ScopeWindows[currentScope]->setOverwriteMode(false);
+		ScopeWindows[currentScope]->setHoldMode(false);
+		ScopeWindows[currentScope]->setTriggerMode(false);
 		emit directionComboBox->setCurrentIndex(0);
 		break;
 	case 1:
 		ScopeWindows[currentScope]->setDirection(Qt::LeftToRight);
 		ScopeWindows[currentScope]->setOverwriteMode(true);
+		ScopeWindows[currentScope]->setHoldMode(false);
+		ScopeWindows[currentScope]->setTriggerMode(false);
 		emit directionComboBox->setCurrentIndex(1);
+		break;
+	case 2://trigger down
+		ScopeWindows[currentScope]->setHoldMode(false);
+		ScopeWindows[currentScope]->setTriggerMode(true);
+		ScopeWindows[currentScope]->setDirection(Qt::LeftToRight);
+		ScopeWindows[currentScope]->setOverwriteMode(true);
+		emit directionComboBox->setCurrentIndex(1);
+		ScopeWindows[currentScope]->setTriggerUpDirection(false);
+		break;
+	case 3: // trigger up
+		ScopeWindows[currentScope]->setHoldMode(false);
+		ScopeWindows[currentScope]->setTriggerMode(true);
+		ScopeWindows[currentScope]->setDirection(Qt::LeftToRight);
+		ScopeWindows[currentScope]->setOverwriteMode(true);
+		ScopeWindows[currentScope]->setTriggerUpDirection(true);
+		emit directionComboBox->setCurrentIndex(1);
+		break;
+	case 4: //hold
+		ScopeWindows[currentScope]->setOverwriteMode(false);
+		ScopeWindows[currentScope]->setHoldMode(true);
+		ScopeWindows[currentScope]->setTriggerMode(false);
 		break;
 	default:
 		break;

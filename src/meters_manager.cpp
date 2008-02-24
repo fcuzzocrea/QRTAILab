@@ -1,23 +1,27 @@
+/***************************************************************************
+ *   Copyright (C) 2008 by Holger Nahrstaedt                               *
+ *                                                                         *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by  the Free Software Foundation; either version 2       *
+ *   of the License, or  (at your option) any later version.               *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 /*
  file:		meters_manager.cpp
  describtion:
    file for the classes GetMeterDataThread and  QRL_MetersManager
-
- Copyright (C) 2007 Holger Nahrstaedt
-
- This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include "meters_manager.h"
@@ -61,6 +65,8 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 	connect( colorComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeThermoColorType(int) ) );
 	connect( alarmLevelCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeAlarmLevel(double) ) );
 	connect( directionComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeThermoDirection(int) ) );
+	connect( dialColorPushButton, SIGNAL( pressed() ), this, SLOT( changeNeedleColor() ) );
+	connect( fontPushButton, SIGNAL( pressed() ), this, SLOT( changeLcdFont() ) );
 	currentMeter=0;
 	switch(MeterWindows[currentMeter]->getMeterType())
 	{
@@ -288,6 +294,19 @@ void QRL_MetersManager::showMeter(int state)
 	} else {
 		MeterWindows[currentMeter]->hide();
 	}
+}
+
+  void QRL_MetersManager::changeNeedleColor(){
+
+	QColor color= QColorDialog::getColor();
+	MeterWindows[currentMeter]->setNeedleColor(color);
+
+}
+  void QRL_MetersManager::changeLcdFont(){
+	bool ok;
+	QFont font = QFontDialog::getFont(
+                 &ok, QFont("Helvetica [Cronyx]", 12), this);
+	MeterWindows[currentMeter]->setLcdFont(font);
 }
 
 /**
