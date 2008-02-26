@@ -70,6 +70,8 @@ itemSelectionChanged() ), this, SLOT( showSelectedOptions() ) );
 	connect( triggerPushButton, SIGNAL( pressed()), this, SLOT(manualTrigger()));
 	connect( oneShotCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( changeSingleMode(int) ) );
 	connect( startTriggerPushButton, SIGNAL( pressed()), this, SLOT(startSingleRun()));
+	connect( traceNameLineEdit,SIGNAL( textChanged ( const QString &  ) ), this , SLOT( changeTraceText(const QString &  )));
+       connect(  zeroAxisCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeZeroAxis(int) ));
 
 
 	currentScope=0;
@@ -224,7 +226,7 @@ void QRL_ScopesManager::changeScopeList(int index)
 		for(int i=0; i<traceItems.size();i++)
 			traceItems[i]->setHidden(false);
 	}
-
+		showTraceOptions(currentTrace+scopeItems.size());
 	}
 }
 
@@ -232,13 +234,22 @@ void QRL_ScopesManager::changeScopeList(int index)
 
 void QRL_ScopesManager::showTraceOptions(int index)
 {
-	currentTrace=index;	lineWidthCounter->setValue(ScopeWindows[currentScope]->getTraceWidth(currentTrace));
+	currentTrace=index-scopeItems.size();	
+	lineWidthCounter->setValue(ScopeWindows[currentScope]->getTraceWidth(currentTrace));
 	offsetCounter->setValue(ScopeWindows[currentScope]->getTraceOffset(currentTrace));
 	dyCounter->setValue(ScopeWindows[currentScope]->getTraceDy(currentTrace));
-	
-		
+	traceNameLineEdit->setText(traceItems[currentTrace]->text());
+
+	if (ScopeWindows[currentScope]->getZeroAxis(currentTrace))
+		zeroAxisCheckBox->setCheckState(Qt::Checked);
+	else
+		zeroAxisCheckBox->setCheckState(Qt::Unchecked);
 }
 
+  void QRL_ScopesManager::changeTraceText(const QString & text ){
+	traceItems[currentTrace]->setText(text);
+	
+}
 
 /**
 * @brief update manager dialog for the choosen scope
@@ -270,6 +281,7 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 		traceItems << new QListWidgetItem(QIcon(),tr("trace %1").arg(i+1), scopeListWidget);
 		traceItems[i]->setHidden(true);
 	}
+	
 
 }
 
@@ -330,11 +342,42 @@ void QRL_ScopesManager::changeDirection(int d)
 	switch(d)
 	{
 	case 0:	
-		ScopeWindows[currentScope]->setDirection(Qt::RightToLeft);
+		switch(displayComboBox->currentIndex())
+		{
+		case 0:	
+			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::roll,Qt::RightToLeft);
+			break;
+		case 1:
+			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::overwrite,Qt::RightToLeft);
+			break;
+		case 2://trigger down
+			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::RightToLeft);
+			break;
+		case 3: // trigger up
+			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::RightToLeft);
+			break;
+		default:
+			break;
+		}
 		break;
 	case 1:
-		
-		ScopeWindows[currentScope]->setDirection(Qt::LeftToRight);
+		switch(displayComboBox->currentIndex())
+		{
+		case 0:	
+			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::roll,Qt::LeftToRight);
+			break;
+		case 1:
+			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::overwrite,Qt::LeftToRight);
+			break;
+		case 2://trigger down
+			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::LeftToRight);
+			break;
+		case 3: // trigger up
+			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::LeftToRight);
+			break;
+		default:
+			break;
+		}
 		break;
 	default:
 		break;
@@ -347,39 +390,25 @@ void QRL_ScopesManager::changeDisplayModus(int mode)
 	switch(mode)
 	{
 	case 0:	
-		ScopeWindows[currentScope]->setDirection(Qt::RightToLeft);
-		ScopeWindows[currentScope]->setOverwriteMode(false);
-		ScopeWindows[currentScope]->setHoldMode(false);
-		ScopeWindows[currentScope]->setTriggerMode(false);
+		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::roll,Qt::RightToLeft);
 		emit directionComboBox->setCurrentIndex(0);
 		break;
 	case 1:
-		ScopeWindows[currentScope]->setDirection(Qt::LeftToRight);
-		ScopeWindows[currentScope]->setOverwriteMode(true);
-		ScopeWindows[currentScope]->setHoldMode(false);
-		ScopeWindows[currentScope]->setTriggerMode(false);
+		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::overwrite,Qt::LeftToRight);
 		emit directionComboBox->setCurrentIndex(1);
 		break;
 	case 2://trigger down
-		ScopeWindows[currentScope]->setHoldMode(false);
-		ScopeWindows[currentScope]->setTriggerMode(true);
-		ScopeWindows[currentScope]->setDirection(Qt::LeftToRight);
-		ScopeWindows[currentScope]->setOverwriteMode(true);
+		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::LeftToRight);
 		emit directionComboBox->setCurrentIndex(1);
 		ScopeWindows[currentScope]->setTriggerUpDirection(false);
 		break;
 	case 3: // trigger up
-		ScopeWindows[currentScope]->setHoldMode(false);
-		ScopeWindows[currentScope]->setTriggerMode(true);
-		ScopeWindows[currentScope]->setDirection(Qt::LeftToRight);
-		ScopeWindows[currentScope]->setOverwriteMode(true);
+		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::LeftToRight);
 		ScopeWindows[currentScope]->setTriggerUpDirection(true);
 		emit directionComboBox->setCurrentIndex(1);
 		break;
 	case 4: //hold
-		ScopeWindows[currentScope]->setOverwriteMode(false);
-		ScopeWindows[currentScope]->setHoldMode(true);
-		ScopeWindows[currentScope]->setTriggerMode(false);
+		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::hold,Qt::LeftToRight);
 		break;
 	default:
 		break;
@@ -412,6 +441,18 @@ void QRL_ScopesManager::changeDy(double dy)
 {
 	ScopeWindows[currentScope]->setTraceDy(dy,currentTrace);
 }
+
+  void QRL_ScopesManager::changeZeroAxis(int state){
+
+	if(state==Qt::Checked){
+		ScopeWindows[currentScope]->setZeroAxis(true,currentTrace);
+	} else {
+		ScopeWindows[currentScope]->setZeroAxis(false,currentTrace);
+	}
+
+}
+
+
 /**
 * @brief Initialise GetScopeDataThread
 * @param arg 

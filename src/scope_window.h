@@ -34,6 +34,9 @@
 #include <qwt_plot_marker.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
+#include <qwt_plot_picker.h>
+#include <qwt_plot_zoomer.h>
+#include <qwt_plot_panner.h>
 #include <qwt_scale_widget.h>
 #include <qwt_legend.h>
 #include <qwt_scale_draw.h>
@@ -60,6 +63,7 @@ struct Trace_Options_Struct
 	double dy;
 	int lineWidth;
 	QBrush brush;
+  	QwtPlotMarker zeroAxis;
 };
 
 
@@ -91,12 +95,11 @@ struct Trace_Options_Struct
 
 /**
  * @brief Display Scope
- * @todo implement moving time axis
  * @todo add legend
- * @todo add offset mark
  * @todo add curser 
  * @todo add parameter labels 
  * @todo add trigger label
+ * @todo change offset behavior
  */
 
 class QRL_ScopeWindow : public QMdiSubWindow
@@ -104,6 +107,7 @@ class QRL_ScopeWindow : public QMdiSubWindow
    Q_OBJECT
  //friend class PlottingScopeDataThread;
 public:
+   enum PlottingMode {roll,overwrite,trigger,hold};
    QRL_ScopeWindow(QWidget *parent = 0,qrl_types::Target_Scopes_T *scope=0,int ind=0);
    ~QRL_ScopeWindow();
    void setValue(int,float);
@@ -129,15 +133,14 @@ public:
    double getTraceOffset(int);
    void setTraceDy(double,int);
    double getTraceDy(int);
-   void setDirection(Qt::LayoutDirection d){direction=d;}
-   void setOverwriteMode(bool o){overwrite=o;}
-   void setHoldMode(bool b){hold=b;}
-   void setTriggerMode(bool b){trigger=b;triggerSearch=true;}
+   void setPlottingMode(PlottingMode p,Qt::LayoutDirection d);
    void setTriggerUpDirection(bool b){triggerUp=b;}
    void manualTriggerSignal(){triggerSearch=false;}
    void setTriggerLevel(double l){triggerLevel=l;}
    void setSingleMode(bool b){singleMode=b;}
    void startSingleRun();
+   void setZeroAxis(bool b,int);
+   bool getZeroAxis(int trace){return TraceOptions[trace].zeroAxis.isVisible();}
    //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
 signals:
    void stopSaving(int);
@@ -152,6 +155,7 @@ private:
   unsigned int NDataMax,Ncurve,NDataSoll;
   int time,time2;
   double xmin,xmax,dx,dt;
+  double xMajorTicks,xStep;
   Scopes_Data_T *ScopeData;
   QTimer *timer;
   QwtPlot *qwtPlot;
@@ -160,6 +164,11 @@ private:
   QwtPlotCurve **cData;
   QColor gridColor;
   QColor bgColor;
+  QwtPlotPicker *picker;
+  QwtPlotMarker *zeroLine,*vertLine;
+  QwtPlotMarker *bottomText;
+  QwtPlotZoomer *zoomer[2];
+  QwtPlotPanner *panner;
   int isSaving;
   FILE* Save_File_Pointer;
   double Save_Time;
@@ -169,7 +178,8 @@ private:
   double yStep, yOffset, dy ,ymin,ymax;
   Trace_Options_T *TraceOptions;
   Qt::LayoutDirection direction;
-  bool overwrite,hold,trigger,triggerSearch,triggerUp,singleMode,singleModeRunning;
+  PlottingMode plottingMode;
+  bool triggerSearch,triggerUp,singleMode,singleModeRunning;
   double triggerLevel,lastValue;int triggerChannel;
   //PlottingScopeDataThread* Plotting_Scope_Data_Thread;
 };
