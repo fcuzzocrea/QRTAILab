@@ -97,6 +97,8 @@ public slots:
   void manualTrigger();
   void changeSingleMode(int);
   void startSingleRun();
+  void changeTraceText(const QString & text );
+  void changeZeroAxis(int);
 private:
   int Num_Scopes;
   Target_Scopes_T *Scopes;
