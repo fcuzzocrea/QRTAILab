@@ -88,7 +88,7 @@ public slots:
   void changeTraceColor();
   void changeTraceWidth(double);
   void changeOffset(double);
-  void changeDy(double);
+  void changeDy(const QString&);
   void changeDisplayModus(int);
   void changeDirection(int);
   void showTraceOptions(int);

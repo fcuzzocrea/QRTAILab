@@ -173,7 +173,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
        NDataMax=(int)((xmax-xmin)/Scope->dt);
        NDataSoll=100;
 	
-	RefreshRate=20.;
+	RefreshRate=30.;
 	//Werden genügend Daten bereitgestellt?
        if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
@@ -207,7 +207,8 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 		TraceOptions[j].zeroAxis.setLabel(tr("%1").arg(j));    
 		TraceOptions[j].zeroAxis.setLabelAlignment(Qt::AlignLeft|Qt::AlignTop);
     		TraceOptions[j].zeroAxis.setLineStyle(QwtPlotMarker::HLine);
-    		TraceOptions[j].zeroAxis.setYValue(TraceOptions[j].offset/TraceOptions[j].dy);
+    		//TraceOptions[j].zeroAxis.setYValue(TraceOptions[j].offset/TraceOptions[j].dy);
+		TraceOptions[j].zeroAxis.setYValue(TraceOptions[j].offset);
     		TraceOptions[j].zeroAxis.setLinePen(QPen(TraceOptions[j].brush,2.,Qt::DashDotLine));
     		TraceOptions[j].zeroAxis.attach(qwtPlot);
 		TraceOptions[j].zeroAxis.hide();
@@ -333,7 +334,12 @@ void QRL_ScopeWindow::refresh()
 	NDataSoll=(int)dp;
 	if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
+	if (NDataSoll<5)
+		NDataSoll=5;
        dt=(xmax-xmin)/NDataSoll;
+	if(NDataSoll<(1/dt/(xmax-xmin)))
+		NDataSoll=(1/dt/(xmax-xmin));
+
        timer->stop();
     for (unsigned int i = 0; i< NDataSoll; i++)
     {
@@ -506,14 +512,14 @@ int  QRL_ScopeWindow::getTraceWidth(int trace)
 		 timer->stop();
    		 for (unsigned int i = 0; i< NDataSoll; i++)
   		  {
-			ScopeData[trace].d_y[i]=(((ScopeData[trace].d_y[i]*TraceOptions[trace].dy)-TraceOptions[trace].offset)+o)/TraceOptions[trace].dy;
-			ScopeData[trace].d_yt[i]=(((ScopeData[trace].d_yt[i]*TraceOptions[trace].dy)-TraceOptions[trace].offset)+o)/TraceOptions[trace].dy;	
+			ScopeData[trace].d_y[i]=(((ScopeData[trace].d_y[i]-TraceOptions[trace].offset)*TraceOptions[trace].dy))/TraceOptions[trace].dy+o;
+			ScopeData[trace].d_yt[i]=(((ScopeData[trace].d_y[i]-TraceOptions[trace].offset)*TraceOptions[trace].dy))/TraceOptions[trace].dy+o;
 			
 		    }
 	//cData[trace]->setRawData(d_x, ScopeData[trace].d_y, NDataSoll);
 	     timer->start((int)(1./RefreshRate*1000.));
      		TraceOptions[trace].offset=o;
-		TraceOptions[trace].zeroAxis.setYValue(TraceOptions[trace].offset/TraceOptions[trace].dy);
+		TraceOptions[trace].zeroAxis.setYValue(TraceOptions[trace].offset);
      }
 
 }
@@ -531,13 +537,13 @@ double  QRL_ScopeWindow::getTraceOffset(int trace)
 		 timer->stop();
    		 for (unsigned int i = 0; i< NDataSoll; i++)
   		  {
-			ScopeData[trace].d_y[i]=(((ScopeData[trace].d_y[i]*TraceOptions[trace].dy)-TraceOptions[trace].offset)+TraceOptions[trace].offset)/d;
-			ScopeData[trace].d_yt[i]=(((ScopeData[trace].d_yt[i]*TraceOptions[trace].dy)-TraceOptions[trace].offset)+TraceOptions[trace].offset)/d;	
+			ScopeData[trace].d_y[i]=(((ScopeData[trace].d_y[i]-TraceOptions[trace].offset)*TraceOptions[trace].dy)/d+TraceOptions[trace].offset);
+			ScopeData[trace].d_yt[i]=(((ScopeData[trace].d_y[i]-TraceOptions[trace].offset)*TraceOptions[trace].dy)/d+TraceOptions[trace].offset);
 			
 		    }
 	     timer->start((int)(1./RefreshRate*1000.));
 		TraceOptions[trace].dy=d;
-		TraceOptions[trace].zeroAxis.setYValue(TraceOptions[trace].offset/TraceOptions[trace].dy);
+		TraceOptions[trace].zeroAxis.setYValue(TraceOptions[trace].offset);
 	}
 
 }
@@ -577,11 +583,11 @@ int time;
 switch(plottingMode){
 case roll:
 	time=ScopeData[nn].time;
-	ScopeData[nn].d_yt[time]=((double)v+TraceOptions[nn].offset)/TraceOptions[nn].dy;
+	ScopeData[nn].d_yt[time]=((double)v)/TraceOptions[nn].dy+TraceOptions[nn].offset;
 	time++;
-        if(time>(1/dt/RefreshRate)){
+        if((time>(1/dt/RefreshRate)) || time>(NDataSoll-2)){
 		time--;
-		if (Qt::LeftToRight==direction){
+		if (Qt::LeftToRight==direction){ // Segmentation fault for   ndatasoll<5 
 
 		for ( int i = NDataSoll - 1; i > time; i-- ){
         		ScopeData[nn].d_y[i] = ScopeData[nn].d_y[i-1-time];
@@ -608,7 +614,7 @@ case roll:
 	break;
 case overwrite:
 	time=ScopeData[nn].time;
-	ScopeData[nn].d_y[time]=((double)v+TraceOptions[nn].offset)/TraceOptions[nn].dy;
+	ScopeData[nn].d_y[time]=((double)v)/TraceOptions[nn].dy+TraceOptions[nn].offset;
 	if (Qt::LeftToRight==direction)
 		time++;
 	else
@@ -652,7 +658,7 @@ case trigger:
 	  } else { // plot last data for the other traces
 		time=ScopeData[nn].time;
 		if (time>0 && time <NDataSoll-1){
-			ScopeData[nn].d_y[time]=((double)v+TraceOptions[nn].offset)/TraceOptions[nn].dy;
+			ScopeData[nn].d_y[time]=((double)v)/TraceOptions[nn].dy+TraceOptions[nn].offset;
 			if (Qt::LeftToRight==direction)
 				time++;
 			else
@@ -663,7 +669,7 @@ case trigger:
 	  }
 	} else {
 	time=ScopeData[nn].time;
-	ScopeData[nn].d_y[time]=((double)v+TraceOptions[nn].offset)/TraceOptions[nn].dy;
+	ScopeData[nn].d_y[time]=((double)v)/TraceOptions[nn].dy+TraceOptions[nn].offset;
 	if (Qt::LeftToRight==direction)
 		time++;
 	else

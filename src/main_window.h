@@ -1,23 +1,28 @@
+/***************************************************************************
+ *   Copyright (C) 2008 by Holger Nahrstaedt                               *
+ *                                                                         *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by  the Free Software Foundation; either version 2       *
+ *   of the License, or  (at your option) any later version.               *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
 /*
  file:		main_window.h
  describtion:
    file for the classes QRL_MainWindow
-
- Copyright (C) 2007 Holger Nahrstaedt
-
- This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #ifndef _MAIN_WINDOW_H
@@ -33,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
 /**
  * @brief Connect Dialog
- * @todo implement to MainWindow
  */
 
 class QRL_connectDialog : public QDialog, private Ui::QRL_connectDialogWindow
@@ -42,17 +46,19 @@ class QRL_connectDialog : public QDialog, private Ui::QRL_connectDialogWindow
  
 public:
     QRL_connectDialog(QWidget *parent = 0);
- 
+    void setPreferences(Preferences_T p);
+    Preferences_T getPreferences();
  
 public slots:
-  void  accept();
-  void  reject();
+  //void  accept();
+  //void  reject();
+private:
+    Preferences_T Preferences;
 };
 
 /**
  * @brief Main Window
  * @todo save and load settings
- * @bug its no possible to save numbers higher then 999
  */
 class QRL_MainWindow : public QMainWindow, private Ui::QRL_MainWindow
 {
@@ -97,6 +103,7 @@ private:
     QRL_LedsManager *LedsManager;
     QRL_ScopesManager *ScopesManager;
     QRL_ParametersManager *ParametersManager;
+    QRL_connectDialog *ConnectDialog;
     QLabel* statusMessage;
     QMdiArea *mdiArea;
     QString profileName;

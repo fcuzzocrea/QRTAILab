@@ -34,30 +34,57 @@
     </rect>
    </property>
    <layout class="QVBoxLayout" >
-    <property name="margin" >
-     <number>0</number>
-    </property>
     <property name="spacing" >
      <number>6</number>
     </property>
+    <property name="leftMargin" >
+     <number>0</number>
+    </property>
+    <property name="topMargin" >
+     <number>0</number>
+    </property>
+    <property name="rightMargin" >
+     <number>0</number>
+    </property>
+    <property name="bottomMargin" >
+     <number>0</number>
+    </property>
     <item>
      <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
       <property name="spacing" >
        <number>6</number>
       </property>
+      <property name="leftMargin" >
+       <number>0</number>
+      </property>
+      <property name="topMargin" >
+       <number>0</number>
+      </property>
+      <property name="rightMargin" >
+       <number>0</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>0</number>
+      </property>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
         </property>
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QLineEdit" name="lineEdit" >
+         <widget class="QLineEdit" name="ipLineEdit" >
           <property name="text" >
            <string>127.0.0.1</string>
           </property>
@@ -69,7 +96,7 @@
            <string>IP Adress</string>
           </property>
           <property name="buddy" >
-           <cstring>lineEdit</cstring>
+           <cstring>ipLineEdit</cstring>
           </property>
          </widget>
         </item>
@@ -77,14 +104,23 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
         </property>
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QLineEdit" name="lineEdit_2" >
+         <widget class="QLineEdit" name="taskLineEdit" >
           <property name="text" >
            <string>IFTASK</string>
           </property>
@@ -96,7 +132,7 @@
            <string>Task Identifier</string>
           </property>
           <property name="buddy" >
-           <cstring>lineEdit_2</cstring>
+           <cstring>taskLineEdit</cstring>
           </property>
          </widget>
         </item>
@@ -104,14 +140,23 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
         </property>
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QLineEdit" name="lineEdit_3" >
+         <widget class="QLineEdit" name="scopeLineEdit" >
           <property name="text" >
            <string>RTS</string>
           </property>
@@ -123,7 +168,7 @@
            <string>Scope Identifier</string>
           </property>
           <property name="buddy" >
-           <cstring>lineEdit_3</cstring>
+           <cstring>scopeLineEdit</cstring>
           </property>
          </widget>
         </item>
@@ -131,14 +176,23 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
         </property>
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QLineEdit" name="lineEdit_4" >
+         <widget class="QLineEdit" name="logLineEdit" >
           <property name="text" >
            <string>RTL</string>
           </property>
@@ -150,7 +204,7 @@
            <string>Log Identifier</string>
           </property>
           <property name="buddy" >
-           <cstring>lineEdit_4</cstring>
+           <cstring>logLineEdit</cstring>
           </property>
          </widget>
         </item>
@@ -158,14 +212,23 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
         </property>
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QLineEdit" name="lineEdit_5" >
+         <widget class="QLineEdit" name="alogLineEdit" >
           <property name="text" >
            <string>RAL</string>
           </property>
@@ -177,7 +240,7 @@
            <string>Alog Identifier</string>
           </property>
           <property name="buddy" >
-           <cstring>lineEdit_5</cstring>
+           <cstring>alogLineEdit</cstring>
           </property>
          </widget>
         </item>
@@ -185,14 +248,23 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
         </property>
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QLineEdit" name="lineEdit_6" >
+         <widget class="QLineEdit" name="ledLineEdit" >
           <property name="text" >
            <string>RTE</string>
           </property>
@@ -204,7 +276,7 @@
            <string>Led Identifier</string>
           </property>
           <property name="buddy" >
-           <cstring>lineEdit_6</cstring>
+           <cstring>ledLineEdit</cstring>
           </property>
          </widget>
         </item>
@@ -212,14 +284,23 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
         </property>
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QLineEdit" name="lineEdit_7" >
+         <widget class="QLineEdit" name="meterLineEdit" >
           <property name="text" >
            <string>RTM</string>
           </property>
@@ -231,7 +312,7 @@
            <string>Meter Identifier</string>
           </property>
           <property name="buddy" >
-           <cstring>lineEdit_7</cstring>
+           <cstring>meterLineEdit</cstring>
           </property>
          </widget>
         </item>
@@ -239,14 +320,23 @@
       </item>
       <item>
        <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
         </property>
+        <property name="leftMargin" >
+         <number>0</number>
+        </property>
+        <property name="topMargin" >
+         <number>0</number>
+        </property>
+        <property name="rightMargin" >
+         <number>0</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QLineEdit" name="lineEdit_8" >
+         <widget class="QLineEdit" name="synchLineEdit" >
           <property name="text" >
            <string>RTY</string>
           </property>
@@ -258,7 +348,7 @@
            <string>Synch Identifier</string>
           </property>
           <property name="buddy" >
-           <cstring>lineEdit_8</cstring>
+           <cstring>synchLineEdit</cstring>
           </property>
          </widget>
         </item>
