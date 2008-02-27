@@ -75,6 +75,9 @@
 #define MAX_BATCH_PARAMS        1000
 #define MAX_TRACES_PER_SCOPE    10
 
+
+#define QRTAILAB_VERSION		"0.1.0"
+
 #define FLTK_EVENTS_TICK        0.05
 #define QT_EVENTS_TICK          50
 #define  TEN_MS_IN_NS 10000000LL
