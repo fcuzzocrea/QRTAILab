@@ -48,8 +48,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showScope(int) ) );
 	connect( scopeListWidget, SIGNAL( itemActivated( QListWidgetItem * ) ), this, SLOT( showOptions( QListWidgetItem *  ) ) );
 	connect( scopeListWidget, SIGNAL( itemClicked( QListWidgetItem * ) ), this, SLOT( showOptions( QListWidgetItem *  ) ) );
-	connect( scopeListWidget, SIGNAL( 
-itemSelectionChanged() ), this, SLOT( showSelectedOptions() ) );
+	connect( scopeListWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( showSelectedOptions() ) );
 	//connect( rrLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeRefreshRate(const QString&) ) );
 	connect( rrCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeRefreshRate(double) ) );
 	connect( dataCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDataPoints(double) ) );
@@ -64,15 +63,15 @@ itemSelectionChanged() ), this, SLOT( showSelectedOptions() ) );
 	connect( lineWidthCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeTraceWidth(double) ) );
 	connect( offsetCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeOffset(double) ) );
 	connect( offsetWheel, SIGNAL( valueChanged(double) ), this, SLOT( changeOffset(double) ) );
-        connect( dyCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDy(double) ) );
+	connect( dyComboBox, SIGNAL( currentIndexChanged(const QString &) ), this, SLOT( changeDy(const QString&) ) );
+	connect( dyComboBox, SIGNAL( editTextChanged(const QString &) ), this, SLOT( changeDy(const QString&) ) );
 	connect( tabWidget, SIGNAL( currentChanged(int) ), this, SLOT( changeScopeList(int) ) );
-	 connect( triggerCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeTriggerLevel(double) ) );
-	connect( triggerPushButton, SIGNAL( pressed()), this, SLOT(manualTrigger()));
+	connect( triggerCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeTriggerLevel(double) ) );
+	connect( triggerPushButton, SIGNAL( pressed()), this, SLOT(manualTrigger() ) );
 	connect( oneShotCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( changeSingleMode(int) ) );
-	connect( startTriggerPushButton, SIGNAL( pressed()), this, SLOT(startSingleRun()));
-	connect( traceNameLineEdit,SIGNAL( textChanged ( const QString &  ) ), this , SLOT( changeTraceText(const QString &  )));
-       connect(  zeroAxisCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeZeroAxis(int) ));
-
+	connect( startTriggerPushButton, SIGNAL( pressed()), this, SLOT(startSingleRun() ) );
+	connect( traceNameLineEdit,SIGNAL( textChanged ( const QString &  ) ), this , SLOT( changeTraceText(const QString & ) ) );
+        connect( zeroAxisCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeZeroAxis(int) ) );
 
 	currentScope=0;
 // 	for(int i=0; i<1; ++i){
@@ -83,9 +82,9 @@ itemSelectionChanged() ), this, SLOT( showSelectedOptions() ) );
 	
 	if (Num_Scopes > 0) Get_Scope_Data_Thread = new GetScopeDataThread [Num_Scopes];
 		offsetWheel->setMass(0.5);
-    offsetWheel->setRange(-1e6, 1e6, 0.25);
-    offsetWheel->setTotalAngle(360.0*2e6);
-    offsetWheel->setFixedHeight(30);
+	offsetWheel->setRange(-1e6, 1e6, 0.25);
+	offsetWheel->setTotalAngle(360.0*2e6);
+	offsetWheel->setFixedHeight(30);
 	dxComboBox->setCompleter(0);
 	dxComboBox->setValidator(new QDoubleValidator(this));
 	
@@ -135,7 +134,6 @@ void QRL_ScopesManager::stopScopeThreads()
 	for (int n = 0; n < Num_Scopes; n++) {
 		Get_Scope_Data_Thread[n].wait();
 	}
-
 }
 /**
 * @brief set new refresh rate
@@ -213,7 +211,6 @@ void QRL_ScopesManager::changeScopeList(int index)
 			scopeItems[i]->setHidden(false);
 		for(int i=0; i<traceItems.size();i++)
 			traceItems[i]->setHidden(true);
-		
 	}else{
 
 	//scopeListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
@@ -237,18 +234,18 @@ void QRL_ScopesManager::showTraceOptions(int index)
 	currentTrace=index-scopeItems.size();	
 	lineWidthCounter->setValue(ScopeWindows[currentScope]->getTraceWidth(currentTrace));
 	offsetCounter->setValue(ScopeWindows[currentScope]->getTraceOffset(currentTrace));
-	dyCounter->setValue(ScopeWindows[currentScope]->getTraceDy(currentTrace));
+	dyComboBox->setEditText(tr("%1").arg(ScopeWindows[currentScope]->getTraceDy(currentTrace)));
 	traceNameLineEdit->setText(traceItems[currentTrace]->text());
-
+	//tabWidget->setTabText(1,traceItems[currentTrace]->text());
 	if (ScopeWindows[currentScope]->getZeroAxis(currentTrace))
 		zeroAxisCheckBox->setCheckState(Qt::Checked);
 	else
 		zeroAxisCheckBox->setCheckState(Qt::Unchecked);
 }
 
-  void QRL_ScopesManager::changeTraceText(const QString & text ){
+void QRL_ScopesManager::changeTraceText(const QString & text ){
 	traceItems[currentTrace]->setText(text);
-	
+	//tabWidget->setTabText(1,traceItems[currentTrace]->text());
 }
 
 /**
@@ -437,9 +434,12 @@ void QRL_ScopesManager::changeOffset(double offset)
 	
 }
 
-void QRL_ScopesManager::changeDy(double dy)
+void QRL_ScopesManager::changeDy(const QString& text)
 {
-	ScopeWindows[currentScope]->setTraceDy(dy,currentTrace);
+	if (!text.isEmpty() &&text.toDouble()!=0.0 ){
+		double dy=text.toDouble();
+		ScopeWindows[currentScope]->setTraceDy(dy,currentTrace);
+	}
 }
 
   void QRL_ScopesManager::changeZeroAxis(int state){

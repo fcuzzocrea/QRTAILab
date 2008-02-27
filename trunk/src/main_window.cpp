@@ -1,23 +1,27 @@
+/***************************************************************************
+ *   Copyright (C) 2008 by Holger Nahrstaedt                               *
+ *                                                                         *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Lesser General Public License           *
+ *   as published by  the Free Software Foundation; either version 2       *
+ *   of the License, or  (at your option) any later version.               *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 /*
  file:		main_window.cpp
  describtion:
    file for the classes QRL_MainWindow
-
- Copyright (C) 2007 Holger Nahrstaedt
-
- This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 */
 
 #include "main_window.h"
@@ -25,16 +29,72 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 static RT_TASK *RLG_Main_Task;
 extern unsigned long qrl::get_an_id(const char *root);
 
-
 QRL_connectDialog::QRL_connectDialog(QWidget *parent)
 	:QDialog(parent)
 {
     setupUi(this);
-  
     // signals/slots mechanism in action
     //connect( actionExit, SIGNAL(activated()), this , SLOT(close()));
+        Preferences_T Preferences;
+	Preferences.Target_IP="127.0.0.1";
+	Preferences.Target_Interface_Task_Name="IFTASK";
+	Preferences.Target_Scope_Mbx_ID="RTS";
+	Preferences.Target_Log_Mbx_ID="RTL";
+	Preferences.Target_ALog_Mbx_ID="RAL"; //aggiunto 4/5
+	Preferences.Target_Led_Mbx_ID="RTE";
+	Preferences.Target_Meter_Mbx_ID="RTM";
+	Preferences.Target_Synch_Mbx_ID="RTY";
+	setPreferences(Preferences);
 }
 
+
+ void QRL_connectDialog::setPreferences(Preferences_T p)
+{ 
+	Preferences=p;
+	ipLineEdit->setText(QByteArray(Preferences.Target_IP));
+	taskLineEdit->setText(QByteArray(Preferences.Target_Interface_Task_Name));
+	scopeLineEdit->setText(QByteArray(Preferences.Target_Scope_Mbx_ID));
+	logLineEdit->setText(QByteArray(Preferences.Target_Log_Mbx_ID));
+	alogLineEdit->setText(QByteArray(Preferences.Target_ALog_Mbx_ID));
+	ledLineEdit->setText(QByteArray(Preferences.Target_Led_Mbx_ID));
+	meterLineEdit->setText(QByteArray(Preferences.Target_Meter_Mbx_ID));
+	synchLineEdit->setText(QByteArray(Preferences.Target_Synch_Mbx_ID));
+}
+
+Preferences_T QRL_connectDialog::getPreferences()
+{
+
+	QByteArray a;
+	a=ipLineEdit->text().toAscii();
+	Preferences.Target_IP=qstrdup(a.data());
+	a=taskLineEdit->text().toAscii() ;
+	Preferences.Target_Interface_Task_Name=qstrdup(a.data());
+	a=scopeLineEdit->text().toAscii() ;
+	Preferences.Target_Scope_Mbx_ID=qstrdup(a.data());
+	a=logLineEdit->text().toAscii() ;
+	Preferences.Target_Log_Mbx_ID=qstrdup(a.data());
+	a=alogLineEdit->text().toAscii() ;
+	Preferences.Target_ALog_Mbx_ID=qstrdup(a.data());
+	a=ledLineEdit->text().toAscii();
+	Preferences.Target_Led_Mbx_ID=qstrdup(a.data());
+	a=meterLineEdit->text().toAscii() ;
+	Preferences.Target_Meter_Mbx_ID=qstrdup(a.data());
+	a=synchLineEdit->text().toAscii() ;
+	Preferences.Target_Synch_Mbx_ID=qstrdup(a.data());
+
+
+	return Preferences;
+}
+
+
+
+
+
+
+
+
+
+/*
 void QRL_connectDialog::accept() 
 {
 	
@@ -48,7 +108,7 @@ void QRL_connectDialog::reject()
 close();
 
 }
-
+*/
 
 /**
 * @brief MainWindow
@@ -110,7 +170,7 @@ QRL_MainWindow::QRL_MainWindow()
    // rt_receive(0, &msg);
 
 	profileName=tr("demo");
-
+/*
         Preferences_T Preferences;
 	Preferences.Target_IP="127.0.0.1";
 	Preferences.Target_Interface_Task_Name="IFTASK";
@@ -120,7 +180,10 @@ QRL_MainWindow::QRL_MainWindow()
 	Preferences.Target_Led_Mbx_ID="RTE";
 	Preferences.Target_Meter_Mbx_ID="RTM";
 	Preferences.Target_Synch_Mbx_ID="RTY";
-        targetthread->setPreferences(Preferences);
+*/
+	ConnectDialog = new QRL_connectDialog(this);
+
+        //targetthread->setPreferences(Preferences);
 
 
 }
@@ -171,7 +234,12 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 if(targetthread->getIsTargetConnected()==0){
 
   //QRL_connectDialog *connectDialog = new QRL_connectDialog(this);
-  //connectDialog->exec();
+    if(targetthread->getPreferences().Target_IP==NULL) {
+   	 if (ConnectDialog->exec()) 
+		targetthread->setPreferences(ConnectDialog->getPreferences());
+	else
+		return;
+    }
 	targetthread->connectToTarget();
 	//sendOrder(qrl_types::CONNECT_TO_TARGET);
 	if (targetthread->getIsTargetConnected()==1){
@@ -282,6 +350,7 @@ if(targetthread->getIsTargetConnected()==0){
         	enableActionShowParameter(false);
 	}
 	//rt_send(Target_Interface_Task, CONNECT_TO_TARGET);
+
 }
 
 }
@@ -313,7 +382,16 @@ void QRL_MainWindow::connect_WProfile() {
      int size = profiles.beginReadArray("profiles");
      profiles.endArray();
      if (size>0) {
-	
+	Preferences_T Preferences;
+		Preferences.Target_IP="127.0.0.1";
+	Preferences.Target_Interface_Task_Name="IFTASK";
+	Preferences.Target_Scope_Mbx_ID="RTS";
+	Preferences.Target_Log_Mbx_ID="RTL";
+	Preferences.Target_ALog_Mbx_ID="RAL"; //aggiunto 4/5
+	Preferences.Target_Led_Mbx_ID="RTE";
+	Preferences.Target_Meter_Mbx_ID="RTM";
+	Preferences.Target_Synch_Mbx_ID="RTY";
+	targetthread->setPreferences(Preferences);
 	int ind=0;
 	profiles.beginGroup("lastProfile");
 	ind=profiles.value("nr").toInt();

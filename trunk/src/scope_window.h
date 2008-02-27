@@ -99,7 +99,6 @@ struct Trace_Options_Struct
  * @todo add curser 
  * @todo add parameter labels 
  * @todo add trigger label
- * @todo change offset behavior
  */
 
 class QRL_ScopeWindow : public QMdiSubWindow
