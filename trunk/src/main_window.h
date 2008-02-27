@@ -69,6 +69,7 @@ public:
   //  ~QRL_MainWindow();
 //signals:
  //    void sendOrder(int);
+    void setVerbose(int v){Verbose=v;}
 protected:
      void closeEvent(QCloseEvent *event);
 

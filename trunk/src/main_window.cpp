@@ -170,7 +170,10 @@ QRL_MainWindow::QRL_MainWindow()
    // rt_receive(0, &msg);
 
 	profileName=tr("demo");
+	Verbose=0;
+
 /*
+
         Preferences_T Preferences;
 	Preferences.Target_IP="127.0.0.1";
 	Preferences.Target_Interface_Task_Name="IFTASK";
@@ -240,6 +243,7 @@ if(targetthread->getIsTargetConnected()==0){
 	else
 		return;
     }
+	targetthread->setVerbose(Verbose);
 	targetthread->connectToTarget();
 	//sendOrder(qrl_types::CONNECT_TO_TARGET);
 	if (targetthread->getIsTargetConnected()==1){
@@ -709,8 +713,9 @@ void QRL_MainWindow::enableActionShowParameter(bool b)
 
 void QRL_MainWindow::about() 
 {
-    QMessageBox::about(this,"About",
-                "This app was coded for educational purposes.\n"
-                "written by Holger Nahrstaedt \n\n"
+    QMessageBox::about(this,"About QRtaiLab",
+		"Version 0.1\n"
+                "This app was coded for educational purposes.\n\n"
+                "Copyright (C) 2008 Holger Nahrstaedt. \n\n"
                 "Have Fun!\n");
 }

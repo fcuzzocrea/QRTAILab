@@ -21,18 +21,61 @@
 
  #include <QApplication>
 #include "main_window.h"
+#include <getopt.h>
+#include <iostream>
+
+
+struct option long_options[ ] = {
+	{ "help" /* name of the long option */, 0 /* arguments required */, NULL /* value is returned */, 'h' /* value */ },
+	{ "verbose", 0, 0, 'v' },
+	{ "version", 0, 0, 'V' }
+};
 
 
 
 
 int main(int argc, char *argv[])
 {
+	// ** PARSE COMMAND LINE OPTIONS ** //
+	int	verboseOutput = 0;
+	int		optionFlag = 0;
 
+	
+ 	while ( ( optionFlag = getopt_long( argc, argv, "hvV", long_options, NULL ) ) != EOF ) {
+ 		
+		switch ( optionFlag ) {
+			case 'v':
+				verboseOutput = 1;
+				break;
+				
+			case 'V':
+				std::cout << "QRtaiLab version " << QRTAILAB_VERSION << std::endl;
+				exit( 0 );
+				break;
+			
+			case 'h':
+				std::cout << "\nUsage:  qrtailab [OPTIONS]\n" <<
+					"\n" <<
+					"OPTIONS:\n" <<
+					"  -h, --help\n" <<
+					"      print usage\n" <<
+					"  -v, --verbose\n" <<
+					"      verbose output\n" <<
+					"  -V, --version\n" <<
+					"      print QRtaiLab version\n\n";
+				exit( 0 );
+				break;
+				
+			default:
+				break;
+		}
+	}
 
      //Q_INIT_RESOURCE(application);
 
      QApplication app(argc, argv);
      QRL_MainWindow mainWin;
+     mainWin.setVerbose(verboseOutput);
      mainWin.show();
      return app.exec();
 
