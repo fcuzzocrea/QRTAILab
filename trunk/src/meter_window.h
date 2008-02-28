@@ -53,20 +53,33 @@ public:
    void changeRefreshRate(double);
    void setValue(float);
    void setMin(double);
+   double getMin(){return Min;}
    void setMax(double);
+    double getMax(){return Max;}
    void setMeter(Meter_Type);
+   Meter_Type getMeterType(){return MeterType;}
    void setThermoColor1(const QColor&);
+   QColor getThermoColor1(){return thermoColor1;}
    void setThermoColor2(const QColor&);
+   QColor getThermoColor2(){return thermoColor2;}
    void setPipeWith(double);
+   double getPipeWidth(){return pipeWidth;}
    void setAlarmThermoColor1(const QColor&);
+   QColor getAlarmThermoColor1(){return alarmThermoColor1;}
    void setAlarmThermoColor2(const QColor&);
+   QColor getAlarmThermoColor2(){return alarmThermoColor2;}
    void setThermoAlarm(int);
+      void setThermoAlarm(bool);
+   bool getThermoAlarm(){return Thermo->alarmEnabled();}
    void setGradientEnabled(bool);
+   bool getGradientEnabled(){return gradientEnabled;}
    void setAlarmLevel(double);
+   double getAlarmLevel(){return alarmLevel;}
    void setThermoDirection(Qt::Orientation o);
    void setLcdFont(const QFont& font);
+   QFont getLcdFont(){return Lcd->font();}
    void setNeedleColor(const QColor&);
-   Meter_Type getMeterType(){return MeterType;}
+   QColor getNeedleColor(){return needle->palette().button().color();}
 protected slots:
   void closeEvent ( QCloseEvent * event ){event->ignore(); this->hide(); }
 private:

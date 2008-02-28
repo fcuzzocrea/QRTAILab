@@ -51,7 +51,7 @@ QRL_LedsManager::QRL_LedsManager(QWidget *parent,TargetThread* targetthread)
 	connect( ledListWidget, SIGNAL( itemClicked( QListWidgetItem * ) ), this, SLOT( showLedOptions( QListWidgetItem *  ) ) );
 
 	if (Num_Leds > 0) Get_Led_Data_Thread = new GetLedDataThread [Num_Leds];
-	if (Num_Leds > 0) emit showLedOptions(ledListWidget->item(0));
+	if (Num_Leds > 0) showLedOptions(ledListWidget->item(0));
 }
 
 QRL_LedsManager::~QRL_LedsManager()
@@ -65,6 +65,17 @@ QRL_LedsManager::~QRL_LedsManager()
 		delete[] Get_Led_Data_Thread;
 	
 }
+
+void QRL_LedsManager::refreshView()
+{
+
+
+	showLedOptions(ledListWidget->item(currentLed));
+
+
+}
+
+
 
 void QRL_LedsManager::changeLedColor(int color)
 {

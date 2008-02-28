@@ -69,6 +69,7 @@ public:
    ~QRL_LedWindow();
    void setValue(unsigned int);
    void setLedColor(QColor);
+   QColor getLedColor(){return Leds[0]->color();}
 protected slots:
   void closeEvent ( QCloseEvent * event );
 private:

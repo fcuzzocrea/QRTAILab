@@ -109,7 +109,6 @@ public:
    enum PlottingMode {roll,overwrite,trigger,hold};
    QRL_ScopeWindow(QWidget *parent = 0,qrl_types::Target_Scopes_T *scope=0,int ind=0);
    ~QRL_ScopeWindow();
-   void setValue(int,float);
    void changeRefreshRate(double);
    void changeDataPoints(double);
    void setSaveTime(double);
@@ -141,10 +140,12 @@ public:
    void setZeroAxis(bool b,int);
    bool getZeroAxis(int trace){return TraceOptions[trace].zeroAxis.isVisible();}
    //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
+    void setValue(int,float);
 signals:
    void stopSaving(int);
 public slots:
    void refresh();
+  //void setValue(int,float);
 protected slots:
   void closeEvent ( QCloseEvent * event ){event->ignore(); this->hide(); }
 private:

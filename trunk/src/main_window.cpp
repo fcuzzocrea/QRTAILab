@@ -88,12 +88,6 @@ Preferences_T QRL_connectDialog::getPreferences()
 
 
 
-
-
-
-
-
-
 /*
 void QRL_connectDialog::accept() 
 {
@@ -354,7 +348,6 @@ if(targetthread->getIsTargetConnected()==0){
         	enableActionShowParameter(false);
 	}
 	//rt_send(Target_Interface_Task, CONNECT_TO_TARGET);
-
 }
 
 }
@@ -387,7 +380,8 @@ void QRL_MainWindow::connect_WProfile() {
      profiles.endArray();
      if (size>0) {
 	Preferences_T Preferences;
-		Preferences.Target_IP="127.0.0.1";
+
+	Preferences.Target_IP="127.0.0.1";
 	Preferences.Target_Interface_Task_Name="IFTASK";
 	Preferences.Target_Scope_Mbx_ID="RTS";
 	Preferences.Target_Log_Mbx_ID="RTL";
@@ -395,6 +389,8 @@ void QRL_MainWindow::connect_WProfile() {
 	Preferences.Target_Led_Mbx_ID="RTE";
 	Preferences.Target_Meter_Mbx_ID="RTM";
 	Preferences.Target_Synch_Mbx_ID="RTY";
+
+
 	targetthread->setPreferences(Preferences);
 	int ind=0;
 	profiles.beginGroup("lastProfile");
@@ -426,12 +422,13 @@ void QRL_MainWindow::connect_WProfile() {
 			size=targetthread->getScopeNumber();
 		for (int i = 0; i < size; ++i) {
 		settings.setArrayIndex(i);
-		ScopesManager->getScopeWindows()[i]->changeRefreshRate(settings.value("RefreshRate",20.).toDouble());
-		ScopesManager->getScopeWindows()[i]->changeDataPoints(settings.value("DataPoints",100.).toDouble());
-		//ScopesManager->getScopeWindows()[i]->changeDX(settings.value("DX",1.).toDouble());
 		ScopesManager->getScopeWindows()[i]->resize(settings.value("size", QSize(400, 400)).toSize());
 		ScopesManager->getScopeWindows()[i]->move(settings.value("pos", QPoint(200, 200)).toPoint());
 		ScopesManager->getScopeWindows()[i]->setVisible(settings.value("isVisible",false).toBool());
+		ScopesManager->getScopeWindows()[i]->changeRefreshRate(settings.value("RefreshRate",20.).toDouble());
+		ScopesManager->getScopeWindows()[i]->changeDataPoints(settings.value("DataPoints",100.).toDouble());
+		//ScopesManager->getScopeWindows()[i]->changeDX(settings.value("DX",1.).toDouble());
+
 		}
 		settings.endArray();
 	}
@@ -447,19 +444,48 @@ void QRL_MainWindow::connect_WProfile() {
 			size=targetthread->getMeterNumber();
 		for (int i = 0; i < size; ++i) {
 		settings.setArrayIndex(i);
-		MetersManager->getMeterWindows()[i]->changeRefreshRate(settings.value("RefreshRate",20.).toDouble());
-		MetersManager->getMeterWindows()[i]->resize(settings.value("size", QSize(400, 400)).toSize());
+		//MetersManager->getMeterWindows()[i]->resize(settings.value("size", QSize(400, 400)).toSize());
 		MetersManager->getMeterWindows()[i]->move(settings.value("pos", QPoint(200, 200)).toPoint());
 		MetersManager->getMeterWindows()[i]->setVisible(settings.value("isVisible",false).toBool());
+		MetersManager->getMeterWindows()[i]->changeRefreshRate(settings.value("RefreshRate",20.).toDouble());
+		MetersManager->getMeterWindows()[i]->setMin(settings.value("Min",-1.).toDouble());
+		MetersManager->getMeterWindows()[i]->setMax(settings.value("Max",1.).toDouble());
+		MetersManager->getMeterWindows()[i]->setMeter((QRL_MeterWindow::Meter_Type)settings.value("MeterType",(int)QRL_MeterWindow::THERMO).toInt());
+		MetersManager->getMeterWindows()[i]->setThermoColor1(settings.value("ThermoColor1",QColor(Qt::red)).value<QColor>());
+		MetersManager->getMeterWindows()[i]->setThermoColor2(settings.value("ThermoColor2",QColor(Qt::black)).value<QColor>());
+		MetersManager->getMeterWindows()[i]->setPipeWith(settings.value("PipeWidth",1.).toDouble());
+		MetersManager->getMeterWindows()[i]->setThermoAlarm(settings.value("AlarmEnabled",false).toBool());
+		MetersManager->getMeterWindows()[i]->setAlarmThermoColor1(settings.value("AlarmThermoColor1",QColor(Qt::blue)).value<QColor>());
+		MetersManager->getMeterWindows()[i]->setAlarmThermoColor2(settings.value("AlarmThermoColor2",QColor(Qt::black)).value<QColor>());
+		MetersManager->getMeterWindows()[i]->setGradientEnabled(settings.value("GradientEnabled",true).toBool());
+		MetersManager->getMeterWindows()[i]->setAlarmLevel(settings.value("AlarmLevel",1.).toDouble());
+		MetersManager->getMeterWindows()[i]->setNeedleColor(settings.value("NeedleColor",QColor(Qt::black)).value<QColor>());
+		MetersManager->getMeterWindows()[i]->setLcdFont(settings.value("LcdFont").value<QFont>());
 		}
 		settings.endArray();
+		MetersManager->refreshView();
         }
+	
 	if (LedsManager){
 		settings.beginGroup("LedsManager");
 		LedsManager->resize(settings.value("size", QSize(400, 400)).toSize());
 		LedsManager->move(settings.value("pos", QPoint(200, 200)).toPoint());
 		LedsManager->setVisible(settings.value("isVisible",false).toBool());
 		settings.endGroup();
+
+		size = settings.beginReadArray("LedWindow");
+		if (size>targetthread->getLedNumber())
+			size=targetthread->getLedNumber();
+		for (int i = 0; i < size; ++i) {
+		settings.setArrayIndex(i);
+		QColor color=(settings.value("Color",QColor(Qt::red))).value<QColor>();
+		LedsManager->getLedWindows()[i]->setLedColor(color);
+		LedsManager->getLedWindows()[i]->resize(settings.value("size", QSize(400, 400)).toSize());
+		LedsManager->getLedWindows()[i]->move(settings.value("pos", QPoint(200, 200)).toPoint());
+		LedsManager->getLedWindows()[i]->setVisible(settings.value("isVisible",false).toBool());
+		}
+		settings.endArray();
+		LedsManager->refreshView();
 	}
 	if (ParametersManager){
 		settings.beginGroup("ParametersManager");
@@ -536,12 +562,14 @@ void QRL_MainWindow::saveProfile() {
 	settings.beginWriteArray("ScopeWindow");
 	for (int i = 0; i < targetthread->getScopeNumber(); ++i) {
 		settings.setArrayIndex(i);
-		settings.setValue("RefreshRate",ScopesManager->getScopeWindows()[i]->getRefreshRate());
-		settings.setValue("DataPoints",(double)ScopesManager->getScopeWindows()[i]->getDataPoints());
-		settings.setValue("DX",ScopesManager->getScopeWindows()[i]->getDX());
 		settings.setValue("size", ScopesManager->getScopeWindows()[i]->size());
 		settings.setValue("pos", ScopesManager->getScopeWindows()[i]->pos());
 		settings.setValue("isVisible",ScopesManager->getScopeWindows()[i]->isVisible());
+		settings.setValue("RefreshRate",ScopesManager->getScopeWindows()[i]->getRefreshRate());
+		settings.setValue("DataPoints",(double)ScopesManager->getScopeWindows()[i]->getDataPoints());
+		settings.setValue("DX",ScopesManager->getScopeWindows()[i]->getDX());
+		
+
 	}
 	settings.endArray();
      }
@@ -556,10 +584,24 @@ void QRL_MainWindow::saveProfile() {
 	settings.beginWriteArray("MeterWindow");
 	for (int i = 0; i < targetthread->getMeterNumber(); ++i) {
 		settings.setArrayIndex(i);
-		settings.setValue("RefreshRate",MetersManager->getMeterWindows()[i]->getRefreshRate());
 		settings.setValue("size", MetersManager->getMeterWindows()[i]->size());
 		settings.setValue("pos", MetersManager->getMeterWindows()[i]->pos());
 		settings.setValue("isVisible",MetersManager->getMeterWindows()[i]->isVisible());
+		settings.setValue("RefreshRate",MetersManager->getMeterWindows()[i]->getRefreshRate());
+		settings.setValue("Min",MetersManager->getMeterWindows()[i]->getMin());
+		settings.setValue("Max",MetersManager->getMeterWindows()[i]->getMax());
+		settings.setValue("MeterType",(int)MetersManager->getMeterWindows()[i]->getMeterType());
+		settings.setValue("ThermoColor1",MetersManager->getMeterWindows()[i]->getThermoColor1());
+		settings.setValue("ThermoColor2",MetersManager->getMeterWindows()[i]->getThermoColor2());
+		settings.setValue("PipeWidth",MetersManager->getMeterWindows()[i]->getPipeWidth());
+		settings.setValue("AlarmEnabled",MetersManager->getMeterWindows()[i]->getThermoAlarm());
+		settings.setValue("AlarmThermoColor1",MetersManager->getMeterWindows()[i]->getAlarmThermoColor1());
+		settings.setValue("AlarmThermoColor2",MetersManager->getMeterWindows()[i]->getAlarmThermoColor2());
+		settings.setValue("GradientEnabled",MetersManager->getMeterWindows()[i]->getGradientEnabled());
+		settings.setValue("AlarmLevel",MetersManager->getMeterWindows()[i]->getAlarmLevel());
+		settings.setValue("NeedleColor",MetersManager->getMeterWindows()[i]->getNeedleColor());
+		settings.setValue("LcdFont",MetersManager->getMeterWindows()[i]->getLcdFont());
+
 	}
 	settings.endArray();
      
@@ -571,6 +613,16 @@ void QRL_MainWindow::saveProfile() {
 	settings.setValue("pos", LedsManager->pos());
 	settings.setValue("isVisible",LedsManager->isVisible());
 	settings.endGroup();
+
+	settings.beginWriteArray("LedWindow");
+	for (int i = 0; i < targetthread->getLedNumber(); ++i) {
+		settings.setArrayIndex(i);
+		settings.setValue("Color",LedsManager->getLedWindows()[i]->getLedColor());
+		settings.setValue("size", LedsManager->getLedWindows()[i]->size());
+		settings.setValue("pos", LedsManager->getLedWindows()[i]->pos());
+		settings.setValue("isVisible",LedsManager->getLedWindows()[i]->isVisible());
+	}
+	settings.endArray();
      }
 
      if(ParametersManager){
