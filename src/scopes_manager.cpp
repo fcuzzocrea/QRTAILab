@@ -78,9 +78,13 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
 // 		traceComboBox->addItem(tr("Trace ")+tr("%1").arg(i+1));
 // 	}
-	if (Num_Scopes > 0) emit showScopeOptions(currentScope);
+
+	if (Num_Scopes > 0)  showScopeOptions(currentScope);
 	
 	if (Num_Scopes > 0) Get_Scope_Data_Thread = new GetScopeDataThread [Num_Scopes];
+	//for (int i=0; i<Num_Scopes; ++i){
+	//	connect(&Get_Scope_Data_Thread[i],SIGNAL(value(int,float)),ScopeWindows[i],SLOT(setValue(int,float)));
+	//}
 		offsetWheel->setMass(0.5);
 	offsetWheel->setRange(-1e6, 1e6, 0.25);
 	offsetWheel->setTotalAngle(360.0*2e6);
@@ -119,6 +123,7 @@ void QRL_ScopesManager::startScopeThreads()
 		Get_Scope_Data_Thread[n].start(&thr_args,targetThread,ScopeWindows[n]);
 		Get_Scope_Data_Thread[n].threadStarted.wait(&Get_Scope_Data_Thread[n].mutex);
 		Get_Scope_Data_Thread[n].mutex.unlock();
+		Get_Scope_Data_Thread[n].setPriority(QThread::TimeCriticalPriority);
 		//rt_receive(0, &msg);
 		//((QMainWindow*)mainWindow)->addDockWidget(Qt::NoDockWidgetArea,ScopeWindows[n]);
 		ScopeWindows[n]->hide();
@@ -150,6 +155,7 @@ void QRL_ScopesManager::changeDX(const QString& text)
 	double dx=text.toDouble();
 	ScopeWindows[currentScope]->changeDX(dx);
 	Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
+	showScopeOptions(currentScope);
 	}
 }
 
@@ -162,7 +168,7 @@ void QRL_ScopesManager::changeDataPoints(double dp)
 	//double rr=text.toDouble();
 	ScopeWindows[currentScope]->changeDataPoints(dp);
 	Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
-	if (Num_Scopes > 0) emit showScopeOptions(currentScope);
+	if (Num_Scopes > 0)  showScopeOptions(currentScope);
 
 }
 void QRL_ScopesManager::changeSaveTime(double time)
@@ -388,21 +394,21 @@ void QRL_ScopesManager::changeDisplayModus(int mode)
 	{
 	case 0:	
 		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::roll,Qt::RightToLeft);
-		emit directionComboBox->setCurrentIndex(0);
+		directionComboBox->setCurrentIndex(0);
 		break;
 	case 1:
 		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::overwrite,Qt::LeftToRight);
-		emit directionComboBox->setCurrentIndex(1);
+		directionComboBox->setCurrentIndex(1);
 		break;
 	case 2://trigger down
 		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::LeftToRight);
-		emit directionComboBox->setCurrentIndex(1);
+		directionComboBox->setCurrentIndex(1);
 		ScopeWindows[currentScope]->setTriggerUpDirection(false);
 		break;
 	case 3: // trigger up
 		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::LeftToRight);
 		ScopeWindows[currentScope]->setTriggerUpDirection(true);
-		emit directionComboBox->setCurrentIndex(1);
+		directionComboBox->setCurrentIndex(1);
 		break;
 	case 4: //hold
 		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::hold,Qt::LeftToRight);
@@ -453,6 +459,11 @@ void QRL_ScopesManager::changeDy(const QString& text)
 }
 
 
+
+
+
+
+
 /**
 * @brief Initialise GetScopeDataThread
 * @param arg 
@@ -491,6 +502,7 @@ int GetScopeDataThread::setDt(double d)
 
 		if (Ndistance<1)
 			Ndistance=1;
+		//printf("MsgLen: %d, MsgData %d, Ndistance %d\n",MsgLen,MsgData,Ndistance);
 		return Ndistance; //TODO long int > int
 	}
 	return -1;
@@ -601,6 +613,8 @@ void GetScopeDataThread::run()
 			for (nn = 0; nn < ntraces; nn++) {
 			 if (ScopeWindow)
 			    ScopeWindow->setValue(nn,MsgBuf[js++]);
+
+			    //emit value(nn,MsgBuf[js++]);
 				//temp1[nn][time-1]=MsgBuf[js++];
 			    //ScopeWindow->getThread()->setValue(nn,MsgBuf[js++]);
 			} time++;
@@ -634,6 +648,7 @@ void GetScopeDataThread::run()
 		//if (Scope_Win->is_visible() && (!stop_draw)) {
 		//	Scope_Win->Plot->redraw();
 		//}
+
 		if (ScopeWindow->start_saving()) {
 			jl = 0;
 			printf("%d from %d saved\n",save_idx,ScopeWindow->n_points_to_save());

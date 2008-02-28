@@ -331,15 +331,22 @@ void QRL_ScopeWindow::refresh()
 
    void QRL_ScopeWindow::changeDataPoints(double dp)
 {
+	//if (dp<(1/((xmax-xmin)/dp)/100))
+	//	return;
+
 	NDataSoll=(int)dp;
 	if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
-	if (NDataSoll<5)
-		NDataSoll=5;
-       dt=(xmax-xmin)/NDataSoll;
-	if(NDataSoll<(1/dt/(xmax-xmin)))
-		NDataSoll=(1/dt/(xmax-xmin));
 
+	if (NDataSoll<10)
+		NDataSoll=10;
+       dt=(xmax-xmin)/NDataSoll;
+	/*if(NDataSoll<(1/dt/(xmax-xmin))){
+		NDataSoll=(1/dt/(xmax-xmin));
+		dt=(xmax-xmin)/NDataSoll;
+	}*/
+
+	fprintf(stderr,"datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
        timer->stop();
     for (unsigned int i = 0; i< NDataSoll; i++)
     {
@@ -351,7 +358,7 @@ void QRL_ScopeWindow::refresh()
 	}
     }
      for (unsigned int j=0;j<Ncurve;j++){
-	cData[j]->setRawData(d_x, ScopeData[j].d_y, NDataSoll);
+  	cData[j]->setRawData(d_x, ScopeData[j].d_y, NDataSoll);
      }
      timer->start((int)(1./RefreshRate*1000.));
 }
@@ -359,8 +366,24 @@ void QRL_ScopeWindow::refresh()
 
    void QRL_ScopeWindow::changeDX(double v)
 {
+
+	//if ((xMajorTicks*v)/Scope->dt<10.)
+	//	return;
+
+//	if (((xMajorTicks*v)/Scope->dt<(1/((xmax-xmin)/(xMajorTicks*v)/Scope->dt)/100)))
+//		return;
+
 	if (v>0.)
 		dx=v;
+
+	 xmax=(xMajorTicks*dx);
+	
+	//xmax=dx;
+	timer->stop();
+	NDataMax=(int)((xmax-xmin)/Scope->dt);
+	if (NDataSoll>NDataMax)
+		NDataSoll=NDataMax;
+
 
 	 QwtText bt;
     bt.setColor(QColor(gridColor));
@@ -393,13 +416,7 @@ void QRL_ScopeWindow::refresh()
 
 	}
 
-	 xmax=(xMajorTicks*dx);
-	
-	//xmax=dx;
-	//timer->stop();
-	NDataMax=(int)((xmax-xmin)/Scope->dt);
-	if (NDataSoll>NDataMax)
-		NDataSoll=NDataMax;
+
 	dt=(xmax-xmin)/NDataSoll;
 	delete[] d_x;
 	for (unsigned int j=0;j<Ncurve;j++){
@@ -420,7 +437,9 @@ void QRL_ScopeWindow::refresh()
 	xStep=(xmax-xmin)/xMajorTicks;
 	qwtPlot->setAxisScale(QwtPlot::xBottom, xmin, xmax,xStep);
 	    vertLine->setXValue(xmax/2.);
-	//timer->start(1/RefreshRate*1000.);
+	timer->start(1/RefreshRate*1000.);
+changeDataPoints(NDataMax);
+
 }
 
 
@@ -448,7 +467,7 @@ void QRL_ScopeWindow::startSaving(QString filename){
 			QMessageBox::critical(this, tr("QMessageBox::critical()"),
                                      tr("The File exists! Please change the name!"),
                                      QMessageBox::Abort);
-			stopSaving(index);
+			emit stopSaving(index);
 		} else {
 		isSaving=1;
 		if ((Save_File_Pointer = fopen((File_Name.toLocal8Bit()).data(), "a+")) == NULL) {
@@ -470,7 +489,7 @@ int QRL_ScopeWindow::n_points_to_save(){
 void QRL_ScopeWindow::stop_saving(){
 	isSaving=0;
 	fclose(Save_File_Pointer);
-	stopSaving(index);
+	emit stopSaving(index);
 	
 }
 
@@ -582,25 +601,30 @@ void QRL_ScopeWindow::setValue( int nn, float v)
 int time;
 switch(plottingMode){
 case roll:
+
 	time=ScopeData[nn].time;
 	ScopeData[nn].d_yt[time]=((double)v)/TraceOptions[nn].dy+TraceOptions[nn].offset;
 	time++;
-        if((time>(1/dt/RefreshRate)) || time>(NDataSoll-2)){
+        if((time>(1/dt/RefreshRate)) || time>NDataMax-1){
+		//printf("time %d\n",time);
 		time--;
+		if (time<0)
+			time=0;
 		if (Qt::LeftToRight==direction){ // Segmentation fault for   ndatasoll<5 
-
-		for ( int i = NDataSoll - 1; i > time; i-- ){
+		for (unsigned int i = NDataSoll - 1; i > time; i-- ){
         		ScopeData[nn].d_y[i] = ScopeData[nn].d_y[i-1-time];
 		}
-		for ( int i = 0; i<=time; i++){
+		for ( unsigned int i = 0; i<=time; i++){
 			ScopeData[nn].d_y[i]=ScopeData[nn].d_yt[time-i];
 			//ScopeData[nn].d_y[i]=(double)temp[nn][time-i];
 		}
 		} else { //right to left
-		for ( int i = 0; i < NDataSoll-time-1; i++ ){
+		for (unsigned int i = 0; i < NDataSoll-time-1; i++ ){
+		if ((i+time+1)<NDataSoll)
 			ScopeData[nn].d_y[i] = ScopeData[nn].d_y[i+time+1];
 		}
 		for ( int i =  0; i<=time; i++){
+			
 			ScopeData[nn].d_y[NDataSoll+i-time-1]=ScopeData[nn].d_yt[i];
 			//ScopeData[nn].d_y[i]=(double)temp[nn][time-i];
 		}

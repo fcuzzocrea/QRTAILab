@@ -74,6 +74,7 @@ public:
        void startMeterThreads();
     void stopMeterThreads();
     QRL_MeterWindow** getMeterWindows(){return MeterWindows;}
+ void refreshView();
 public slots:
   void  showMeter(int);
    void showMeterOptions( QListWidgetItem * item );

@@ -169,7 +169,8 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 		Lcd->hide();
 		this->setWidget(Thermo);
 		Thermo->show();
-		pipeDistance=Thermo->pos().x();
+		//pipeDistance=Thermo->pos().x();
+		pipeDistance=Thermo->minimumSizeHint().width()-Thermo->pipeWidth()-Thermo->borderWidth()*2;
 		//delete Dial;
 		break;
 	case LCD:
@@ -341,6 +342,27 @@ void QRL_MeterWindow::setThermoAlarm(int state)
 		Thermo->setAlarmEnabled(false);
 
 }
+
+void QRL_MeterWindow::setThermoAlarm(bool b)
+{
+	if (b){
+		Thermo->setAlarmEnabled(true);
+		Thermo->setAlarmLevel(alarmLevel);
+		alarmGradient=QLinearGradient(QPointF(pipeDistance+pipeWidth/2,0), QPointF(pipeDistance+pipeWidth,0));
+		if(gradientEnabled)
+     		alarmGradient.setColorAt(1, alarmThermoColor2);
+		else
+		alarmGradient.setColorAt(1, alarmThermoColor1);
+     		alarmGradient.setColorAt(0, alarmThermoColor1);
+     		alarmGradient.setSpread(QGradient::ReflectSpread);
+		Thermo->setAlarmBrush(QBrush(alarmGradient));
+	} else 
+		Thermo->setAlarmEnabled(false);
+
+}
+
+
+
 void QRL_MeterWindow::setGradientEnabled(bool b)
 {
 	gradientEnabled=b;
@@ -393,6 +415,8 @@ void  QRL_MeterWindow::setThermoDirection(Qt::Orientation o)
 
 }
    void QRL_MeterWindow::setNeedleColor(const QColor& c){
-	needle->setPalette(c);
+	QPalette p(c);
+	// p.setColor(QPalette::Base,c); //knob
+	needle->setPalette(p);
 }
 

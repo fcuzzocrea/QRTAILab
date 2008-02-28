@@ -47,7 +47,7 @@ class GetScopeDataThread : public QThread
 QWaitCondition threadStarted;
 QMutex mutex;
  //signals:
-    //void value(int,int,float);
+   // void value(int,float);
  public slots:
     void start(void* arg,TargetThread* targetthread,QRL_ScopeWindow* scopewindow);
  private:
@@ -59,6 +59,9 @@ QMutex mutex;
     long int Ndistance;
     double dt;
  };
+
+
+
 
 /**
  * @brief Managed all Scope windows

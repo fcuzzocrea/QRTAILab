@@ -70,10 +70,12 @@ public:
     void startLedThreads();
     void stopLedThreads();
     QRL_LedWindow** getLedWindows(){return LedWindows;}
+ void refreshView();
 public slots:
   void  showLed(int);
   void showLedOptions( QListWidgetItem * item );
   void changeLedColor(int);
+
 private:
   int Num_Leds;
   Target_Leds_T *Leds;

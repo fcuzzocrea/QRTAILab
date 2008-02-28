@@ -52,7 +52,7 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 	
 	if (Num_Meters > 0) Get_Meter_Data_Thread = new GetMeterDataThread [Num_Meters];
 	if (Num_Meters > 0)
-	emit showMeterOptions(meterListWidget->item(0));
+	showMeterOptions(meterListWidget->item(0));
 	ThermoOptions = tabWidget->widget(1);
 	DialOptions = tabWidget->widget(2);
 	LcdOptions = tabWidget->widget(3);
@@ -87,6 +87,7 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 		default:break;
 	}
 	tabWidget->setCurrentIndex(0);
+	
 }
 
 
@@ -137,6 +138,16 @@ void QRL_MetersManager::stopMeterThreads()
 
 }
 
+void QRL_MetersManager::refreshView()
+{
+
+
+	showMeterOptions(meterListWidget->item(currentMeter));
+
+
+}
+
+
 /**
 * @brief send new refresh rate to the Meter Thread
 * @param rr refresh rate
@@ -174,38 +185,42 @@ void QRL_MetersManager::changeMax(double max)
 */
 void QRL_MetersManager::changeMeter(int type)
 {	
+	//if (type!=(int)MeterWindows[currentMeter]->getMeterType()){
 	switch(type)
 	{
 		case 0: //thermo
 			tabWidget->removeTab(1);
 			tabWidget->addTab(ThermoOptions,tr("Options"));
-			MeterWindows[currentMeter]->setMeter(QRL_MeterWindow::THERMO);
+			if (MeterWindows[currentMeter]->getMeterType()!=QRL_MeterWindow::THERMO)
+				MeterWindows[currentMeter]->setMeter(QRL_MeterWindow::THERMO);
 			break;
 		case 1: //dial
 			tabWidget->removeTab(1);
 			tabWidget->addTab(DialOptions,tr("Options"));
-			MeterWindows[currentMeter]->setMeter(QRL_MeterWindow::DIAL);
+			if (MeterWindows[currentMeter]->getMeterType()!=QRL_MeterWindow::DIAL)
+				MeterWindows[currentMeter]->setMeter(QRL_MeterWindow::DIAL);
 			break;
 		case 2: //lcd
 			tabWidget->removeTab(1);
 			tabWidget->addTab(LcdOptions,tr("Options"));
-			MeterWindows[currentMeter]->setMeter(QRL_MeterWindow::LCD);
+			if (MeterWindows[currentMeter]->getMeterType()!=QRL_MeterWindow::LCD)
+				MeterWindows[currentMeter]->setMeter(QRL_MeterWindow::LCD);
 			break;
 		default:break;
 	}
-	
+	//}
 }
 
 void QRL_MetersManager::changeThermoColor1()
 {
-	QColor color= QColorDialog::getColor();
+	QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->getThermoColor1());
 	MeterWindows[currentMeter]->setThermoColor1(color);
 
 }
 
 void QRL_MetersManager::changeThermoColor2()
 {
-	QColor color= QColorDialog::getColor();
+	QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->getThermoColor2());
 	MeterWindows[currentMeter]->setThermoColor2(color);
 
 }
@@ -217,14 +232,14 @@ void QRL_MetersManager::changePipeWith(double w)
 
 void QRL_MetersManager::changeAlarmThermoColor1()
 {
-	QColor color= QColorDialog::getColor();
+	QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->getAlarmThermoColor1());
 	MeterWindows[currentMeter]->setAlarmThermoColor1(color);
 
 }
 
 void QRL_MetersManager::changeAlarmThermoColor2()
 {
-	QColor color= QColorDialog::getColor();
+	QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->getAlarmThermoColor2());
 	MeterWindows[currentMeter]->setAlarmThermoColor2(color);
 
 }
@@ -281,6 +296,25 @@ void QRL_MetersManager::showMeterOptions( QListWidgetItem * item ){
 		showCheckBox->setCheckState(Qt::Checked);
 	else
 		showCheckBox->setCheckState(Qt::Unchecked);
+
+//disconnect( meterComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeMeter(int) ) );
+	meterComboBox->setCurrentIndex((int)MeterWindows[currentMeter]->getMeterType());
+//connect( meterComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeMeter(int) ) );
+
+if (MeterWindows[currentMeter]->getMeterType()==QRL_MeterWindow::THERMO) {
+	alarmLevelCounter->setValue(MeterWindows[currentMeter]->getAlarmLevel());
+	if(MeterWindows[currentMeter]->getThermoAlarm())
+		alarmCheckBox->setCheckState(Qt::Checked);
+	else
+		alarmCheckBox->setCheckState(Qt::Unchecked);
+	
+	pipeWithCounter->setValue(MeterWindows[currentMeter]->getPipeWidth());
+	if (MeterWindows[currentMeter]->getGradientEnabled()) 
+		colorComboBox->setCurrentIndex(0);
+	else
+		colorComboBox->setCurrentIndex(1);
+}
+
 }
 
 /**
@@ -298,14 +332,14 @@ void QRL_MetersManager::showMeter(int state)
 
   void QRL_MetersManager::changeNeedleColor(){
 
-	QColor color= QColorDialog::getColor();
+	QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->getNeedleColor());
 	MeterWindows[currentMeter]->setNeedleColor(color);
 
 }
   void QRL_MetersManager::changeLcdFont(){
 	bool ok;
 	QFont font = QFontDialog::getFont(
-                 &ok, QFont("Helvetica [Cronyx]", 12), this);
+                 &ok, MeterWindows[currentMeter]->getLcdFont(), this);
 	MeterWindows[currentMeter]->setLcdFont(font);
 }
 
