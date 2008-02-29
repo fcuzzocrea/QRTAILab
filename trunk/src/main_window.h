@@ -36,6 +36,35 @@
 #include "scopes_manager.h"
 #include "parameters_manager.h"
 
+
+/**
+ * @brief Main QThread 
+ */
+
+/*
+class MainThread : public QThread
+ {
+ Q_OBJECT
+ public:
+    void run();
+    QWaitCondition threadStarted;
+    QMutex mutex;
+ //signals:
+   // void value(int,float);
+ public slots:
+    void start();
+ private:
+    TargetThread* targetThread;
+ };
+
+*/
+
+
+
+
+
+
+
 /**
  * @brief Connect Dialog
  */
@@ -70,6 +99,7 @@ public:
 //signals:
  //    void sendOrder(int);
     void setVerbose(int v){Verbose=v;}
+    void setTargetThread( TargetThread* t){targetthread=t;}
 protected:
      void closeEvent(QCloseEvent *event);
 

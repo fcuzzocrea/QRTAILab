@@ -26,7 +26,7 @@
 
 #include "main_window.h"
 
-static RT_TASK *RLG_Main_Task;
+//static RT_TASK *RLG_Main_Task;
 extern unsigned long qrl::get_an_id(const char *root);
 
 QRL_connectDialog::QRL_connectDialog(QWidget *parent)
@@ -144,12 +144,13 @@ QRL_MainWindow::QRL_MainWindow()
    enableActionShowLed(false); 
    enableActionShowParameter(false);
 
+/*
    rt_allow_nonroot_hrt();
-   if (!(RLG_Main_Task = rt_task_init_schmod(qrl::get_an_id("RLGM"), 99, 0, 0, SCHED_FIFO, 0xFF))) {
+   if (!(RLG_Main_Task = rt_task_init_schmod(qrl::get_an_id("RLGM"), 98, 0, 0, SCHED_FIFO, 0xFF))) {
                printf("Cannot init RTAI-Lab GUI main task\n");
                close();
     }
-
+*/
     targetthread = new TargetThread();
 
     targetthread->start();
@@ -222,7 +223,7 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 	targetthread->closeThread();
  	targetthread->wait();
 	delete targetthread;
- 	rt_task_delete(RLG_Main_Task);
+// 	rt_task_delete(RLG_Main_Task);
 	qDebug() << "Quitting Main window";
 }
 
@@ -255,7 +256,7 @@ if(targetthread->getIsTargetConnected()==0){
 				}
 			}
 			if (MetersManager) {
-				MetersManager->startMeterThreads();
+				targetthread->startMeterThreads();//MetersManager->getMeterWindows());
 				MetersManager->setGeometry(100,100,200,300);
 				//(MetersManager->getMeterWindows()[i])->setGeometry(0,0,200,300);
 				bool view_flag=false;
@@ -277,7 +278,7 @@ if(targetthread->getIsTargetConnected()==0){
 				}
 			}
 			if (LedsManager) {
-				LedsManager->startLedThreads();
+				targetthread->startLedThreads();//LedsManager->getLedWindows());
 				LedsManager->setGeometry(0,0,200,300);
 				
 				bool view_flag=false;
@@ -297,7 +298,7 @@ if(targetthread->getIsTargetConnected()==0){
 					}
 				}
 				if (ScopesManager) {
-					ScopesManager->startScopeThreads();
+					targetthread->startScopeThreads();//ScopesManager->getScopeWindows());
 					ScopesManager->setGeometry(100,100,200,300);
 					
 					bool view_flag=false;
@@ -354,15 +355,15 @@ if(targetthread->getIsTargetConnected()==0){
  void QRL_MainWindow::disconnectDialog() 
 {
 	targetthread->disconnectFromTarget();
-	if (MetersManager) {
-		MetersManager->stopMeterThreads();
-	}
-	if (ScopesManager) {
-		ScopesManager->stopScopeThreads();
-	}
-	if (LedsManager) {
-		LedsManager->stopLedThreads();
-	}
+	//if (MetersManager) {
+	//	MetersManager->stopMeterThreads();
+	//}
+	//if (ScopesManager) {
+	//	ScopesManager->stopScopeThreads();
+	//}
+	//if (LedsManager) {
+	//	LedsManager->stopLedThreads();
+	//}
 	if (targetthread->getIsTargetConnected()==0){
 		enableActionDisconnect(false);
 		enableActionConnect(true);
@@ -379,19 +380,7 @@ void QRL_MainWindow::connect_WProfile() {
      int size = profiles.beginReadArray("profiles");
      profiles.endArray();
      if (size>0) {
-	Preferences_T Preferences;
 
-	Preferences.Target_IP="127.0.0.1";
-	Preferences.Target_Interface_Task_Name="IFTASK";
-	Preferences.Target_Scope_Mbx_ID="RTS";
-	Preferences.Target_Log_Mbx_ID="RTL";
-	Preferences.Target_ALog_Mbx_ID="RAL"; //aggiunto 4/5
-	Preferences.Target_Led_Mbx_ID="RTE";
-	Preferences.Target_Meter_Mbx_ID="RTM";
-	Preferences.Target_Synch_Mbx_ID="RTY";
-
-
-	targetthread->setPreferences(Preferences);
 	int ind=0;
 	profiles.beginGroup("lastProfile");
 	ind=profiles.value("nr").toInt();
@@ -402,13 +391,32 @@ void QRL_MainWindow::connect_WProfile() {
         profiles.value("profile",profileName);
         profiles.endArray();
 	
-	connectDialog();
+	
 	QSettings settings("QRtaiLab", profileName);
 	
+
+	
+	Preferences_T Preferences;
+	settings.beginGroup("Preferences");
+	Preferences.Target_IP=qstrdup(settings.value("Target_IP",QByteArray("127.0.0.1")).toByteArray().data());
+	Preferences.Target_Interface_Task_Name=qstrdup(settings.value("Target_Interface_Task_Name",QByteArray("IFTASK")).toByteArray().data());
+	Preferences.Target_Scope_Mbx_ID=qstrdup(settings.value("Target_Scope_Mbx_ID",QByteArray("RTS")).toByteArray().data());
+	Preferences.Target_Log_Mbx_ID=qstrdup(settings.value("Target_Log_Mbx_ID",QByteArray("RTL")).toByteArray().data());
+	Preferences.Target_ALog_Mbx_ID=qstrdup(settings.value("Target_ALog_Mbx_ID",QByteArray("RAL")).toByteArray().data());
+	Preferences.Target_Led_Mbx_ID=qstrdup(settings.value("Target_Led_Mbx_ID",QByteArray("RTE")).toByteArray().data());
+	Preferences.Target_Meter_Mbx_ID=qstrdup(settings.value("Target_Meter_Mbx_ID",QByteArray("RTM")).toByteArray().data());
+	Preferences.Target_Synch_Mbx_ID=qstrdup(settings.value("Target_Synch_Mbx_ID",QByteArray("RTY")).toByteArray().data());
+         settings.endGroup();
+	targetthread->setPreferences(Preferences);
+
+connectDialog();
+
 	settings.beginGroup("MainWindow");
 	resize(settings.value("size", QSize(400, 400)).toSize());
 	move(settings.value("pos", QPoint(200, 200)).toPoint());
 	settings.endGroup();
+
+
 
 	if (ScopesManager){
 		settings.beginGroup("ScopesManager");
@@ -551,7 +559,18 @@ void QRL_MainWindow::saveProfile() {
      settings.setValue("size", this->size());
      settings.setValue("pos", this->pos());
      settings.endGroup();
-     
+Preferences_T Preferences=targetthread->getPreferences();
+	settings.beginGroup("Preferences");
+	settings.setValue("Target_IP",QByteArray(Preferences.Target_IP));
+	settings.setValue("Target_Interface_Task_Name",QByteArray(Preferences.Target_Interface_Task_Name));
+	settings.setValue("Target_Scope_Mbx_ID",QByteArray(Preferences.Target_Scope_Mbx_ID));
+	settings.setValue("Target_Log_Mbx_ID",QByteArray(Preferences.Target_Log_Mbx_ID));
+	settings.setValue("Target_ALog_Mbx_ID",QByteArray(Preferences.Target_ALog_Mbx_ID));
+	settings.setValue("Target_Led_Mbx_ID",QByteArray(Preferences.Target_Led_Mbx_ID));
+	settings.setValue("Target_Meter_Mbx_ID",QByteArray(Preferences.Target_Meter_Mbx_ID));
+	settings.setValue("Target_Synch_Mbx_ID",QByteArray(Preferences.Target_Synch_Mbx_ID));
+         settings.endGroup();
+
      if(ScopesManager){
 	settings.beginGroup("ScopesManager");
 	settings.setValue("size", ScopesManager->size());
@@ -648,8 +667,6 @@ void QRL_MainWindow::saveProfile() {
  void QRL_MainWindow::stop() 
 {
 	targetthread->stopTarget();
-	if (MetersManager) 
-		MetersManager->stopMeterThreads();
 	if (targetthread->getIsTargetRunning()==0){
 		enableActionStop(false);
 		if (targetthread->getIsTargetConnected()==0){

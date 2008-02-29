@@ -31,7 +31,7 @@ struct option long_options[ ] = {
 	{ "version", 0, 0, 'V' }
 };
 
-
+static RT_TASK *RLG_Main_Task;
 
 
 int main(int argc, char *argv[])
@@ -72,13 +72,21 @@ int main(int argc, char *argv[])
 	}
 
      //Q_INIT_RESOURCE(application);
-
+   rt_allow_nonroot_hrt();
+   if (!(RLG_Main_Task = rt_task_init_schmod(qrl::get_an_id("RLGM"), 98, 0, 0, SCHED_FIFO, 0xFF))) {
+               printf("Cannot init RTAI-Lab GUI main task\n");
+               //close();
+		return 1;
+    }
      QApplication app(argc, argv);
      QRL_MainWindow mainWin;
      mainWin.setVerbose(verboseOutput);
      mainWin.show();
-     return app.exec();
-
+    
+     
+     int ret= app.exec();
+      rt_task_delete(RLG_Main_Task);
+	return ret;
 
     //a.connect( &a, SIGNAL( lastWindowClosed() ), &a, SLOT( quit() ) );
 

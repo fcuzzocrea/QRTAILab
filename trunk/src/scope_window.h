@@ -120,7 +120,9 @@ public:
    int start_saving(){return isSaving;}
    FILE* save_file(){return Save_File_Pointer;}
    void setGridColor(QColor);
+   QColor getGridColor(){return gridColor;}
    void setBgColor(QColor);
+   QColor getBgColor(){return bgColor;}
    void startSaving(QString);
    void stop_saving();
    int n_points_to_save();

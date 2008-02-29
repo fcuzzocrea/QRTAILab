@@ -22,7 +22,7 @@
 /*
  file:		scopes_manager.h
  describtion:
-   file for the classes GetScopeDataThread and  QRL_ScopesManager
+   file for the class  QRL_ScopesManager
 */
 
 #ifndef _SCOPES_MANAGER_H
@@ -30,35 +30,10 @@
 
 
 #include "ui_qrl_scopes_manager.h"
-#include "qrtailab.h"
+#include "qrtailab_core.h"
 #include "scope_window.h"
 
 
-/**
- * @brief QThread for reading Scope data
- */
-
-class GetScopeDataThread : public QThread
- {
- Q_OBJECT
- public:
-    void run();
-    int setDt(double);
-QWaitCondition threadStarted;
-QMutex mutex;
- //signals:
-   // void value(int,float);
- public slots:
-    void start(void* arg,TargetThread* targetthread,QRL_ScopeWindow* scopewindow);
- private:
-    int index,x,y,w,h;
-    char* mbx_id;
-    TargetThread* targetThread;
-    QRL_ScopeWindow* ScopeWindow;
-    int MsgData, MsgLen, MaxMsgLen, TracesBytes;
-    long int Ndistance;
-    double dt;
- };
 
 
 
@@ -73,10 +48,11 @@ class QRL_ScopesManager : public QDialog, private Ui::QRL_ScopesManager
 public:
   QRL_ScopesManager(QWidget *parent = 0, TargetThread* targetthread=NULL);
   ~QRL_ScopesManager();
-  void startScopeThreads();
-  void stopScopeThreads();
+  //void startScopeThreads();
+  //void stopScopeThreads();
   QRL_ScopeWindow** getScopeWindows(){return ScopeWindows;}
 public slots:
+   void refresh();
   void  showScope(int);
   void showScopeOptions( int );
   void showSelectedOptions();
@@ -106,11 +82,13 @@ private:
   int Num_Scopes;
   Target_Scopes_T *Scopes;
   unsigned int currentScope;
-  GetScopeDataThread* Get_Scope_Data_Thread;
+ // GetScopeDataThread* Get_Scope_Data_Thread;
   TargetThread* targetThread;
   QRL_ScopeWindow** ScopeWindows;
   int currentTrace;
   QList<QListWidgetItem *> scopeItems,traceItems;
+   QTimer *timer;
+ double RefreshRate;
 };
 
 

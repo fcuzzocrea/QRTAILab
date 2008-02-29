@@ -83,7 +83,14 @@
 #define  TEN_MS_IN_NS 10000000LL
 #define  ONE_MS_IN_NS 1000000LL
 
-#define MAX_MSG_LEN             (MAX_MSG_SIZE - 100)
+//#define MAX_MSG_LEN             (MAX_MSG_SIZE - 100)
+#define MAX_MSG_MARGIN				100
+#define WAIT_MAX				10
+#define WAIT_MIN				1
+//Serve il rigo seguente perch� questa define � nelle netrpc
+#define MAX_MSG_SIZE					1500 
+#define MAX_MSG_LEN				(MAX_MSG_SIZE - MAX_MSG_MARGIN)
+
 #define REFRESH_RATE            0.05
 #define msleep(t)       do { poll(0, 0, t); } while (0)
 
@@ -107,7 +114,20 @@ static inline void RT_RETURN(RT_TASK *task, unsigned int reply)
 {
 	GlobalRet[reply] = 1;
 }
- unsigned long get_an_id(const char *root);
+
+static inline unsigned long get_an_id(const char *root)
+{
+        int i;
+        char name[7];
+        for (i = 0; i < MAX_NHOSTS; i++) {
+                sprintf(name, "%s%d", root, i);
+                if (!rt_get_adr(nam2num(name))) {
+                        return nam2num(name);
+                }
+        }
+        return 0;
+}
+
 }
 
 namespace qrl_types {
@@ -147,6 +167,7 @@ struct Args_Struct
 	const char *mbx_id;
 	int index;
 	int x, y, w, h;
+	
 };
 struct Args_Struct_ALog
 {
@@ -345,104 +366,7 @@ typedef enum {
 
 }
 
-class TargetThread;
-using namespace qrl_types;
 
-
-//! controls connection to one target
-class TargetThread : public QThread
- {
- Q_OBJECT
- Q_ENUMS( Manager_Type )
- Q_ENUMS( Commands )
- public:
-    enum Manager_Type {PARAMS_MANAGER,SCOPES_MANAGER,LOGS_MANAGER,ALOGS_MANAGER,LEDS_MANAGER,METERS_MANAGER,SYNCHS_MANAGER};
- enum Commands{	CONNECT_TO_TARGET,	CONNECT_TO_TARGET_WITH_PROFILE,	DISCONNECT_FROM_TARGET,	START_TARGET,	STOP_TARGET,	UPDATE_PARAM,	GET_TARGET_TIME,	BATCH_DOWNLOAD,	GET_PARAMS,	CLOSE} ;
-    ~TargetThread();
-    void run();
-    void setPreferences(Preferences_T);
-    unsigned int getIsTargetConnected(){return Is_Target_Connected;}
-    int getIsTargetRunning(){return Is_Target_Running;}
-    int getScopeNumber(){return Num_Scopes;}
-    int getMeterNumber(){return Num_Meters;}
-    int getLedNumber(){return Num_Leds;}
-    int getParameterNumber(){return Num_Tunable_Parameters;}
-    int getBlockNumber(){return Num_Tunable_Blocks;}
-    int stopTarget();
-    int startTarget();
-    int connectToTarget();
-    int disconnectFromTarget();
-    void downloadParameter(int,int);
-    int addToBatch(int map_offset,int ind,double value);
-    void closeThread();
-    Target_Scopes_T* getScopes(){return Scopes;}
-    Target_Meters_T* getMeters(){return Meters;}
-    Target_Leds_T* getLeds(){return Leds;}
-    Target_Parameters_T* getParamters(){return Tunable_Parameters;}
-    Target_Blocks_T* getBlocks(){return Tunable_Blocks;}
-    Batch_Parameters_T* getBatchParameters(){return Batch_Parameters;}
-    double get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx);
-  long getTargetNode(){return Target_Node;}
-    int getEndApp(){return End_App;}
-    int getVerbose(){return Verbose;}
-    void setVerbose(int v){Verbose=v;}
-    Preferences_T getPreferences(){return Preferences;}
-    void batchParameterDownload();
-    void resetBatchMode();
-    void uploadParameters();
-// friend
- signals:
-   void statusBarMessage(const QString &);
-   
- public slots:
-    void start();
-    void getOrder(int);
- private:
-
-    void setEndApp(int EndApp){End_App=EndApp;}
-    void setLedValue(int,unsigned int);
-   void rlg_update_after_connect(void);
-   void rlg_manager_window(int, int, int, int, int, int, int);
-   int  get_synch_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int get_meter_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int get_led_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int  get_alog_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int  get_log_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int  get_scope_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int  get_parameters_info(long port, RT_TASK *task);
-   long try_to_connect(const char *IP);
-   void upload_parameters_info(long port, RT_TASK *task);
-  int Num_Tunable_Parameters;
-  int Num_Tunable_Blocks;
-  int Num_Scopes;
-  int Num_Logs;
-  int Num_ALogs;
-  int Num_Leds;
-  int Num_Meters;
-  int Num_Synchs;
-  Target_Parameters_T *Tunable_Parameters;
-  Target_Blocks_T *Tunable_Blocks;
-  Target_Scopes_T *Scopes;
-  Target_Logs_T *Logs;
-  Target_ALogs_T *ALogs;
-  Target_Leds_T *Leds;
-  Target_Meters_T *Meters;
-  Target_Synchs_T *Synchs;
-  Batch_Parameters_T Batch_Parameters[MAX_BATCH_PARAMS];
-  Profile_T *Profile;
-  const char *RLG_Target_Name;
-  Preferences_T Preferences;
-   int Verbose;
-   int Is_Target_Connected;
-   unsigned int Is_Target_Running;
-   int End_App;
-   long Target_Node;
-   int test;
-   int batchCounter;
- };
-
-
- 
 #endif
 
 
