@@ -29,30 +29,9 @@
 
 
 #include "ui_qrl_leds_manager.h"
-#include "qrtailab.h"
+#include "qrtailab_core.h"
 #include "led_window.h"
 
-/**
- * @brief QThread for reading Led data
- */
-
-class GetLedDataThread : public QThread
- {
- Q_OBJECT
- public:
-    void run();
-QWaitCondition threadStarted;
-QMutex mutex;
-//signals:
-    //void value(int,float);
- public slots:
-    void start(void* arg,TargetThread* targetthread,QRL_LedWindow* ledwindow);
- private:
-    int index,x,y,w,h;
-    char* mbx_id;
-    TargetThread* targetThread;
-    QRL_LedWindow* LedWindow;
- };
 
 
 
@@ -67,22 +46,21 @@ class QRL_LedsManager : public QDialog, private Ui::QRL_LedsManager
 public:
    QRL_LedsManager(QWidget *parent = 0,  TargetThread* targetthread=NULL);
    ~QRL_LedsManager();
-    void startLedThreads();
-    void stopLedThreads();
     QRL_LedWindow** getLedWindows(){return LedWindows;}
  void refreshView();
 public slots:
   void  showLed(int);
   void showLedOptions( QListWidgetItem * item );
   void changeLedColor(int);
-
+   void refresh();
 private:
   int Num_Leds;
   Target_Leds_T *Leds;
   unsigned int currentLed;
-  GetLedDataThread* Get_Led_Data_Thread;
   TargetThread* targetThread;
   QRL_LedWindow** LedWindows;
+  QTimer *timer;
+    double RefreshRate;
 };
 
 

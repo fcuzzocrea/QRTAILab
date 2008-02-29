@@ -29,7 +29,7 @@
 
 
 #include "ui_qrl_parameters_manager.h"
-#include "qrtailab.h"
+#include "qrtailab_core.h"
 
 /**
  * @brief Parameter Manager

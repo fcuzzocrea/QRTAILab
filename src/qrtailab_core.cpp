@@ -29,10 +29,14 @@
 */
 
 #include "qrtailab.h"
-
+#include "qrtailab_core.h"
+#include "qrtailab_listener.h"
+//#include "scope_window.h"
+//#include "meter_window.h"
+//#include "led_window.h"
 
 using namespace qrl_types;
-
+//static pthread_t *Get_Scope_Data_Thread;
 
 static RT_TASK *Target_Interface_Task;
 //QMutex meterMutex;
@@ -41,18 +45,7 @@ static RT_TASK *Target_Interface_Task;
 
 //Target_Synch_T Synchronoscope;
 
-unsigned long qrl::get_an_id(const char *root)
-{
-        int i;
-        char name[7];
-        for (i = 0; i < MAX_NHOSTS; i++) {
-                sprintf(name, "%s%d", root, i);
-                if (!rt_get_adr(nam2num(name))) {
-                        return nam2num(name);
-                }
-        }
-        return 0;
-}
+
 
 TargetThread::~TargetThread(){
 	qDebug() << "deleting all pointer";
@@ -66,12 +59,15 @@ TargetThread::~TargetThread(){
 		delete[] Leds;
 	if (Meters)
 		delete[] Meters;
-	//if (Get_Scope_Data_Thread)
-	//	delete[] Get_Scope_Data_Thread;
-	//if (Get_Led_Data_Thread)
-	//	delete[] Get_Led_Data_Thread;
-	//if (Get_Meter_Data_Thread)
-	//	delete[] Get_Meter_Data_Thread;
+	stopScopeThreads();
+	if (Get_Scope_Data_Thread)
+		delete[] Get_Scope_Data_Thread;
+	stopLedThreads();
+	if (Get_Led_Data_Thread)
+		delete[] Get_Led_Data_Thread;
+	stopMeterThreads();
+	if (Get_Meter_Data_Thread)
+		delete[] Get_Meter_Data_Thread;
 	
 }
 /*
@@ -612,20 +608,9 @@ end:
 					printf("Target %s is correctly connected\n", RLG_Target_Name);
 				}
 				
-// 				if (Num_Scopes > 0) Get_Scope_Data_Thread = new GetScopeDataThread [Num_Scopes];
-// 				for (int n = 0; n < Num_Scopes; n++) {
-// 					unsigned int msg;
-// 					Args_T thr_args;
-// 					thr_args.index = n;
-// 					thr_args.mbx_id = strdup(Preferences.Target_Scope_Mbx_ID);
-// 					thr_args.x = 500; 
-// 					thr_args.y = 290;
-// 					thr_args.w = 250;
-// 					thr_args.h = 250;
-// 					//pthread_create(&Get_Scope_Data_Thread[n], NULL, rt_get_scope_data, &thr_args);
-// 					Get_Scope_Data_Thread[n].start(&thr_args,this);
-// 					rt_receive(0, &msg);
-// 				}
+				if (Num_Scopes > 0) Get_Scope_Data_Thread = new GetScopeDataThread [Num_Scopes];
+				//startScopeThreads();
+
 				/*if (Num_Logs > 0) Get_Log_Data_Thread = new pthread_t [Num_Logs];
 				for (int n = 0; n < Num_Logs; n++) {
 					unsigned int msg;
@@ -646,7 +631,7 @@ end:
 					pthread_create(&Get_ALog_Data_Thread[n], NULL, rt_get_alog_data, &thr_args);
 					rt_receive(0, &msg);
 				}*/
-// 				if (Num_Leds > 0) Get_Led_Data_Thread = new GetLedDataThread [Num_Leds];
+ 				if (Num_Leds > 0) Get_Led_Data_Thread = new GetLedDataThread [Num_Leds];
 // 				for (int n = 0; n < Num_Leds; n++) {
 // 					unsigned int msg;
 // 					Args_T thr_args;
@@ -660,7 +645,7 @@ end:
 // 					Get_Led_Data_Thread[n].start(&thr_args,this);
 // 					rt_receive(0, &msg);
 // 				}
-// 				if (Num_Meters > 0) Get_Meter_Data_Thread = new GetMeterDataThread [Num_Meters];
+ 				if (Num_Meters > 0) Get_Meter_Data_Thread = new GetMeterDataThread [Num_Meters];
 // 				for (int n = 0; n < Num_Meters; n++) {
 // 					unsigned int msg;
 // 					Args_T thr_args;
@@ -693,226 +678,6 @@ end:
 				qrl::RT_RETURN(task, CONNECT_TO_TARGET);
 				break;
 
-/*case CONNECT_TO_TARGET_WITH_PROFILE: {
-
-				Fl_Browser *p_tree;
-				Fl_Widget *p;
-				int p_idx;
-				const char *p_file;
-
-				if (!Direct_Profile) {
-					p_tree = (Fl_Browser *)RLG_Connect_wProfile_Tree;
-					p = p_tree->goto_focus();
-					p_idx = p_tree->focus_index()[0];
-					p_file = strdup(p->label().c_str());
-				} else {
-					p_idx = Direct_Profile_Idx;
-					p_file = strdup(Direct_Profile);
-				}	
-
-				if (Verbose) {
-					printf("Reading profile %s settings\n", p_file);
-				}
-				rlg_read_pref(PROFILE_PREF, p_file, p_idx);
-				if (!strcmp(Profile[p_idx].Target_IP, "0")) {
-					Target_Node = 0;
-				} else {
-					Target_Port = try_to_connect(Profile[p_idx].Target_IP);
-					RLG_Connect_wProfile_Button->activate();
-					if (Target_Port <= 0) {
-						RLG_Main_Status->label("Sorry, no route to the specified target");
-						RLG_Main_Window->redraw();
-						if (Verbose) {
-							printf(" Sorry, no route to the specified target\n");
-						}
-						RT_RETURN(task, CONNECT_TO_TARGET_WITH_PROFILE);
-						break;
-					}
-					if (Verbose) {
-						printf(" Ok\n");
-					}
-				}
-				if (!(If_Task = (RT_TASK *)RT_get_adr(Target_Node, Target_Port, Profile[p_idx].Target_Interface_Task_Name))) {
-					RLG_Main_Status->label("No target with the specified interface task name");
-					RLG_Main_Window->redraw();
-					if (Verbose) {
-						printf("No target with the specified interface task name\n");
-					}
-					RT_RETURN(task, CONNECT_TO_TARGET_WITH_PROFILE);
-					break;
-				}
-				Num_Tunable_Parameters = get_parameters_info(Target_Port, If_Task);
-				Num_Scopes = get_scope_blocks_info(Target_Port, If_Task, Profile[p_idx].Target_Scope_Mbx_ID);
-				Num_Logs = get_log_blocks_info(Target_Port, If_Task, Profile[p_idx].Target_Log_Mbx_ID);
-				Num_ALogs = get_alog_blocks_info(Target_Port, If_Task, Profile[p_idx].Target_ALog_Mbx_ID);
-				Num_Leds = get_led_blocks_info(Target_Port, If_Task, Profile[p_idx].Target_Led_Mbx_ID);
-				Num_Meters = get_meter_blocks_info(Target_Port, If_Task, Profile[p_idx].Target_Meter_Mbx_ID);
-				Num_Synchs = get_synch_blocks_info(Target_Port, If_Task, Profile[p_idx].Target_Synch_Mbx_ID);
-				Is_Target_Connected = 1;
-				rlg_manager_window(Num_Tunable_Parameters, PARAMS_MANAGER,
-						   Profile[p_idx].P_Mgr_W.visible, Profile[p_idx].P_Mgr_W.x,
-						   Profile[p_idx].P_Mgr_W.y, Profile[p_idx].P_Mgr_W.w, Profile[p_idx].P_Mgr_W.h);
-				if (Profile[p_idx].P_Mgr_Batch) {
-					Parameters_Manager->batch_download(true);
-					Parameters_Manager->batch_counter(0);
-				}
-				rlg_manager_window(Num_Scopes, SCOPES_MANAGER, Profile[p_idx].S_Mgr_W.visible,
-						   Profile[p_idx].S_Mgr_W.x, Profile[p_idx].S_Mgr_W.y,
-						   Profile[p_idx].S_Mgr_W.w, Profile[p_idx].S_Mgr_W.h);
-				for (int i = 0; i < Num_Scopes; i++) {
-					if (Profile[p_idx].S_Mgr_Show[i]) {
-						Scopes_Manager->show_hide(i, true);
-					}
-				}
-				rlg_manager_window(Num_Logs, LOGS_MANAGER, Profile[p_idx].Log_Mgr_W.visible,
-						   Profile[p_idx].Log_Mgr_W.x, Profile[p_idx].Log_Mgr_W.y,
-						   Profile[p_idx].Log_Mgr_W.w, Profile[p_idx].Log_Mgr_W.h);
-				rlg_manager_window(Num_ALogs, ALOGS_MANAGER, Profile[p_idx].ALog_Mgr_W.visible,
-						   Profile[p_idx].ALog_Mgr_W.x, Profile[p_idx].ALog_Mgr_W.y,
-						   Profile[p_idx].ALog_Mgr_W.w, Profile[p_idx].ALog_Mgr_W.h);
-				rlg_manager_window(Num_Leds, LEDS_MANAGER, Profile[p_idx].Led_Mgr_W.visible,
-						   Profile[p_idx].Led_Mgr_W.x, Profile[p_idx].Led_Mgr_W.y,
-						   Profile[p_idx].Led_Mgr_W.w, Profile[p_idx].Led_Mgr_W.h);
-				for (int i = 0; i < Num_Leds; i++) {
-					if (Profile[p_idx].Led_Mgr_Show[i]) {
-						Leds_Manager->show_hide(i, true);
-					}
-				}
-				rlg_manager_window(Num_Meters, METERS_MANAGER, Profile[p_idx].M_Mgr_W.visible,
-						   Profile[p_idx].M_Mgr_W.x, Profile[p_idx].M_Mgr_W.y,
-						   Profile[p_idx].M_Mgr_W.w, Profile[p_idx].M_Mgr_W.h);
-				for (int i = 0; i < Num_Meters; i++) {
-					if (Profile[p_idx].M_Mgr_Show[i]) {
-						Meters_Manager->show_hide(i, true);
-					}
-				}
-				rlg_manager_window(Num_Synchs, SYNCHS_MANAGER, Profile[p_idx].Sy_Mgr_W.visible,
-						   Profile[p_idx].Sy_Mgr_W.x, Profile[p_idx].Sy_Mgr_W.y,
-						   Profile[p_idx].Sy_Mgr_W.w, Profile[p_idx].Sy_Mgr_W.h);
-				for (int i = 0; i < Num_Synchs; i++) {
-					if (Profile[p_idx].Sy_Mgr_Show[i]) {
-						Synchs_Manager->show_hide(i, true);
-					}
-				}
-				if (Verbose) {
-					printf("Target is correctly connected\n");
-				}
-				if (Num_Scopes > 0) Get_Scope_Data_Thread = new pthread_t [Num_Scopes];
-				for (int n = 0; n < Num_Scopes; n++) {
-					unsigned int msg;
-					Args_T thr_args;
-					thr_args.index = n;
-					thr_args.mbx_id = strdup(Profile[p_idx].Target_Scope_Mbx_ID);
-					thr_args.x = Profile[p_idx].S_W[n].x;
-					thr_args.y = Profile[p_idx].S_W[n].y;
-					thr_args.w = Profile[p_idx].S_W[n].w;
-					thr_args.h = Profile[p_idx].S_W[n].h;
-					pthread_create(&Get_Scope_Data_Thread[n], NULL, rt_get_scope_data, &thr_args);
-					rt_receive(0, &msg);
-					Scopes_Manager->b_color(n, Profile[p_idx].S_Bg_C[n]);
-					Scopes_Manager->g_color(n, Profile[p_idx].S_Grid_C[n]);
-					if (!Profile[p_idx].S_Mgr_Grid[n]) {
-						Scopes_Manager->grid_on_off(n, false);
-					} 
-					if (!Profile[p_idx].S_Mgr_PT[n]) {
-						Scopes_Manager->points_time(n, false);
-					} 
-					Scopes_Manager->sec_div(n, Profile[p_idx].S_Mgr_SecDiv[n]);
-					Scopes_Manager->p_save(n, Profile[p_idx].S_Mgr_PSave[n]);
-					Scopes_Manager->t_save(n, Profile[p_idx].S_Mgr_TSave[n]);
-					Scopes_Manager->file_name(n, Profile[p_idx].S_Mgr_File[n]);
-					Scopes_Manager->Scope_Windows[n]->Plot->trigger_mode( Profile[p_idx].S_Mgr_Trigger[n]);
-					Scopes_Manager->Scope_Windows[n]->Plot->scope_flags( Profile[p_idx].S_Mgr_Flags[n]);
-					
-
-					for (int t = 0; t < Scopes[n].ntraces; t++) {
-						if (!Profile[p_idx].S_Mgr_T_Show[t][n]) {
-							Scopes_Manager->trace_show_hide(n, t, false);
-						}
-						Scopes_Manager->trace_unit_div(n, t, Profile[p_idx].S_Mgr_T_UnitDiv[t][n]);
-						Scopes_Manager->t_color(n, t, Profile[p_idx].S_Trace_C[t][n]);
-						Scopes_Manager->trace_offset(n, t, Profile[p_idx].S_Mgr_T_Offset[t][n]);
-						Scopes_Manager->trace_width(n, t, Profile[p_idx].S_Mgr_T_Width[t][n]);
- 						Scopes_Manager->trace_flags(n, t, Profile[p_idx].S_Mgr_T_Options[t][n]);
-					}
-				}
-				if (Num_Logs > 0) Get_Log_Data_Thread = new pthread_t [Num_Logs];
-				for (int n = 0; n < Num_Logs; n++) {
-					unsigned int msg;
-					Args_T thr_args;
-					thr_args.index = n;
-					thr_args.mbx_id = strdup(Profile[p_idx].Target_Log_Mbx_ID);
-					pthread_create(&Get_Log_Data_Thread[n], NULL, rt_get_log_data, &thr_args);
-					rt_receive(0, &msg);
-					if (!Profile[p_idx].Log_Mgr_PT[n]) {
-						Logs_Manager->points_time(n, false);
-					} 
-					Logs_Manager->p_save(n, Profile[p_idx].Log_Mgr_PSave[n]);
-					Logs_Manager->t_save(n, Profile[p_idx].Log_Mgr_TSave[n]);
-					Logs_Manager->file_name(n, Profile[p_idx].Log_Mgr_File[n]);
-				}
-				if (Num_ALogs > 0) Get_ALog_Data_Thread = new pthread_t [Num_ALogs];
-				for (int n = 0; n < Num_ALogs; n++) {
-					unsigned int msg;
-					Alog_T thr_args;
-					thr_args.alog_name = strdup(ALogs[n].name);
-					printf("%s alog name\n", ALogs[n].name);
-					thr_args.index = n;
-					thr_args.mbx_id = strdup(Profile[p_idx].Target_ALog_Mbx_ID);
-					pthread_create(&Get_ALog_Data_Thread[n], NULL, rt_get_alog_data, &thr_args);
-					rt_receive(0, &msg);
-					ALogs_Manager->file_name(n, Profile[p_idx].ALog_Mgr_File[n]);
-				}
-				if (Num_Leds > 0) Get_Led_Data_Thread = new pthread_t [Num_Leds];
-				for (int n = 0; n < Num_Leds; n++) {
-					unsigned int msg;
-					Args_T thr_args;
-					thr_args.index = n;
-					thr_args.mbx_id = strdup(Profile[p_idx].Target_Led_Mbx_ID);
-					thr_args.x = Profile[p_idx].Led_W[n].x;
-					thr_args.y = Profile[p_idx].Led_W[n].y;
-					thr_args.w = Profile[p_idx].Led_W[n].w;
-					thr_args.h = Profile[p_idx].Led_W[n].h;
-					pthread_create(&Get_Led_Data_Thread[n], NULL, rt_get_led_data, &thr_args);
-					rt_receive(0, &msg);
-					Leds_Manager->color(n, Profile[p_idx].Led_Mgr_Color[n]);
-				}
-				if (Num_Meters > 0) Get_Meter_Data_Thread = new pthread_t [Num_Meters];
-				for (int n = 0; n < Num_Meters; n++) {
-					unsigned int msg;
-					Args_T thr_args;
-					thr_args.index = n;
-					thr_args.mbx_id = strdup(Profile[p_idx].Target_Meter_Mbx_ID);
-					thr_args.x = Profile[p_idx].M_W[n].x;
-					thr_args.y = Profile[p_idx].M_W[n].y;
-					thr_args.w = Profile[p_idx].M_W[n].w;
-					thr_args.h = Profile[p_idx].M_W[n].h;
-					pthread_create(&Get_Meter_Data_Thread[n], NULL, rt_get_meter_data, &thr_args);
-					rt_receive(0, &msg);
-					Meters_Manager->minv(n, Profile[p_idx].M_Mgr_Minv[n]);
-					Meters_Manager->maxv(n, Profile[p_idx].M_Mgr_Maxv[n]);
-					Meters_Manager->b_color(n, Profile[p_idx].M_Bg_C[n]);
-					Meters_Manager->a_color(n, Profile[p_idx].M_Arrow_C[n]);
-					Meters_Manager->g_color(n, Profile[p_idx].M_Grid_C[n]);
-				}
-				if (Num_Synchs > 0) Get_Synch_Data_Thread = new pthread_t [Num_Synchs];
-				for (int n = 0; n < Num_Synchs; n++) {
-					unsigned int msg;
-					Args_T thr_args;
-					thr_args.index = n;
-					thr_args.mbx_id = strdup(Profile[p_idx].Target_Synch_Mbx_ID);
-					thr_args.x = Profile[p_idx].Sy_W[n].x;
-					thr_args.y = Profile[p_idx].Sy_W[n].y;
-					thr_args.w = Profile[p_idx].Sy_W[n].w;
-					thr_args.h = Profile[p_idx].Sy_W[n].h;
-					pthread_create(&Get_Synch_Data_Thread[n], NULL, rt_get_synch_data, &thr_args);
-					rt_receive(0, &msg);
-				}
-				rlg_update_after_connect();
-
-				RT_RETURN(task, CONNECT_TO_TARGET_WITH_PROFILE);
-				break;
-			}*/
 
 
 			case DISCONNECT_FROM_TARGET:
@@ -920,60 +685,22 @@ end:
 					printf("Disconnecting from target %s\n", Tunable_Parameters[0].model_name);
 				}
 				Is_Target_Connected = 0;
-				//for (int n = 0; n < Num_Scopes; n++) {
-				//	Get_Scope_Data_Thread[n].wait();
-				//}
+				stopScopeThreads();
+				stopMeterThreads();
+				stopLedThreads();
 /*				for (int n = 0; n < Num_Logs; n++) {
 					pthread_join(Get_Log_Data_Thread[n], NULL);
 				}
 				for (int n = 0; n < Num_ALogs; n++) {				//modifiche 29/06/05
 					pthread_join(Get_ALog_Data_Thread[n], NULL);
 				}*/
-				//for (int n = 0; n < Num_Leds; n++) {
-					//pthread_join(Get_Led_Data_Thread[n], NULL);
-				//	Get_Led_Data_Thread[n].wait();
-				//}
-				/*for (int n = 0; n < Num_Meters; n++) {
-					Get_Meter_Data_Thread[n].wait();
-				}*/
+
 /*
 				for (int n = 0; n < Num_Synchs; n++) {
 					pthread_join(Get_Synch_Data_Thread[n], NULL);
 				}
 //				pthread_join(GetTargetTimeThread, NULL);
-				Fl::lock();
-				if (Parameters_Manager) Parameters_Manager->hide();
-				if (Scopes_Manager) Scopes_Manager->hide();
-				if (Logs_Manager) Logs_Manager->hide();
-				if (ALogs_Manager) ALogs_Manager->hide();
-				if (Leds_Manager) Leds_Manager->hide();
-				if (Meters_Manager) Meters_Manager->hide();
-				if (Synchs_Manager) Synchs_Manager->hide();
-				RLG_Main_Window->redraw();*/
-				//RLG_Connect_Button->activate();
-				//RLG_Connect_wProfile_Button->activate();
-				//RLG_Disconnect_Button->deactivate();
-				/*
-				RLG_Main_Menu_Table[1].activate();
-				RLG_Main_Menu_Table[2].deactivate();
-				RLG_Main_Menu_Table[3].activate();
-				RLG_Main_Menu_Table[4].deactivate();
-				RLG_Main_Menu_Table[5].activate();
-				for (int i = 9; i <= 15; i++) RLG_Main_Menu_Table[i].deactivate();
-				RLG_Main_Menu->menu(RLG_Main_Menu_Table);
-				RLG_Main_Menu->redraw();*/
-				/*RLG_Start_Button->deactivate();
-				RLG_Stop_Button->deactivate();
-				RLG_Save_Profile_Button->deactivate();
-				RLG_Delete_Profile_Button->activate();
-				RLG_Params_Mgr_Button->deactivate();
-				RLG_Scopes_Mgr_Button->deactivate();
-				RLG_Logs_Mgr_Button->deactivate();
-				RLG_ALogs_Mgr_Button->deactivate();
-				RLG_Leds_Mgr_Button->deactivate();
-				RLG_Meters_Mgr_Button->deactivate();
-				RLG_Synchs_Mgr_Button->deactivate();
-				Fl::unlock();*/
+*/
 				rt_release_port(Target_Node, Target_Port);
 				Target_Port = 0;
 				free(Tunable_Parameters);
@@ -1007,25 +734,16 @@ end:
 				if (Is_Target_Running) {
 					U_Request = 't';
 					Is_Target_Connected = 0;
-					
-					//for (int n = 0; n < Num_Scopes; n++) {
-						//pthread_join(Get_Scope_Data_Thread[n], NULL);
-					//	Get_Scope_Data_Thread[n].wait();
-					//}
+					stopScopeThreads();
+					stopMeterThreads();
+					stopLedThreads();
 /*					for (int n = 0; n < Num_Logs; n++) {
 						pthread_join(Get_Log_Data_Thread[n], NULL);
 					}
 					for (int n = 0; n < Num_ALogs; n++) {			//modifiche 29/06/05
 						pthread_join(Get_ALog_Data_Thread[n], NULL);
 					}*/
-					//for (int n = 0; n < Num_Leds; n++) {
-						//pthread_join(Get_Led_Data_Thread[n], NULL);
-					//	Get_Led_Data_Thread[n].wait();
-					//}
-					//for (int n = 0; n < Num_Meters; n++) {
-						//pthread_join(Get_Meter_Data_Thread[n], NULL);
-					//	Get_Meter_Data_Thread[n].wait();
-					//}
+
 					/*
 					for (int n = 0; n < Num_Synchs; n++) {
 						pthread_join(Get_Synch_Data_Thread[n], NULL);
@@ -1039,36 +757,7 @@ end:
 					rt_release_port(Target_Node, Target_Port);
 					Target_Node = 0;
 					Target_Port = 0;	
-					//Fl::lock();
-					//if (Parameters_Manager) Parameters_Manager->hide();
-					//if (Scopes_Manager) Scopes_Manager->hide();
-					//if (Logs_Manager) Logs_Manager->hide();
-					//if (Leds_Manager) Leds_Manager->hide();
-					//if (MetersManager) MetersManager->hide();
-					//if (Synchs_Manager) Synchs_Manager->hide();
-					//RLG_Connect_Button->activate();
-					//RLG_Connect_wProfile_Button->activate();
-					//RLG_Disconnect_Button->deactivate();
-					/*
-					RLG_Main_Menu_Table[1].activate();
-					RLG_Main_Menu_Table[2].deactivate();
-					RLG_Main_Menu_Table[4].deactivate();
-					RLG_Main_Menu_Table[5].activate();
-					for (int i = 9; i <= 15; i++) RLG_Main_Menu_Table[i].deactivate();
-					RLG_Main_Menu->menu(RLG_Main_Menu_Table);
-					RLG_Main_Menu->redraw();*/
-					/*RLG_Start_Button->deactivate();
-					RLG_Stop_Button->deactivate();
-					RLG_Save_Profile_Button->deactivate();
-					RLG_Delete_Profile_Button->activate();
-					RLG_Params_Mgr_Button->deactivate();
-					RLG_Scopes_Mgr_Button->deactivate();
-					RLG_Logs_Mgr_Button->deactivate();
-					RLG_ALogs_Mgr_Button->deactivate();
-					RLG_Leds_Mgr_Button->deactivate();
-					RLG_Meters_Mgr_Button->deactivate();
-					RLG_Synchs_Mgr_Button->deactivate();
-					RLG_Main_Status->label("Ready...");*/
+
 					statusBarMessage(tr("Ready..."));
 					//RLG_Main_Window->redraw();
 					//Fl::unlock();
@@ -1137,23 +826,14 @@ end:
 
 				rt_task_delete(Target_Interface_Task);
 				End_App=1;
-				//for (int n = 0; n < Num_Scopes; n++) {
-					//pthread_join(Get_Scope_Data_Thread[n], NULL);
-				//	Get_Scope_Data_Thread[n].wait();
-				//}
+				stopScopeThreads();
+				stopMeterThreads();
+				stopLedThreads();
 				//for (int n = 0; n < Num_Logs; n++) {
 					//pthread_join(Get_Log_Data_Thread[n], NULL);
 				//}
 				//for (int n = 0; n < Num_ALogs; n++) {
 					//pthread_join(Get_ALog_Data_Thread[n], NULL);
-				//}
-				//for (int n = 0; n < Num_Leds; n++) {
-					//pthread_join(Get_Led_Data_Thread[n], NULL);
-					//Get_Led_Data_Thread[n].wait();
-				//}
-				//for (int n = 0; n < Num_Meters; n++) {
-					//pthread_join(Get_Meter_Data_Thread[n], NULL);
-					//Get_Meter_Data_Thread[n].wait();
 				//}
 				//for (int n = 0; n < Num_Synchs; n++) {
 					//pthread_join(Get_Synch_Data_Thread[n], NULL);
@@ -1259,3 +939,234 @@ void TargetThread::uploadParameters()
 {
 	qrl::RT_RPC(Target_Interface_Task, GET_PARAMS, 0);
 }
+
+
+/**
+* @brief starting all scope threads
+*/
+void TargetThread::startScopeThreads(  )//QRL_ScopeWindow** ScopeWindows)
+{
+	ScopeValues.resize(Num_Scopes);
+	for (int n = 0; n < Num_Scopes; n++) {
+		//unsigned int msg;
+		ScopeValues[n].resize(Scopes[n].ntraces);
+		Args_T thr_args;
+		thr_args.index = n;
+		thr_args.mbx_id = strdup((getPreferences()).Target_Scope_Mbx_ID);
+		thr_args.x = 500; 
+		thr_args.y = 290;
+		thr_args.w = 250;
+		thr_args.h = 250;
+		Get_Scope_Data_Thread[n].mutex.lock();
+		Get_Scope_Data_Thread[n].start(&thr_args,this);//,ScopeWindows[n]);
+		Get_Scope_Data_Thread[n].threadStarted.wait(&Get_Scope_Data_Thread[n].mutex);
+		Get_Scope_Data_Thread[n].mutex.unlock();
+		Get_Scope_Data_Thread[n].setPriority(QThread::TimeCriticalPriority);
+		//rt_receive(0, &msg);
+		//((QMainWindow*)mainWindow)->addDockWidget(Qt::NoDockWidgetArea,ScopeWindows[n]);
+	}
+	//Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
+
+// old
+/*
+				for (int n = 0; n < Num_Scopes; n++) {
+					unsigned int msg;
+					Args_T thr_args;
+					thr_args.index = n;
+					thr_args.mbx_id = strdup(Preferences.Target_Scope_Mbx_ID);
+					thr_args.x = 500; 
+					thr_args.y = 290;
+					thr_args.w = 250;
+					thr_args.h = 250;
+					//pthread_create(&Get_Scope_Data_Thread[n], NULL, rt_get_scope_data, &thr_args);
+					Get_Scope_Data_Thread[n].start(&thr_args,this);
+					rt_receive(0, &msg);
+				}
+
+*/
+}
+
+/**
+* @brief stopping all existing scope threads
+*/
+void TargetThread::stopScopeThreads()
+{
+	for (int n = 0; n < Num_Scopes; n++) {
+		//pthread_join(Get_Scope_Data_Thread[n], NULL);
+		Get_Scope_Data_Thread[n].wait();
+	}
+
+
+}
+
+
+    int TargetThread::setScopeDt(double d,int n)
+{
+int ret=-1;
+if (n<Num_Scopes)
+ ret= Get_Scope_Data_Thread[n].setDt(d);
+return ret;
+}
+
+
+
+ void TargetThread::setScopeValue(float v,int n, int t){
+if (n<ScopeValues.size()){
+if (t<ScopeValues[n].size()){
+	ScopeValues[n][t].append(v);
+}
+}
+} 
+
+ QList<float> TargetThread::getScopeValue(int n, int t){
+	
+
+QList<float> ret;
+if (n<ScopeValues.size()){
+if (t<ScopeValues[n].size()){
+ //ret= Get_Led_Data_Thread[n].getValue();
+   ret=ScopeValues[n][t];
+   ScopeValues[n][t].clear();
+}
+}
+return ret;
+} 
+
+
+
+/**
+* @brief starting all meter threads
+*/
+void TargetThread::startMeterThreads()//QRL_MeterWindow** MeterWindows)
+{
+	MeterValues.resize(Num_Meters);
+	for (int n = 0; n < Num_Meters; n++) {
+		//unsigned int msg;
+		Args_T thr_args;
+		thr_args.index = n;
+		thr_args.mbx_id = strdup((getPreferences()).Target_Meter_Mbx_ID);
+		thr_args.x = 0; 
+		thr_args.y = 0;
+		thr_args.w = 300;
+		thr_args.h = 200;
+		//pthread_create(&Get_Meter_Data_Thread[n], NULL, rt_get_meter_data, &thr_args);
+		Get_Meter_Data_Thread[n].mutex.lock();
+		Get_Meter_Data_Thread[n].start(&thr_args,this);//,MeterWindows[n]);
+		//wait until thread is initialized
+		Get_Meter_Data_Thread[n].threadStarted.wait(&Get_Meter_Data_Thread[n].mutex);
+		Get_Meter_Data_Thread[n].mutex.unlock();
+		//rt_receive(0, &msg);
+		MeterValues[n].append(0);
+	}
+
+}
+
+
+/**
+* @brief stopping all existing meter threads
+*/
+void TargetThread::stopMeterThreads()
+{
+	for (int n = 0; n < Num_Meters; n++) {
+		//pthread_join(Get_Meter_Data_Thread[n], NULL);
+		Get_Meter_Data_Thread[n].wait();
+	}
+
+}
+
+
+
+    int TargetThread::setMeterRefreshRate(double rr,int n)
+{
+int ret=-1;
+if (n<Num_Meters)
+ ret= Get_Meter_Data_Thread[n].setRefreshRate(rr);
+return ret;
+}
+
+
+void TargetThread::setMeterValue(float v, int n){
+
+	//MeterValues[n].append(v);
+if (n<MeterValues.size()){
+	MeterValues[n][0]=(v);
+}
+
+
+}
+
+float TargetThread::getMeterValue(int n){
+
+float ret=-1;
+if (n<MeterValues.size()){
+ //ret= Get_Led_Data_Thread[n].getValue();
+   if (MeterValues[n].size()>1)
+     ret=MeterValues[n].takeAt(0);
+   else
+     ret=MeterValues[n].at(0);
+}
+return ret;
+
+
+
+}
+
+
+/**
+* @brief starting all led threads
+*/
+void TargetThread::startLedThreads()//QRL_LedWindow** LedWindows)
+{
+	LedValues.resize(Num_Leds);
+	for (int n = 0; n < Num_Leds; n++) {
+		//unsigned int msg;
+		Args_T thr_args;
+		thr_args.index = n;
+		thr_args.mbx_id = strdup(getPreferences().Target_Led_Mbx_ID);
+		thr_args.x = 500; 
+		thr_args.y = 290;
+		thr_args.w = 250;
+		thr_args.h = 250;
+		Get_Led_Data_Thread[n].mutex.lock();
+		//pthread_create(&Get_Led_Data_Thread[n], NULL, rt_get_led_data, &thr_args);
+		Get_Led_Data_Thread[n].start(&thr_args,this);//,LedWindows[n]);
+		//rt_receive(0, &msg);
+		Get_Led_Data_Thread[n].threadStarted.wait(&Get_Led_Data_Thread[n].mutex);
+		Get_Led_Data_Thread[n].mutex.unlock();
+		
+	}
+}
+
+/**
+* @brief stopping all existing led threads
+*/
+void TargetThread::stopLedThreads()
+{
+	for (int n = 0; n < Num_Leds; n++) {
+		//pthread_join(Get_Led_Data_Thread[n], NULL);
+		Get_Led_Data_Thread[n].wait();
+	}
+
+}
+
+
+void TargetThread::setLedValue(unsigned int v, int n){
+if (n<Num_Leds)
+	LedValues[n]=v;
+	
+}
+
+unsigned int TargetThread::getLedValue(int n){
+
+unsigned int ret=-1;
+if (n<Num_Leds)
+ //ret= Get_Led_Data_Thread[n].getValue();
+   ret=LedValues.at(n);
+return ret;
+
+}
+
+
+
+
+

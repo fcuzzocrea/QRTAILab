@@ -96,7 +96,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 	 xStep=(xmax-xmin)/xMajorTicks;
 
 	gridColor=Qt::blue;
-
+	bgColor=QColor(240,240,240);
     picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
         QwtPicker::PointSelection | QwtPicker::DragSelection, 
         QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn, 
@@ -333,7 +333,7 @@ void QRL_ScopeWindow::refresh()
 {
 	//if (dp<(1/((xmax-xmin)/dp)/100))
 	//	return;
-
+       timer->stop();
 	NDataSoll=(int)dp;
 	if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
@@ -345,9 +345,9 @@ void QRL_ScopeWindow::refresh()
 		NDataSoll=(1/dt/(xmax-xmin));
 		dt=(xmax-xmin)/NDataSoll;
 	}*/
+	printf("xmin: %f,xmax %f, scope->dt ist %f\n",xmin,xmax,Scope->dt);
+	printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
 
-	fprintf(stderr,"datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
-       timer->stop();
     for (unsigned int i = 0; i< NDataSoll; i++)
     {
 	//if (Scope->dt<=0.05)
@@ -375,12 +375,14 @@ void QRL_ScopeWindow::refresh()
 
 	if (v>0.)
 		dx=v;
-
+	timer->stop();
 	 xmax=(xMajorTicks*dx);
 	
 	//xmax=dx;
-	timer->stop();
+
 	NDataMax=(int)((xmax-xmin)/Scope->dt);
+	if (NDataMax>10000)
+		NDataMax=10000;
 	if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
 
@@ -437,7 +439,10 @@ void QRL_ScopeWindow::refresh()
 	xStep=(xmax-xmin)/xMajorTicks;
 	qwtPlot->setAxisScale(QwtPlot::xBottom, xmin, xmax,xStep);
 	    vertLine->setXValue(xmax/2.);
+	printf("xmin: %f,xmax %f, scope->dt ist %f\n",xmin,xmax,Scope->dt);
+	printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
 	timer->start(1/RefreshRate*1000.);
+
 changeDataPoints(NDataMax);
 
 }

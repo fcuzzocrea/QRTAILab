@@ -31,32 +31,9 @@
 
 
 #include "ui_qrl_meters_manager.h"
-#include "qrtailab.h"
+#include "qrtailab_core.h"
 #include "meter_window.h"
 
-//!QThread for reading Meter data
-class GetMeterDataThread : public QThread
- {
- Q_OBJECT
- public:
-    void run();
-    QWaitCondition threadStarted;
-    QMutex mutex;
- //signals:
-   // void value(int,float);
-    int setRefreshRate(double);
- public slots:
-    void start(void* arg,TargetThread* targetthread, QRL_MeterWindow* meterwindow);
- private:
-    int index,x,y,w,h;
-    double RefreshRate;
-    char* mbx_id;
-    TargetThread* targetThread;
-    QRL_MeterWindow* MeterWindow;
-    int MsgData, MsgLen, MaxMsgLen, DataBytes;
-    long int Ndistance;
-
- };
 
 
 
@@ -76,6 +53,7 @@ public:
     QRL_MeterWindow** getMeterWindows(){return MeterWindows;}
  void refreshView();
 public slots:
+   void refresh();
   void  showMeter(int);
    void showMeterOptions( QListWidgetItem * item );
   void changeRefreshRate(double);
@@ -99,10 +77,11 @@ private:
   unsigned int currentMeter;
    QRL_MeterWindow** MeterWindows;
    TargetThread* targetThread;
-   GetMeterDataThread* Get_Meter_Data_Thread;
    QWidget* ThermoOptions;
    QWidget* DialOptions;   
    QWidget* LcdOptions;
+   QTimer *timer;
+ double RefreshRate;
    
 };
 

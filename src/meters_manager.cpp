@@ -50,7 +50,6 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 	connect( meterListWidget, SIGNAL( itemClicked( QListWidgetItem * ) ), this, SLOT( showMeterOptions( QListWidgetItem *  ) ) );
 	connect( meterComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeMeter(int) ) );
 	
-	if (Num_Meters > 0) Get_Meter_Data_Thread = new GetMeterDataThread [Num_Meters];
 	if (Num_Meters > 0)
 	showMeterOptions(meterListWidget->item(0));
 	ThermoOptions = tabWidget->widget(1);
@@ -87,6 +86,11 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 		default:break;
 	}
 	tabWidget->setCurrentIndex(0);
+
+	RefreshRate=20.;
+	timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
+        timer->start((int)(1./RefreshRate*1000.));
 	
 }
 
@@ -98,44 +102,16 @@ QRL_MetersManager::~QRL_MetersManager()
 		MeterWindows[i]->hide();
 	}
 	delete[] MeterWindows;
-	stopMeterThreads();
-	if (Get_Meter_Data_Thread)
-		delete[] Get_Meter_Data_Thread;
 }
 
-/**
-* @brief starting all meter threads
-*/
-void QRL_MetersManager::startMeterThreads()
-{
-	for (int n = 0; n < Num_Meters; n++) {
-		//unsigned int msg;
-		Args_T thr_args;
-		thr_args.index = n;
-		thr_args.mbx_id = strdup((targetThread->getPreferences()).Target_Meter_Mbx_ID);
-		thr_args.x = 0; 
-		thr_args.y = 0;
-		thr_args.w = 300;
-		thr_args.h = 200;
-		//pthread_create(&Get_Meter_Data_Thread[n], NULL, rt_get_meter_data, &thr_args);
-		Get_Meter_Data_Thread[n].mutex.lock();
-		Get_Meter_Data_Thread[n].start(&thr_args,targetThread,MeterWindows[n]);
-		//wait until thread is initialized
-		Get_Meter_Data_Thread[n].threadStarted.wait(&Get_Meter_Data_Thread[n].mutex);
-		Get_Meter_Data_Thread[n].mutex.unlock();
-		//rt_receive(0, &msg);
-	}
 
+void QRL_MetersManager::refresh()
+{
+for (int i=0; i<Num_Meters; ++i){
+	//if (MeterWindows[i]->isVisible()){
+		MeterWindows[i]->setValue(targetThread->getMeterValue(i));
+	//}
 }
-/**
-* @brief stopping all existing meter threads
-*/
-void QRL_MetersManager::stopMeterThreads()
-{
-	for (int n = 0; n < Num_Meters; n++) {
-		Get_Meter_Data_Thread[n].wait();
-	}
-
 }
 
 void QRL_MetersManager::refreshView()
@@ -153,11 +129,11 @@ void QRL_MetersManager::refreshView()
 * @param rr refresh rate
 */
  void QRL_MetersManager::changeRefreshRate(double rr)
-{
+{	RefreshRate=rr;
 	//double rr=text.toDouble();
 	//ScopeWindows[currentScope]->changeRefreshRate(rr);
 	rrCounter->setValue(rr);
-	Get_Meter_Data_Thread[currentMeter].setRefreshRate(rr);
+	targetThread->setMeterRefreshRate(rr,currentMeter);
 	MeterWindows[currentMeter]->changeRefreshRate(rr);
 }
 /**
@@ -341,126 +317,4 @@ void QRL_MetersManager::showMeter(int state)
 	QFont font = QFontDialog::getFont(
                  &ok, MeterWindows[currentMeter]->getLcdFont(), this);
 	MeterWindows[currentMeter]->setLcdFont(font);
-}
-
-/**
-* @brief Initialise GetMeterDataThread
-* @param arg 
-* @param targetthread pointer to TargetThread
-* @param meterwindow pointer to QRL_MeterWindow
-*/
-void GetMeterDataThread::start(void* arg,TargetThread* targetthread,QRL_MeterWindow* meterwindow)
-{
-	targetThread=targetthread;
-	MeterWindow=meterwindow;
-	index = ((Args_T *)arg)->index;
-	mbx_id = strdup(((Args_T *)arg)->mbx_id);
-	x = ((Args_T *)arg)->x;
-	y = ((Args_T *)arg)->y;
-	w = ((Args_T *)arg)->w;
-	h = ((Args_T *)arg)->h;
-	RefreshRate=20.;
-	MsgData = 0;
-	QThread::start();
-}
-/**
-* @brief set new refresh rate
-* @param rr refresh rate 
-*/
-int GetMeterDataThread::setRefreshRate(double rr)
-{
-	if (rr>0. && rr<50.){
-		RefreshRate=rr;
-		MsgLen = (((int)(DataBytes/RefreshRate*(1./(targetThread->getMeters())[index].dt)))/DataBytes)*DataBytes;
-		if (MsgLen < DataBytes) MsgLen = DataBytes;
-		if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
-		MsgData = MsgLen/DataBytes;
-		Ndistance=(long int)(1./RefreshRate/(targetThread->getMeters())[index].dt);
-		if (Ndistance<1)
-			Ndistance=1;
-		return Ndistance; //TODO long int > int
-	}
-	return -1;
-}
-/**
-* @brief starting GetMeterDataThread
-*/
-void GetMeterDataThread::run()
-{
-	RT_TASK *GetMeterDataTask;
-	MBX *GetMeterDataMbx;
-	char GetMeterDataMbxName[7];
-	long GetMeterDataPort;
-	float MsgBuf[MAX_MSG_LEN/sizeof(float)];
-	long int n;
-	rt_allow_nonroot_hrt();
-	if (!(GetMeterDataTask = rt_task_init_schmod(qrl::get_an_id("HGM"), 98, 0, 0, SCHED_RR, 0xFF))) {
-		printf("Cannot init Host GetMeterData Task %d\n",index);
-		//return (void *)1;
-		exit(1);
-	}
-	if(targetThread->getTargetNode() == 0) GetMeterDataPort=0;
-	else GetMeterDataPort = rt_request_port(targetThread->getTargetNode());
-
-	sprintf(GetMeterDataMbxName, "%s%d", mbx_id, index);
-	if (!(GetMeterDataMbx = (MBX *)RT_get_adr(targetThread->getTargetNode(), GetMeterDataPort, GetMeterDataMbxName))) {
-		printf("Error in getting %s mailbox address\n", GetMeterDataMbxName);
-		exit(1);
-	}
-	DataBytes = sizeof(float);
-	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
-	MsgLen = (((int)(DataBytes/RefreshRate*(1./(targetThread->getMeters())[index].dt)))/DataBytes)*DataBytes;
-	if (MsgLen < DataBytes) MsgLen = DataBytes;
-	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
-	MsgData = MsgLen/DataBytes;
-	// Ndistance defines the distance between plotted datapoints, to archive the given refresh rate.
-	Ndistance=(long int)(1./RefreshRate/(targetThread->getMeters())[index].dt);
-
-	//Fl_Meter_Window *Meter_Win = new Fl_Meter_Window(x, y, w, h, RLG_Main_Workspace->viewport(), Meters[index].name);
-	 //QRL_MeterWindow *
-	
-	
-	//Meters_Manager->Meter_Windows[index] = Meter_Win;
-	mutex.lock();
-	threadStarted.wakeAll();
-	mutex.unlock();
-
-	//rt_send(Target_Interface_Task, 0);
-	mlockall(MCL_CURRENT | MCL_FUTURE);
-	n=Ndistance;
-	while (true) {
-		if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) break;
-		while (RT_mbx_receive_if(targetThread->getTargetNode(), GetMeterDataPort, GetMeterDataMbx, &MsgBuf, MsgLen)) {
-			if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) goto end;
-
-			//msleep(12); //waits for new Data from the mailbox
-			rt_sleep(nano2count(TEN_MS_IN_NS));
-		}
-		//Fl::lock();
-	//	for (n = 0; n < MsgData; n++) {
-			//meterMutex.lock();
-			//targetThread->setMeterValue(index,MsgBuf[n]);
-			//meterMutex.unlock();
-		if (n>MsgData)
-			n=n-MsgData;
-		else {
-                   
-		   int i;
-		   for (i=(int)n-1; i < MsgData; i=i+(int)Ndistance){
-			if (MeterWindow)
-			    MeterWindow->setValue(MsgBuf[i]);
-		   }
-		   n=Ndistance;
-		}
-		//Fl::unlock();
-	}
-end:
-	if (targetThread->getVerbose()) {
-		printf("Deleting meter thread number...%d\n", index);
-	}
-	//Meter_Win->hide();
-	rt_release_port(targetThread->getTargetNode(), GetMeterDataPort);
-	rt_task_delete(GetMeterDataTask);
-
-	//return 0;
 }
