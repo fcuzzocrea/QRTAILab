@@ -30,6 +30,7 @@
 * @param targetthread pointer to TargetThread
 * @param scopewindow pointer to QRL_ScopeWindow
 */
+/*
 void GetScopeDataThread::start(void* arg,TargetThread* targetthread)//,QRL_ScopeWindow* scopewindow)
 {
 	targetThread=targetthread;
@@ -44,11 +45,12 @@ void GetScopeDataThread::start(void* arg,TargetThread* targetthread)//,QRL_Scope
 	MsgData = 0;
 	QThread::start();
 }
-
+*/
 /**
 * @brief set new dt
 * @param d points per second
 */
+/*
 int GetScopeDataThread::setDt(double d)
 {
 	if (d>0.){
@@ -73,10 +75,11 @@ int GetScopeDataThread::setDt(double d)
 	}
 	return -1;
 }
-
+*/
 /**
 * @brief starting GetScopeDataThread
 */
+/*
 void GetScopeDataThread::run()
 {
    	RT_TASK *GetScopeDataTask;
@@ -233,7 +236,7 @@ void GetScopeDataThread::run()
 			}
 		}*/
 
-
+/*
 	}
 
 end:
@@ -252,7 +255,7 @@ end:
 	rt_task_delete(GetScopeDataTask);
 
 
-}
+}*/
 
 
 
@@ -262,6 +265,7 @@ end:
 * @param targetthread pointer to TargetThread
 * @param meterwindow pointer to QRL_MeterWindow
 */
+/*
 void GetMeterDataThread::start(void* arg,TargetThread* targetthread) //,QRL_MeterWindow* meterwindow)
 {
 	targetThread=targetthread;
@@ -276,10 +280,12 @@ void GetMeterDataThread::start(void* arg,TargetThread* targetthread) //,QRL_Mete
 	MsgData = 0;
 	QThread::start();
 }
+*/
 /**
 * @brief set new refresh rate
 * @param rr refresh rate 
 */
+/*
 int GetMeterDataThread::setRefreshRate(double rr)
 {
 	if (rr>0. && rr<50.){
@@ -295,9 +301,12 @@ int GetMeterDataThread::setRefreshRate(double rr)
 	}
 	return -1;
 }
+*/
+
 /**
 * @brief starting GetMeterDataThread
 */
+/*
 void GetMeterDataThread::run()
 {
 	RT_TASK *GetMeterDataTask;
@@ -320,6 +329,8 @@ void GetMeterDataThread::run()
 		printf("Error in getting %s mailbox address\n", GetMeterDataMbxName);
 		exit(1);
 	}
+
+
 	DataBytes = sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
 	MsgLen = (((int)(DataBytes/RefreshRate*(1./(targetThread->getMeters())[index].dt)))/DataBytes)*DataBytes;
@@ -379,7 +390,7 @@ end:
 	//return 0;
 }
 
-
+*/
 
 
 
@@ -390,6 +401,7 @@ end:
 * @param targetthread pointer to TargetThread
 * @param ledwindow pointer to QRL_ScopeWindow
 */
+/*
 void GetLedDataThread::start(void* arg,TargetThread* targetthread)//,QRL_LedWindow* ledwindow)
 {
 	targetThread=targetthread;
@@ -401,11 +413,12 @@ void GetLedDataThread::start(void* arg,TargetThread* targetthread)//,QRL_LedWind
 	w = ((Args_T *)arg)->w;
 	h = ((Args_T *)arg)->h;
 	QThread::start();
-}
+}*/
 
 /**
 * @brief starting GetLedDataThread
 */
+/*
 void GetLedDataThread::run()
 {
 
@@ -486,6 +499,9 @@ end:
 
 	//return 0;
 }
+
+*/
+
 
 
 
