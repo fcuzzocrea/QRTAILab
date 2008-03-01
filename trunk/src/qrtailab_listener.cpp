@@ -118,21 +118,11 @@ void GetScopeDataThread::run()
 	// Ndistance defines the distance between plotted datapoints, to archive the given refresh rate.
 	Ndistance=(long int)(dt/(targetThread->getScopes())[index].dt);
 	int ntraces=(targetThread->getScopes())[index].ntraces;
-	//Fl_Scope_Window *Scope_Win = new Fl_Scope_Window(x, y, w, h, RLG_Main_Workspace->viewport(), Scopes[index].name, Scopes[index].ntraces, Scopes[index].dt);
-	//Scopes_Manager->Scope_Windows[index] = Scope_Win;
-// 	float**   temp1 = new float*[ntraces];
-// 	for (unsigned int j=0;j<ntraces;j++)
-// 		temp1[j] = new float[10000];
-// 	double**   temp2 = new double*[ntraces];
-// 	for (unsigned int j=0;j<ntraces;j++){
-// 		temp2[j] = new double[10000];
-// 		for (int i=0; i<10000;i++)
-// 			temp2[j][i]=0.;	
-// 	}
+
 	mutex.lock();
 	threadStarted.wakeAll();
 	mutex.unlock();
-	//rt_send(Target_Interface_Task, 0);
+// 	rt_send(Target_Interface_Task, 0);
 	mlockall(MCL_CURRENT | MCL_FUTURE);
 //rt_make_hard_real_time();
 	n=Ndistance;
@@ -348,7 +338,7 @@ void GetMeterDataThread::run()
 	threadStarted.wakeAll();
 	mutex.unlock();
 
-	//rt_send(Target_Interface_Task, 0);
+// 	rt_send(Target_Interface_Task, 0);
 	mlockall(MCL_CURRENT | MCL_FUTURE);
 	n=Ndistance;
 	while (true) {
@@ -457,7 +447,7 @@ void GetLedDataThread::run()
 	threadStarted.wakeAll();
 	mutex.unlock();
 
-	//rt_send(Target_Interface_Task, 0);
+// 	rt_send(Target_Interface_Task, 0);
 	mlockall(MCL_CURRENT | MCL_FUTURE);
 
 	while (true) {

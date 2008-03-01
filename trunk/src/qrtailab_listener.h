@@ -39,6 +39,7 @@ class GetScopeDataThread : public QThread
     int setDt(double);
 QWaitCondition threadStarted;
 QMutex mutex;
+    QMutex data;
  //signals:
    // void value(int,float);
  public slots:
@@ -59,8 +60,8 @@ class GetMeterDataThread : public QThread
  Q_OBJECT
  public:
     void run();
-    QWaitCondition threadStarted;
-    QMutex mutex;
+   QWaitCondition threadStarted;
+   QMutex mutex;
  //signals:
    // void value(int,float);
     int setRefreshRate(double);

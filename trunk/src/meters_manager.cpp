@@ -39,7 +39,7 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
 	const QIcon MeterIcon =QIcon(QString::fromUtf8(":/icons/meter_icon.xpm"));
 	MeterWindows = new QRL_MeterWindow* [Num_Meters]; 
 	for (int i=0; i<Num_Meters; ++i){
-		new QListWidgetItem(MeterIcon,tr((Meters)[i].name), meterListWidget);
+		new QListWidgetItem(MeterIcon,targetThread->getMeterName(i), meterListWidget);
 		MeterWindows[i]=new QRL_MeterWindow(parent,Meters[i].name);
 	}
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showMeter(int) ) );

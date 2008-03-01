@@ -38,7 +38,7 @@
 #include "qrtailab.h"
 
 
-
+static RT_TASK *Target_Interface_Task;
 
 
 class TargetThread;
@@ -58,12 +58,22 @@ class TargetThread : public QThread
  Q_OBJECT
  Q_ENUMS( Manager_Type )
  Q_ENUMS( Commands )
+ Q_ENUMS( Param_Class )
  public:
     enum Manager_Type {PARAMS_MANAGER,SCOPES_MANAGER,LOGS_MANAGER,ALOGS_MANAGER,LEDS_MANAGER,METERS_MANAGER,SYNCHS_MANAGER};
  enum Commands{	CONNECT_TO_TARGET,	CONNECT_TO_TARGET_WITH_PROFILE,	DISCONNECT_FROM_TARGET,	START_TARGET,	STOP_TARGET,	UPDATE_PARAM,	GET_TARGET_TIME,	BATCH_DOWNLOAD,	GET_PARAMS,	CLOSE} ;
+   enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
     ~TargetThread();
     void run();
     void setPreferences(Preferences_T);
+    // communicate with rtai target
+    int stopTarget();
+    int startTarget();
+    int connectToTarget();
+    int disconnectFromTarget();
+    void closeThread();
+
+    //get information about target
     unsigned int getIsTargetConnected(){return Is_Target_Connected;}
     int getIsTargetRunning(){return Is_Target_Running;}
     int getScopeNumber(){return Num_Scopes;}
@@ -71,34 +81,46 @@ class TargetThread : public QThread
     int getLedNumber(){return Num_Leds;}
     int getParameterNumber(){return Num_Tunable_Parameters;}
     int getBlockNumber(){return Num_Tunable_Blocks;}
-    int stopTarget();
-    int startTarget();
-    int connectToTarget();
-    int disconnectFromTarget();
-    void downloadParameter(int,int);
-    int addToBatch(int map_offset,int ind,double value);
-    void closeThread();
+      long getTargetNode(){return Target_Node;}
+    int getEndApp(){return End_App;}
+    int getVerbose(){return Verbose;}
+    // should  be removed
     Target_Scopes_T* getScopes(){return Scopes;}
     Target_Meters_T* getMeters(){return Meters;}
     Target_Leds_T* getLeds(){return Leds;}
-    Target_Parameters_T* getParamters(){return Tunable_Parameters;}
-    Target_Blocks_T* getBlocks(){return Tunable_Blocks;}
-    Batch_Parameters_T* getBatchParameters(){return Batch_Parameters;}
+    //Target_Parameters_T* getParamters(){return Tunable_Parameters;}
+    //Target_Blocks_T* getBlocks(){return Tunable_Blocks;}
+   // Batch_Parameters_T* getBatchParameters(){return Batch_Parameters;}
+
+   //prameter down- and upload
+ void downloadParameter(int,int);
+ int addToBatch(int map_offset,int ind,double value);
     double get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx);
-  long getTargetNode(){return Target_Node;}
-    int getEndApp(){return End_App;}
-    int getVerbose(){return Verbose;}
-    void setVerbose(int v){Verbose=v;}
-    Preferences_T getPreferences(){return Preferences;}
+    double get_parameter(int blk,int prm, int nr,int nc);
+    int update_parameter(int idx, int mat_idx, double val);
+    int get_map_offset(int blk, int prm_row,int prm_col);
+    int get_parameter_ind(int blk, int prm_row,int prm_col);
     void batchParameterDownload();
     void resetBatchMode();
     void uploadParameters();
+    int get_Number_of_Parameters(int blk);
+   unsigned int getParameterCols(int blk,int prm);
+   unsigned int getParameterRows(int blk,int prm);
+   QString getParameterName(int blk,int prm);
+   QString getBlockName(int blk);
+
+
+    void setVerbose(int v){Verbose=v;}
+    Preferences_T getPreferences(){return Preferences;}
+
 
     void startScopeThreads(); //QRL_ScopeWindow** ScopeWindows);
     void stopScopeThreads();
     int setScopeDt(double,int);
     void setScopeValue(float v,int t, int n);	 
     QList<float> getScopeValue(int t, int n);	 
+    QVector< QList<float> > getScopeValue(int n);
+    QString getScopeName(int);
 /*
     int start_saving(int n);
      FILE* save_file(int n);
@@ -112,11 +134,13 @@ class TargetThread : public QThread
     int setMeterRefreshRate(double rr,int n);
     void setMeterValue(float v, int n);
     float getMeterValue(int n);
+    QString getMeterName(int);
 
     void startLedThreads();//QRL_LedWindow** LedWindows);
     void stopLedThreads();
     void setLedValue(unsigned int v, int n);
     unsigned int getLedValue(int n);
+    QString getLedName(int);
 // friend
  signals:
    void statusBarMessage(const QString &);
@@ -173,6 +197,8 @@ class TargetThread : public QThread
   QVector<unsigned int> LedValues; 
   QVector< QList <float> > MeterValues;
   QVector< QVector< QList <float> > > ScopeValues;
+
+  QMutex scopeMutex;
 
  };
 
