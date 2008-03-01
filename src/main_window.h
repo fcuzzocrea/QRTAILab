@@ -30,7 +30,7 @@
 
 #include "ui_qrl_main_window.h"
 #include "ui_qrl_connectdialog.h"
-#include "qrtailab.h"
+#include <QtGui>
 #include "meters_manager.h"
 #include "leds_manager.h"
 #include "scopes_manager.h"

@@ -28,8 +28,7 @@
 #ifndef _LED_WINDOW_H
 #define _LED_WINDOW_H 1
 
-#include "qrtailab.h"
-
+#include <QtGui>
 
 class QColor;
 

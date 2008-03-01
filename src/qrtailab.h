@@ -34,8 +34,6 @@
 #ifndef QRTAILAB_H
 #define QRTAILAB_H
 
-#include <QtGui> 
-
 #include <stdio.h>
 #include <pthread.h>
 #include <sys/poll.h>
@@ -102,7 +100,6 @@ static volatile int GlobalRet[16];
 
 static inline void RT_RPC(RT_TASK *task, unsigned int msg, unsigned int *reply)
 {
-	QWaitCondition sleep;
 	GlobalRet[msg & 0xf] = 0;
 	rt_send(task, msg);
 	while (!GlobalRet[msg & 0xf]) {

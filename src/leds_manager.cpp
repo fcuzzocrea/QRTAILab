@@ -42,7 +42,7 @@ QRL_LedsManager::QRL_LedsManager(QWidget *parent,TargetThread* targetthread)
 	const QIcon LedIcon =QIcon(QString::fromUtf8(":/icons/led_icon.xpm"));
 	LedWindows = new QRL_LedWindow* [Num_Leds]; 
 	for (int i=0; i<Num_Leds; ++i){
-		new QListWidgetItem(LedIcon,tr(Leds[i].name), ledListWidget);
+		new QListWidgetItem(LedIcon,targetThread->getLedName(i), ledListWidget);
 		LedWindows[i]=new QRL_LedWindow(parent,Leds[i].n_leds,Leds[i].name);
 	}
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showLed(int) ) );

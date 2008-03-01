@@ -28,7 +28,6 @@
    file for the classes TargetThread
 */
 
-#include "qrtailab.h"
 #include "qrtailab_core.h"
 #include "qrtailab_listener.h"
 //#include "scope_window.h"
@@ -38,7 +37,7 @@
 using namespace qrl_types;
 //static pthread_t *Get_Scope_Data_Thread;
 
-static RT_TASK *Target_Interface_Task;
+
 //QMutex meterMutex;
 //QMutex scopeMutex;
 //QMutex ledMutex;
@@ -70,7 +69,14 @@ TargetThread::~TargetThread(){
 		delete[] Get_Meter_Data_Thread;
 	
 }
-/*
+/**
+ * @brief Gets the Pameter value for a given entry. 
+ * @param p Parameter Struct
+ * @param nr parameter number
+ * @param nr row
+ * @param nc column
+ * @param *val_idx returns the array index
+ */
 double TargetThread::get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx)
 {
 	switch (p.data_class) {
@@ -90,7 +96,115 @@ double TargetThread::get_parameter(Target_Parameters_T p, int nr, int nc, int *v
 			return (0.0);
 	}
 }
-*/
+
+
+/**
+ * @brief Gets the Pameter value for a given entry. 
+ * @param blk parameter block number
+ * @param prm parameter number
+ * @param nr parameter row
+ * @param nc parameter column
+ */
+double TargetThread::get_parameter(int blk,int prm, int nr,int nc)
+{
+	int val_idx;
+	
+	return get_parameter(Tunable_Parameters[Tunable_Blocks[blk].offset+prm], nr, nc, &val_idx);
+					
+}
+ unsigned   int TargetThread::getParameterCols(int blk,int prm){
+	return Tunable_Parameters[Tunable_Blocks[blk].offset+prm].n_cols;
+}
+   unsigned int TargetThread:: getParameterRows(int blk,int prm){
+	return Tunable_Parameters[Tunable_Blocks[blk].offset+prm].n_rows;
+}
+
+   QString TargetThread::getParameterName(int blk,int prm){
+
+	return tr(Tunable_Parameters[Tunable_Blocks[blk].offset+prm].param_name);
+}
+  QString TargetThread::getBlockName(int blk){
+	return tr(Tunable_Blocks[blk].name);
+}
+
+ int TargetThread::get_map_offset(int blk, int prm_row,int prm_col){
+	int jend;
+	int prm=prm_row;
+	int table_row=0;
+	// get old value
+	if (blk == Num_Tunable_Blocks - 1) 
+		jend=Num_Tunable_Parameters - Tunable_Blocks[blk].offset;
+	else
+		jend=Tunable_Blocks[blk+1].offset-Tunable_Blocks[blk].offset;
+	for (int j = 0; j <  jend; j++) {
+		unsigned int ncols = Tunable_Parameters[Tunable_Blocks[blk].offset+j].n_cols;
+		unsigned int nrows = Tunable_Parameters[Tunable_Blocks[blk].offset+j].n_rows;
+		for (unsigned int nr = 0; nr < nrows; nr++) {
+			for (unsigned int nc = 0; nc < ncols; nc++) {
+				if ((prm_row==table_row) && (prm_col==nc)){
+					prm=j;
+				}
+			}
+			table_row++;
+		}
+		
+	}
+	int map_offset = Tunable_Blocks[blk].offset + prm;
+	return map_offset;
+
+}
+    int TargetThread::get_parameter_ind(int blk, int prm_row,int prm_col){
+
+	int jend,val_idx;
+	int prm=prm_row;
+	int table_row=0;
+	double data_value;
+	// get old value
+	if (blk == Num_Tunable_Blocks - 1) 
+		jend=Num_Tunable_Parameters - Tunable_Blocks[blk].offset;
+	else
+		jend=Tunable_Blocks[blk+1].offset-Tunable_Blocks[blk].offset;
+	for (int j = 0; j <  jend; j++) {
+		unsigned int ncols = Tunable_Parameters[Tunable_Blocks[blk].offset+j].n_cols;
+		unsigned int nrows = Tunable_Parameters[Tunable_Blocks[blk].offset+j].n_rows;
+		for (unsigned int nr = 0; nr < nrows; nr++) {
+			for (unsigned int nc = 0; nc < ncols; nc++) {
+				if ((prm_row==table_row) && (prm_col==nc)){
+					data_value=get_parameter(Tunable_Parameters[Tunable_Blocks[blk].offset+j], nr, nc, &val_idx);
+					prm=j;
+				}
+			}
+			table_row++;
+		}
+		
+	}
+	return val_idx;
+
+}
+
+/**
+ * @brief Change one Parameter entry in the Parameter structure
+ * @param idx map_offset = Tunable_Blocks[blk].offset + prm;
+ * @param mat_idx  array index(val_idx)
+ * @param val new value
+ */
+int TargetThread::update_parameter(int idx, int mat_idx, double val)
+{
+	Tunable_Parameters[idx].data_value[mat_idx] = val;
+	return 1;
+}
+
+int TargetThread::get_Number_of_Parameters(int blk){
+int jend;
+	if (blk == Num_Tunable_Blocks - 1) 
+		jend=Num_Tunable_Parameters - Tunable_Blocks[blk].offset;
+	else
+		jend=Tunable_Blocks[blk+1].offset-Tunable_Blocks[blk].offset;
+
+return jend;
+}
+
+
 long TargetThread::try_to_connect(const char *IP)
 {
 	int counter = 0;
@@ -948,7 +1062,7 @@ void TargetThread::startScopeThreads(  )//QRL_ScopeWindow** ScopeWindows)
 {
 	ScopeValues.resize(Num_Scopes);
 	for (int n = 0; n < Num_Scopes; n++) {
-		//unsigned int msg;
+		unsigned int msg;
 		ScopeValues[n].resize(Scopes[n].ntraces);
 		Args_T thr_args;
 		thr_args.index = n;
@@ -961,8 +1075,7 @@ void TargetThread::startScopeThreads(  )//QRL_ScopeWindow** ScopeWindows)
 		Get_Scope_Data_Thread[n].start(&thr_args,this);//,ScopeWindows[n]);
 		Get_Scope_Data_Thread[n].threadStarted.wait(&Get_Scope_Data_Thread[n].mutex);
 		Get_Scope_Data_Thread[n].mutex.unlock();
-		Get_Scope_Data_Thread[n].setPriority(QThread::TimeCriticalPriority);
-		//rt_receive(0, &msg);
+// 		rt_receive(0, &msg);
 		//((QMainWindow*)mainWindow)->addDockWidget(Qt::NoDockWidgetArea,ScopeWindows[n]);
 	}
 	//Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
@@ -1032,6 +1145,21 @@ if (t<ScopeValues[n].size()){
 return ret;
 } 
 
+ QVector< QList<float> > TargetThread::getScopeValue(int n){
+	
+
+QVector< QList<float> > ret;
+if (n<ScopeValues.size()){
+ //ret= Get_Led_Data_Thread[n].getValue();
+   ret=ScopeValues[n];
+   for (int t=0; t<ScopeValues[n].size(); ++t)
+  	 ScopeValues[n][t].clear();
+}
+return ret;
+} 
+   QString TargetThread::getScopeName(int i){
+	return tr(Scopes[i].name);
+}
 
 
 /**
@@ -1041,7 +1169,7 @@ void TargetThread::startMeterThreads()//QRL_MeterWindow** MeterWindows)
 {
 	MeterValues.resize(Num_Meters);
 	for (int n = 0; n < Num_Meters; n++) {
-		//unsigned int msg;
+		unsigned int msg;
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup((getPreferences()).Target_Meter_Mbx_ID);
@@ -1055,7 +1183,7 @@ void TargetThread::startMeterThreads()//QRL_MeterWindow** MeterWindows)
 		//wait until thread is initialized
 		Get_Meter_Data_Thread[n].threadStarted.wait(&Get_Meter_Data_Thread[n].mutex);
 		Get_Meter_Data_Thread[n].mutex.unlock();
-		//rt_receive(0, &msg);
+// 		rt_receive(0, &msg);
 		MeterValues[n].append(0);
 	}
 
@@ -1089,7 +1217,10 @@ void TargetThread::setMeterValue(float v, int n){
 
 	//MeterValues[n].append(v);
 if (n<MeterValues.size()){
-	MeterValues[n][0]=(v);
+	if (MeterValues[n].size()>0)
+		MeterValues[n][0]=(v);
+	else
+		MeterValues[n].append(v);
 }
 
 
@@ -1110,7 +1241,9 @@ return ret;
 
 
 }
-
+   QString TargetThread::getMeterName(int i){
+	return tr(Meters[i].name);
+}
 
 /**
 * @brief starting all led threads
@@ -1119,7 +1252,7 @@ void TargetThread::startLedThreads()//QRL_LedWindow** LedWindows)
 {
 	LedValues.resize(Num_Leds);
 	for (int n = 0; n < Num_Leds; n++) {
-		//unsigned int msg;
+		unsigned int msg;
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup(getPreferences().Target_Led_Mbx_ID);
@@ -1130,7 +1263,7 @@ void TargetThread::startLedThreads()//QRL_LedWindow** LedWindows)
 		Get_Led_Data_Thread[n].mutex.lock();
 		//pthread_create(&Get_Led_Data_Thread[n], NULL, rt_get_led_data, &thr_args);
 		Get_Led_Data_Thread[n].start(&thr_args,this);//,LedWindows[n]);
-		//rt_receive(0, &msg);
+// 		rt_receive(0, &msg);
 		Get_Led_Data_Thread[n].threadStarted.wait(&Get_Led_Data_Thread[n].mutex);
 		Get_Led_Data_Thread[n].mutex.unlock();
 		
@@ -1167,6 +1300,8 @@ return ret;
 }
 
 
-
+   QString TargetThread::getLedName(int i){
+	return tr(Leds[i].name);
+}
 
 

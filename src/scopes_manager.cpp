@@ -40,7 +40,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
 	const QIcon ScopeIcon =QIcon(QString::fromUtf8(":/icons/scope_icon.xpm"));
 	ScopeWindows = new QRL_ScopeWindow* [Num_Scopes]; 
 	for (int i=0; i<Num_Scopes; ++i){
-		scopeItems << new QListWidgetItem(ScopeIcon,tr(Scopes[i].name), scopeListWidget);
+		scopeItems << new QListWidgetItem(ScopeIcon,targetThread->getScopeName(i), scopeListWidget);
 		ScopeWindows[i]=new QRL_ScopeWindow(parent,&Scopes[i],i);
 		connect( ScopeWindows[i], SIGNAL( stopSaving(int) ), this, SLOT( stopSaving(int) ) );
 	}
@@ -114,12 +114,18 @@ QRL_ScopesManager::~QRL_ScopesManager()
 
 void QRL_ScopesManager::refresh()
 {
+
   for (int n=0; n<Num_Scopes; ++n){
+	QVector< QList<float> > v;
+	v = targetThread->getScopeValue(n);
+	
+	
+	for (int k=0; k<v[0].size(); ++k)
 	for (int t=0; t<Scopes[n].ntraces;++t){
-		QList<float> v = targetThread->getScopeValue(n,t);
-		for (int k=0; k<v.size(); ++k)
-			ScopeWindows[n]->setValue(t,v.at(k));
+			if (k<v[t].size())
+			ScopeWindows[n]->setValue(t,v[t].at(k));
 	}
+	
   }
 }
 
@@ -231,6 +237,7 @@ void QRL_ScopesManager::showTraceOptions(int index)
 	lineWidthCounter->setValue(ScopeWindows[currentScope]->getTraceWidth(currentTrace));
 	offsetCounter->setValue(ScopeWindows[currentScope]->getTraceOffset(currentTrace));
 	dyComboBox->setEditText(tr("%1").arg(ScopeWindows[currentScope]->getTraceDy(currentTrace)));
+	if (currentTrace<traceItems.size())
 	traceNameLineEdit->setText(traceItems[currentTrace]->text());
 	//tabWidget->setTabText(1,traceItems[currentTrace]->text());
 	if (ScopeWindows[currentScope]->getZeroAxis(currentTrace))
@@ -240,6 +247,7 @@ void QRL_ScopesManager::showTraceOptions(int index)
 }
 
 void QRL_ScopesManager::changeTraceText(const QString & text ){
+	if (currentTrace<traceItems.size())
 	traceItems[currentTrace]->setText(text);
 	//tabWidget->setTabText(1,traceItems[currentTrace]->text());
 }
@@ -272,6 +280,7 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 	traceItems.clear();
 	for(int i=0; i<Scopes[currentScope].ntraces;i++){
 		traceItems << new QListWidgetItem(QIcon(),tr("trace %1").arg(i+1), scopeListWidget);
+		if (i<traceItems.size())
 		traceItems[i]->setHidden(true);
 	}
 	
