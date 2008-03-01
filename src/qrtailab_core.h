@@ -40,11 +40,14 @@
 
 static RT_TASK *Target_Interface_Task;
 
+static pthread_t *Get_Led_Data_Thread;
+static pthread_t *Get_Meter_Data_Thread;
+static pthread_t *Get_Scope_Data_Thread;
 
 class TargetThread;
-class GetScopeDataThread;
-class GetMeterDataThread;
-class GetLedDataThread;
+//class GetScopeDataThread;
+//class GetMeterDataThread;
+//class GetLedDataThread;
 //class QRL_ScopeWindow;
 //class QRL_MeterWindow;
 //class QRL_LedWindow;
@@ -117,6 +120,7 @@ class TargetThread : public QThread
     void startScopeThreads(); //QRL_ScopeWindow** ScopeWindows);
     void stopScopeThreads();
     int setScopeDt(double,int);
+    double getScopeDt(int);
     void setScopeValue(float v,int t, int n);	 
     QList<float> getScopeValue(int t, int n);	 
     QVector< QList<float> > getScopeValue(int n);
@@ -132,6 +136,7 @@ class TargetThread : public QThread
     void startMeterThreads();//QRL_MeterWindow** MeterWindows);
     void stopMeterThreads();
     int setMeterRefreshRate(double rr,int n);
+    double getMeterRefreshRate(int n);
     void setMeterValue(float v, int n);
     float getMeterValue(int n);
     QString getMeterName(int);
@@ -190,13 +195,15 @@ class TargetThread : public QThread
    long Target_Node;
    int test;
    int batchCounter;
-  GetScopeDataThread* Get_Scope_Data_Thread;
-  GetMeterDataThread* Get_Meter_Data_Thread;
-  GetLedDataThread* Get_Led_Data_Thread;
+  //GetScopeDataThread* Get_Scope_Data_Thread;
+  //GetMeterDataThread* Get_Meter_Data_Thread;
+  //GetLedDataThread* Get_Led_Data_Thread;
  
   QVector<unsigned int> LedValues; 
   QVector< QList <float> > MeterValues;
   QVector< QVector< QList <float> > > ScopeValues;
+  QVector<double> scopeDt;
+  QVector<double> meterRefreshRate;
 
   QMutex scopeMutex;
 

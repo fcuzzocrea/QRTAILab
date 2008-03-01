@@ -59,14 +59,15 @@ TargetThread::~TargetThread(){
 	if (Meters)
 		delete[] Meters;
 	stopScopeThreads();
-	if (Get_Scope_Data_Thread)
-		delete[] Get_Scope_Data_Thread;
+	//if (Get_Scope_Data_Thread)
+	//	delete[] Get_Scope_Data_Thread;
 	stopLedThreads();
-	if (Get_Led_Data_Thread)
-		delete[] Get_Led_Data_Thread;
+	//if (Get_Led_Data_Thread)
+		//delete[] Get_Led_Data_Thread;
+
 	stopMeterThreads();
-	if (Get_Meter_Data_Thread)
-		delete[] Get_Meter_Data_Thread;
+	//if (Get_Meter_Data_Thread)
+	//	delete[] Get_Meter_Data_Thread;
 	
 }
 /**
@@ -722,8 +723,9 @@ end:
 					printf("Target %s is correctly connected\n", RLG_Target_Name);
 				}
 				
-				if (Num_Scopes > 0) Get_Scope_Data_Thread = new GetScopeDataThread [Num_Scopes];
-				//startScopeThreads();
+				//if (Num_Scopes > 0) Get_Scope_Data_Thread = new GetScopeDataThread [Num_Scopes];
+				if (Num_Scopes > 0) Get_Scope_Data_Thread = new pthread_t [Num_Scopes];
+				startScopeThreads();
 
 				/*if (Num_Logs > 0) Get_Log_Data_Thread = new pthread_t [Num_Logs];
 				for (int n = 0; n < Num_Logs; n++) {
@@ -745,7 +747,9 @@ end:
 					pthread_create(&Get_ALog_Data_Thread[n], NULL, rt_get_alog_data, &thr_args);
 					rt_receive(0, &msg);
 				}*/
- 				if (Num_Leds > 0) Get_Led_Data_Thread = new GetLedDataThread [Num_Leds];
+ 				//if (Num_Leds > 0) Get_Led_Data_Thread = new GetLedDataThread [Num_Leds];
+				if (Num_Leds > 0) Get_Led_Data_Thread = new pthread_t [Num_Leds];
+				startLedThreads();
 // 				for (int n = 0; n < Num_Leds; n++) {
 // 					unsigned int msg;
 // 					Args_T thr_args;
@@ -759,7 +763,9 @@ end:
 // 					Get_Led_Data_Thread[n].start(&thr_args,this);
 // 					rt_receive(0, &msg);
 // 				}
- 				if (Num_Meters > 0) Get_Meter_Data_Thread = new GetMeterDataThread [Num_Meters];
+ 			//	if (Num_Meters > 0) Get_Meter_Data_Thread = new GetMeterDataThread [Num_Meters];
+				if (Num_Meters > 0) Get_Meter_Data_Thread = new pthread_t [Num_Meters];
+				startMeterThreads();
 // 				for (int n = 0; n < Num_Meters; n++) {
 // 					unsigned int msg;
 // 					Args_T thr_args;
@@ -1061,9 +1067,11 @@ void TargetThread::uploadParameters()
 void TargetThread::startScopeThreads(  )//QRL_ScopeWindow** ScopeWindows)
 {
 	ScopeValues.resize(Num_Scopes);
+	scopeDt.resize(Num_Scopes);
 	for (int n = 0; n < Num_Scopes; n++) {
 		unsigned int msg;
 		ScopeValues[n].resize(Scopes[n].ntraces);
+		scopeDt[n]=1./100.;
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup((getPreferences()).Target_Scope_Mbx_ID);
@@ -1071,32 +1079,18 @@ void TargetThread::startScopeThreads(  )//QRL_ScopeWindow** ScopeWindows)
 		thr_args.y = 290;
 		thr_args.w = 250;
 		thr_args.h = 250;
-		Get_Scope_Data_Thread[n].mutex.lock();
-		Get_Scope_Data_Thread[n].start(&thr_args,this);//,ScopeWindows[n]);
-		Get_Scope_Data_Thread[n].threadStarted.wait(&Get_Scope_Data_Thread[n].mutex);
-		Get_Scope_Data_Thread[n].mutex.unlock();
-// 		rt_receive(0, &msg);
+		thr_args.targetThread=(void*)this;
+		pthread_create(&Get_Scope_Data_Thread[n], NULL, rt_get_scope_data, &thr_args);
+// 		Get_Scope_Data_Thread[n].mutex.lock();
+// 		Get_Scope_Data_Thread[n].start(&thr_args,this);//,ScopeWindows[n]);
+// 		Get_Scope_Data_Thread[n].threadStarted.wait(&Get_Scope_Data_Thread[n].mutex);
+// 		Get_Scope_Data_Thread[n].mutex.unlock();
+ 		rt_receive(0, &msg);
 		//((QMainWindow*)mainWindow)->addDockWidget(Qt::NoDockWidgetArea,ScopeWindows[n]);
 	}
 	//Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
 
-// old
-/*
-				for (int n = 0; n < Num_Scopes; n++) {
-					unsigned int msg;
-					Args_T thr_args;
-					thr_args.index = n;
-					thr_args.mbx_id = strdup(Preferences.Target_Scope_Mbx_ID);
-					thr_args.x = 500; 
-					thr_args.y = 290;
-					thr_args.w = 250;
-					thr_args.h = 250;
-					//pthread_create(&Get_Scope_Data_Thread[n], NULL, rt_get_scope_data, &thr_args);
-					Get_Scope_Data_Thread[n].start(&thr_args,this);
-					rt_receive(0, &msg);
-				}
 
-*/
 }
 
 /**
@@ -1105,8 +1099,8 @@ void TargetThread::startScopeThreads(  )//QRL_ScopeWindow** ScopeWindows)
 void TargetThread::stopScopeThreads()
 {
 	for (int n = 0; n < Num_Scopes; n++) {
-		//pthread_join(Get_Scope_Data_Thread[n], NULL);
-		Get_Scope_Data_Thread[n].wait();
+		pthread_join(Get_Scope_Data_Thread[n], NULL);
+		//Get_Scope_Data_Thread[n].wait();
 	}
 
 
@@ -1116,8 +1110,21 @@ void TargetThread::stopScopeThreads()
     int TargetThread::setScopeDt(double d,int n)
 {
 int ret=-1;
+if (n<Num_Scopes){
+	ret=1;
+	scopeDt[n]=d;
+}
+	
+ //ret= Get_Scope_Data_Thread[n].setDt(d);
+return ret;
+}
+
+
+double TargetThread::getScopeDt(int n)
+{
+double ret=-1;
 if (n<Num_Scopes)
- ret= Get_Scope_Data_Thread[n].setDt(d);
+ ret= scopeDt[n];
 return ret;
 }
 
@@ -1168,7 +1175,9 @@ return ret;
 void TargetThread::startMeterThreads()//QRL_MeterWindow** MeterWindows)
 {
 	MeterValues.resize(Num_Meters);
+	meterRefreshRate.resize(Num_Meters);
 	for (int n = 0; n < Num_Meters; n++) {
+		meterRefreshRate[n]=20.;
 		unsigned int msg;
 		Args_T thr_args;
 		thr_args.index = n;
@@ -1177,13 +1186,14 @@ void TargetThread::startMeterThreads()//QRL_MeterWindow** MeterWindows)
 		thr_args.y = 0;
 		thr_args.w = 300;
 		thr_args.h = 200;
-		//pthread_create(&Get_Meter_Data_Thread[n], NULL, rt_get_meter_data, &thr_args);
-		Get_Meter_Data_Thread[n].mutex.lock();
-		Get_Meter_Data_Thread[n].start(&thr_args,this);//,MeterWindows[n]);
+		thr_args.targetThread=(void*)this;
+		pthread_create(&Get_Meter_Data_Thread[n], NULL, rt_get_meter_data, &thr_args);
+		//Get_Meter_Data_Thread[n].mutex.lock();
+		//Get_Meter_Data_Thread[n].start(&thr_args,this);//,MeterWindows[n]);
 		//wait until thread is initialized
-		Get_Meter_Data_Thread[n].threadStarted.wait(&Get_Meter_Data_Thread[n].mutex);
-		Get_Meter_Data_Thread[n].mutex.unlock();
-// 		rt_receive(0, &msg);
+		//Get_Meter_Data_Thread[n].threadStarted.wait(&Get_Meter_Data_Thread[n].mutex);
+		//Get_Meter_Data_Thread[n].mutex.unlock();
+ 		rt_receive(0, &msg);
 		MeterValues[n].append(0);
 	}
 
@@ -1196,20 +1206,34 @@ void TargetThread::startMeterThreads()//QRL_MeterWindow** MeterWindows)
 void TargetThread::stopMeterThreads()
 {
 	for (int n = 0; n < Num_Meters; n++) {
-		//pthread_join(Get_Meter_Data_Thread[n], NULL);
-		Get_Meter_Data_Thread[n].wait();
+		pthread_join(Get_Meter_Data_Thread[n], NULL);
+		//Get_Meter_Data_Thread[n].wait();
 	}
 
 }
 
 
 
-    int TargetThread::setMeterRefreshRate(double rr,int n)
+int TargetThread::setMeterRefreshRate(double rr,int n)
 {
 int ret=-1;
-if (n<Num_Meters)
- ret= Get_Meter_Data_Thread[n].setRefreshRate(rr);
+if (rr>0. && rr<50.){
+if (n<Num_Meters){
+	ret=1;
+	meterRefreshRate[n]=rr;
+}
+}
+ //ret= Get_Meter_Data_Thread[n].setRefreshRate(rr);
 return ret;
+}
+
+double TargetThread::getMeterRefreshRate(int n)
+{
+	double ret=-1;
+	if (n<Num_Meters){
+		ret=meterRefreshRate[n];
+	}
+	return ret;
 }
 
 
@@ -1260,12 +1284,13 @@ void TargetThread::startLedThreads()//QRL_LedWindow** LedWindows)
 		thr_args.y = 290;
 		thr_args.w = 250;
 		thr_args.h = 250;
-		Get_Led_Data_Thread[n].mutex.lock();
-		//pthread_create(&Get_Led_Data_Thread[n], NULL, rt_get_led_data, &thr_args);
-		Get_Led_Data_Thread[n].start(&thr_args,this);//,LedWindows[n]);
-// 		rt_receive(0, &msg);
-		Get_Led_Data_Thread[n].threadStarted.wait(&Get_Led_Data_Thread[n].mutex);
-		Get_Led_Data_Thread[n].mutex.unlock();
+		thr_args.targetThread=(void*)this;
+//		Get_Led_Data_Thread[n].mutex.lock();
+		pthread_create(&Get_Led_Data_Thread[n], NULL, rt_get_led_data, &thr_args);
+//		Get_Led_Data_Thread[n].start(&thr_args,this);//,LedWindows[n]);
+ 		rt_receive(0, &msg);
+//		Get_Led_Data_Thread[n].threadStarted.wait(&Get_Led_Data_Thread[n].mutex);
+//		Get_Led_Data_Thread[n].mutex.unlock();
 		
 	}
 }
@@ -1276,8 +1301,8 @@ void TargetThread::startLedThreads()//QRL_LedWindow** LedWindows)
 void TargetThread::stopLedThreads()
 {
 	for (int n = 0; n < Num_Leds; n++) {
-		//pthread_join(Get_Led_Data_Thread[n], NULL);
-		Get_Led_Data_Thread[n].wait();
+		pthread_join(Get_Led_Data_Thread[n], NULL);
+		//Get_Led_Data_Thread[n].wait();
 	}
 
 }

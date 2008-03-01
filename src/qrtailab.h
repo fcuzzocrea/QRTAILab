@@ -164,6 +164,7 @@ struct Args_Struct
 	const char *mbx_id;
 	int index;
 	int x, y, w, h;
+	void *targetThread;
 	
 };
 struct Args_Struct_ALog

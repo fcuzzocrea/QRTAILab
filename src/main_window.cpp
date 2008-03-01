@@ -256,7 +256,7 @@ if(targetthread->getIsTargetConnected()==0){
 				}
 			}
 			if (MetersManager) {
-				targetthread->startMeterThreads();//MetersManager->getMeterWindows());
+				//targetthread->startMeterThreads();//MetersManager->getMeterWindows());
 				MetersManager->setGeometry(100,100,200,300);
 				//(MetersManager->getMeterWindows()[i])->setGeometry(0,0,200,300);
 				bool view_flag=false;
@@ -278,7 +278,7 @@ if(targetthread->getIsTargetConnected()==0){
 				}
 			}
 			if (LedsManager) {
-				targetthread->startLedThreads();//LedsManager->getLedWindows());
+				//targetthread->startLedThreads();//LedsManager->getLedWindows());
 				LedsManager->setGeometry(0,0,200,300);
 				
 				bool view_flag=false;
@@ -298,7 +298,7 @@ if(targetthread->getIsTargetConnected()==0){
 					}
 				}
 				if (ScopesManager) {
-					targetthread->startScopeThreads();//ScopesManager->getScopeWindows());
+					//targetthread->startScopeThreads();//ScopesManager->getScopeWindows());
 					ScopesManager->setGeometry(100,100,200,300);
 					
 					bool view_flag=false;
