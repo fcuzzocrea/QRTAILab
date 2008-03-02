@@ -49,8 +49,10 @@ TargetThread::~TargetThread(){
 		delete[] Tunable_Blocks;
 	if (Scopes)
 		delete[] Scopes;
-	//if (Logs)
-	//	delete[] Logs;
+	if (Logs)
+		delete[] Logs;
+	if (ALogs)
+		delete[] ALogs;
 	if (Leds)
 		delete[] Leds;
 	if (Meters)
@@ -65,7 +67,8 @@ TargetThread::~TargetThread(){
 	stopMeterThreads();
 	//if (Get_Meter_Data_Thread)
 	//	delete[] Get_Meter_Data_Thread;
-	
+	stopALogThreads();
+	stopLogThreads();
 }
 /**
  * @brief Gets the Pameter value for a given entry. 
@@ -678,6 +681,8 @@ end:
 						printf(" Sampling time...%f\n", Synchs[n].dt);
 					}
 				}
+				if (Num_Synchs>0)
+					printf("Synchronoscopes are not supported!!!\n");
 				Is_Target_Connected = 1;
 				rlg_manager_window(Num_Tunable_Parameters, PARAMS_MANAGER, false, 0, 0, 430, 260);
 				rlg_manager_window(Num_Scopes, SCOPES_MANAGER, false, 0, 290, 480, 300);
@@ -697,17 +702,24 @@ end:
 					startScopeThreads();
 				}
 
-				/*if (Num_Logs > 0) Get_Log_Data_Thread = new pthread_t [Num_Logs];
-				for (int n = 0; n < Num_Logs; n++) {
+				if (Num_Logs > 0) {
+					Get_Log_Data_Thread = new pthread_t [Num_Logs];
+					startLogThreads();
+				}
+				/*for (int n = 0; n < Num_Logs; n++) {
 					unsigned int msg;
 					Args_T thr_args;
 					thr_args.index = n;
 					thr_args.mbx_id = strdup(Preferences.Target_Log_Mbx_ID);
 					pthread_create(&Get_Log_Data_Thread[n], NULL, rt_get_log_data, &thr_args);
 					rt_receive(0, &msg);
+				}*/
+				if (Num_ALogs > 0) {
+					Get_ALog_Data_Thread = new pthread_t [Num_ALogs];
+					startALogThreads();
 				}
-				if (Num_ALogs > 0) Get_ALog_Data_Thread = new pthread_t [Num_ALogs];
-				for (int n = 0; n < Num_ALogs; n++) {
+				
+				/*for (int n = 0; n < Num_ALogs; n++) {
 					unsigned int msg;
 					Alog_T thr_args;
 					thr_args.index = n;
@@ -782,6 +794,8 @@ end:
 				stopScopeThreads();
 				stopMeterThreads();
 				stopLedThreads();
+				stopALogThreads();
+				stopLogThreads();
 /*				for (int n = 0; n < Num_Logs; n++) {
 					pthread_join(Get_Log_Data_Thread[n], NULL);
 				}
@@ -831,14 +845,12 @@ end:
 					stopScopeThreads();
 					stopMeterThreads();
 					stopLedThreads();
+					stopALogThreads();
+					stopLogThreads();
 /*					for (int n = 0; n < Num_Logs; n++) {
 						pthread_join(Get_Log_Data_Thread[n], NULL);
 					}
-					for (int n = 0; n < Num_ALogs; n++) {			//modifiche 29/06/05
-						pthread_join(Get_ALog_Data_Thread[n], NULL);
-					}*/
 
-					/*
 					for (int n = 0; n < Num_Synchs; n++) {
 						pthread_join(Get_Synch_Data_Thread[n], NULL);
 					}
@@ -923,11 +935,10 @@ end:
 				stopScopeThreads();
 				stopMeterThreads();
 				stopLedThreads();
+				stopALogThreads();
+				stopLogThreads();
 				//for (int n = 0; n < Num_Logs; n++) {
 					//pthread_join(Get_Log_Data_Thread[n], NULL);
-				//}
-				//for (int n = 0; n < Num_ALogs; n++) {
-					//pthread_join(Get_ALog_Data_Thread[n], NULL);
 				//}
 				//for (int n = 0; n < Num_Synchs; n++) {
 					//pthread_join(Get_Synch_Data_Thread[n], NULL);
@@ -1304,3 +1315,67 @@ return ret;
 }
 
 
+
+
+/**
+* @brief starting all alog threads
+*/
+void TargetThread::startALogThreads()//QRL_LedWindow** LedWindows)
+{
+	for (int n = 0; n < Num_ALogs; n++) {
+		unsigned int msg;
+		Alog_T thr_args;
+		thr_args.index = n;
+		thr_args.mbx_id = strdup(getPreferences().Target_ALog_Mbx_ID);
+		thr_args.alog_name = strdup(ALogs[n].name);
+		printf("%s alog name\n", ALogs[n].name);
+		thr_args.targetThread=(void*)this;
+		pthread_create(&Get_ALog_Data_Thread[n], NULL, rt_get_alog_data, &thr_args);
+		rt_receive(0, &msg);
+	}
+}
+
+/**
+* @brief stopping all existing led threads
+*/
+void TargetThread::stopALogThreads()
+{
+	for (int n = 0; n < Num_ALogs; n++) {
+		pthread_join(Get_ALog_Data_Thread[n], NULL);
+		//Get_Led_Data_Thread[n].wait();
+	}
+
+}
+
+
+/**
+* @brief starting all log threads
+*/
+void TargetThread::startLogThreads()
+{
+	for (int n = 0; n < Num_Logs; n++) {
+		unsigned int msg;
+		Args_T thr_args;
+		thr_args.index = n;
+		thr_args.mbx_id = strdup(getPreferences().Target_Log_Mbx_ID);
+		thr_args.x = 500; 
+		thr_args.y = 290;
+		thr_args.w = 250;
+		thr_args.h = 250;
+		thr_args.targetThread=(void*)this;
+		pthread_create(&Get_Log_Data_Thread[n], NULL, rt_get_log_data, &thr_args);
+ 		rt_receive(0, &msg);
+	}
+}
+
+/**
+* @brief stopping all existing log threads
+*/
+void TargetThread::stopLogThreads()
+{
+	for (int n = 0; n < Num_Logs; n++) {
+		pthread_join(Get_Log_Data_Thread[n], NULL);
+		//Get_Led_Data_Thread[n].wait();
+	}
+
+}

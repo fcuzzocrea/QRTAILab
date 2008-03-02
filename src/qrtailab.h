@@ -173,6 +173,7 @@ struct Args_Struct_ALog
 	int index;
 	int x, y, w, h;
 	const char *alog_name;
+	void *targetThread;
 };
 struct Target_Parameters_Struct
 {
