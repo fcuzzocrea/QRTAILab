@@ -319,7 +319,7 @@ if(qTargetInterface->getIsTargetConnected()==0){
 			if (qTargetInterface->getParameterNumber()>0){
 				enableActionShowParameter(true);
 				if (! ParametersManager){
-					ParametersManager = new QRL_ParametersManager(this,targetthread);
+					ParametersManager = new QRL_ParametersManager(this,qTargetInterface);
 					//connect( ParametersManager, SIGNAL( uploadParameter(int,int) ), this, SLOT( uploadParameter(int,int) ) );
 				}
 				if (ParametersManager) {

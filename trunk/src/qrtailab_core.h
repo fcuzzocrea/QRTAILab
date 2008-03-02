@@ -37,11 +37,7 @@
 #include <QtGui> 
 #include "qrtailab.h"
 
-static pthread_t *Get_Led_Data_Thread;
-static pthread_t *Get_Meter_Data_Thread;
-static pthread_t *Get_Scope_Data_Thread;
-static pthread_t *Get_ALog_Data_Thread;
-static pthread_t *Get_Log_Data_Thread;
+
 
 static RT_TASK *Target_Interface_Task;
 static RT_TASK *RLG_Main_Task;
@@ -79,27 +75,22 @@ class TargetThread : public QThread
     Target_Leds_T* getLeds(){return Leds;}
    Target_ALogs_T* getALogs(){return ALogs;}
     Target_Logs_T* getLogs(){return Logs;}
-    //Target_Parameters_T* getParamters(){return Tunable_Parameters;}
-    //Target_Blocks_T* getBlocks(){return Tunable_Blocks;}
+    Target_Parameters_T* getParameters(){return Tunable_Parameters;}
+    Target_Blocks_T* getBlocks(){return Tunable_Blocks;}
    // Batch_Parameters_T* getBatchParameters(){return Batch_Parameters;}
 
    //prameter down- and upload
- void downloadParameter(int,int);
+
  int addToBatch(int map_offset,int ind,double value);
     double get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx);
-    double get_parameter(int blk,int prm, int nr,int nc);
-    int update_parameter(int idx, int mat_idx, double val);
-    int get_map_offset(int blk, int prm_row,int prm_col);
-    int get_parameter_ind(int blk, int prm_row,int prm_col);
-    void batchParameterDownload();
-    void resetBatchMode();
-    void uploadParameters();
-    int get_Number_of_Parameters(int blk);
-   unsigned int getParameterCols(int blk,int prm);
-   unsigned int getParameterRows(int blk,int prm);
-   QString getParameterName(int blk,int prm);
-   QString getBlockName(int blk);
 
+    int update_parameter(int idx, int mat_idx, double val);
+    int get_map_offset(int blk, int prm);
+    int get_parameter_ind(int blk, int prm, int prm_row,int prm_col);
+
+    void resetBatchMode();
+
+   int getBatchCounter(){return batchCounter;}
 
     void setVerbose(int v){Verbose=v;}
     Preferences_T getPreferences(){return Preferences;}
@@ -151,8 +142,6 @@ class TargetThread : public QThread
 
     void setEndApp(int EndApp){End_App=EndApp;}
     void setLedValue(int,unsigned int);
-   void rlg_update_after_connect(void);
-   void rlg_manager_window(int, int, int, int, int, int, int);
    int  get_synch_blocks_info(long port, RT_TASK *task, const char *mbx_id);
    int get_meter_blocks_info(long port, RT_TASK *task, const char *mbx_id);
    int get_led_blocks_info(long port, RT_TASK *task, const char *mbx_id);
@@ -200,8 +189,12 @@ class TargetThread : public QThread
   QVector<double> scopeDt;
   QVector<double> meterRefreshRate;
 
-  QMutex scopeMutex;
 
+ pthread_t *Get_Led_Data_Thread;
+ pthread_t *Get_Meter_Data_Thread;
+ pthread_t *Get_Scope_Data_Thread;
+ pthread_t *Get_ALog_Data_Thread;
+ pthread_t *Get_Log_Data_Thread;
 
  };
 
@@ -222,7 +215,10 @@ public:
     int startTarget();
     int connectToTarget();
     int disconnectFromTarget();
+    void uploadParameters();
+    void batchParameterDownload();
     void closeTargetThread();
+
     void setPreferences(Preferences_T p){targetthread->setPreferences(p);}
     Preferences_T getPreferences(){return targetthread->getPreferences();}
 
@@ -235,6 +231,18 @@ public:
     int getBlockNumber(){return targetthread->getBlockNumber();}
     int getEndApp(){return targetthread->getEndApp();}
     int getVerbose(){return targetthread->getVerbose();}
+
+   QString getParameterName(int blk,int prm);
+   QString getBlockName(int blk);
+   void resetBatchMode(){targetthread->resetBatchMode();}
+    int getNumberOfParameters(int blk);
+   unsigned int getParameterCols(int blk,int prm);
+   unsigned int getParameterRows(int blk,int prm);
+    double getParameter(int blk,int prm, int nr,int nc);
+    void updateParameter(int blk,int prm, int nr,int nc,double value);
+    void addToBatch(int blk,int prm, int nr,int nc, double value);
+
+
  signals:
    void statusBarMessage(const QString &);
 	
