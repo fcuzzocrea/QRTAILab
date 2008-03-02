@@ -14,10 +14,11 @@ CONFIG += QwtPlot  QwtWidgets qtestlib
 
 # Input
 HEADERS += qrtailab.h meter_window.h meters_manager.h led_window.h leds_manager.h scope_window.h qmeter.h
-HEADERS += scopes_manager.h main_window.h parameters_manager.h qrtailab_listener.h qrtailab_core.h
+HEADERS += scopes_manager.h main_window.h parameters_manager.h  qrtailab_core.h
+HEADERS += qrtailab_listener.h
 FORMS += qrl_connectdialog.ui  qrl_main_window.ui  qrl_meters_manager.ui  qrl_leds_manager.ui  
 FORMS += qrl_scopes_manager.ui qrl_parameters_manager.ui
 SOURCES +=  meter_window.cpp meters_manager.cpp led_window.cpp leds_manager.cpp scope_window.cpp
 SOURCES += scopes_manager.cpp main_window.cpp parameters_manager.cpp main.cpp qmeter.cpp
-SOURCES += qmeterdrawfunctions.cpp qrtailab_listener.cpp qrtailab_core.cpp
+SOURCES += qmeterdrawfunctions.cpp  qrtailab_core.cpp qrtailab_listener.cpp
 RESOURCES += qrtailab.qrc

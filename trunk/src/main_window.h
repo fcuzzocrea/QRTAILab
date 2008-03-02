@@ -35,8 +35,7 @@
 #include "leds_manager.h"
 #include "scopes_manager.h"
 #include "parameters_manager.h"
-
-
+#include "qrtailab_core.h"
 /**
  * @brief Main QThread 
  */
@@ -139,6 +138,7 @@ private:
     QMdiArea *mdiArea;
     QString profileName;
     int Verbose;
+    QRtaiLabCore	*qTargetInterface;
     //QSettings *settings;
 };
 
