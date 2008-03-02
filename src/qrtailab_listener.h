@@ -24,8 +24,6 @@
  ***************************************************************************/
 
 #include "qrtailab_core.h"
-
-
 /**
  * @brief QThread for reading Scope data
  */

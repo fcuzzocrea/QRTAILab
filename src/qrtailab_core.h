@@ -37,26 +37,15 @@
 #include <QtGui> 
 #include "qrtailab.h"
 
-
-static RT_TASK *Target_Interface_Task;
-
 static pthread_t *Get_Led_Data_Thread;
 static pthread_t *Get_Meter_Data_Thread;
 static pthread_t *Get_Scope_Data_Thread;
 static pthread_t *Get_ALog_Data_Thread;
 static pthread_t *Get_Log_Data_Thread;
 
-
-//class TargetThread;
-//class GetScopeDataThread;
-//class GetMeterDataThread;
-//class GetLedDataThread;
-//class QRL_ScopeWindow;
-//class QRL_MeterWindow;
-//class QRL_LedWindow;
-
+static RT_TASK *Target_Interface_Task;
+static RT_TASK *RLG_Main_Task;
 using namespace qrl_types;
-
 
 //! controls connection to one target
 class TargetThread : public QThread
@@ -72,12 +61,6 @@ class TargetThread : public QThread
     ~TargetThread();
     void run();
     void setPreferences(Preferences_T);
-    // communicate with rtai target
-    int stopTarget();
-    int startTarget();
-    int connectToTarget();
-    int disconnectFromTarget();
-    void closeThread();
 
     //get information about target
     unsigned int getIsTargetConnected(){return Is_Target_Connected;}
@@ -156,15 +139,14 @@ class TargetThread : public QThread
     void stopALogThreads();
     void startLogThreads();
     void stopLogThreads();
-
+    const char* getTargetName(){return RLG_Target_Name;}
+    long getTargetPort(){return Target_Port;}
+    RT_TASK * getTask(){return Target_Interface_Task;}
 
 // friend
- signals:
-   void statusBarMessage(const QString &);
    
  public slots:
     void start();
-    void getOrder(int);
  private:
 
     void setEndApp(int EndApp){End_App=EndApp;}
@@ -198,6 +180,7 @@ class TargetThread : public QThread
   Target_Synchs_T *Synchs;
   Batch_Parameters_T Batch_Parameters[MAX_BATCH_PARAMS];
   Profile_T *Profile;
+  long Target_Port;
   const char *RLG_Target_Name;
   Preferences_T Preferences;
    int Verbose;
@@ -219,10 +202,46 @@ class TargetThread : public QThread
 
   QMutex scopeMutex;
 
+
  };
 
 
 
+
+
+
+class QRtaiLabCore :  public QObject {
+	
+	Q_OBJECT
+
+public:
+    QRtaiLabCore(QObject *parent=0,int Verbose = 0);
+    ~QRtaiLabCore();
+    TargetThread* getTargetThread(){return targetthread;}
+    int stopTarget();
+    int startTarget();
+    int connectToTarget();
+    int disconnectFromTarget();
+    void closeTargetThread();
+    void setPreferences(Preferences_T p){targetthread->setPreferences(p);}
+    Preferences_T getPreferences(){return targetthread->getPreferences();}
+
+    unsigned int getIsTargetConnected(){return targetthread->getIsTargetConnected();}
+    int getIsTargetRunning(){return targetthread->getIsTargetRunning();}
+    int getScopeNumber(){return targetthread->getScopeNumber();}
+    int getMeterNumber(){return targetthread->getMeterNumber();}
+    int getLedNumber(){return targetthread->getLedNumber();}
+    int getParameterNumber(){return targetthread->getParameterNumber();}
+    int getBlockNumber(){return targetthread->getBlockNumber();}
+    int getEndApp(){return targetthread->getEndApp();}
+    int getVerbose(){return targetthread->getVerbose();}
+ signals:
+   void statusBarMessage(const QString &);
+	
+private:
+	TargetThread* targetthread;
+	Preferences_T Preferences;
+};
 
 
 

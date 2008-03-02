@@ -27,7 +27,7 @@
 #include "main_window.h"
 
 //static RT_TASK *RLG_Main_Task;
-extern unsigned long qrl::get_an_id(const char *root);
+//extern unsigned long qrl::get_an_id(const char *root);
 
 QRL_connectDialog::QRL_connectDialog(QWidget *parent)
 	:QDialog(parent)
@@ -150,15 +150,19 @@ QRL_MainWindow::QRL_MainWindow()
                printf("Cannot init RTAI-Lab GUI main task\n");
                close();
     }
-*/
-    targetthread = new TargetThread();
+*/  
+  statusMessage = new QLabel(this);
+    statusBar()->addWidget(statusMessage);
 
-    targetthread->start();
+
+    qTargetInterface = new QRtaiLabCore(this,Verbose);
+    targetthread=qTargetInterface->getTargetThread();
+    //targetthread = new TargetThread();
+    //targetthread->start();
   //  connect( this, SIGNAL( sendOrder(int) ), targetthread, SLOT( getOrder(int) ) ); 
 
-    statusMessage = new QLabel(this);
-    statusBar()->addWidget(statusMessage);
-    connect( targetthread, SIGNAL( statusBarMessage(const QString &) ), this, SLOT( setStatusBarMessage(const QString &) ) ); 
+  
+   connect( qTargetInterface, SIGNAL( statusBarMessage(const QString &) ), this, SLOT( setStatusBarMessage(const QString &) ) ); 
 
      mdiArea = new QMdiArea;
      setCentralWidget(mdiArea);
@@ -196,7 +200,7 @@ void QRL_MainWindow::setStatusBarMessage(const QString & message){
 
 void QRL_MainWindow::closeEvent(QCloseEvent *event)
 {
-	targetthread->disconnectFromTarget();
+	qTargetInterface->disconnectFromTarget();
 	//if (Parameters_Manager) Parameters_Manager->hide();
 	if (ScopesManager) {
 		ScopesManager->hide();
@@ -220,38 +224,39 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 	//rt_send(Target_Interface_Task, CLOSE);
 	//pthread_join(Target_Interface_Thread, NULL);
 	//rlg_write_pref(GEOMETRY_PREF, "rtailab");
-	targetthread->closeThread();
- 	targetthread->wait();
-	delete targetthread;
+	//targetthread->closeThread();
+ 	//targetthread->wait();
+	//delete targetthread;
+	delete qTargetInterface;
 // 	rt_task_delete(RLG_Main_Task);
 	qDebug() << "Quitting Main window";
 }
 
  void QRL_MainWindow::connectDialog() 
 {
-if(targetthread->getIsTargetConnected()==0){
+if(qTargetInterface->getIsTargetConnected()==0){
 
   //QRL_connectDialog *connectDialog = new QRL_connectDialog(this);
-    if(targetthread->getPreferences().Target_IP==NULL) {
+    if(qTargetInterface->getPreferences().Target_IP==NULL) {
    	 if (ConnectDialog->exec()) 
-		targetthread->setPreferences(ConnectDialog->getPreferences());
+		qTargetInterface->setPreferences(ConnectDialog->getPreferences());
 	else
 		return;
     }
-	targetthread->setVerbose(Verbose);
-	targetthread->connectToTarget();
+	//targetthread->setVerbose(Verbose);
+	qTargetInterface->connectToTarget();
 	//sendOrder(qrl_types::CONNECT_TO_TARGET);
-	if (targetthread->getIsTargetConnected()==1){
+	if (qTargetInterface->getIsTargetConnected()==1){
 		enableActionDisconnect(true);
 		enableActionConnect(false);
 		enableActionConnectWProfile(false);
 		enableActionSaveProfile(true);
 
-			if (targetthread->getMeterNumber()>0){
+			if (qTargetInterface->getMeterNumber()>0){
 			enableActionShowMeter(true);
 			if (! MetersManager){
 				MetersManager = new QRL_MetersManager(this,targetthread);
-				for (int i=0; i<targetthread->getMeterNumber(); ++i){
+				for (int i=0; i<qTargetInterface->getMeterNumber(); ++i){
 					mdiArea->addSubWindow(MetersManager->getMeterWindows()[i]);
 				}
 			}
@@ -269,11 +274,11 @@ if(targetthread->getIsTargetConnected()==0){
 				//targetthread->setMetersManager(MetersManager);
 			}
 			}
-			if (targetthread->getLedNumber()>0){
+			if (qTargetInterface->getLedNumber()>0){
 			enableActionShowLed(true);
 			if (! LedsManager){
 				LedsManager = new QRL_LedsManager(this,targetthread);
-				for (int i=0; i<targetthread->getLedNumber(); ++i){
+				for (int i=0; i<qTargetInterface->getLedNumber(); ++i){
 						 mdiArea->addSubWindow(LedsManager->getLedWindows()[i]);
 				}
 			}
@@ -289,11 +294,11 @@ if(targetthread->getIsTargetConnected()==0){
 				}
 			}
 			}
-			if (targetthread->getScopeNumber()>0){
+			if (qTargetInterface->getScopeNumber()>0){
 				enableActionShowScope(true);
 				if (! ScopesManager){
 					ScopesManager = new QRL_ScopesManager(this,targetthread);
-					for (int i=0; i<targetthread->getScopeNumber(); ++i){
+					for (int i=0; i<qTargetInterface->getScopeNumber(); ++i){
 						 mdiArea->addSubWindow(ScopesManager->getScopeWindows()[i]);
 					}
 				}
@@ -311,7 +316,7 @@ if(targetthread->getIsTargetConnected()==0){
 				//schlechte loesung
 				//targetthread->setScopesManager(ScopesManager);
 			}
-			if (targetthread->getParameterNumber()>0){
+			if (qTargetInterface->getParameterNumber()>0){
 				enableActionShowParameter(true);
 				if (! ParametersManager){
 					ParametersManager = new QRL_ParametersManager(this,targetthread);
@@ -328,7 +333,7 @@ if(targetthread->getIsTargetConnected()==0){
 					}
 				}
 			}
-		if (targetthread->getIsTargetRunning()){
+		if (qTargetInterface->getIsTargetRunning()){
 			enableActionStart(false);
 			enableActionStop(true);
 		}else{
@@ -354,7 +359,7 @@ if(targetthread->getIsTargetConnected()==0){
 }
  void QRL_MainWindow::disconnectDialog() 
 {
-	targetthread->disconnectFromTarget();
+	qTargetInterface->disconnectFromTarget();
 	//if (MetersManager) {
 	//	MetersManager->stopMeterThreads();
 	//}
@@ -364,7 +369,7 @@ if(targetthread->getIsTargetConnected()==0){
 	//if (LedsManager) {
 	//	LedsManager->stopLedThreads();
 	//}
-	if (targetthread->getIsTargetConnected()==0){
+	if (qTargetInterface->getIsTargetConnected()==0){
 		enableActionDisconnect(false);
 		enableActionConnect(true);
 		enableActionConnectWProfile(true);
@@ -407,7 +412,7 @@ void QRL_MainWindow::connect_WProfile() {
 	Preferences.Target_Meter_Mbx_ID=qstrdup(settings.value("Target_Meter_Mbx_ID",QByteArray("RTM")).toByteArray().data());
 	Preferences.Target_Synch_Mbx_ID=qstrdup(settings.value("Target_Synch_Mbx_ID",QByteArray("RTY")).toByteArray().data());
          settings.endGroup();
-	targetthread->setPreferences(Preferences);
+	qTargetInterface->setPreferences(Preferences);
 
 connectDialog();
 
@@ -426,8 +431,8 @@ connectDialog();
 		settings.endGroup();
 	
 		size = settings.beginReadArray("ScopeWindow");
-		if (size>targetthread->getScopeNumber())
-			size=targetthread->getScopeNumber();
+		if (size>qTargetInterface->getScopeNumber())
+			size=qTargetInterface->getScopeNumber();
 		for (int i = 0; i < size; ++i) {
 		settings.setArrayIndex(i);
 		ScopesManager->getScopeWindows()[i]->resize(settings.value("size", QSize(400, 400)).toSize());
@@ -448,8 +453,8 @@ connectDialog();
 		settings.endGroup();
 	
 		size = settings.beginReadArray("MeterWindow");
-		if (size>targetthread->getMeterNumber())
-			size=targetthread->getMeterNumber();
+		if (size>qTargetInterface->getMeterNumber())
+			size=qTargetInterface->getMeterNumber();
 		for (int i = 0; i < size; ++i) {
 		settings.setArrayIndex(i);
 		//MetersManager->getMeterWindows()[i]->resize(settings.value("size", QSize(400, 400)).toSize());
@@ -482,8 +487,8 @@ connectDialog();
 		settings.endGroup();
 
 		size = settings.beginReadArray("LedWindow");
-		if (size>targetthread->getLedNumber())
-			size=targetthread->getLedNumber();
+		if (size>qTargetInterface->getLedNumber())
+			size=qTargetInterface->getLedNumber();
 		for (int i = 0; i < size; ++i) {
 		settings.setArrayIndex(i);
 		QColor color=(settings.value("Color",QColor(Qt::red))).value<QColor>();
@@ -559,7 +564,7 @@ void QRL_MainWindow::saveProfile() {
      settings.setValue("size", this->size());
      settings.setValue("pos", this->pos());
      settings.endGroup();
-Preferences_T Preferences=targetthread->getPreferences();
+Preferences_T Preferences=qTargetInterface->getPreferences();
 	settings.beginGroup("Preferences");
 	settings.setValue("Target_IP",QByteArray(Preferences.Target_IP));
 	settings.setValue("Target_Interface_Task_Name",QByteArray(Preferences.Target_Interface_Task_Name));
@@ -579,7 +584,7 @@ Preferences_T Preferences=targetthread->getPreferences();
 	settings.endGroup();
 	
 	settings.beginWriteArray("ScopeWindow");
-	for (int i = 0; i < targetthread->getScopeNumber(); ++i) {
+	for (int i = 0; i < qTargetInterface->getScopeNumber(); ++i) {
 		settings.setArrayIndex(i);
 		settings.setValue("size", ScopesManager->getScopeWindows()[i]->size());
 		settings.setValue("pos", ScopesManager->getScopeWindows()[i]->pos());
@@ -601,7 +606,7 @@ Preferences_T Preferences=targetthread->getPreferences();
 	settings.endGroup();
 
 	settings.beginWriteArray("MeterWindow");
-	for (int i = 0; i < targetthread->getMeterNumber(); ++i) {
+	for (int i = 0; i < qTargetInterface->getMeterNumber(); ++i) {
 		settings.setArrayIndex(i);
 		settings.setValue("size", MetersManager->getMeterWindows()[i]->size());
 		settings.setValue("pos", MetersManager->getMeterWindows()[i]->pos());
@@ -634,7 +639,7 @@ Preferences_T Preferences=targetthread->getPreferences();
 	settings.endGroup();
 
 	settings.beginWriteArray("LedWindow");
-	for (int i = 0; i < targetthread->getLedNumber(); ++i) {
+	for (int i = 0; i < qTargetInterface->getLedNumber(); ++i) {
 		settings.setArrayIndex(i);
 		settings.setValue("Color",LedsManager->getLedWindows()[i]->getLedColor());
 		settings.setValue("size", LedsManager->getLedWindows()[i]->size());
@@ -657,8 +662,8 @@ Preferences_T Preferences=targetthread->getPreferences();
 
  void QRL_MainWindow::start() 
 {
-	targetthread->startTarget();
-	if (targetthread->getIsTargetRunning()){
+	qTargetInterface->startTarget();
+	if (qTargetInterface->getIsTargetRunning()){
 		enableActionStart(false);
 		enableActionStop(true);
 	}
@@ -666,10 +671,10 @@ Preferences_T Preferences=targetthread->getPreferences();
 
  void QRL_MainWindow::stop() 
 {
-	targetthread->stopTarget();
-	if (targetthread->getIsTargetRunning()==0){
+	qTargetInterface->stopTarget();
+	if (qTargetInterface->getIsTargetRunning()==0){
 		enableActionStop(false);
-		if (targetthread->getIsTargetConnected()==0){
+		if (qTargetInterface->getIsTargetConnected()==0){
 			enableActionDisconnect(false);
 			enableActionConnect(true);
 			enableActionConnectWProfile(true);

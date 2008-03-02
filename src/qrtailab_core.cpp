@@ -58,7 +58,7 @@ TargetThread::~TargetThread(){
 	if (Meters)
 		delete[] Meters;
 	qDebug() << "deleting all pointer";
-	stopScopeThreads();
+/*	stopScopeThreads();
 	//if (Get_Scope_Data_Thread)
 	//	delete[] Get_Scope_Data_Thread;
 	stopLedThreads();
@@ -68,7 +68,7 @@ TargetThread::~TargetThread(){
 	//if (Get_Meter_Data_Thread)
 	//	delete[] Get_Meter_Data_Thread;
 	stopALogThreads();
-	stopLogThreads();
+	stopLogThreads();*/
 }
 /**
  * @brief Gets the Pameter value for a given entry. 
@@ -215,7 +215,7 @@ long TargetThread::try_to_connect(const char *IP)
 	struct sockaddr_in addr;
 
 	sprintf(buf, "Trying to connect to %s", IP);
-	statusBarMessage(tr(buf));
+	//statusBarMessage(tr(buf));
 	if (Verbose) {
 		printf("%s...", buf);
 		fflush(stdout);
@@ -454,7 +454,7 @@ void TargetThread::rlg_update_after_connect(void)
 
 	
 	sprintf(buf, "Target: %s.", RLG_Target_Name);
-	statusBarMessage(tr(buf));
+	//statusBarMessage(tr(buf));
 
 }
 
@@ -551,16 +551,12 @@ void TargetThread::start()
   QThread::start();
 }
 
-void  TargetThread::getOrder(int c){
-
-	printf("Command: %d\n",c);
-}
 void TargetThread::run()
 {
 
 
 	unsigned int code, U_Request;
-	long Target_Port = 0;
+	Target_Port = 0;
 	RT_TASK *If_Task = NULL, *task;
 
 	rt_allow_nonroot_hrt();
@@ -591,7 +587,7 @@ end:
 					Target_Port = try_to_connect(Preferences.Target_IP);
 					//RLG_Connect_Button->activate();
 					if (Target_Port <= 0) {
-						statusBarMessage(tr("Sorry, no route to target"));
+						//statusBarMessage(tr("Sorry, no route to target"));
 						if (Verbose) {
 							printf(" Sorry, no route to target\n");
 						}
@@ -604,7 +600,7 @@ end:
 				}
 
 			if (!(If_Task = (RT_TASK *)RT_get_adr(Target_Node, Target_Port, Preferences.Target_Interface_Task_Name))) {
-					statusBarMessage(tr("No target or bad interface task identifier"));
+					//statusBarMessage(tr("No target or bad interface task identifier"));
 					if (Verbose) {
 						printf("No target or bad interface task identifier\n");
 					}
@@ -812,7 +808,7 @@ end:
 				rt_release_port(Target_Node, Target_Port);
 				Target_Port = 0;
 				free(Tunable_Parameters);
-				statusBarMessage(tr("Ready..."));
+				//statusBarMessage(tr("Ready..."));
 				if (Verbose) {
 					printf("Disconnected succesfully.\n");
 				}
@@ -864,9 +860,7 @@ end:
 					Target_Node = 0;
 					Target_Port = 0;	
 
-					statusBarMessage(tr("Ready..."));
-					//RLG_Main_Window->redraw();
-					//Fl::unlock();
+					//statusBarMessage(tr("Ready..."));
 					if (Verbose) {
 						printf("ok\n");
 					}
@@ -929,14 +923,8 @@ end:
 				break;
 			}
 			case CLOSE:
-
-				rt_task_delete(Target_Interface_Task);
 				End_App=1;
-				stopScopeThreads();
-				stopMeterThreads();
-				stopLedThreads();
-				stopALogThreads();
-				stopLogThreads();
+				rt_task_delete(Target_Interface_Task);
 				//for (int n = 0; n < Num_Logs; n++) {
 					//pthread_join(Get_Log_Data_Thread[n], NULL);
 				//}
@@ -958,52 +946,6 @@ void TargetThread::setPreferences(Preferences_T preferences)
   Preferences=preferences;
 }
 
-
-int TargetThread::stopTarget()
-{
-if(Is_Target_Connected==1){
-	if (Is_Target_Running==1) {
-		qrl::RT_RPC(Target_Interface_Task, STOP_TARGET, 0);
-	}
-}
-return Is_Target_Running;
-
-}
-
-int TargetThread::startTarget()
-{
-if(Is_Target_Connected==1){
-	if (Is_Target_Running==0) {
-		qrl::RT_RPC(Target_Interface_Task, START_TARGET, 0);
-	}
-}
-return !Is_Target_Running;
-
-}
-
-int TargetThread::connectToTarget()
-{
-	qrl::RT_RPC(Target_Interface_Task, CONNECT_TO_TARGET, 0);
-	return !Is_Target_Connected;
-}
-
-
-
-int TargetThread::disconnectFromTarget()
-{
-if(Is_Target_Connected==1){
-		qrl::RT_RPC(Target_Interface_Task, DISCONNECT_FROM_TARGET, 0);
-	}
-return Is_Target_Connected;
-}
-
-void TargetThread::closeThread()
-{
-	disconnectFromTarget();
-	rt_send(Target_Interface_Task, CLOSE);
-
-
-}
 
 
 void TargetThread::downloadParameter(int ind,int map_offset)
@@ -1309,7 +1251,6 @@ return ret;
 
 }
 
-
    QString TargetThread::getLedName(int i){
 	return tr(Leds[i].name);
 }
@@ -1379,3 +1320,103 @@ void TargetThread::stopLogThreads()
 	}
 
 }
+
+
+
+QRtaiLabCore::QRtaiLabCore(QObject *parent, int Verbose)
+: QObject( parent )
+{
+
+	rt_allow_nonroot_hrt();
+   if (!(RLG_Main_Task = rt_task_init_schmod(qrl::get_an_id("RLGM"), 98, 0, 0, SCHED_FIFO, 0xFF))) {
+               printf("Cannot init RTAI-Lab GUI main task\n");
+		exit( 1 );	
+		//return 1;
+    }
+    targetthread = new TargetThread();
+    targetthread->setVerbose(Verbose);
+    targetthread->start();
+    Target_Interface_Task=targetthread->getTask();
+    statusBarMessage(tr("Ready..."));
+}
+
+QRtaiLabCore::~QRtaiLabCore(){
+	closeTargetThread();
+ 	targetthread->wait();
+	delete targetthread;
+	rt_task_delete(RLG_Main_Task);
+
+}
+
+
+
+
+
+int QRtaiLabCore::stopTarget()
+{
+if(targetthread->getIsTargetConnected()==1){
+	if (targetthread->getIsTargetRunning()==1) {
+		qrl::RT_RPC(Target_Interface_Task, TargetThread::STOP_TARGET, 0);
+	}
+}
+if (targetthread->getIsTargetRunning()==0)
+	statusBarMessage(tr("Ready..."));
+
+return targetthread->getIsTargetRunning();
+
+}
+
+int QRtaiLabCore::startTarget()
+{
+if(targetthread->getIsTargetConnected()==1){
+	if (targetthread->getIsTargetRunning()==0) {
+		qrl::RT_RPC(Target_Interface_Task, TargetThread::START_TARGET, 0);
+	}
+}
+return !targetthread->getIsTargetRunning();
+
+}
+
+int QRtaiLabCore::connectToTarget()
+{	
+	char buf[128];
+	sprintf(buf, "Trying to connect to %s", targetthread->getPreferences().Target_IP);
+	statusBarMessage(tr(buf));
+	qrl::RT_RPC(Target_Interface_Task, TargetThread::CONNECT_TO_TARGET, 0);
+	if (targetthread->getIsTargetConnected()==1){
+
+		
+		sprintf(buf, "Target: %s.", targetthread->getTargetName());
+		statusBarMessage(tr(buf));
+	} else {
+		if (targetthread->getTargetPort() <= 0) 
+			statusBarMessage(tr("Sorry, no route to target"));
+		else
+			statusBarMessage(tr("No target or bad interface task identifier"));
+	}
+	return !targetthread->getIsTargetConnected();
+}
+
+
+
+int QRtaiLabCore::disconnectFromTarget()
+{
+if(targetthread->getIsTargetConnected()==1){
+	qrl::RT_RPC(Target_Interface_Task, TargetThread::DISCONNECT_FROM_TARGET, 0);
+	if (targetthread->getIsTargetConnected()==0)
+		statusBarMessage(tr("Ready..."));
+}
+return targetthread->getIsTargetConnected();
+}
+
+
+
+void QRtaiLabCore::closeTargetThread()
+{
+	disconnectFromTarget();
+	rt_send(Target_Interface_Task,TargetThread::CLOSE);
+
+
+}
+
+
