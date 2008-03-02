@@ -99,86 +99,19 @@ double TargetThread::get_parameter(Target_Parameters_T p, int nr, int nc, int *v
 }
 
 
-/**
- * @brief Gets the Pameter value for a given entry. 
- * @param blk parameter block number
- * @param prm parameter number
- * @param nr parameter row
- * @param nc parameter column
- */
-double TargetThread::get_parameter(int blk,int prm, int nr,int nc)
-{
-	int val_idx;
-	
-	return get_parameter(Tunable_Parameters[Tunable_Blocks[blk].offset+prm], nr, nc, &val_idx);
-					
-}
- unsigned   int TargetThread::getParameterCols(int blk,int prm){
-	return Tunable_Parameters[Tunable_Blocks[blk].offset+prm].n_cols;
-}
-   unsigned int TargetThread:: getParameterRows(int blk,int prm){
-	return Tunable_Parameters[Tunable_Blocks[blk].offset+prm].n_rows;
-}
 
-QString TargetThread::getParameterName(int blk,int prm){
 
-	return tr(Tunable_Parameters[Tunable_Blocks[blk].offset+prm].param_name);
-}
-QString TargetThread::getBlockName(int blk){
-	return tr(Tunable_Blocks[blk].name);
-}
 
- int TargetThread::get_map_offset(int blk, int prm_row,int prm_col){
-	int jend;
-	int prm=prm_row;
-	int table_row=0;
-	// get old value
-	if (blk == Num_Tunable_Blocks - 1) 
-		jend=Num_Tunable_Parameters - Tunable_Blocks[blk].offset;
-	else
-		jend=Tunable_Blocks[blk+1].offset-Tunable_Blocks[blk].offset;
-	for (int j = 0; j <  jend; j++) {
-		unsigned int ncols = Tunable_Parameters[Tunable_Blocks[blk].offset+j].n_cols;
-		unsigned int nrows = Tunable_Parameters[Tunable_Blocks[blk].offset+j].n_rows;
-		for (unsigned int nr = 0; nr < nrows; nr++) {
-			for (unsigned int nc = 0; nc < ncols; nc++) {
-				if ((prm_row==table_row) && (prm_col==nc)){
-					prm=j;
-				}
-			}
-			table_row++;
-		}
-		
-	}
+ int TargetThread::get_map_offset(int blk, int prm){
+
 	int map_offset = Tunable_Blocks[blk].offset + prm;
 	return map_offset;
 
 }
-    int TargetThread::get_parameter_ind(int blk, int prm_row,int prm_col){
+ int TargetThread::get_parameter_ind(int blk, int prm, int prm_row,int prm_col){
 
-	int jend,val_idx;
-	int prm=prm_row;
-	int table_row=0;
-	double data_value;
-	// get old value
-	if (blk == Num_Tunable_Blocks - 1) 
-		jend=Num_Tunable_Parameters - Tunable_Blocks[blk].offset;
-	else
-		jend=Tunable_Blocks[blk+1].offset-Tunable_Blocks[blk].offset;
-	for (int j = 0; j <  jend; j++) {
-		unsigned int ncols = Tunable_Parameters[Tunable_Blocks[blk].offset+j].n_cols;
-		unsigned int nrows = Tunable_Parameters[Tunable_Blocks[blk].offset+j].n_rows;
-		for (unsigned int nr = 0; nr < nrows; nr++) {
-			for (unsigned int nc = 0; nc < ncols; nc++) {
-				if ((prm_row==table_row) && (prm_col==nc)){
-					data_value=get_parameter(Tunable_Parameters[Tunable_Blocks[blk].offset+j], nr, nc, &val_idx);
-					prm=j;
-				}
-			}
-			table_row++;
-		}
-		
-	}
+	int val_idx;
+	get_parameter(Tunable_Parameters[Tunable_Blocks[blk].offset+prm], prm_row, prm_col, &val_idx);
 	return val_idx;
 
 }
@@ -195,15 +128,6 @@ int TargetThread::update_parameter(int idx, int mat_idx, double val)
 	return 1;
 }
 
-int TargetThread::get_Number_of_Parameters(int blk){
-int jend;
-	if (blk == Num_Tunable_Blocks - 1) 
-		jend=Num_Tunable_Parameters - Tunable_Blocks[blk].offset;
-	else
-		jend=Tunable_Blocks[blk+1].offset-Tunable_Blocks[blk].offset;
-
-return jend;
-}
 
 
 long TargetThread::try_to_connect(const char *IP)
@@ -448,99 +372,8 @@ int TargetThread::get_synch_blocks_info(long port, RT_TASK *task, const char *mb
 	return n_synchs;
 }
 
-void TargetThread::rlg_update_after_connect(void)
-{
-	char buf[128];
-
-	
-	sprintf(buf, "Target: %s.", RLG_Target_Name);
-	//statusBarMessage(tr(buf));
-
-}
 
 
-void TargetThread::rlg_manager_window(int n_elems, int type, int view_flag, int x, int y, int w, int h)
-{
-	//Fl_MDI_Viewport *v = RLG_Main_Workspace->viewport();
-
-	if (n_elems > 0) {
-		switch (type) {
-			case PARAMS_MANAGER:
-				//Parameters_Manager = new Fl_Parameters_Manager(x, y, w, h, v, "Parameters Manager");
-				//Parameters_Manager->show();
-				if (!view_flag) {
-					//Parameters_Manager->hide();
-				} else {
-					//RLG_Main_Menu_Table[9].set();
-					//RLG_Params_Mgr_Button->set();
-				}
-				break;
-			case SCOPES_MANAGER:
-				//Scopes_Manager = new Fl_Scopes_Manager(x, y, w, h, v, "Scopes Manager");
-				//Scopes_Manager->show();
-				if (!view_flag) {
-				//	Scopes_Manager->hide();
-				} else {
-				//	RLG_Main_Menu_Table[10].set();
-				//	RLG_Scopes_Mgr_Button->set();
-				}
-				break;
-			/*case LOGS_MANAGER:
-				Logs_Manager = new Fl_Logs_Manager(x, y, w, h, v, "Logs Manager");
-				Logs_Manager->show();
-				if (!view_flag) {
-					Logs_Manager->hide();
-				} else {
-					RLG_Main_Menu_Table[11].set();
-					RLG_Logs_Mgr_Button->set();
-				}
-				break;
-			case ALOGS_MANAGER:
-				ALogs_Manager = new Fl_ALogs_Manager(x, y, w, h, v, "ALogs Manager");
-				ALogs_Manager->show();
-				if (!view_flag) {
-					ALogs_Manager->hide();
-				} else {
-					RLG_Main_Menu_Table[12].set();
-					RLG_ALogs_Mgr_Button->set();
-				}
-				break;	*/
-			case LEDS_MANAGER:
-				//Leds_Manager = new Fl_Leds_Manager(x, y, w, h, v, "Leds Manager");
-				//Leds_Manager->show();
-				if (!view_flag) {
-					//Leds_Manager->hide();
-				} else {
-					//RLG_Main_Menu_Table[13].set();
-					//RLG_Leds_Mgr_Button->set();
-				}
-				break;
-			case METERS_MANAGER:
-				/*Meters_Manager = new Fl_Meters_Manager(x, y, w, h, v, "Meters Manager");
-				Meters_Manager->show();
-				if (!view_flag) {
-					MetersManager->hide();
-				} else {
-					MetersManager->show();
-					RLG_Main_Menu_Table[14].set();
-					RLG_Meters_Mgr_Button->set();
-				}*/
-				break;
-			/*case SYNCHS_MANAGER:
-				Synchs_Manager = new Fl_Synchs_Manager(x, y, w, h, v, "Synchs Manager");
-				Synchs_Manager->show();
-				if (!view_flag) {
-					Synchs_Manager->hide();
-				} else {
-					RLG_Main_Menu_Table[15].set();
-					RLG_Synchs_Mgr_Button->set();
-				}
-				break;*/
-			default:
-				break;
-		}
-	}
-}
 
 void TargetThread::start()
 {
@@ -680,13 +513,6 @@ end:
 				if (Num_Synchs>0)
 					printf("Synchronoscopes are not supported!!!\n");
 				Is_Target_Connected = 1;
-				rlg_manager_window(Num_Tunable_Parameters, PARAMS_MANAGER, false, 0, 0, 430, 260);
-				rlg_manager_window(Num_Scopes, SCOPES_MANAGER, false, 0, 290, 480, 300);
-				//rlg_manager_window(Num_Logs, LOGS_MANAGER, false, 440, 0, 380, 250);
-				//rlg_manager_window(Num_ALogs, ALOGS_MANAGER, false, 460, 0, 380, 250);
-				rlg_manager_window(Num_Leds, LEDS_MANAGER, false, 500, 290, 320, 250);
-				rlg_manager_window(Num_Meters, METERS_MANAGER, false, 530, 320, 320, 250);
-				//rlg_manager_window(Num_Synchs, SYNCHS_MANAGER, false, 530, 320, 320, 250);
 				
 				if (Verbose) {
 					printf("Target %s is correctly connected\n", RLG_Target_Name);
@@ -776,7 +602,6 @@ end:
 					pthread_create(&Get_Synch_Data_Thread[n], NULL, rt_get_synch_data, &thr_args);
 					rt_receive(0, &msg);
 				}*/
-				rlg_update_after_connect();
 				qrl::RT_RETURN(task, CONNECT_TO_TARGET);
 				break;
 
@@ -948,22 +773,7 @@ void TargetThread::setPreferences(Preferences_T preferences)
 
 
 
-void TargetThread::downloadParameter(int ind,int map_offset)
-{
-	qrl::RT_RPC(Target_Interface_Task, (ind << 20) | (map_offset << 4) | UPDATE_PARAM, 0);
-}
 
-void TargetThread::batchParameterDownload()
-{
-
-	//for (i = n = 0; i < batchCounter; i++) {
-	//	n += Parameters_Manager->update_parameter(Batch_Parameters[i].index, Batch_Parameters[i].mat_index, Batch_Parameters[i].value);
-	//}
-	if (batchCounter > 0) {
-		qrl::RT_RPC(Target_Interface_Task, BATCH_DOWNLOAD, 0);
-		batchCounter = 0;
-	}
-}
 int TargetThread::addToBatch(int map_offset,int ind,double value){
 
 	if (batchCounter < MAX_BATCH_PARAMS) {
@@ -981,10 +791,7 @@ void TargetThread::resetBatchMode()
 	batchCounter=0;
 }
 
-void TargetThread::uploadParameters()
-{
-	qrl::RT_RPC(Target_Interface_Task, GET_PARAMS, 0);
-}
+
 
 
 /**
@@ -1419,4 +1226,90 @@ void QRtaiLabCore::closeTargetThread()
 
 }
 
+void QRtaiLabCore::uploadParameters()
+{
+	qrl::RT_RPC(Target_Interface_Task, TargetThread::GET_PARAMS, 0);
+}
 
+
+
+
+QString QRtaiLabCore::getParameterName(int blk,int prm){
+
+	return tr(targetthread->getParameters()[targetthread->getBlocks()[blk].offset+prm].param_name);
+}
+QString QRtaiLabCore::getBlockName(int blk){
+	return tr(targetthread->getBlocks()[blk].name);
+}
+
+
+void QRtaiLabCore::batchParameterDownload()
+{
+
+	//for (i = n = 0; i < batchCounter; i++) {
+	//	n += Parameters_Manager->update_parameter(Batch_Parameters[i].index, Batch_Parameters[i].mat_index, Batch_Parameters[i].value);
+	//}
+	if (targetthread->getBatchCounter() > 0) {
+		qrl::RT_RPC(Target_Interface_Task, TargetThread::BATCH_DOWNLOAD, 0);
+		resetBatchMode();
+	}
+}
+
+ unsigned   int QRtaiLabCore::getParameterCols(int blk,int prm){
+	return targetthread->getParameters()[targetthread->getBlocks()[blk].offset+prm].n_cols;
+}
+   unsigned int QRtaiLabCore:: getParameterRows(int blk,int prm){
+	return targetthread->getParameters()[targetthread->getBlocks()[blk].offset+prm].n_rows;
+}
+
+
+
+int QRtaiLabCore::getNumberOfParameters(int blk){
+int jend;
+	if (blk == targetthread->getBlockNumber() - 1) 
+		jend=targetthread->getParameterNumber() - targetthread->getBlocks()[blk].offset;
+	else
+		jend=targetthread->getBlocks()[blk+1].offset-targetthread->getBlocks()[blk].offset;
+
+return jend;
+}
+
+
+
+
+/**
+ * @brief Gets the Pameter value for a given entry. 
+ * @param blk parameter block number
+ * @param prm parameter number
+ * @param nr parameter row
+ * @param nc parameter column
+ */
+double QRtaiLabCore::getParameter(int blk,int prm, int nr,int nc)
+{
+	int val_idx;
+	
+	return targetthread->get_parameter(targetthread->getParameters()[targetthread->getBlocks()[blk].offset+prm], nr, nc, &val_idx);
+					
+}
+
+void QRtaiLabCore::updateParameter(int blk,int prm, int nr,int nc, double value)
+{
+	int map_offset = targetthread->get_map_offset(blk,prm);
+	int ind = targetthread->get_parameter_ind(blk,prm,nr,nc);
+	if (targetthread->update_parameter(map_offset, ind, value)) {
+		qrl::RT_RPC(Target_Interface_Task, (ind << 20) | (map_offset << 4) | TargetThread::UPDATE_PARAM, 0);
+	}
+}
+
+void QRtaiLabCore::addToBatch(int blk,int prm, int nr,int nc,double value)
+{
+	int map_offset = targetthread->get_map_offset(blk,prm);
+	int ind = targetthread->get_parameter_ind(blk,prm,nr,nc);
+	if (targetthread->update_parameter(map_offset, ind, value)) {
+		if (targetthread->addToBatch(map_offset,ind,value)==-1)
+			printf("Could not add to Batch");
+	}
+
+
+
+}

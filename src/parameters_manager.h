@@ -42,7 +42,7 @@ class QRL_ParametersManager : public QDialog, private Ui::QRL_ParametersManager
    Q_ENUMS (Param_Class)
 public:
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
-   QRL_ParametersManager(QWidget *parent = 0,  TargetThread* targetthread=NULL);
+   QRL_ParametersManager(QWidget *parent = 0,    QRtaiLabCore	*qtargetinterface=NULL);
    ~QRL_ParametersManager();
 public slots:
   void batchMode(int);
@@ -55,7 +55,7 @@ private:
   int update_parameter(int idx, int mat_idx, double val);
   int Num_Tunable_Parameters;
   int Num_Tunable_Blocks;
-   TargetThread* targetThread;
+   QRtaiLabCore	*qTargetInterface;
   int batchModus;
 };
 
