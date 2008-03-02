@@ -43,8 +43,11 @@ static RT_TASK *Target_Interface_Task;
 static pthread_t *Get_Led_Data_Thread;
 static pthread_t *Get_Meter_Data_Thread;
 static pthread_t *Get_Scope_Data_Thread;
+static pthread_t *Get_ALog_Data_Thread;
+static pthread_t *Get_Log_Data_Thread;
 
-class TargetThread;
+
+//class TargetThread;
 //class GetScopeDataThread;
 //class GetMeterDataThread;
 //class GetLedDataThread;
@@ -91,6 +94,8 @@ class TargetThread : public QThread
     Target_Scopes_T* getScopes(){return Scopes;}
     Target_Meters_T* getMeters(){return Meters;}
     Target_Leds_T* getLeds(){return Leds;}
+   Target_ALogs_T* getALogs(){return ALogs;}
+    Target_Logs_T* getLogs(){return Logs;}
     //Target_Parameters_T* getParamters(){return Tunable_Parameters;}
     //Target_Blocks_T* getBlocks(){return Tunable_Blocks;}
    // Batch_Parameters_T* getBatchParameters(){return Batch_Parameters;}
@@ -146,6 +151,13 @@ class TargetThread : public QThread
     void setLedValue(unsigned int v, int n);
     unsigned int getLedValue(int n);
     QString getLedName(int);
+
+    void startALogThreads();
+    void stopALogThreads();
+    void startLogThreads();
+    void stopLogThreads();
+
+
 // friend
  signals:
    void statusBarMessage(const QString &);

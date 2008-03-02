@@ -441,3 +441,186 @@ end:
 
 
 
+
+
+
+
+
+
+
+
+
+static void *rt_get_alog_data(void *arg)
+{
+	RT_TASK *GetALogDataTask;				
+	MBX *GetALogDataMbx;
+	char GetALogDataMbxName[7];
+	long GetALogDataPort;
+	int MsgData = 0, MsgLen, MaxMsgLen, DataBytes;
+	float MsgBuf[MAX_MSG_LEN/sizeof(float)];
+	int n, i, j, k;
+	int index = ((Alog_T *)arg)->index;
+	char *mbx_id = strdup(((Alog_T *)arg)->mbx_id);
+	char *alog_file_name = strdup(((Alog_T *)arg)->alog_name);   //read alog block name and set it to file name
+	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
+	FILE *saving;
+	long size_counter = 0;
+	long logging = 0;
+	
+	
+	if((saving = fopen(alog_file_name, "a+")) == NULL){
+		printf("Error opening auto log file %s\n", alog_file_name);
+		}
+	
+	rt_allow_nonroot_hrt();
+	
+	if (!(GetALogDataTask = rt_task_init_schmod(qrl::get_an_id("HGA"), 90, 0, 0, SCHED_RR, 0xFF))) {
+		printf("Cannot init Host GetALogData Task\n");
+		return (void *)1;
+	}
+
+
+
+	if(targetThread->getTargetNode() == 0) GetALogDataPort=0;
+	else GetALogDataPort = rt_request_port(targetThread->getTargetNode());
+	sprintf(GetALogDataMbxName, "%s%d", mbx_id, index);
+
+	if (!(GetALogDataMbx = (MBX *)RT_get_adr(targetThread->getTargetNode(), GetALogDataPort, GetALogDataMbxName))) {
+		printf("Error in getting %s mailbox address\n", GetALogDataMbxName);
+		exit(1);
+	}
+	
+	DataBytes = (targetThread->getALogs()[index].nrow*targetThread->getALogs()[index].ncol)*sizeof(float)+sizeof(float);
+	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
+	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./targetThread->getALogs()[index].dt)))/DataBytes)*DataBytes;
+	if (MsgLen < DataBytes) MsgLen = DataBytes;
+	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
+	MsgData = MsgLen/DataBytes;
+	
+	//printf("MsgData %d MsgLen %d MaxMsgLen %d DataBytes %d DimBuf= %d\n", MsgData, MsgLen, MaxMsgLen, DataBytes,MAX_MSG_LEN/sizeof(float));
+	
+	rt_send(Target_Interface_Task, 0);
+	mlockall(MCL_CURRENT | MCL_FUTURE);
+	rt_make_hard_real_time();
+	while (true) {
+		if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) break;
+		while (RT_mbx_receive_if(targetThread->getTargetNode(), GetALogDataPort, GetALogDataMbx, &MsgBuf, MsgLen)) {
+			if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) goto end;
+			
+			msleep(10);
+		}
+			for (n = 0; n < MsgData; n++) {
+				size_counter=ftell(saving);    			//get file dimension in bytes
+				//printf("Size counter: %d\n", size_counter);
+				if(((int)MsgBuf[(((n+1)*targetThread->getALogs()[index].nrow*targetThread->getALogs()[index].ncol + (n+1))-1)]) &&
+				size_counter<=1000000){
+					for (i = 0; i < targetThread->getALogs()[index].nrow; i++) {
+						j = n*targetThread->getALogs()[index].nrow*targetThread->getALogs()[index].ncol + i;
+						for (k = 0; k < targetThread->getALogs()[index].ncol; k++) {
+							fprintf(saving,"%1.5f ",MsgBuf[j]); 
+							j += targetThread->getALogs()[index].nrow;
+						}
+						fprintf(saving, "\n");
+						j++;
+					}
+				}
+				/*if (size_counter > 100000){
+					fclose(saving);
+					system("tar -czvf logged.tgz RTAI_ALOG");
+					if((saving = fopen(alog_file_name, "a+")) == NULL){
+						printf("Error opening auto log file %s\n", alog_file_name);
+						}
+				}*/		
+			}
+			
+	}
+end:
+	rt_make_soft_real_time();
+	if (targetThread->getVerbose()) {
+		printf("Deleting auto log thread number...%d\n", index);
+	}
+	fclose(saving);
+	rt_release_port(targetThread->getTargetNode(), GetALogDataPort);
+	rt_task_delete(GetALogDataTask);
+
+	return 0;
+}
+
+
+
+static void *rt_get_log_data(void *arg)
+{
+	RT_TASK *GetLogDataTask;
+	MBX *GetLogDataMbx;
+	char GetLogDataMbxName[7];
+	long GetLogDataPort;
+	int MsgData = 0, MsgLen, MaxMsgLen, DataBytes;
+	float MsgBuf[MAX_MSG_LEN/sizeof(float)];
+	int n, i, j, k, DataCnt = 0;
+	int index = ((Args_T *)arg)->index;
+	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
+	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
+
+	rt_allow_nonroot_hrt();
+	if (!(GetLogDataTask = rt_task_init_schmod(qrl::get_an_id("HGL"), 90, 0, 0, SCHED_RR, 0xFF))) {
+		printf("Cannot init Host GetLogData Task\n");
+		return (void *)1;
+	}
+
+	if(targetThread->getTargetNode() == 0) GetLogDataPort=0;
+	else GetLogDataPort = rt_request_port(targetThread->getTargetNode());
+	sprintf(GetLogDataMbxName, "%s%d", mbx_id, index);
+
+	if (!(GetLogDataMbx = (MBX *)RT_get_adr(targetThread->getTargetNode(), GetLogDataPort, GetLogDataMbxName))) {
+		printf("Error in getting %s mailbox address\n", GetLogDataMbxName);
+		exit(1);
+	}
+
+	DataBytes = (targetThread->getLogs()[index].nrow*targetThread->getLogs()[index].ncol)*sizeof(float);
+	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
+	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./targetThread->getLogs()[index].dt)))/DataBytes)*DataBytes;
+	if (MsgLen < DataBytes) MsgLen = DataBytes;
+	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
+	MsgData = MsgLen/DataBytes;
+
+	rt_send(Target_Interface_Task, 0);
+	mlockall(MCL_CURRENT | MCL_FUTURE);
+	rt_make_hard_real_time();
+	while (true) {
+		if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) break;
+		while (RT_mbx_receive_if(targetThread->getTargetNode(), GetLogDataPort, GetLogDataMbx, &MsgBuf, MsgLen)) {
+			if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) goto end;
+
+			msleep(10);
+		}
+	/*	if (Logs_Manager->start_saving(index)) {
+			for (n = 0; n < MsgData; n++) {
+				++DataCnt;
+//				fprintf(Logs_Manager->save_file(index), "Data # %d\n", ++DataCnt);
+				for (i = 0; i < Logs[index].nrow; i++) {
+					j = n*Logs[index].nrow*Logs[index].ncol + i;
+					for (k = 0; k < Logs[index].ncol; k++) {
+						fprintf(Logs_Manager->save_file(index), "%1.5f ", MsgBuf[j]);
+						j += Logs[index].nrow;
+					}
+					fprintf(Logs_Manager->save_file(index), "\n");
+				}
+				if (DataCnt == Logs_Manager->n_points_to_save(index)) {
+					Logs_Manager->stop_saving(index);
+					DataCnt = 0;
+					break;
+				}
+			}
+		}*/
+	}
+end:
+	rt_make_soft_real_time();
+	if (targetThread->getVerbose()) {
+		printf("Deleting log thread number...%d\n", index);
+	}
+	rt_release_port(targetThread->getTargetNode(), GetLogDataPort);
+	rt_task_delete(GetLogDataTask);
+
+	return 0;
+}
+
