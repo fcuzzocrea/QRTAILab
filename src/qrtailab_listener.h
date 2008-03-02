@@ -81,7 +81,7 @@ static void *rt_get_scope_data(void *arg)
 	double dt=targetThread->getScopeDt(index);
 	
 	rt_allow_nonroot_hrt();
-	if (!(GetScopeDataTask = rt_task_init_schmod(qrl::get_an_id("HGS"), 96, 0, 0, SCHED_RR, 0xFF))) {
+	if (!(GetScopeDataTask = rt_task_init_schmod(qrl::get_an_id("HGS"), 90, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetScopeData Task\n");
 		return (void *)1;
 	}
@@ -109,10 +109,12 @@ static void *rt_get_scope_data(void *arg)
 	int ntraces=(targetThread->getScopes())[index].ntraces;
 
 	rt_send(Target_Interface_Task, 0);
-	mlockall(MCL_CURRENT | MCL_FUTURE);
+	
 	n=Ndistance;
 	RTIME t0,t,told; int time=0; double time10=0.;double t10;int n10=0;
 	t0 = rt_get_cpu_time_ns();
+	mlockall(MCL_CURRENT | MCL_FUTURE);
+	rt_make_hard_real_time();
 	while (true) {
 		if (targetThread->getEndApp() || ! targetThread->getIsTargetConnected()) break;
 		while (RT_mbx_receive_if(targetThread->getTargetNode(), GetScopeDataPort, GetScopeDataMbx, &MsgBuf, MsgLen)) {
@@ -180,7 +182,6 @@ static void *rt_get_scope_data(void *arg)
 
 
 
-
 /*		if (ScopeWindow->start_saving()) {
 			jl = 0;
 			printf("%d from %d saved\n",save_idx,ScopeWindow->n_points_to_save());
@@ -200,6 +201,7 @@ static void *rt_get_scope_data(void *arg)
 	}
 
 end:
+	rt_make_soft_real_time();
 	if (targetThread->getVerbose()) {
 		printf("Deleting scope thread number...%d\n", index);
 	}
@@ -312,7 +314,6 @@ static void *rt_get_meter_data(void *arg)
 		   }
 		   n=Ndistance;
 		}
-		//Fl::unlock();
 		if (RefreshRate!=targetThread->getMeterRefreshRate(index)){
 		
 		RefreshRate=targetThread->getMeterRefreshRate(index);
@@ -329,6 +330,7 @@ static void *rt_get_meter_data(void *arg)
 
 
 end:
+	
 	if (targetThread->getVerbose()) {
 		printf("Deleting meter thread number...%d\n", index);
 	}
@@ -371,7 +373,6 @@ QMutex mutex;
 
 static void *rt_get_led_data(void *arg)
 {
-
 	RT_TASK *GetLedDataTask;
 	MBX *GetLedDataMbx;
 	char GetLedDataMbxName[7];
@@ -419,8 +420,10 @@ static void *rt_get_led_data(void *arg)
 			//msleep(12);
 			rt_sleep(nano2count(TEN_MS_IN_NS));
 		}
+		//for (n = 0; n < MsgData; n++) {
 			Led_Mask = MsgBuf[0];
 			targetThread->setLedValue(Led_Mask,index);
+		//}
 
 	}
 
