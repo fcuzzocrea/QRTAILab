@@ -38,16 +38,13 @@ using namespace qrl_types;
 //static pthread_t *Get_Scope_Data_Thread;
 
 
-//QMutex meterMutex;
-//QMutex scopeMutex;
-//QMutex ledMutex;
 
 //Target_Synch_T Synchronoscope;
 
 
 
 TargetThread::~TargetThread(){
-	qDebug() << "deleting all pointer";
+	
 	if (Tunable_Blocks)
 		delete[] Tunable_Blocks;
 	if (Scopes)
@@ -58,13 +55,13 @@ TargetThread::~TargetThread(){
 		delete[] Leds;
 	if (Meters)
 		delete[] Meters;
+	qDebug() << "deleting all pointer";
 	stopScopeThreads();
 	//if (Get_Scope_Data_Thread)
 	//	delete[] Get_Scope_Data_Thread;
 	stopLedThreads();
 	//if (Get_Led_Data_Thread)
 		//delete[] Get_Led_Data_Thread;
-
 	stopMeterThreads();
 	//if (Get_Meter_Data_Thread)
 	//	delete[] Get_Meter_Data_Thread;
@@ -120,11 +117,11 @@ double TargetThread::get_parameter(int blk,int prm, int nr,int nc)
 	return Tunable_Parameters[Tunable_Blocks[blk].offset+prm].n_rows;
 }
 
-   QString TargetThread::getParameterName(int blk,int prm){
+QString TargetThread::getParameterName(int blk,int prm){
 
 	return tr(Tunable_Parameters[Tunable_Blocks[blk].offset+prm].param_name);
 }
-  QString TargetThread::getBlockName(int blk){
+QString TargetThread::getBlockName(int blk){
 	return tr(Tunable_Blocks[blk].name);
 }
 
@@ -215,10 +212,7 @@ long TargetThread::try_to_connect(const char *IP)
 	struct sockaddr_in addr;
 
 	sprintf(buf, "Trying to connect to %s", IP);
-	//RLG_Main_Status->label(buf);
 	statusBarMessage(tr(buf));
-	//RLG_Connect_Button->deactivate();
-	//RLG_Main_Window->redraw();
 	if (Verbose) {
 		printf("%s...", buf);
 		fflush(stdout);
@@ -455,34 +449,10 @@ void TargetThread::rlg_update_after_connect(void)
 {
 	char buf[128];
 
-	//Fl::lock();
-	/*RLG_Save_Profile_Button->activate();
-	RLG_Delete_Profile_Button->deactivate();
-	RLG_Scopes_Mgr_Button->activate();
-	RLG_Logs_Mgr_Button->activate();
-	RLG_ALogs_Mgr_Button->activate();
-	RLG_Leds_Mgr_Button->activate();
-	RLG_Meters_Mgr_Button->activate();
-	RLG_Synchs_Mgr_Button->activate();*/
-	//Is_Target_Running ? RLG_Stop_Button->activate() : RLG_Start_Button->activate();
-	//RLG_Connect_Button->deactivate();
-	//RLG_Connect_wProfile_Button->deactivate();
-	//RLG_Disconnect_Button->activate();
-	/*RLG_Main_Menu_Table[1].deactivate();
-	RLG_Main_Menu_Table[2].activate();
-	RLG_Main_Menu_Table[3].deactivate();
-	RLG_Main_Menu_Table[4].activate();
-	RLG_Main_Menu_Table[5].deactivate();
-	for (int i = 9; i <= 14; i++) RLG_Main_Menu_Table[i].activate();
-        if(Num_Tunable_Parameters!=0)
-	  RLG_Params_Mgr_Button->activate();*/
+	
 	sprintf(buf, "Target: %s.", RLG_Target_Name);
 	statusBarMessage(tr(buf));
-	//RLG_Main_Status->label(buf);
-	/*RLG_Main_Menu->menu(RLG_Main_Menu_Table);
-	RLG_Main_Menu->redraw();
-	RLG_Main_Window->redraw();
-	Fl::unlock();*/
+
 }
 
 
@@ -585,8 +555,6 @@ void  TargetThread::getOrder(int c){
 void TargetThread::run()
 {
 
-
-	qDebug() << "Executing TargetThread";
 
 	unsigned int code, U_Request;
 	long Target_Port = 0;
@@ -724,8 +692,10 @@ end:
 				}
 				
 				//if (Num_Scopes > 0) Get_Scope_Data_Thread = new GetScopeDataThread [Num_Scopes];
-				if (Num_Scopes > 0) Get_Scope_Data_Thread = new pthread_t [Num_Scopes];
-				startScopeThreads();
+				if (Num_Scopes > 0) {
+					Get_Scope_Data_Thread = new pthread_t [Num_Scopes];
+					startScopeThreads();
+				}
 
 				/*if (Num_Logs > 0) Get_Log_Data_Thread = new pthread_t [Num_Logs];
 				for (int n = 0; n < Num_Logs; n++) {
@@ -748,8 +718,10 @@ end:
 					rt_receive(0, &msg);
 				}*/
  				//if (Num_Leds > 0) Get_Led_Data_Thread = new GetLedDataThread [Num_Leds];
-				if (Num_Leds > 0) Get_Led_Data_Thread = new pthread_t [Num_Leds];
-				startLedThreads();
+				if (Num_Leds > 0) {
+					Get_Led_Data_Thread = new pthread_t [Num_Leds];
+					startLedThreads();
+				}
 // 				for (int n = 0; n < Num_Leds; n++) {
 // 					unsigned int msg;
 // 					Args_T thr_args;
@@ -764,8 +736,10 @@ end:
 // 					rt_receive(0, &msg);
 // 				}
  			//	if (Num_Meters > 0) Get_Meter_Data_Thread = new GetMeterDataThread [Num_Meters];
-				if (Num_Meters > 0) Get_Meter_Data_Thread = new pthread_t [Num_Meters];
-				startMeterThreads();
+				if (Num_Meters > 0) {
+					Get_Meter_Data_Thread = new pthread_t [Num_Meters];
+					startMeterThreads();
+				}
 // 				for (int n = 0; n < Num_Meters; n++) {
 // 					unsigned int msg;
 // 					Args_T thr_args;
@@ -965,7 +939,6 @@ end:
 
 	}
 	rt_task_delete(Target_Interface_Task);
-	qDebug() << "Execution done";
 
 }
 
@@ -1178,6 +1151,7 @@ void TargetThread::startMeterThreads()//QRL_MeterWindow** MeterWindows)
 	meterRefreshRate.resize(Num_Meters);
 	for (int n = 0; n < Num_Meters; n++) {
 		meterRefreshRate[n]=20.;
+		MeterValues[n].append(0);
 		unsigned int msg;
 		Args_T thr_args;
 		thr_args.index = n;
@@ -1194,7 +1168,7 @@ void TargetThread::startMeterThreads()//QRL_MeterWindow** MeterWindows)
 		//Get_Meter_Data_Thread[n].threadStarted.wait(&Get_Meter_Data_Thread[n].mutex);
 		//Get_Meter_Data_Thread[n].mutex.unlock();
  		rt_receive(0, &msg);
-		MeterValues[n].append(0);
+		
 	}
 
 }

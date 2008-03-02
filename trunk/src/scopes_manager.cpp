@@ -123,7 +123,7 @@ void QRL_ScopesManager::refresh()
 	for (int k=0; k<v[0].size(); ++k)
 	for (int t=0; t<Scopes[n].ntraces;++t){
 			if (k<v[t].size())
-			ScopeWindows[n]->setValue(t,v[t].at(k));
+			ScopeWindows[n]->setValue(t,v.at(t).at(k));
 	}
 	
   }
