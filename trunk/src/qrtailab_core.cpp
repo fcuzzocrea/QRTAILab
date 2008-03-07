@@ -399,7 +399,7 @@ void TargetThread::run()
 		exit(1);
 	}
 	
-	//rt_send(mainWin->getMainTask(), 0);
+	rt_send(RLG_Main_Task, 0);
 	while (!End_App) {
 	
 		if (!(task = rt_receive(0, &code))) continue;
@@ -808,11 +808,8 @@ void TargetThread::startScopeThreads(  )//QRL_ScopeWindow** ScopeWindows)
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup((getPreferences()).Target_Scope_Mbx_ID);
-		thr_args.x = 500; 
-		thr_args.y = 290;
-		thr_args.w = 250;
-		thr_args.h = 250;
 		thr_args.targetThread=(void*)this;
+		thr_args.hardRealTime=1;
 		pthread_create(&Get_Scope_Data_Thread[n], NULL, rt_get_scope_data, &thr_args);
 // 		Get_Scope_Data_Thread[n].mutex.lock();
 // 		Get_Scope_Data_Thread[n].start(&thr_args,this);//,ScopeWindows[n]);
@@ -916,10 +913,7 @@ void TargetThread::startMeterThreads()//QRL_MeterWindow** MeterWindows)
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup((getPreferences()).Target_Meter_Mbx_ID);
-		thr_args.x = 0; 
-		thr_args.y = 0;
-		thr_args.w = 300;
-		thr_args.h = 200;
+		thr_args.hardRealTime=0;
 		thr_args.targetThread=(void*)this;
 		pthread_create(&Get_Meter_Data_Thread[n], NULL, rt_get_meter_data, &thr_args);
 		//Get_Meter_Data_Thread[n].mutex.lock();
@@ -1014,10 +1008,7 @@ void TargetThread::startLedThreads()//QRL_LedWindow** LedWindows)
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup(getPreferences().Target_Led_Mbx_ID);
-		thr_args.x = 500; 
-		thr_args.y = 290;
-		thr_args.w = 250;
-		thr_args.h = 250;
+		thr_args.hardRealTime=0;
 		thr_args.targetThread=(void*)this;
 //		Get_Led_Data_Thread[n].mutex.lock();
 		pthread_create(&Get_Led_Data_Thread[n], NULL, rt_get_led_data, &thr_args);
@@ -1078,6 +1069,7 @@ void TargetThread::startALogThreads()//QRL_LedWindow** LedWindows)
 		thr_args.alog_name = strdup(ALogs[n].name);
 		printf("%s alog name\n", ALogs[n].name);
 		thr_args.targetThread=(void*)this;
+		thr_args.hardRealTime=1;
 		pthread_create(&Get_ALog_Data_Thread[n], NULL, rt_get_alog_data, &thr_args);
 		rt_receive(0, &msg);
 	}
@@ -1106,11 +1098,8 @@ void TargetThread::startLogThreads()
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup(getPreferences().Target_Log_Mbx_ID);
-		thr_args.x = 500; 
-		thr_args.y = 290;
-		thr_args.w = 250;
-		thr_args.h = 250;
 		thr_args.targetThread=(void*)this;
+		thr_args.hardRealTime=1;
 		pthread_create(&Get_Log_Data_Thread[n], NULL, rt_get_log_data, &thr_args);
  		rt_receive(0, &msg);
 	}
@@ -1134,17 +1123,10 @@ QRtaiLabCore::QRtaiLabCore(QObject *parent, int Verbose)
 : QObject( parent )
 {
 
-	rt_allow_nonroot_hrt();
-   if (!(RLG_Main_Task = rt_task_init_schmod(qrl::get_an_id("RLGM"), 98, 0, 0, SCHED_FIFO, 0xFF))) {
-               printf("Cannot init RTAI-Lab GUI main task\n");
-		exit( 1 );	
-		//return 1;
-    }
+
     targetthread = new TargetThread();
     targetthread->setVerbose(Verbose);
-    targetthread->start();
-    Target_Interface_Task=targetthread->getTask();
-    statusBarMessage(tr("Ready..."));
+   
 }
 
 QRtaiLabCore::~QRtaiLabCore(){
@@ -1155,7 +1137,20 @@ QRtaiLabCore::~QRtaiLabCore(){
 
 }
 
+void QRtaiLabCore::getReady(){
 
+unsigned int msg;
+	rt_allow_nonroot_hrt();
+   if (!(RLG_Main_Task = rt_task_init_schmod(qrl::get_an_id("RLGM"), 98, 0, 0, SCHED_FIFO, 0xFF))) {
+               printf("Cannot init RTAI-Lab GUI main task\n");
+		exit( 1 );	
+		//return 1;
+    }
+ targetthread->start();
+rt_receive(0, &msg);
+    Target_Interface_Task=targetthread->getTask();
+    statusBarMessage(tr("Ready..."));
+}
 
 
 
@@ -1278,13 +1273,13 @@ return jend;
 
 
 /**
- * @brief Gets the Pameter value for a given entry. 
+ * @brief Gets the Parameter value for a given entry. 
  * @param blk parameter block number
  * @param prm parameter number
  * @param nr parameter row
  * @param nc parameter column
  */
-double QRtaiLabCore::getParameter(int blk,int prm, int nr,int nc)
+double QRtaiLabCore::getParameterValue(int blk,int prm, int nr,int nc)
 {
 	int val_idx;
 	
@@ -1292,7 +1287,7 @@ double QRtaiLabCore::getParameter(int blk,int prm, int nr,int nc)
 					
 }
 
-void QRtaiLabCore::updateParameter(int blk,int prm, int nr,int nc, double value)
+void QRtaiLabCore::updateParameterValue(int blk,int prm, int nr,int nc, double value)
 {
 	int map_offset = targetthread->get_map_offset(blk,prm);
 	int ind = targetthread->get_parameter_ind(blk,prm,nr,nc);
@@ -1313,3 +1308,98 @@ void QRtaiLabCore::addToBatch(int blk,int prm, int nr,int nc,double value)
 
 
 }
+
+
+
+ int QRtaiLabCore::getScopeNumber(){
+   int Num_Scopes= targetthread->getScopeNumber();
+   for (int i=0; i<Num_Scopes;i++) {
+// good idea? should be changed
+	if (targetthread->getScopes()[i].ntraces==0)
+		Num_Scopes--;
+   }
+	return Num_Scopes;
+}
+
+QString QRtaiLabCore::getScopeName(int n){
+  QString str;
+  if (n<targetthread->getScopeNumber())
+	str=tr(targetthread->getScopes()[n].name);
+  return str;
+
+}
+int	    QRtaiLabCore::getScopeDt(int n){
+	int dt=-1;
+     if (n<targetthread->getScopeNumber())
+	dt=targetthread->getScopes()[n].dt;
+      return dt;
+
+}
+    int    QRtaiLabCore::getNumberOfTraces(int n){
+	int ntraces;
+ if (n<targetthread->getScopeNumber())
+	ntraces=targetthread->getScopes()[n].ntraces;
+      return ntraces;
+
+}
+
+int QRtaiLabCore::getMeterNumber(){
+int Num_Meters=targetthread->getMeterNumber();
+
+return Num_Meters;
+}
+
+QString QRtaiLabCore::getMeterName(int n){
+  QString str;
+  if (n<targetthread->getMeterNumber())
+	str=tr(targetthread->getMeters()[n].name);
+  return str;
+
+}
+int	    QRtaiLabCore::getMeterDt(int n){
+	int dt=-1;
+     if (n<targetthread->getMeterNumber())
+	dt=targetthread->getMeters()[n].dt;
+      return dt;
+
+}
+
+int QRtaiLabCore::getLedNumber()
+{
+	 int Num_Leds= targetthread->getLedNumber();
+	for (int i=0; i<Num_Leds;i++) {
+// good idea? should be changed
+	if (targetthread->getLeds()[i].n_leds==0)
+		Num_Leds--;
+   }
+return Num_Leds;
+
+}
+
+QString QRtaiLabCore::getLedName(int n){
+  QString str;
+  if (n<targetthread->getLedNumber())
+	str=tr(targetthread->getLeds()[n].name);
+  return str;
+
+}
+int	    QRtaiLabCore::getLedDt(int n){
+	int dt=-1;
+     if (n<targetthread->getLedNumber())
+	dt=targetthread->getLeds()[n].dt;
+      return dt;
+
+}
+    int    QRtaiLabCore::getNumberOfLeds(int n){
+	int n_leds;
+ if (n<targetthread->getLedNumber())
+	n_leds=targetthread->getLeds()[n].n_leds;
+      return n_leds;
+
+}
+
+
+
+
+
+

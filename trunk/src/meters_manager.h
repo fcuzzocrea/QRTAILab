@@ -46,7 +46,7 @@ class QRL_MetersManager : public QDialog, private Ui::QRL_MetersManager
 {
    Q_OBJECT
 public:
-   QRL_MetersManager(QWidget *parent = 0,TargetThread* targetthread=NULL);
+   QRL_MetersManager(QWidget *parent = 0, QRtaiLabCore* qtargetinterface=NULL);
    ~QRL_MetersManager();
        void startMeterThreads();
     void stopMeterThreads();
@@ -73,10 +73,10 @@ public slots:
   void changeLcdFont();
 private:
    int Num_Meters;
-  Target_Meters_T *Meters;
+  //Target_Meters_T *Meters;
   unsigned int currentMeter;
    QRL_MeterWindow** MeterWindows;
-   TargetThread* targetThread;
+  QRtaiLabCore* qTargetInterface;
    QWidget* ThermoOptions;
    QWidget* DialOptions;   
    QWidget* LcdOptions;

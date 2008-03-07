@@ -87,7 +87,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 	ymin=yOffset-0.5*(yMajorTicks*dy);
        ymax=yOffset+0.5*(yMajorTicks*dy);
       yStep=(ymax-ymin)/yMajorTicks;
-
+	MaxDataPoints=10000;
 	dx=0.1;
 	xMajorTicks=10;
 	xmin=0;
@@ -184,12 +184,12 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
        Ncurve=Scope->ntraces;
        ScopeData = new Scopes_Data_T[Ncurve];
        cData = new QwtPlotCurve*[Ncurve];
-       d_x = new double[NDataMax];
+       d_x = new double[MaxDataPoints+1];
        QPen pen;
 	TraceOptions = new Trace_Options_T[Ncurve];
        for (unsigned int j=0;j<Ncurve;j++){
-		ScopeData[j].d_y = new double[NDataMax];
-		ScopeData[j].d_yt = new double[NDataMax];
+		ScopeData[j].d_y = new double[MaxDataPoints+1];
+		ScopeData[j].d_yt = new double[MaxDataPoints+1];
 
 
 		cData[j] = new QwtPlotCurve(Scope->name);
@@ -381,8 +381,8 @@ void QRL_ScopeWindow::refresh()
 	//xmax=dx;
 
 	NDataMax=(int)((xmax-xmin)/Scope->dt);
-	if (NDataMax>10000)
-		NDataMax=10000;
+	if (NDataMax>MaxDataPoints)
+		NDataMax=MaxDataPoints;
 	if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
 
@@ -420,15 +420,15 @@ void QRL_ScopeWindow::refresh()
 
 
 	dt=(xmax-xmin)/NDataSoll;
-	delete[] d_x;
+	/*delete[] d_x;
 	for (unsigned int j=0;j<Ncurve;j++){
 		delete[] ScopeData[j].d_y;
 		delete[] ScopeData[j].d_yt;
 	}
-	 d_x = new double[NDataMax];
+	 d_x = new double[NDataMax];*/
        for (unsigned int j=0;j<Ncurve;j++){
-		ScopeData[j].d_y = new double[NDataMax];
-		ScopeData[j].d_yt = new double[NDataMax];
+		//ScopeData[j].d_y = new double[NDataMax];
+		//ScopeData[j].d_yt = new double[NDataMax];
 		cData[j]->setRawData(d_x, ScopeData[j].d_y, NDataSoll);
 	}
 	for (unsigned int i = 0; i< NDataSoll; i++)

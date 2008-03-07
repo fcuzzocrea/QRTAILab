@@ -64,7 +64,7 @@ class QRL_LedWindow : public QMdiSubWindow
 {
    Q_OBJECT
 public:
-   QRL_LedWindow(QWidget *parent = 0,int num=0,char* name=NULL);
+   QRL_LedWindow(QWidget *parent = 0,int num=0,QString name="");
    ~QRL_LedWindow();
    void setValue(unsigned int);
    void setLedColor(QColor);

@@ -31,16 +31,16 @@
 /**
 * @brief Initialize Scopes Manager
 */
-QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
-	:QDialog(parent),targetThread(targetthread)
+QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
+	:QDialog(parent),qTargetInterface(qtargetinterface)
 {
 	setupUi(this);
-	Num_Scopes=targetThread->getScopeNumber();
-	Scopes=targetThread->getScopes();
+	Num_Scopes=qTargetInterface->getScopeNumber();
+	Scopes=qTargetInterface->getTargetThread()->getScopes();
 	const QIcon ScopeIcon =QIcon(QString::fromUtf8(":/icons/scope_icon.xpm"));
 	ScopeWindows = new QRL_ScopeWindow* [Num_Scopes]; 
 	for (int i=0; i<Num_Scopes; ++i){
-		scopeItems << new QListWidgetItem(ScopeIcon,targetThread->getScopeName(i), scopeListWidget);
+		scopeItems << new QListWidgetItem(ScopeIcon,qTargetInterface->getScopeName(i), scopeListWidget);
 		ScopeWindows[i]=new QRL_ScopeWindow(parent,&Scopes[i],i);
 		connect( ScopeWindows[i], SIGNAL( stopSaving(int) ), this, SLOT( stopSaving(int) ) );
 	}
@@ -85,7 +85,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,TargetThread* targetthread)
 	//for (int i=0; i<Num_Scopes; ++i){
 	//	connect(&Get_Scope_Data_Thread[i],SIGNAL(value(int,float)),ScopeWindows[i],SLOT(setValue(int,float)));
 	//}
-		offsetWheel->setMass(0.5);
+	offsetWheel->setMass(0.5);
 	offsetWheel->setRange(-1e6, 1e6, 0.25);
 	offsetWheel->setTotalAngle(360.0*2e6);
 	offsetWheel->setFixedHeight(30);
@@ -117,15 +117,14 @@ void QRL_ScopesManager::refresh()
 
   for (int n=0; n<Num_Scopes; ++n){
 	QVector< QList<float> > v;
-	v = targetThread->getScopeValue(n);
+	v = qTargetInterface->getTargetThread()->getScopeValue(n);
 	
 	
 	for (int k=0; k<v[0].size(); ++k)
-	for (int t=0; t<Scopes[n].ntraces;++t){
+	for (int t=0; t<qTargetInterface->getNumberOfTraces(n);++t){
 			if (k<v[t].size())
 			ScopeWindows[n]->setValue(t,v.at(t).at(k));
 	}
-	
   }
 }
 
@@ -146,7 +145,7 @@ void QRL_ScopesManager::changeDX(const QString& text)
 	double dx=text.toDouble();
 	ScopeWindows[currentScope]->changeDX(dx);
 	//Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
-	targetThread->setScopeDt(ScopeWindows[currentScope]->getDt(),currentScope);
+	 qTargetInterface->getTargetThread()->setScopeDt(ScopeWindows[currentScope]->getDt(),currentScope);
 
 	showScopeOptions(currentScope);
 	}
@@ -161,7 +160,7 @@ void QRL_ScopesManager::changeDataPoints(double dp)
 	//double rr=text.toDouble();
 	ScopeWindows[currentScope]->changeDataPoints(dp);
 	//Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
-	targetThread->setScopeDt(ScopeWindows[currentScope]->getDt(),currentScope);
+	 qTargetInterface->getTargetThread()->setScopeDt(ScopeWindows[currentScope]->getDt(),currentScope);
 
 	if (Num_Scopes > 0)  showScopeOptions(currentScope);
 

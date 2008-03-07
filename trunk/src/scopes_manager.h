@@ -46,7 +46,7 @@ class QRL_ScopesManager : public QDialog, private Ui::QRL_ScopesManager
 {
    Q_OBJECT
 public:
-  QRL_ScopesManager(QWidget *parent = 0, TargetThread* targetthread=NULL);
+  QRL_ScopesManager(QWidget *parent = 0, QRtaiLabCore* qtargetinterface=NULL);
   ~QRL_ScopesManager();
   //void startScopeThreads();
   //void stopScopeThreads();
@@ -56,7 +56,7 @@ public slots:
   void  showScope(int);
   void showScopeOptions( int );
   void showSelectedOptions();
-   void showOptions( QListWidgetItem * item );
+  void showOptions( QListWidgetItem * item );
   void changeRefreshRate(double);
   void changeDataPoints(double);
   void changeSaveTime(double);
@@ -83,12 +83,13 @@ private:
   Target_Scopes_T *Scopes;
   unsigned int currentScope;
  // GetScopeDataThread* Get_Scope_Data_Thread;
-  TargetThread* targetThread;
+  QRtaiLabCore* qTargetInterface;
+  //TargetThread* targetThread;
   QRL_ScopeWindow** ScopeWindows;
   int currentTrace;
   QList<QListWidgetItem *> scopeItems,traceItems;
-   QTimer *timer;
- double RefreshRate;
+  QTimer *timer;
+  double RefreshRate;
 };
 
 

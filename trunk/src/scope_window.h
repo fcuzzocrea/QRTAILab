@@ -155,7 +155,7 @@ private:
   float Value;
   qrl_types::Target_Scopes_T *Scope;
   double *d_x; 
-  unsigned int NDataMax,Ncurve,NDataSoll;
+  unsigned int NDataMax,Ncurve,NDataSoll, MaxDataPoints;
   int time,time2;
   double xmin,xmax,dx,dt;
   double xMajorTicks,xStep;

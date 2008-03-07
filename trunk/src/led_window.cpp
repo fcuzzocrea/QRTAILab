@@ -96,7 +96,7 @@ void QLed::toggleValue()
 }
 
 
-QRL_LedWindow::QRL_LedWindow(QWidget *parent,int num,char* name)
+QRL_LedWindow::QRL_LedWindow(QWidget *parent,int num,QString name)
 	:QMdiSubWindow(parent),num_leds(num)
 {
 	if (this->objectName().isEmpty())
@@ -123,7 +123,7 @@ QRL_LedWindow::QRL_LedWindow(QWidget *parent,int num,char* name)
 	this->setWidget(frame);
     this->setMinimumSize(30,50+num_leds*35+10);
     
-    this->setWindowTitle(QApplication::translate("QRL_LedWindow", name, 0, QApplication::UnicodeUTF8));
+    this->setWindowTitle(name);
    // Led->setText(QApplication::translate("QRL_LedWindow", "Led1", 0, QApplication::UnicodeUTF8));
     this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/led_icon.xpm")));
     this->setWindowFlags(windowFlags() ^ Qt::WindowMaximizeButtonHint );

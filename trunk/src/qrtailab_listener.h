@@ -69,13 +69,10 @@ static void *rt_get_scope_data(void *arg)
 	int n, nn, js, jl;
 	int index = ((Args_T *)arg)->index;
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
-	int x = ((Args_T *)arg)->x;
-	int y = ((Args_T *)arg)->y;
-	int w = ((Args_T *)arg)->w;
-	int h = ((Args_T *)arg)->h;
 	int stop_draw = false;
 	int save_idx = 0;
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
+	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	double dt=targetThread->getScopeDt(index);
 	
 	rt_allow_nonroot_hrt();
@@ -112,7 +109,8 @@ static void *rt_get_scope_data(void *arg)
 	RTIME t0,t,told; int time=0; double time10=0.;double t10;int n10=0;
 	t0 = rt_get_cpu_time_ns();
 	mlockall(MCL_CURRENT | MCL_FUTURE);
-	rt_make_hard_real_time();
+	if (hardRealTime==1)
+		rt_make_hard_real_time();
 	while (true) {
 		if (targetThread->getEndApp() || ! targetThread->getIsTargetConnected()) break;
 		while (RT_mbx_receive_if(targetThread->getTargetNode(), GetScopeDataPort, GetScopeDataMbx, &MsgBuf, MsgLen)) {
@@ -199,7 +197,8 @@ static void *rt_get_scope_data(void *arg)
 	}
 
 end:
-	rt_make_soft_real_time();
+	if (hardRealTime==1)
+		rt_make_soft_real_time();
 	if (targetThread->getVerbose()) {
 		printf("Deleting scope thread number...%d\n", index);
 	}
@@ -257,11 +256,8 @@ static void *rt_get_meter_data(void *arg)
 	 long int Ndistance;
 	int index = ((Args_T *)arg)->index;
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
-	int x = ((Args_T *)arg)->x;
-	int y = ((Args_T *)arg)->y;
-	int w = ((Args_T *)arg)->w;
-	int h = ((Args_T *)arg)->h;
         TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
+	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	double RefreshRate=targetThread->getMeterRefreshRate(index);
 	rt_allow_nonroot_hrt();
 	if (!(GetMeterDataTask = rt_task_init_schmod(qrl::get_an_id("HGM"), 97, 0, 0, SCHED_RR, 0xFF))) {
@@ -289,7 +285,8 @@ static void *rt_get_meter_data(void *arg)
 	rt_send(Target_Interface_Task, 0);
 	mlockall(MCL_CURRENT | MCL_FUTURE);
 	n=Ndistance;
-
+	if (hardRealTime==1)
+		rt_make_hard_real_time();
 
 	while (true) {
 		if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) break;
@@ -328,6 +325,8 @@ static void *rt_get_meter_data(void *arg)
 
 
 end:
+	if (hardRealTime==1)
+		rt_make_soft_real_time();
 	
 	if (targetThread->getVerbose()) {
 		printf("Deleting meter thread number...%d\n", index);
@@ -380,12 +379,9 @@ static void *rt_get_led_data(void *arg)
 	int n;
 	int index = ((Args_T *)arg)->index;
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
-	int x = ((Args_T *)arg)->x;
-	int y = ((Args_T *)arg)->y;
-	int w = ((Args_T *)arg)->w;
-	int h = ((Args_T *)arg)->h;
 	unsigned int Led_Mask = 0;
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
+	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	rt_allow_nonroot_hrt();
 	if (!(GetLedDataTask = rt_task_init_schmod(qrl::get_an_id("HGE"), 97, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetLedData Task\n");
@@ -408,7 +404,8 @@ static void *rt_get_led_data(void *arg)
 
 	rt_send(Target_Interface_Task, 0);
 	mlockall(MCL_CURRENT | MCL_FUTURE);
-
+	if (hardRealTime==1)
+		rt_make_hard_real_time();
 
 	while (true) {
 		if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) break;
@@ -427,6 +424,8 @@ static void *rt_get_led_data(void *arg)
 
 
 end:
+	if (hardRealTime==1)
+		rt_make_soft_real_time();
 	if (targetThread->getVerbose()) {
 		printf("Deleting led thread number...%d\n", index);
 	}
@@ -461,6 +460,7 @@ static void *rt_get_alog_data(void *arg)
 	char *mbx_id = strdup(((Alog_T *)arg)->mbx_id);
 	char *alog_file_name = strdup(((Alog_T *)arg)->alog_name);   //read alog block name and set it to file name
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
+	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	FILE *saving;
 	long size_counter = 0;
 	long logging = 0;
@@ -499,7 +499,8 @@ static void *rt_get_alog_data(void *arg)
 	
 	rt_send(Target_Interface_Task, 0);
 	mlockall(MCL_CURRENT | MCL_FUTURE);
-	rt_make_hard_real_time();
+	if (hardRealTime==1)
+		rt_make_hard_real_time();
 	while (true) {
 		if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) break;
 		while (RT_mbx_receive_if(targetThread->getTargetNode(), GetALogDataPort, GetALogDataMbx, &MsgBuf, MsgLen)) {
@@ -533,7 +534,8 @@ static void *rt_get_alog_data(void *arg)
 			
 	}
 end:
-	rt_make_soft_real_time();
+	if (hardRealTime==1)
+		rt_make_soft_real_time();
 	if (targetThread->getVerbose()) {
 		printf("Deleting auto log thread number...%d\n", index);
 	}
@@ -558,6 +560,7 @@ static void *rt_get_log_data(void *arg)
 	int index = ((Args_T *)arg)->index;
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
+	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 
 	rt_allow_nonroot_hrt();
 	if (!(GetLogDataTask = rt_task_init_schmod(qrl::get_an_id("HGL"), 90, 0, 0, SCHED_RR, 0xFF))) {
@@ -583,7 +586,8 @@ static void *rt_get_log_data(void *arg)
 
 	rt_send(Target_Interface_Task, 0);
 	mlockall(MCL_CURRENT | MCL_FUTURE);
-	rt_make_hard_real_time();
+	if (hardRealTime==1)
+		rt_make_hard_real_time();
 	while (true) {
 		if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) break;
 		while (RT_mbx_receive_if(targetThread->getTargetNode(), GetLogDataPort, GetLogDataMbx, &MsgBuf, MsgLen)) {
@@ -612,7 +616,8 @@ static void *rt_get_log_data(void *arg)
 		}*/
 	}
 end:
-	rt_make_soft_real_time();
+	if (hardRealTime==1)
+		rt_make_soft_real_time();
 	if (targetThread->getVerbose()) {
 		printf("Deleting log thread number...%d\n", index);
 	}
