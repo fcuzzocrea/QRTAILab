@@ -47,7 +47,7 @@ class QRL_MeterWindow : public QMdiSubWindow
    Q_ENUMS( Meter_Type )
 public:
    enum Meter_Type {THERMO,	DIAL,	LCD};
-   QRL_MeterWindow(QWidget *parent = 0,char* name=NULL);
+   QRL_MeterWindow(QWidget *parent = 0,QString name="");
    ~QRL_MeterWindow();
    double getRefreshRate(){return RefreshRate;}
    void changeRefreshRate(double);

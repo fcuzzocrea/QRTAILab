@@ -30,17 +30,16 @@ extern unsigned long qrl::get_an_id(const char *root);
 
 
 ///  Initialize Meters Manager
-QRL_MetersManager::QRL_MetersManager(QWidget *parent,TargetThread* targetthread)
-	:QDialog(parent),targetThread(targetthread)
+QRL_MetersManager::QRL_MetersManager(QWidget *parent, QRtaiLabCore* qtargetinterface)
+	:QDialog(parent),qTargetInterface(qtargetinterface)
 {
 	setupUi(this);
-	Num_Meters=targetThread->getMeterNumber();
-	Meters=targetThread->getMeters();
+	Num_Meters=qTargetInterface->getMeterNumber();
 	const QIcon MeterIcon =QIcon(QString::fromUtf8(":/icons/meter_icon.xpm"));
 	MeterWindows = new QRL_MeterWindow* [Num_Meters]; 
 	for (int i=0; i<Num_Meters; ++i){
-		new QListWidgetItem(MeterIcon,targetThread->getMeterName(i), meterListWidget);
-		MeterWindows[i]=new QRL_MeterWindow(parent,Meters[i].name);
+		new QListWidgetItem(MeterIcon,qTargetInterface->getMeterName(i), meterListWidget);
+		MeterWindows[i]=new QRL_MeterWindow(parent,qTargetInterface->getMeterName(i));
 	}
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showMeter(int) ) );
 	connect( rrCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeRefreshRate(double) ) );
@@ -109,7 +108,7 @@ void QRL_MetersManager::refresh()
 {
 for (int i=0; i<Num_Meters; ++i){
 	//if (MeterWindows[i]->isVisible()){
-		MeterWindows[i]->setValue(targetThread->getMeterValue(i));
+		MeterWindows[i]->setValue(qTargetInterface->getTargetThread()->getMeterValue(i));
 	//}
 }
 }
@@ -133,7 +132,7 @@ void QRL_MetersManager::refreshView()
 	//double rr=text.toDouble();
 	//ScopeWindows[currentScope]->changeRefreshRate(rr);
 	rrCounter->setValue(rr);
-	targetThread->setMeterRefreshRate(rr,currentMeter);
+	qTargetInterface->getTargetThread()->setMeterRefreshRate(rr,currentMeter);
 	MeterWindows[currentMeter]->changeRefreshRate(rr);
 }
 /**
@@ -267,7 +266,7 @@ void QRL_MetersManager::changeThermoDirection(int d)
 void QRL_MetersManager::showMeterOptions( QListWidgetItem * item ){
 
 	currentMeter= meterListWidget->row(item);
-	tabWidget->setTabText(0,tr(Meters[currentMeter].name));
+	tabWidget->setTabText(0,qTargetInterface->getMeterName(currentMeter));
 	if(MeterWindows[currentMeter]->isVisible())
 		showCheckBox->setCheckState(Qt::Checked);
 	else

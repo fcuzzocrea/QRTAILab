@@ -98,15 +98,15 @@ public:
 //signals:
  //    void sendOrder(int);
     void setVerbose(int v){Verbose=v;}
-    void setTargetThread( TargetThread* t){targetthread=t;}
 protected:
      void closeEvent(QCloseEvent *event);
 
 protected slots:
     void about();
     void disconnectDialog();
+    void startTarget();
     void connectDialog();
-    void connect_WProfile();
+    void loadProfile();
     void saveProfile();
     void start();
     void stop();
@@ -120,7 +120,7 @@ private:
     void enableActionStart(bool);
     void enableActionStop(bool);
     void enableActionConnect(bool);
-    void enableActionConnectWProfile(bool);
+    void enableActionLoadProfile(bool);
     void enableActionDisconnect(bool);
     void enableActionShowMeter(bool);
     void enableActionShowScope(bool);
@@ -128,7 +128,6 @@ private:
     void enableActionShowParameter(bool);
     void enableActionSaveProfile(bool);
     void enableActionDeleteProfile(bool);
-    TargetThread* targetthread;
     QRL_MetersManager *MetersManager;
     QRL_LedsManager *LedsManager;
     QRL_ScopesManager *ScopesManager;
@@ -139,6 +138,7 @@ private:
     QString profileName;
     int Verbose;
     QRtaiLabCore	*qTargetInterface;
+    QProcess *target;
     //QSettings *settings;
 };
 

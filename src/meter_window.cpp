@@ -30,7 +30,7 @@
 #include <stdlib.h>
 
 
-QRL_MeterWindow::QRL_MeterWindow(QWidget *parent,char* name)
+QRL_MeterWindow::QRL_MeterWindow(QWidget *parent,QString name)
 	:QMdiSubWindow(parent)
 {
 if (this->objectName().isEmpty())
@@ -131,7 +131,7 @@ Thermo->setFillBrush(QBrush(gradient));
 
   
 
-    this->setWindowTitle(QApplication::translate("QRL_MeterWindow", name, 0, QApplication::UnicodeUTF8));
+    this->setWindowTitle(name);
 
 }
 

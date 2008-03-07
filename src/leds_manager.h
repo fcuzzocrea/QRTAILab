@@ -44,7 +44,7 @@ class QRL_LedsManager : public QDialog, private Ui::QRL_LedsManager
 {
    Q_OBJECT
 public:
-   QRL_LedsManager(QWidget *parent = 0,  TargetThread* targetthread=NULL);
+   QRL_LedsManager(QWidget *parent = 0,  QRtaiLabCore* qtargetinterface=NULL);
    ~QRL_LedsManager();
     QRL_LedWindow** getLedWindows(){return LedWindows;}
  void refreshView();
@@ -55,9 +55,9 @@ public slots:
    void refresh();
 private:
   int Num_Leds;
-  Target_Leds_T *Leds;
+  //Target_Leds_T *Leds;
   unsigned int currentLed;
-  TargetThread* targetThread;
+  QRtaiLabCore* qTargetInterface;
   QRL_LedWindow** LedWindows;
   QTimer *timer;
     double RefreshRate;

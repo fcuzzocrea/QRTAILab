@@ -211,6 +211,7 @@ public:
     QRtaiLabCore(QObject *parent=0,int Verbose = 0);
     ~QRtaiLabCore();
     TargetThread* getTargetThread(){return targetthread;}
+    void getReady();
     int stopTarget();
     int startTarget();
     int connectToTarget();
@@ -224,9 +225,9 @@ public:
 
     unsigned int getIsTargetConnected(){return targetthread->getIsTargetConnected();}
     int getIsTargetRunning(){return targetthread->getIsTargetRunning();}
-    int getScopeNumber(){return targetthread->getScopeNumber();}
-    int getMeterNumber(){return targetthread->getMeterNumber();}
-    int getLedNumber(){return targetthread->getLedNumber();}
+    int getScopeNumber();
+    int getMeterNumber();
+    int getLedNumber();
     int getParameterNumber(){return targetthread->getParameterNumber();}
     int getBlockNumber(){return targetthread->getBlockNumber();}
     int getEndApp(){return targetthread->getEndApp();}
@@ -238,17 +239,32 @@ public:
     int getNumberOfParameters(int blk);
    unsigned int getParameterCols(int blk,int prm);
    unsigned int getParameterRows(int blk,int prm);
-    double getParameter(int blk,int prm, int nr,int nc);
-    void updateParameter(int blk,int prm, int nr,int nc,double value);
+    double getParameterValue(int blk,int prm, int nr,int nc);
+    void updateParameterValue(int blk,int prm, int nr,int nc,double value);
     void addToBatch(int blk,int prm, int nr,int nc, double value);
 
+   QString getScopeName(int);
+    int	    getScopeDt(int);
+    int     getNumberOfTraces(int);
 
+    QString getMeterName(int);
+    int	    getMeterDt(int);
+
+
+    QString getLedName(int);
+    int	    getLedDt(int);
+    int     getNumberOfLeds(int);
+
+
+public slots:
+    //void refreshData();
  signals:
    void statusBarMessage(const QString &);
 	
 private:
 	TargetThread* targetthread;
 	Preferences_T Preferences;
+	  QTimer *timer;
 };
 
 

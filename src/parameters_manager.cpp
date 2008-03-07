@@ -111,7 +111,7 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 		for (unsigned int nr = 0; nr < nrows; nr++) {
 			for (unsigned int nc = 0; nc < ncols; nc++) {
 				if ((prm_row==table_row) && (prm_col==nc)){
-					data_value=qTargetInterface->getParameter(blk,j,nr, nc);
+					data_value=qTargetInterface->getParameterValue(blk,j,nr, nc);
 					prm=j;
 				}
 			}
@@ -129,7 +129,7 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 		if (batchModus==0){
 			double value=(item->text()).toDouble();
 			//printf("Item changed to %f (%d,%d)\n",value,blk,prm);
-			qTargetInterface->updateParameter(blk,prm,prm_row,prm_col,value);
+			qTargetInterface->updateParameterValue(blk,prm,prm_row,prm_col,value);
 		} else {
 			double value=(item->text()).toDouble();
 			//printf("Item changed to %f (%d,%d)\n",value,blk,prm);
@@ -173,7 +173,7 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 				parameterTableWidget->setItem(table_row,0,newItem);
 			}
 			for (unsigned int nc = 0; nc < ncols; nc++) {
-				data_value=qTargetInterface->getParameter(i,j, nr, nc);
+				data_value=qTargetInterface->getParameterValue(i,j, nr, nc);
 				newItem = new QTableWidgetItem(tr("%1").arg(data_value));
 				parameterTableWidget->setItem(table_row,nc+1,newItem);
 			}

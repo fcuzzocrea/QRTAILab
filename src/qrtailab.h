@@ -164,17 +164,17 @@ struct Args_Struct
 {
 	const char *mbx_id;
 	int index;
-	int x, y, w, h;
 	void *targetThread;
+	int hardRealTime;
 	
 };
 struct Args_Struct_ALog
 {
 	const char *mbx_id;
 	int index;
-	int x, y, w, h;
 	const char *alog_name;
 	void *targetThread;
+	int hardRealTime;
 };
 struct Target_Parameters_Struct
 {

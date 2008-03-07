@@ -33,17 +33,17 @@
 /**
 * @brief Initialize Meters Manager
 */
-QRL_LedsManager::QRL_LedsManager(QWidget *parent,TargetThread* targetthread)
-	:QDialog(parent),targetThread(targetthread)
+QRL_LedsManager::QRL_LedsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
+	:QDialog(parent),qTargetInterface(qtargetinterface)
 {
 	setupUi(this);
-	Num_Leds=targetThread->getLedNumber();
-	Leds=targetThread->getLeds();
+	Num_Leds=qTargetInterface->getLedNumber();
+	//Leds=targetThread->getLeds();
 	const QIcon LedIcon =QIcon(QString::fromUtf8(":/icons/led_icon.xpm"));
 	LedWindows = new QRL_LedWindow* [Num_Leds]; 
 	for (int i=0; i<Num_Leds; ++i){
-		new QListWidgetItem(LedIcon,targetThread->getLedName(i), ledListWidget);
-		LedWindows[i]=new QRL_LedWindow(parent,Leds[i].n_leds,Leds[i].name);
+		new QListWidgetItem(LedIcon,qTargetInterface->getLedName(i), ledListWidget);
+		LedWindows[i]=new QRL_LedWindow(parent,qTargetInterface->getNumberOfLeds(i),qTargetInterface->getLedName(i));
 	}
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showLed(int) ) );
 	connect( ledColorComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeLedColor(int) ) );
@@ -72,7 +72,7 @@ void QRL_LedsManager::refresh()
 {
 for (int i=0; i<Num_Leds; ++i){
 	//if (LedWindows[i]->isVisible()){
-		LedWindows[i]->setValue(targetThread->getLedValue(i));
+		LedWindows[i]->setValue(qTargetInterface->getTargetThread()->getLedValue(i));
 	//}
 }
 }
@@ -119,7 +119,7 @@ void QRL_LedsManager::changeLedColor(int color)
 void QRL_LedsManager::showLedOptions( QListWidgetItem * item ){
 
 	currentLed= ledListWidget->row(item);
-	tabWidget->setTabText(0,tr(Leds[currentLed].name));
+	tabWidget->setTabText(0,qTargetInterface->getLedName(currentLed));
 
 	if(LedWindows[currentLed]->isVisible())
 		showCheckBox->setCheckState(Qt::Checked);

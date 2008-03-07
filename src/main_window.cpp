@@ -124,7 +124,7 @@ QRL_MainWindow::QRL_MainWindow()
 	connect( actionDisconnect, SIGNAL( triggered() ), this, SLOT( disconnectDialog() ) ); 
 	connect( actionStart, SIGNAL( triggered() ), this, SLOT( start() ) ); 
 	connect( actionStop, SIGNAL( triggered() ), this, SLOT( stop() ) ); 
-	connect( actionConnect_WProfile, SIGNAL( triggered() ), this, SLOT( connect_WProfile() ) ); 
+	connect( actionLoadProfile, SIGNAL( triggered() ), this, SLOT( loadProfile() ) ); 
 	connect( actionSaveProfile, SIGNAL( triggered() ), this, SLOT( saveProfile() ) ); 
 	connect( actionAbout_QRtaiLab, SIGNAL( triggered() ), this, SLOT( about() ) ); 
 	connect( actionExit, SIGNAL(triggered()), this , SLOT(close()));
@@ -132,8 +132,9 @@ QRL_MainWindow::QRL_MainWindow()
 	connect( actionShowMeter, SIGNAL( triggered() ), this, SLOT( showMetersManager() ) ); 
 	connect( actionShowLed, SIGNAL( triggered() ), this, SLOT( showLedsManager() ) ); 
 	connect( actionShowParameter, SIGNAL( triggered() ), this, SLOT( showParametersManager() ) ); 
+	connect( actionStartTarget, SIGNAL( triggered() ), this, SLOT( startTarget() ) ); 
    enableActionConnect(true);
-   enableActionConnectWProfile(true);
+   enableActionLoadProfile(true);
    enableActionDisconnect(false);
    enableActionStart(false);
    enableActionStop(false);
@@ -156,12 +157,11 @@ QRL_MainWindow::QRL_MainWindow()
 
 
     qTargetInterface = new QRtaiLabCore(this,Verbose);
-    targetthread=qTargetInterface->getTargetThread();
     //targetthread = new TargetThread();
     //targetthread->start();
   //  connect( this, SIGNAL( sendOrder(int) ), targetthread, SLOT( getOrder(int) ) ); 
 
-  
+    target = new QProcess(this);
    connect( qTargetInterface, SIGNAL( statusBarMessage(const QString &) ), this, SLOT( setStatusBarMessage(const QString &) ) ); 
 
      mdiArea = new QMdiArea;
@@ -227,6 +227,11 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 	//targetthread->closeThread();
  	//targetthread->wait();
 	//delete targetthread;
+	if (target->state()==QProcess::Running){
+		target->kill();
+		printf("stop target!\n");
+
+	}
 	delete qTargetInterface;
 // 	rt_task_delete(RLG_Main_Task);
 	qDebug() << "Quitting Main window";
@@ -234,6 +239,9 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 
  void QRL_MainWindow::connectDialog() 
 {
+
+
+qTargetInterface->getReady();
 if(qTargetInterface->getIsTargetConnected()==0){
 
   //QRL_connectDialog *connectDialog = new QRL_connectDialog(this);
@@ -249,13 +257,13 @@ if(qTargetInterface->getIsTargetConnected()==0){
 	if (qTargetInterface->getIsTargetConnected()==1){
 		enableActionDisconnect(true);
 		enableActionConnect(false);
-		enableActionConnectWProfile(false);
+		enableActionLoadProfile(false);
 		enableActionSaveProfile(true);
 
 			if (qTargetInterface->getMeterNumber()>0){
 			enableActionShowMeter(true);
 			if (! MetersManager){
-				MetersManager = new QRL_MetersManager(this,targetthread);
+				MetersManager = new QRL_MetersManager(this,qTargetInterface);
 				for (int i=0; i<qTargetInterface->getMeterNumber(); ++i){
 					mdiArea->addSubWindow(MetersManager->getMeterWindows()[i]);
 				}
@@ -277,7 +285,7 @@ if(qTargetInterface->getIsTargetConnected()==0){
 			if (qTargetInterface->getLedNumber()>0){
 			enableActionShowLed(true);
 			if (! LedsManager){
-				LedsManager = new QRL_LedsManager(this,targetthread);
+				LedsManager = new QRL_LedsManager(this,qTargetInterface);
 				for (int i=0; i<qTargetInterface->getLedNumber(); ++i){
 						 mdiArea->addSubWindow(LedsManager->getLedWindows()[i]);
 				}
@@ -297,7 +305,7 @@ if(qTargetInterface->getIsTargetConnected()==0){
 			if (qTargetInterface->getScopeNumber()>0){
 				enableActionShowScope(true);
 				if (! ScopesManager){
-					ScopesManager = new QRL_ScopesManager(this,targetthread);
+					ScopesManager = new QRL_ScopesManager(this,qTargetInterface);
 					for (int i=0; i<qTargetInterface->getScopeNumber(); ++i){
 						 mdiArea->addSubWindow(ScopesManager->getScopeWindows()[i]);
 					}
@@ -343,7 +351,7 @@ if(qTargetInterface->getIsTargetConnected()==0){
 	}else
 	{
 		enableActionConnect(true);
-		enableActionConnectWProfile(true);
+		enableActionLoadProfile(true);
 		enableActionSaveProfile(false);
 		enableActionDisconnect(false);
    		enableActionStart(false);
@@ -372,15 +380,39 @@ if(qTargetInterface->getIsTargetConnected()==0){
 	if (qTargetInterface->getIsTargetConnected()==0){
 		enableActionDisconnect(false);
 		enableActionConnect(true);
-		enableActionConnectWProfile(true);
+		enableActionLoadProfile(true);
 		enableActionSaveProfile(false);
 		enableActionStart(false);
 		enableActionStop(false);
 	}
 	
 }
+
+
+
+void QRL_MainWindow::startTarget() {
+	QString targetName=QFileDialog::getOpenFileName(this,
+     tr("Start Target"), QString(), tr("Target File (* )"));
+  //QStringList arguments;
+	 //target->start(targetName,arguments );
+    if ( !QProcess::startDetached(targetName) ) {
+        // error handling
+        QMessageBox::critical( 0,
+                tr("Fatal error"),
+                tr("Could not start the target."),
+                tr("Quit") );
+        exit( -1 );
+    }
+
+}
  
-void QRL_MainWindow::connect_WProfile() {
+void QRL_MainWindow::loadProfile() {
+
+if (qTargetInterface->getIsTargetConnected()==0) {
+    QMessageBox::warning(this,tr("Error"),
+		tr("Not Connected!"),QMessageBox::Ok);
+	return;
+}
      QSettings profiles("QRtaiLab", "profiles");
      int size = profiles.beginReadArray("profiles");
      profiles.endArray();
@@ -400,7 +432,7 @@ void QRL_MainWindow::connect_WProfile() {
 	QSettings settings("QRtaiLab", profileName);
 	
 
-	
+/*	
 	Preferences_T Preferences;
 	settings.beginGroup("Preferences");
 	Preferences.Target_IP=qstrdup(settings.value("Target_IP",QByteArray("127.0.0.1")).toByteArray().data());
@@ -415,7 +447,7 @@ void QRL_MainWindow::connect_WProfile() {
 	qTargetInterface->setPreferences(Preferences);
 
 connectDialog();
-
+*/
 	settings.beginGroup("MainWindow");
 	resize(settings.value("size", QSize(400, 400)).toSize());
 	move(settings.value("pos", QPoint(200, 200)).toPoint());
@@ -564,6 +596,7 @@ void QRL_MainWindow::saveProfile() {
      settings.setValue("size", this->size());
      settings.setValue("pos", this->pos());
      settings.endGroup();
+/*
 Preferences_T Preferences=qTargetInterface->getPreferences();
 	settings.beginGroup("Preferences");
 	settings.setValue("Target_IP",QByteArray(Preferences.Target_IP));
@@ -575,7 +608,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 	settings.setValue("Target_Meter_Mbx_ID",QByteArray(Preferences.Target_Meter_Mbx_ID));
 	settings.setValue("Target_Synch_Mbx_ID",QByteArray(Preferences.Target_Synch_Mbx_ID));
          settings.endGroup();
-
+*/
      if(ScopesManager){
 	settings.beginGroup("ScopesManager");
 	settings.setValue("size", ScopesManager->size());
@@ -677,7 +710,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 		if (qTargetInterface->getIsTargetConnected()==0){
 			enableActionDisconnect(false);
 			enableActionConnect(true);
-			enableActionConnectWProfile(true);
+			enableActionLoadProfile(true);
 			enableActionSaveProfile(false);
 			enableActionStart(false);
 			enableActionShowScope(false);
@@ -742,9 +775,9 @@ void QRL_MainWindow::enableActionConnect(bool b)
 	actionConnect->setEnabled(b);
 }
 
-void QRL_MainWindow::enableActionConnectWProfile(bool b)
+void QRL_MainWindow::enableActionLoadProfile(bool b)
 {
-	actionConnect_WProfile->setEnabled(b);
+	actionLoadProfile->setEnabled(b);
 }
 
 

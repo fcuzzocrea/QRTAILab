@@ -63,18 +63,23 @@
     <property name="title" >
      <string>&amp;Target</string>
     </property>
-    <addaction name="actionConnect_WProfile" />
+    <addaction name="actionStartTarget" />
     <addaction name="actionConnect" />
     <addaction name="actionDisconnect" />
     <addaction name="separator" />
-    <addaction name="actionSaveProfile" />
-    <addaction name="actionDeleteProfile" />
-    <addaction name="separator" />
     <addaction name="actionStart" />
     <addaction name="actionStop" />
-    <addaction name="separator" />
+   </widget>
+   <widget class="QMenu" name="menuProject" >
+    <property name="title" >
+     <string>Project</string>
+    </property>
+    <addaction name="actionLoadProfile" />
+    <addaction name="actionSaveProfile" />
+    <addaction name="actionDeleteProfile" />
     <addaction name="actionExit" />
    </widget>
+   <addaction name="menuProject" />
    <addaction name="menuTarget" />
    <addaction name="menuView" />
    <addaction name="menuHelp" />
@@ -104,10 +109,10 @@
    </attribute>
    <addaction name="actionExit" />
    <addaction name="separator" />
-   <addaction name="actionConnect_WProfile" />
    <addaction name="actionConnect" />
    <addaction name="actionDisconnect" />
    <addaction name="separator" />
+   <addaction name="actionLoadProfile" />
    <addaction name="actionSaveProfile" />
    <addaction name="actionDeleteProfile" />
    <addaction name="separator" />
@@ -200,12 +205,12 @@
     <string>Parameter</string>
    </property>
   </action>
-  <action name="actionConnect_WProfile" >
+  <action name="actionLoadProfile" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/connect_wprofile_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >:/icons/connect_profile_icon.xpm</iconset>
    </property>
    <property name="text" >
-    <string>Connect With Profile</string>
+    <string>Load Profile</string>
    </property>
   </action>
   <action name="actionSaveProfile" >
@@ -222,6 +227,14 @@
    </property>
    <property name="text" >
     <string>Delete Profile</string>
+   </property>
+  </action>
+  <action name="actionStartTarget" >
+   <property name="icon" >
+    <iconset resource="qrtailab.qrc" >:/icons/session_open_icon.xpm</iconset>
+   </property>
+   <property name="text" >
+    <string>Start Target</string>
    </property>
   </action>
  </widget>
