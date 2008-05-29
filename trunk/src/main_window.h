@@ -36,6 +36,7 @@
 #include "scopes_manager.h"
 #include "parameters_manager.h"
 #include "qrtailab_core.h"
+#include "targets_manager.h"
 /**
  * @brief Main QThread 
  */
@@ -104,7 +105,7 @@ protected:
 protected slots:
     void about();
     void disconnectDialog();
-    void startTarget();
+   // void startTarget();
     void connectDialog();
     void loadProfile();
     void saveProfile();
@@ -133,6 +134,7 @@ private:
     QRL_ScopesManager *ScopesManager;
     QRL_ParametersManager *ParametersManager;
     QRL_connectDialog *ConnectDialog;
+    QRL_TargetsManager *TargetsManager;
     QLabel* statusMessage;
     QMdiArea *mdiArea;
     QString profileName;

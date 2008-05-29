@@ -43,7 +43,6 @@
 #include <qwt_scale_draw.h>
 #include <qwt_math.h>
 #include "qrtailab.h"
-#include "qwt_plot.h"
 
 typedef struct Scopes_Data_Struct Scopes_Data_T;
 struct Scopes_Data_Struct
