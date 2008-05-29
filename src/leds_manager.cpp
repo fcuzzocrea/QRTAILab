@@ -112,6 +112,7 @@ void QRL_LedsManager::changeLedColor(int color)
 }
 
 
+
 /**
 * @brief update manager dialog for the choosen led
 * @param item led number
@@ -140,4 +141,25 @@ void QRL_LedsManager::showLed(int state)
 		LedWindows[currentLed]->hide();
 	}
 
+}
+
+
+QDataStream& operator<<(QDataStream &out, const QRL_LedsManager *d){
+	out << d->size()  << d->pos() << d->isVisible();
+	for (int i = 0; i < d->Num_Leds; ++i) {
+		out<<d->LedWindows[i];
+	}
+	return out;
+}
+
+
+QDataStream& operator>>(QDataStream &in, QRL_LedsManager(*d)){
+	QSize s;QPoint p;bool b;
+	in >> s;d->resize(s);
+	in >> p; d->move(p);
+	in >> b; d->setVisible(b);
+	for (int i = 0; i < d->Num_Leds; ++i) {
+		in>>d->LedWindows[i];
+	}
+	return in;
 }

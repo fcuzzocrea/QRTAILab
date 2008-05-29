@@ -83,7 +83,11 @@ public slots:
   //void  reject();
 private:
     Preferences_T Preferences;
+friend QDataStream& operator<<(QDataStream &out, const QRL_connectDialog *d);
+friend QDataStream& operator>>(QDataStream &in, QRL_connectDialog(*d));
 };
+	QDataStream& operator<<(QDataStream &out, const QRL_connectDialog *d);
+	QDataStream& operator>>(QDataStream &in, QRL_connectDialog(*d));
 
 /**
  * @brief Main Window
@@ -118,6 +122,8 @@ protected slots:
     void setStatusBarMessage(const QString &);
  
 private:
+    void connectToTarget(Preferences_T p);
+    void disconnectFromTarget();
     void enableActionStart(bool);
     void enableActionStop(bool);
     void enableActionConnect(bool);

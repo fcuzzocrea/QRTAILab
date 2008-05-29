@@ -165,3 +165,20 @@ void QRL_LedWindow::setValue(unsigned int v)
 	event->ignore(); 
 	this->hide(); 
 }
+
+
+
+QDataStream& operator<<(QDataStream &out, const QRL_LedWindow *d){
+	out << d->Leds[0]->color() << d->size()  << d->pos() << d->isVisible();
+	return out;
+}
+
+
+QDataStream& operator>>(QDataStream &in, QRL_LedWindow(*d)){
+	QSize s;QPoint p;bool b; QColor c;
+	in >> c; d->setLedColor(c);
+	in >> s;d->resize(s);
+	in >> p; d->move(p);
+	in >> b; d->setVisible(b);
+	return in;
+}
