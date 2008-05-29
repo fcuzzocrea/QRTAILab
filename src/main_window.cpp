@@ -120,6 +120,7 @@ QRL_MainWindow::QRL_MainWindow()
 	LedsManager=NULL;
 	MetersManager=NULL;
 	ParametersManager=NULL;
+	
 	connect( actionConnect, SIGNAL( triggered() ), this, SLOT( connectDialog() ) ); 
 	connect( actionDisconnect, SIGNAL( triggered() ), this, SLOT( disconnectDialog() ) ); 
 	connect( actionStart, SIGNAL( triggered() ), this, SLOT( start() ) ); 
@@ -132,7 +133,7 @@ QRL_MainWindow::QRL_MainWindow()
 	connect( actionShowMeter, SIGNAL( triggered() ), this, SLOT( showMetersManager() ) ); 
 	connect( actionShowLed, SIGNAL( triggered() ), this, SLOT( showLedsManager() ) ); 
 	connect( actionShowParameter, SIGNAL( triggered() ), this, SLOT( showParametersManager() ) ); 
-	connect( actionStartTarget, SIGNAL( triggered() ), this, SLOT( startTarget() ) ); 
+	//connect( actionStartTarget, SIGNAL( triggered() ), this, SLOT( startTarget() ) ); 
    enableActionConnect(true);
    enableActionLoadProfile(true);
    enableActionDisconnect(false);
@@ -184,7 +185,8 @@ QRL_MainWindow::QRL_MainWindow()
 	Preferences.Target_Synch_Mbx_ID="RTY";
 */
 	ConnectDialog = new QRL_connectDialog(this);
-
+	TargetsManager=new QRL_TargetsManager(this,qTargetInterface);
+	connect( actionStartTarget, SIGNAL( triggered() ), TargetsManager, SLOT( exec() ) ); 
         //targetthread->setPreferences(Preferences);
 
 
@@ -389,7 +391,7 @@ if(qTargetInterface->getIsTargetConnected()==0){
 }
 
 
-
+/*
 void QRL_MainWindow::startTarget() {
 	QString targetName=QFileDialog::getOpenFileName(this,
      tr("Start Target"), QString(), tr("Target File (* )"));
@@ -404,7 +406,7 @@ void QRL_MainWindow::startTarget() {
         exit( -1 );
     }
 
-}
+}*/
  
 void QRL_MainWindow::loadProfile() {
 
