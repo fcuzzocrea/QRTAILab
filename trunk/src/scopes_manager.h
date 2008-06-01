@@ -90,7 +90,11 @@ private:
   QList<QListWidgetItem *> scopeItems,traceItems;
   QTimer *timer;
   double RefreshRate;
+friend QDataStream& operator<<(QDataStream &out, const QRL_ScopesManager &d);
+friend QDataStream& operator>>(QDataStream &in, QRL_ScopesManager(&d));
 };
+	QDataStream& operator<<(QDataStream &out, const QRL_ScopesManager &d);
+	QDataStream& operator>>(QDataStream &in, QRL_ScopesManager(&d));
 
 
 #endif

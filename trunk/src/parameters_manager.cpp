@@ -183,3 +183,17 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 	}
 	parameterTableWidget->blockSignals(false);
 }
+
+QDataStream& operator<<(QDataStream &out, const QRL_ParametersManager &d){
+	out << d.size()  << d.pos() << d.isVisible();
+	return out;
+}
+
+
+QDataStream& operator>>(QDataStream &in, QRL_ParametersManager(&d)){
+	QSize s;QPoint p;bool b; int i;
+	in >> s;d.resize(s);
+	in >> p; d.move(p);
+	in >> b; d.setVisible(b);
+	return in;
+}

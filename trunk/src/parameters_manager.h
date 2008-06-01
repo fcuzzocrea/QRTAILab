@@ -57,7 +57,11 @@ private:
   int Num_Tunable_Blocks;
    QRtaiLabCore	*qTargetInterface;
   int batchModus;
+friend QDataStream& operator<<(QDataStream &out, const QRL_ParametersManager &d);
+friend QDataStream& operator>>(QDataStream &in, QRL_ParametersManager(&d));
 };
+	QDataStream& operator<<(QDataStream &out, const QRL_ParametersManager &d);
+	QDataStream& operator>>(QDataStream &in, QRL_ParametersManager(&d));
 
 
 #endif

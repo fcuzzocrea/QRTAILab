@@ -317,3 +317,31 @@ void QRL_MetersManager::showMeter(int state)
                  &ok, MeterWindows[currentMeter]->getLcdFont(), this);
 	MeterWindows[currentMeter]->setLcdFont(font);
 }
+
+
+
+QDataStream& operator<<(QDataStream &out, const QRL_MetersManager &d){
+	out << d.size()  << d.pos() << d.isVisible();
+	out <<(qint32) d.Num_Meters;
+	for (int i = 0; i < d.Num_Meters; ++i) {
+		out<<*(d.MeterWindows[i]);
+	}
+	return out;
+}
+
+
+QDataStream& operator>>(QDataStream &in, QRL_MetersManager(&d)){
+	QSize s;QPoint p;bool b; int i;
+	in >> s;d.resize(s);
+	in >> p; d.move(p);
+	in >> b; d.setVisible(b);
+	qint32 a;
+	in >> a;
+	for (int i = 0; i < (int)a; ++i) {
+		if (d.Num_Meters>i)
+			in>>*(d.MeterWindows[i]);
+		else 
+			in>>*(d.MeterWindows[d.Num_Meters-1]);
+	}
+	return in;
+}

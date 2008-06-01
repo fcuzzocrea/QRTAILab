@@ -79,11 +79,11 @@ private:
   QLabel **ledLabels;
   
 
-friend QDataStream& operator<<(QDataStream &out, const QRL_LedWindow *d);
-friend QDataStream& operator>>(QDataStream &in, QRL_LedWindow(*d));
+friend QDataStream& operator<<(QDataStream &out, const QRL_LedWindow &d);
+friend QDataStream& operator>>(QDataStream &in, QRL_LedWindow(&d));
 };
-	QDataStream& operator<<(QDataStream &out, const QRL_LedWindow *d);
-	QDataStream& operator>>(QDataStream &in, QRL_LedWindow(*d));
+	QDataStream& operator<<(QDataStream &out, const QRL_LedWindow &d);
+	QDataStream& operator>>(QDataStream &in, QRL_LedWindow(&d));
 
 
 #endif

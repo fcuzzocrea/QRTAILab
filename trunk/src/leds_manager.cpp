@@ -144,22 +144,28 @@ void QRL_LedsManager::showLed(int state)
 }
 
 
-QDataStream& operator<<(QDataStream &out, const QRL_LedsManager *d){
-	out << d->size()  << d->pos() << d->isVisible();
-	for (int i = 0; i < d->Num_Leds; ++i) {
-		out<<d->LedWindows[i];
+QDataStream& operator<<(QDataStream &out, const QRL_LedsManager &d){
+	out << d.size()  << d.pos() << d.isVisible();
+	out <<(qint32) d.Num_Leds;
+	for (int i = 0; i < d.Num_Leds; ++i) {
+		out<<*(d.LedWindows[i]);
 	}
 	return out;
 }
 
 
-QDataStream& operator>>(QDataStream &in, QRL_LedsManager(*d)){
+QDataStream& operator>>(QDataStream &in, QRL_LedsManager(&d)){
 	QSize s;QPoint p;bool b;
-	in >> s;d->resize(s);
-	in >> p; d->move(p);
-	in >> b; d->setVisible(b);
-	for (int i = 0; i < d->Num_Leds; ++i) {
-		in>>d->LedWindows[i];
+	in >> s;d.resize(s);
+	in >> p; d.move(p);
+	in >> b; d.setVisible(b);
+	qint32 a;
+	in >> a;
+	for (int i = 0; i < (int)a; ++i) {
+		if (d.Num_Leds>i)
+			in>>*(d.LedWindows[i]);
+		else 
+			in>>*(d.LedWindows[d.Num_Leds-1]);
 	}
 	return in;
 }

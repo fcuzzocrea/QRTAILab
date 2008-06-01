@@ -420,3 +420,46 @@ void  QRL_MeterWindow::setThermoDirection(Qt::Orientation o)
 	needle->setPalette(p);
 }
 
+QDataStream& operator<<(QDataStream &out, const QRL_MeterWindow &d){
+
+  	out << d.RefreshRate;
+	out << d.gradientEnabled;
+ 	out << d.thermoColor1;
+	out << d.thermoColor2;
+	out << d.alarmThermoColor1;
+	out << d.alarmThermoColor2;
+ 	out << (qint32)d.pipeWidth;
+	out << d.Min << d.Max;
+ 	out << d.alarmLevel << d.Thermo->alarmEnabled();
+  // 	out << (QFont)d.Lcd->font() ;
+ 	out << (d.needle->palette().button().color());
+ 	out << (qint32)d.MeterType;
+	out  << d.size()  << d.pos() << d.isVisible();
+	return out;
+}
+
+
+QDataStream& operator>>(QDataStream &in, QRL_MeterWindow(&d)){
+	QSize s;QPoint p;bool b; QColor c; qint32 a;QFont f; double dd;
+
+
+  	in >> dd; d.changeRefreshRate(dd);
+ 	in >> b; d.setGradientEnabled(b);
+	in >> c; d.setThermoColor1(c);
+	in >> c; d.setThermoColor2(c);
+	in >> c; d.setAlarmThermoColor1(c);
+	in >> c; d.setAlarmThermoColor2(c);
+ 	in >> a; d.setPipeWith(a);
+	in >> dd; d.setMin(dd);
+	in >> dd;  d.setMax(dd);
+ 	in >> dd;d.setAlarmLevel(dd);
+ 	in >> b; d.setThermoAlarm(b);
+// 	in >> f; d.setLcdFont(f);
+ 	in >> c; d.setNeedleColor(c);
+ 	in >> a; d.setMeter((QRL_MeterWindow::Meter_Type)a);
+	in >> s;d.resize(s);
+	in >> p; d.move(p);
+	in >> b; d.setVisible(b);
+	
+	return in;
+}

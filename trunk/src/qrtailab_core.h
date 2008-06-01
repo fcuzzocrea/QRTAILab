@@ -43,7 +43,12 @@ static RT_TASK *Target_Interface_Task;
 static RT_TASK *RLG_Main_Task;
 using namespace qrl_types;
 
-//! controls connection to one target
+/**
+* @brief controls connection to one target
+* @bug   scopethread, meterthread, ledthread are in conflict to QRtaiLabCore -> not threadsafe ->segfault
+* @todo  prevent multiple access to variables at the same time. make it threadsafe
+
+*/
 class TargetThread : public QThread
  {
  Q_OBJECT
@@ -58,7 +63,7 @@ class TargetThread : public QThread
     void run();
     void setPreferences(Preferences_T);
 
-    //get information about target
+    //get information about target //should be removed not threadsafe -> segfault?
     unsigned int getIsTargetConnected(){return Is_Target_Connected;}
     int getIsTargetRunning(){return Is_Target_Running;}
     int getScopeNumber(){return Num_Scopes;}
@@ -101,8 +106,8 @@ class TargetThread : public QThread
     int setScopeDt(double,int);
     double getScopeDt(int);
     void setScopeValue(float v,int t, int n);	 
-    QList<float> getScopeValue(int t, int n);	 
-    QVector< QList<float> > getScopeValue(int n);
+    QVector<float> getScopeValue(int t, int n);	 
+    QVector< QVector<float> > getScopeValue(int n);
     QString getScopeName(int);
 /*
     int start_saving(int n);
@@ -184,11 +189,11 @@ class TargetThread : public QThread
   //GetLedDataThread* Get_Led_Data_Thread;
  
   QVector<unsigned int> LedValues; 
-  QVector< QList <float> > MeterValues;
-  QVector< QVector< QList <float> > > ScopeValues;
+  QVector< float > MeterValues;
+  QVector< QVector< QVector <float> > > ScopeValues;
   QVector<double> scopeDt;
   QVector<double> meterRefreshRate;
-
+  QVector< QVector <int> > ScopeIndex;
 
  pthread_t *Get_Led_Data_Thread;
  pthread_t *Get_Meter_Data_Thread;
