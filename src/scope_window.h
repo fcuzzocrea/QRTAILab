@@ -99,6 +99,8 @@ struct Trace_Options_Struct
  * @todo add curser 
  * @todo add parameter labels 
  * @todo add trigger label
+* @bug   continuous rolling: a to smal sec/dev value consumes to much cpu power and blocks the gui
+ * @bug overwride: for more then one trace the beginning all traces can get different. -> error in time axis
  */
 
 class QRL_ScopeWindow : public QMdiSubWindow
@@ -184,7 +186,11 @@ private:
   bool triggerSearch,triggerUp,singleMode,singleModeRunning;
   double triggerLevel,lastValue;int triggerChannel;
   //PlottingScopeDataThread* Plotting_Scope_Data_Thread;
+  friend QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d);
+  friend QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d));
 };
+	QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d);
+	QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d));
 
 
 #endif

@@ -115,17 +115,22 @@ QRL_ScopesManager::~QRL_ScopesManager()
 void QRL_ScopesManager::refresh()
 {
 
+//try {
   for (int n=0; n<Num_Scopes; ++n){
-	QVector< QList<float> > v;
+	QVector< QVector<float> > v;
 	v = qTargetInterface->getTargetThread()->getScopeValue(n);
 	
 	
-	for (int k=0; k<v[0].size(); ++k)
+	for (int k=0; k<v.at(0).size(); ++k)
 	for (int t=0; t<qTargetInterface->getNumberOfTraces(n);++t){
-			if (k<v[t].size())
+			if (k<v.at(t).size())
 			ScopeWindows[n]->setValue(t,v.at(t).at(k));
 	}
-  }
+   }
+// } catch (...){
+// 	qDebug()<<"error in ScopesManager::refresh";
+// 
+// }
 }
 
 
@@ -460,6 +465,31 @@ void QRL_ScopesManager::changeDy(const QString& text)
 
 
 
+QDataStream& operator<<(QDataStream &out, const QRL_ScopesManager &d){
+	out << d.size()  << d.pos() << d.isVisible();
+	out <<(qint32) d.Num_Scopes;
+	for (int i = 0; i < d.Num_Scopes; ++i) {
+		out<<*(d.ScopeWindows[i]);
+	}
+	return out;
+}
+
+
+QDataStream& operator>>(QDataStream &in, QRL_ScopesManager(&d)){
+	QSize s;QPoint p;bool b; int i;
+	in >> s;d.resize(s);
+	in >> p; d.move(p);
+	in >> b; d.setVisible(b);
+	qint32 a;
+	in >> a;
+	for (int i = 0; i < (int)a; ++i) {
+		if (d.Num_Scopes>i)
+			in>>*(d.ScopeWindows[i]);
+		else 
+			in>>*(d.ScopeWindows[d.Num_Scopes-1]);
+	}
+	return in;
+}
 
 
 

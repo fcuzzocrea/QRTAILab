@@ -74,7 +74,7 @@ static void *rt_get_scope_data(void *arg)
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	double dt=targetThread->getScopeDt(index);
-	
+	Target_Scopes_T scope = targetThread->getScopes()[index];
 	rt_allow_nonroot_hrt();
 	if (!(GetScopeDataTask = rt_task_init_schmod(qrl::get_an_id("HGS"), 90, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetScopeData Task\n");
@@ -88,20 +88,20 @@ static void *rt_get_scope_data(void *arg)
 		return (void *)1;
 	}
 
-	TracesBytes = (targetThread->getScopes()[index].ntraces + 1)*sizeof(float);
+	TracesBytes = (scope.ntraces + 1)*sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/TracesBytes)*TracesBytes;
-	MsgLen = (((int)(TracesBytes*dt*(1./targetThread->getScopes()[index].dt)))/TracesBytes)*TracesBytes;
+	MsgLen = (((int)(TracesBytes*dt*(1./scope.dt)))/TracesBytes)*TracesBytes;
 	if (MsgLen < TracesBytes) MsgLen = TracesBytes;
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/TracesBytes;
 
-	MsgWait = (int)(((int)((MAX_MSG_SIZE-MsgLen)/TracesBytes))*targetThread->getScopes()[index].dt*1000);
+	MsgWait = (int)(((int)((MAX_MSG_SIZE-MsgLen)/TracesBytes))*scope.dt*1000);
 	MsgWait=(MsgWait>WAIT_MIN)?MsgWait:WAIT_MIN;
 	MsgWait=(MsgWait<WAIT_MAX)?MsgWait:WAIT_MAX;
 
 	// Ndistance defines the distance between plotted datapoints, to archive the given refresh rate.
-	long int Ndistance=(long int)(dt/(targetThread->getScopes())[index].dt);
-	int ntraces=(targetThread->getScopes())[index].ntraces;
+	long int Ndistance=(long int)(dt/scope.dt);
+	int ntraces=scope.ntraces;
 
 	rt_send(Target_Interface_Task, 0);
 	
@@ -162,16 +162,16 @@ static void *rt_get_scope_data(void *arg)
 
 		if (targetThread->getScopeDt(index)!=dt){
 			dt=targetThread->getScopeDt(index);
-			MsgLen = (((int)(TracesBytes*dt*(1./targetThread->getScopes()[index].dt)))/TracesBytes)*TracesBytes;
+			MsgLen = (((int)(TracesBytes*dt*(1./scope.dt)))/TracesBytes)*TracesBytes;
 			if (MsgLen < TracesBytes) MsgLen = TracesBytes;
 			if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 			MsgData = MsgLen/TracesBytes;
 			// Ndistance defines the distance between plotted datapoints, to archive the given refresh rate.
-			Ndistance=(long int)(dt/(targetThread->getScopes())[index].dt);
+			Ndistance=(long int)(dt/scope.dt);
 	
 			if (Ndistance<1)
 				Ndistance=1;
-			MsgWait = (int)(((int)((MAX_MSG_SIZE-MsgLen)/TracesBytes))*targetThread->getScopes()[index].dt*1000);
+			MsgWait = (int)(((int)((MAX_MSG_SIZE-MsgLen)/TracesBytes))*scope.dt*1000);
 			MsgWait=(MsgWait>WAIT_MIN)?MsgWait:WAIT_MIN;
 			MsgWait=(MsgWait<WAIT_MAX)?MsgWait:WAIT_MAX;
 		}
@@ -259,6 +259,7 @@ static void *rt_get_meter_data(void *arg)
         TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	double RefreshRate=targetThread->getMeterRefreshRate(index);
+	Target_Meters_T meter = targetThread->getMeters()[index];
 	rt_allow_nonroot_hrt();
 	if (!(GetMeterDataTask = rt_task_init_schmod(qrl::get_an_id("HGM"), 97, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetMeterData Task\n");
@@ -276,11 +277,11 @@ static void *rt_get_meter_data(void *arg)
 
 	DataBytes = sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
-	MsgLen = (((int)(DataBytes/RefreshRate*(1./(targetThread->getMeters())[index].dt)))/DataBytes)*DataBytes;
+	MsgLen = (((int)(DataBytes/RefreshRate*(1./meter.dt)))/DataBytes)*DataBytes;
 	if (MsgLen < DataBytes) MsgLen = DataBytes;
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/DataBytes;
-	Ndistance=(long int)(1./RefreshRate/(targetThread->getMeters())[index].dt);
+	Ndistance=(long int)(1./RefreshRate/meter.dt);
 
 	rt_send(Target_Interface_Task, 0);
 	mlockall(MCL_CURRENT | MCL_FUTURE);
@@ -312,11 +313,11 @@ static void *rt_get_meter_data(void *arg)
 		if (RefreshRate!=targetThread->getMeterRefreshRate(index)){
 		
 		RefreshRate=targetThread->getMeterRefreshRate(index);
-		MsgLen = (((int)(DataBytes/RefreshRate*(1./(targetThread->getMeters())[index].dt)))/DataBytes)*DataBytes;
+		MsgLen = (((int)(DataBytes/RefreshRate*(1./meter.dt)))/DataBytes)*DataBytes;
 		if (MsgLen < DataBytes) MsgLen = DataBytes;
 		if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 		MsgData = MsgLen/DataBytes;
-		Ndistance=(long int)(1./RefreshRate/(targetThread->getMeters())[index].dt);
+		Ndistance=(long int)(1./RefreshRate/meter.dt);
 		if (Ndistance<1)
 			Ndistance=1;
 		
@@ -382,6 +383,7 @@ static void *rt_get_led_data(void *arg)
 	unsigned int Led_Mask = 0;
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
+	Target_Leds_T led = targetThread->getLeds()[index];
 	rt_allow_nonroot_hrt();
 	if (!(GetLedDataTask = rt_task_init_schmod(qrl::get_an_id("HGE"), 97, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetLedData Task\n");
@@ -396,7 +398,7 @@ static void *rt_get_led_data(void *arg)
 	}
 	DataBytes = sizeof(unsigned int);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
-	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./(targetThread->getLeds())[index].dt)))/DataBytes)*DataBytes;
+	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./led.dt)))/DataBytes)*DataBytes;
 	if (MsgLen < DataBytes) MsgLen = DataBytes;
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/DataBytes;

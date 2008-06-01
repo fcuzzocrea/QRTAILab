@@ -732,7 +732,25 @@ default:
 //	ScopeData[nn].time2=time2;
 }
 
+QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d){
+	out  << d.size()  << d.pos() << d.isVisible();
 
+
+	return out;
+}
+
+
+QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
+	QSize s;QPoint p;bool b; QColor c; qint32 a;QFont f; double dd;
+
+	in >> s;d.resize(s);
+	in >> p; d.move(p);
+	in >> b; d.setVisible(b);
+
+
+	
+	return in;
+}
 
 ////**
 //* @brief Initialise PlottingScopeDataThread

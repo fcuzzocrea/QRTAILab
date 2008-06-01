@@ -83,15 +83,16 @@ public slots:
   //void  reject();
 private:
     Preferences_T Preferences;
-friend QDataStream& operator<<(QDataStream &out, const QRL_connectDialog *d);
-friend QDataStream& operator>>(QDataStream &in, QRL_connectDialog(*d));
+friend QDataStream& operator<<(QDataStream &out, const QRL_connectDialog &d);
+friend QDataStream& operator>>(QDataStream &in, QRL_connectDialog(&d));
 };
-	QDataStream& operator<<(QDataStream &out, const QRL_connectDialog *d);
-	QDataStream& operator>>(QDataStream &in, QRL_connectDialog(*d));
+	QDataStream& operator<<(QDataStream &out, const QRL_connectDialog &d);
+	QDataStream& operator>>(QDataStream &in, QRL_connectDialog(&d));
 
 /**
  * @brief Main Window
  * @todo save and load settings
+ * @bug  in closeEvent: segfault caused by free()
  */
 class QRL_MainWindow : public QMainWindow, private Ui::QRL_MainWindow
 {

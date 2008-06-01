@@ -800,10 +800,16 @@ void TargetThread::resetBatchMode()
 void TargetThread::startScopeThreads(  )//QRL_ScopeWindow** ScopeWindows)
 {
 	ScopeValues.resize(Num_Scopes);
+	ScopeIndex.resize(Num_Scopes);
 	scopeDt.resize(Num_Scopes);
 	for (int n = 0; n < Num_Scopes; n++) {
 		unsigned int msg;
 		ScopeValues[n].resize(Scopes[n].ntraces);
+		ScopeIndex[n].resize(Scopes[n].ntraces);
+		for (int t=0; t<Scopes[n].ntraces; t++){
+			ScopeValues[n][t].resize(MAX_SCOPE_DATA);
+			ScopeIndex[n][t]=0;
+		}
 		scopeDt[n]=1./100.;
 		Args_T thr_args;
 		thr_args.index = n;
@@ -862,38 +868,52 @@ return ret;
 
  void TargetThread::setScopeValue(float v,int n, int t){
 if (n<ScopeValues.size()){
-if (t<ScopeValues[n].size()){
-	ScopeValues[n][t].append(v);
+if (t<ScopeValues.at(n).size()){
+	if (ScopeIndex[n][t]<MAX_SCOPE_DATA){
+		ScopeValues[n][t][ScopeIndex[n][t]]=(v);
+		ScopeIndex[n][t]++;
+	} else {
+		ScopeValues[n][t][0]=(v);
+		ScopeIndex[n][t]=1;
+	}
 }
 }
-} 
+}
 
- QList<float> TargetThread::getScopeValue(int n, int t){
+ QVector<float> TargetThread::getScopeValue(int n, int t){
 	
 
-QList<float> ret;
+QVector<float> ret;
 if (n<ScopeValues.size()){
-if (t<ScopeValues[n].size()){
+if (t<ScopeValues.at(n).size()){
  //ret= Get_Led_Data_Thread[n].getValue();
-   ret=ScopeValues[n][t];
-   ScopeValues[n][t].clear();
+   for (int i=0;i<ScopeIndex[n][t];i++)
+   	ret.append(ScopeValues.at(n).at(t).at(i));
+  // ScopeValues[n][t].clear();
+   ScopeIndex[n][t]=0;
 }
 }
 return ret;
 } 
 
- QVector< QList<float> > TargetThread::getScopeValue(int n){
+ QVector< QVector<float> > TargetThread::getScopeValue(int n){
 	
 
-QVector< QList<float> > ret;
+QVector< QVector<float> > ret;
+ret.resize(ScopeValues.at(n).size());
 if (n<ScopeValues.size()){
  //ret= Get_Led_Data_Thread[n].getValue();
-   ret=ScopeValues[n];
-   for (int t=0; t<ScopeValues[n].size(); ++t)
-  	 ScopeValues[n][t].clear();
+
+   for (int t=0; t<ScopeValues.at(n).size(); ++t){
+	for (int i=0;i<ScopeIndex[n][t];i++)
+  	 	ret[t].append(ScopeValues.at(n).at(t).at(i));
+  	// ScopeValues[n][t].clear();
+	 ScopeIndex[n][t]=0;
+   }
 }
 return ret;
 } 
+
    QString TargetThread::getScopeName(int i){
 	return tr(Scopes[i].name);
 }
@@ -908,7 +928,7 @@ void TargetThread::startMeterThreads()//QRL_MeterWindow** MeterWindows)
 	meterRefreshRate.resize(Num_Meters);
 	for (int n = 0; n < Num_Meters; n++) {
 		meterRefreshRate[n]=20.;
-		MeterValues[n].append(0);
+		MeterValues[n]=0;
 		unsigned int msg;
 		Args_T thr_args;
 		thr_args.index = n;
@@ -969,10 +989,11 @@ void TargetThread::setMeterValue(float v, int n){
 
 	//MeterValues[n].append(v);
 if (n<MeterValues.size()){
-	if (MeterValues[n].size()>0)
-		MeterValues[n][0]=(v);
-	else
-		MeterValues[n].append(v);
+// 	if (MeterValues[n].size()>0)
+// 		MeterValues[n][0]=(v);
+// 	else
+// 		MeterValues[n].append(v);
+	MeterValues[n]=v;
 }
 
 
@@ -983,10 +1004,11 @@ float TargetThread::getMeterValue(int n){
 float ret=-1;
 if (n<MeterValues.size()){
  //ret= Get_Led_Data_Thread[n].getValue();
-   if (MeterValues[n].size()>1)
-     ret=MeterValues[n].takeAt(0);
-   else
-     ret=MeterValues[n].at(0);
+//    if (MeterValues[n].size()>1)
+//      ret=MeterValues[n].takeAt(0);
+//    else
+//      ret=MeterValues[n].at(0);
+	ret = MeterValues.at(n);
 }
 return ret;
 

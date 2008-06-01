@@ -83,7 +83,11 @@ private:
    QTimer *timer;
  double RefreshRate;
    
+friend QDataStream& operator<<(QDataStream &out, const QRL_MetersManager &d);
+friend QDataStream& operator>>(QDataStream &in, QRL_MetersManager(&d));
 };
+	QDataStream& operator<<(QDataStream &out, const QRL_MetersManager &d);
+	QDataStream& operator>>(QDataStream &in, QRL_MetersManager(&d));
 
 
 

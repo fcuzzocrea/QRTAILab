@@ -72,7 +72,7 @@
 #define MAX_RTAI_SYNCHS         20
 #define MAX_BATCH_PARAMS        1000
 #define MAX_TRACES_PER_SCOPE    10
-
+#define MAX_SCOPE_DATA		10000
 
 #define QRTAILAB_VERSION		"0.1.0"
 

@@ -100,7 +100,11 @@ private:
   QBrush brush;
   QLinearGradient gradient,alarmGradient;
   QwtDialSimpleNeedle *needle;
+  friend QDataStream& operator<<(QDataStream &out, const QRL_MeterWindow &d);
+  friend QDataStream& operator>>(QDataStream &in, QRL_MeterWindow(&d));
 };
+	QDataStream& operator<<(QDataStream &out, const QRL_MeterWindow &d);
+	QDataStream& operator>>(QDataStream &in, QRL_MeterWindow(&d));
 
 
 #endif

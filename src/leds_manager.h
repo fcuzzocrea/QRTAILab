@@ -62,10 +62,10 @@ private:
   QTimer *timer;
     double RefreshRate;
 
-friend QDataStream& operator<<(QDataStream &out, const QRL_LedsManager *d);
-friend QDataStream& operator>>(QDataStream &in, QRL_LedsManager(*d));
+friend QDataStream& operator<<(QDataStream &out, const QRL_LedsManager &d);
+friend QDataStream& operator>>(QDataStream &in, QRL_LedsManager(&d));
 };
-	QDataStream& operator<<(QDataStream &out, const QRL_LedsManager *d);
-	QDataStream& operator>>(QDataStream &in, QRL_LedsManager(*d));
+	QDataStream& operator<<(QDataStream &out, const QRL_LedsManager &d);
+	QDataStream& operator>>(QDataStream &in, QRL_LedsManager(&d));
 
 #endif

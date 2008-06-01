@@ -10,7 +10,7 @@ DESTDIR = ../
 MOC_DIR           = moc
 OBJECTS_DIR       = obj
 UI_DIR		  = ui
-CONFIG += QwtPlot  QwtWidgets qtestlib
+CONFIG += QwtPlot   QwtWidgets qtestlib
 
 # Input
 HEADERS += qrtailab.h meter_window.h meters_manager.h led_window.h leds_manager.h scope_window.h 

@@ -87,38 +87,30 @@ Preferences_T QRL_connectDialog::getPreferences()
 }
 
 
-QDataStream& operator<<(QDataStream &out, const QRL_connectDialog *d){
-	out<<d->ipLineEdit->text();
-	out<<d->taskLineEdit->text();
-	out<<d->scopeLineEdit->text();
-	out<<d->logLineEdit->text();
-	out<<d->alogLineEdit->text();
-	out<<d->ledLineEdit->text();
-	out<<d->meterLineEdit->text();
-	out<<d->synchLineEdit->text();
+QDataStream& operator<<(QDataStream &out, const QRL_connectDialog &d){
+	out<<d.ipLineEdit->text();
+	out<<d.taskLineEdit->text();
+	out<<d.scopeLineEdit->text();
+	out<<d.logLineEdit->text();
+	out<<d.alogLineEdit->text();
+	out<<d.ledLineEdit->text();
+	out<<d.meterLineEdit->text();
+	out<<d.synchLineEdit->text();
 
 	return out;
 }
 
 
-QDataStream& operator>>(QDataStream &in, QRL_connectDialog(*d)){
+QDataStream& operator>>(QDataStream &in, QRL_connectDialog(&d)){
 	QString s;
-	in>>s;
-	d->ipLineEdit->setText(s);
-	in>>s;
-	d->taskLineEdit->setText(s);
-	in>>s;
-	d->scopeLineEdit->setText(s);
-	in>>s;
-	d->logLineEdit->setText(s);
-	in>>s;
-	d->alogLineEdit->setText(s);
-	in>>s;
-	d->ledLineEdit->setText(s);
-	in>>s;
-	d->meterLineEdit->setText(s);
-	in>>s;
-	d->synchLineEdit->setText(s);
+	in>>s;	d.ipLineEdit->setText(s);
+	in>>s;	d.taskLineEdit->setText(s);
+	in>>s;	d.scopeLineEdit->setText(s);
+	in>>s;	d.logLineEdit->setText(s);
+	in>>s;	d.alogLineEdit->setText(s);
+	in>>s;	d.ledLineEdit->setText(s);
+	in>>s;	d.meterLineEdit->setText(s);
+	in>>s;	d.synchLineEdit->setText(s);
 	return in;
 }
 /*
@@ -473,13 +465,19 @@ void QRL_MainWindow::loadProfile() {
 		QMessageBox::warning(NULL,"Error","Wrong file format! Could not load file!", QMessageBox::Ok );
 		return;
 	}
-	in >> ConnectDialog;
+	in >> *ConnectDialog;
 	if (qTargetInterface->getIsTargetConnected()==0) {
 		connectToTarget(ConnectDialog->getPreferences());
 	}
 
 	if (LedsManager)
- 		in >> LedsManager;
+ 		in >> *LedsManager;
+	if (MetersManager)
+ 		in >> *MetersManager;
+	if (ScopesManager)
+ 		in >> *ScopesManager;
+	if (ParametersManager)
+ 		in >> *ParametersManager;
    
 	file.close();
 statusMessage->setText(tr("Profile loaded!"));
@@ -548,68 +546,6 @@ connectDialog();
 // 		}
 // 		settings.endArray();
 // 	}
-// 	if (MetersManager){
-// 		settings.beginGroup("MetersManager");
-// 		MetersManager->resize(settings.value("size", QSize(400, 400)).toSize());
-// 		MetersManager->move(settings.value("pos", QPoint(200, 200)).toPoint());
-// 		MetersManager->setVisible(settings.value("isVisible",false).toBool());
-// 		settings.endGroup();
-// 	
-// 		size = settings.beginReadArray("MeterWindow");
-// 		if (size>qTargetInterface->getMeterNumber())
-// 			size=qTargetInterface->getMeterNumber();
-// 		for (int i = 0; i < size; ++i) {
-// 		settings.setArrayIndex(i);
-// 		//MetersManager->getMeterWindows()[i]->resize(settings.value("size", QSize(400, 400)).toSize());
-// 		MetersManager->getMeterWindows()[i]->move(settings.value("pos", QPoint(200, 200)).toPoint());
-// 		MetersManager->getMeterWindows()[i]->setVisible(settings.value("isVisible",false).toBool());
-// 		MetersManager->getMeterWindows()[i]->changeRefreshRate(settings.value("RefreshRate",20.).toDouble());
-// 		MetersManager->getMeterWindows()[i]->setMin(settings.value("Min",-1.).toDouble());
-// 		MetersManager->getMeterWindows()[i]->setMax(settings.value("Max",1.).toDouble());
-// 		MetersManager->getMeterWindows()[i]->setMeter((QRL_MeterWindow::Meter_Type)settings.value("MeterType",(int)QRL_MeterWindow::THERMO).toInt());
-// 		MetersManager->getMeterWindows()[i]->setThermoColor1(settings.value("ThermoColor1",QColor(Qt::red)).value<QColor>());
-// 		MetersManager->getMeterWindows()[i]->setThermoColor2(settings.value("ThermoColor2",QColor(Qt::black)).value<QColor>());
-// 		MetersManager->getMeterWindows()[i]->setPipeWith(settings.value("PipeWidth",1.).toDouble());
-// 		MetersManager->getMeterWindows()[i]->setThermoAlarm(settings.value("AlarmEnabled",false).toBool());
-// 		MetersManager->getMeterWindows()[i]->setAlarmThermoColor1(settings.value("AlarmThermoColor1",QColor(Qt::blue)).value<QColor>());
-// 		MetersManager->getMeterWindows()[i]->setAlarmThermoColor2(settings.value("AlarmThermoColor2",QColor(Qt::black)).value<QColor>());
-// 		MetersManager->getMeterWindows()[i]->setGradientEnabled(settings.value("GradientEnabled",true).toBool());
-// 		MetersManager->getMeterWindows()[i]->setAlarmLevel(settings.value("AlarmLevel",1.).toDouble());
-// 		MetersManager->getMeterWindows()[i]->setNeedleColor(settings.value("NeedleColor",QColor(Qt::black)).value<QColor>());
-// 		MetersManager->getMeterWindows()[i]->setLcdFont(settings.value("LcdFont").value<QFont>());
-// 		}
-// 		settings.endArray();
-// 		MetersManager->refreshView();
-//         }
-// 	
-// 	if (LedsManager){
-// 		settings.beginGroup("LedsManager");
-// 		LedsManager->resize(settings.value("size", QSize(400, 400)).toSize());
-// 		LedsManager->move(settings.value("pos", QPoint(200, 200)).toPoint());
-// 		LedsManager->setVisible(settings.value("isVisible",false).toBool());
-// 		settings.endGroup();
-// 
-// 		size = settings.beginReadArray("LedWindow");
-// 		if (size>qTargetInterface->getLedNumber())
-// 			size=qTargetInterface->getLedNumber();
-// 		for (int i = 0; i < size; ++i) {
-// 		settings.setArrayIndex(i);
-// 		QColor color=(settings.value("Color",QColor(Qt::red))).value<QColor>();
-// 		LedsManager->getLedWindows()[i]->setLedColor(color);
-// 		LedsManager->getLedWindows()[i]->resize(settings.value("size", QSize(400, 400)).toSize());
-// 		LedsManager->getLedWindows()[i]->move(settings.value("pos", QPoint(200, 200)).toPoint());
-// 		LedsManager->getLedWindows()[i]->setVisible(settings.value("isVisible",false).toBool());
-// 		}
-// 		settings.endArray();
-// 		LedsManager->refreshView();
-// 	}
-// 	if (ParametersManager){
-// 		settings.beginGroup("ParametersManager");
-// 		ParametersManager->resize(settings.value("size", QSize(400, 400)).toSize());
-// 		ParametersManager->move(settings.value("pos", QPoint(200, 200)).toPoint());
-// 		ParametersManager->setVisible(settings.value("isVisible",false).toBool());
-// 		settings.endGroup();
-// 	}
 /*
      } else
 	statusMessage->setText(tr("There exists no profile to load!"));*/
@@ -635,9 +571,15 @@ QString filename = QFileDialog::getSaveFileName(this,tr("Save Profile"), NULL, t
  out << (qint32)100;
  // version <=100
  out.setVersion(QDataStream::Qt_4_2);
-	out<<ConnectDialog;
+	out<<*ConnectDialog;
 	if (LedsManager)
- 		out << LedsManager;
+ 		out << *LedsManager;
+	if (MetersManager)
+ 		out << *MetersManager;
+	if (ScopesManager)
+ 		out << *ScopesManager;
+	if (ParametersManager)
+ 		out << *ParametersManager;
    
    file.close();	
 
@@ -731,64 +673,9 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 	settings.endArray();
      }
 
-     if(MetersManager){
-	settings.beginGroup("MetersManager");
-	settings.setValue("size", MetersManager->size());
-	settings.setValue("pos", MetersManager->pos());
-	settings.setValue("isVisible",MetersManager->isVisible());
-	settings.endGroup();
 
-	settings.beginWriteArray("MeterWindow");
-	for (int i = 0; i < qTargetInterface->getMeterNumber(); ++i) {
-		settings.setArrayIndex(i);
-		settings.setValue("size", MetersManager->getMeterWindows()[i]->size());
-		settings.setValue("pos", MetersManager->getMeterWindows()[i]->pos());
-		settings.setValue("isVisible",MetersManager->getMeterWindows()[i]->isVisible());
-		settings.setValue("RefreshRate",MetersManager->getMeterWindows()[i]->getRefreshRate());
-		settings.setValue("Min",MetersManager->getMeterWindows()[i]->getMin());
-		settings.setValue("Max",MetersManager->getMeterWindows()[i]->getMax());
-		settings.setValue("MeterType",(int)MetersManager->getMeterWindows()[i]->getMeterType());
-		settings.setValue("ThermoColor1",MetersManager->getMeterWindows()[i]->getThermoColor1());
-		settings.setValue("ThermoColor2",MetersManager->getMeterWindows()[i]->getThermoColor2());
-		settings.setValue("PipeWidth",MetersManager->getMeterWindows()[i]->getPipeWidth());
-		settings.setValue("AlarmEnabled",MetersManager->getMeterWindows()[i]->getThermoAlarm());
-		settings.setValue("AlarmThermoColor1",MetersManager->getMeterWindows()[i]->getAlarmThermoColor1());
-		settings.setValue("AlarmThermoColor2",MetersManager->getMeterWindows()[i]->getAlarmThermoColor2());
-		settings.setValue("GradientEnabled",MetersManager->getMeterWindows()[i]->getGradientEnabled());
-		settings.setValue("AlarmLevel",MetersManager->getMeterWindows()[i]->getAlarmLevel());
-		settings.setValue("NeedleColor",MetersManager->getMeterWindows()[i]->getNeedleColor());
-		settings.setValue("LcdFont",MetersManager->getMeterWindows()[i]->getLcdFont());
 
-	}
-	settings.endArray();
-     
-     }
-
-     if(LedsManager){
-	settings.beginGroup("LedsManager");
-	settings.setValue("size", LedsManager->size());
-	settings.setValue("pos", LedsManager->pos());
-	settings.setValue("isVisible",LedsManager->isVisible());
-	settings.endGroup();
-
-	settings.beginWriteArray("LedWindow");
-	for (int i = 0; i < qTargetInterface->getLedNumber(); ++i) {
-		settings.setArrayIndex(i);
-		settings.setValue("Color",LedsManager->getLedWindows()[i]->getLedColor());
-		settings.setValue("size", LedsManager->getLedWindows()[i]->size());
-		settings.setValue("pos", LedsManager->getLedWindows()[i]->pos());
-		settings.setValue("isVisible",LedsManager->getLedWindows()[i]->isVisible());
-	}
-	settings.endArray();
-     }
-
-     if(ParametersManager){
-	settings.beginGroup("ParametersManager");
-	settings.setValue("size", ParametersManager->size());
-	settings.setValue("pos", ParametersManager->pos());
-	settings.setValue("isVisible",ParametersManager->isVisible());
-	settings.endGroup();
-     }*/
+     */
 
 	statusMessage->setText(tr("Profile saved!"));
      }
