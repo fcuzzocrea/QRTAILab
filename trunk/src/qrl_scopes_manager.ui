@@ -31,7 +31,8 @@
    <string>Scopes Manager</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="qrtailab.qrc" >:/icons/scope_icon.xpm</iconset>
+   <iconset resource="qrtailab.qrc" >
+    <normaloff>:/icons/scope_icon.xpm</normaloff>:/icons/scope_icon.xpm</iconset>
   </property>
   <layout class="QGridLayout" >
    <item row="1" column="0" >
@@ -59,9 +60,17 @@
    <item row="1" column="1" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="Scope" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>220</width>
+        <height>365</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Scope</string>
       </attribute>
@@ -76,15 +85,15 @@
        <item row="1" column="0" >
         <widget class="QToolBox" name="toolBox" >
          <property name="currentIndex" >
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="Seite" >
           <property name="geometry" >
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>211</width>
-            <height>208</height>
+            <width>150</width>
+            <height>192</height>
            </rect>
           </property>
           <attribute name="label" >
@@ -279,8 +288,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>185</width>
-            <height>169</height>
+            <width>178</width>
+            <height>152</height>
            </rect>
           </property>
           <attribute name="label" >
@@ -313,7 +322,7 @@
              <property name="orientation" >
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" >
+             <property name="sizeHint" stdset="0" >
               <size>
                <width>40</width>
                <height>20</height>
@@ -358,7 +367,7 @@
              <property name="orientation" >
               <enum>Qt::Vertical</enum>
              </property>
-             <property name="sizeHint" >
+             <property name="sizeHint" stdset="0" >
               <size>
                <width>20</width>
                <height>40</height>
@@ -373,8 +382,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>104</width>
-            <height>160</height>
+            <width>96</width>
+            <height>163</height>
            </rect>
           </property>
           <attribute name="label" >
@@ -393,7 +402,7 @@
              <property name="orientation" >
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" >
+             <property name="sizeHint" stdset="0" >
               <size>
                <width>40</width>
                <height>20</height>
@@ -416,7 +425,7 @@
              <property name="orientation" >
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" >
+             <property name="sizeHint" stdset="0" >
               <size>
                <width>40</width>
                <height>20</height>
@@ -445,7 +454,7 @@
              <property name="orientation" >
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" >
+             <property name="sizeHint" stdset="0" >
               <size>
                <width>40</width>
                <height>20</height>
@@ -473,6 +482,14 @@
       </layout>
      </widget>
      <widget class="QWidget" name="Trace" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>220</width>
+        <height>365</height>
+       </rect>
+      </property>
       <attribute name="title" >
        <string>Trace options</string>
       </attribute>
@@ -693,7 +710,7 @@
           <item row="1" column="0" >
            <widget class="QCheckBox" name="labelCheckBox" >
             <property name="enabled" >
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text" >
              <string>Label</string>
@@ -723,7 +740,7 @@
           <item row="2" column="1" >
            <widget class="QCheckBox" name="averageCheckBox" >
             <property name="enabled" >
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text" >
              <string>Average</string>
@@ -744,7 +761,7 @@
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>40</width>
          <height>20</height>
@@ -764,7 +781,7 @@
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>16</width>
          <height>20</height>
@@ -784,7 +801,7 @@
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>16</width>
          <height>20</height>

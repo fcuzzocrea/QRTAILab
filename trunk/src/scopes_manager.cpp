@@ -72,6 +72,8 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	connect( startTriggerPushButton, SIGNAL( pressed()), this, SLOT(startSingleRun() ) );
 	connect( traceNameLineEdit,SIGNAL( textChanged ( const QString &  ) ), this , SLOT( changeTraceText(const QString & ) ) );
         connect( zeroAxisCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeZeroAxis(int) ) );
+	 connect( labelCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeTraceLabel(int) ) );
+	 connect( averageCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeAverageLabel(int) ) );
 
 	currentScope=0;
 // 	for(int i=0; i<1; ++i){
@@ -119,12 +121,16 @@ void QRL_ScopesManager::refresh()
   for (int n=0; n<Num_Scopes; ++n){
 	QVector< QVector<float> > v;
 	v = qTargetInterface->getTargetThread()->getScopeValue(n);
-	
-	
-	for (int k=0; k<v.at(0).size(); ++k)
-	for (int t=0; t<qTargetInterface->getNumberOfTraces(n);++t){
-			if (k<v.at(t).size())
-			ScopeWindows[n]->setValue(t,v.at(t).at(k));
+	if (v.size()>0) {
+	printf("size scopevector:  %d x %d\n",v.size(),v.at(0).size());
+
+// 	for (int t=0; t<qTargetInterface->getNumberOfTraces(n);++t)
+// 	for (int k=0; k<v.at(0).size(); ++k){
+// 			if (k<v.at(t).size())
+// 			ScopeWindows[n]->setValue(t,v.at(t).at(k));
+// 	}
+
+	ScopeWindows[n]->setValue(v);
 	}
    }
 // } catch (...){
@@ -252,7 +258,7 @@ void QRL_ScopesManager::changeScopeList(int index)
 		scopeItems[i]->setHidden(true);
 	if (traceItems.size()==0) {
 		for(int i=0; i<Scopes[currentScope].ntraces;i++)
-			traceItems << new QListWidgetItem(QIcon(),tr("trace %1").arg(i+1), scopeListWidget);
+			traceItems << new QListWidgetItem(QIcon(),tr("trace %1").arg(i), scopeListWidget);
 	} else {
 		for(int i=0; i<traceItems.size();i++)
 			traceItems[i]->setHidden(false);
@@ -276,12 +282,17 @@ void QRL_ScopesManager::showTraceOptions(int index)
 		zeroAxisCheckBox->setCheckState(Qt::Checked);
 	else
 		zeroAxisCheckBox->setCheckState(Qt::Unchecked);
+	if (ScopeWindows[currentScope]->getTraceLabel(currentTrace))
+		labelCheckBox->setCheckState(Qt::Checked);
+	else
+		labelCheckBox->setCheckState(Qt::Unchecked);
 }
 
 void QRL_ScopesManager::changeTraceText(const QString & text ){
 	if (currentTrace<traceItems.size())
 	traceItems[currentTrace]->setText(text);
 	//tabWidget->setTabText(1,traceItems[currentTrace]->text());
+	 ScopeWindows[currentScope]->setTraceName(currentTrace, text);
 }
 
 /**
@@ -490,8 +501,24 @@ void QRL_ScopesManager::changeDy(const QString& text)
 
 }
 
+  void QRL_ScopesManager::changeTraceLabel(int state){
 
+	if(state==Qt::Checked){
+		ScopeWindows[currentScope]->setTraceLabel(true,currentTrace);
+	} else {
+		ScopeWindows[currentScope]->setTraceLabel(false,currentTrace);
+	}
 
+}
+  void QRL_ScopesManager::changeAverageLabel(int state){
+
+	if(state==Qt::Checked){
+		ScopeWindows[currentScope]->setAverageLabel(true,currentTrace);
+	} else {
+		ScopeWindows[currentScope]->setAverageLabel(false,currentTrace);
+	}
+
+}
 
 QDataStream& operator<<(QDataStream &out, const QRL_ScopesManager &d){
 	out << d.size()  << d.pos() << d.isVisible();

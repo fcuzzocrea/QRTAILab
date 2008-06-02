@@ -181,7 +181,7 @@ QRL_MainWindow::QRL_MainWindow()
   statusMessage = new QLabel(this);
     statusBar()->addWidget(statusMessage);
 
-	setlocale( LC_NUMERIC, "en_US.utf8");
+	setlocale( LC_ALL, "C");
 
     qTargetInterface = new QRtaiLabCore(this,Verbose);
     //targetthread = new TargetThread();

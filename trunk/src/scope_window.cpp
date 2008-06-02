@@ -199,6 +199,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 		TraceOptions[j].lineWidth=3;
 		TraceOptions[j].dy=1.;
 		TraceOptions[j].offset=0.;
+		TraceOptions[j].average=0.;
 		if (j==0)
 			TraceOptions[j].brush=QBrush(Qt::red);
 		else
@@ -212,6 +213,32 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
     		TraceOptions[j].zeroAxis.setLinePen(QPen(TraceOptions[j].brush,2.,Qt::DashDotLine));
     		TraceOptions[j].zeroAxis.attach(qwtPlot);
 		TraceOptions[j].zeroAxis.hide();
+
+		QwtText ttext(tr("Trace %1").arg(j));
+   		 ttext.setColor(QColor(TraceOptions[j].brush.color()));
+    		TraceOptions[j].traceLabel.setLabel(ttext);
+		TraceOptions[j].traceLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    		TraceOptions[j].traceLabel.setLineStyle(QwtPlotMarker::NoLine);
+    		//TraceOptions[j].zeroAxis.setYValue(TraceOptions[j].offset/TraceOptions[j].dy);
+		TraceOptions[j].traceLabel.setXValue(0.+j*xmax/7.);
+		TraceOptions[j].traceLabel.setYValue(4.);
+		
+    		TraceOptions[j].traceLabel.setLinePen(QPen(TraceOptions[j].brush,2.,Qt::DashDotLine));
+    		TraceOptions[j].traceLabel.attach(qwtPlot);
+		TraceOptions[j].traceLabel.hide();
+
+		QwtText atext(tr("%1").arg(0.));
+   		 atext.setColor(QColor(gridColor));
+    		TraceOptions[j].averageLabel.setLabel(atext);
+		TraceOptions[j].averageLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    		TraceOptions[j].averageLabel.setLineStyle(QwtPlotMarker::NoLine);
+    		//TraceOptions[j].zeroAxis.setYValue(TraceOptions[j].offset/TraceOptions[j].dy);
+		TraceOptions[j].averageLabel.setXValue(0.+j*xmax/7.);
+		TraceOptions[j].averageLabel.setYValue(3.5);
+		
+    		TraceOptions[j].averageLabel.setLinePen(QPen(TraceOptions[j].brush,2.,Qt::DashDotLine));
+    		TraceOptions[j].averageLabel.attach(qwtPlot);
+		TraceOptions[j].averageLabel.hide();
 		
 
        		pen.setWidth(TraceOptions[j].lineWidth);
@@ -324,10 +351,6 @@ void QRL_ScopeWindow::refresh()
 
 }
 
-//   void QRL_ScopeWindow::setSaveTime(double time)
-// {
-// 	Save_Time=time;
-// }
 
    void QRL_ScopeWindow::changeDataPoints(double dp)
 {
@@ -426,10 +449,18 @@ void QRL_ScopeWindow::refresh()
 		delete[] ScopeData[j].d_yt;
 	}
 	 d_x = new double[NDataMax];*/
+
+
        for (unsigned int j=0;j<Ncurve;j++){
 		//ScopeData[j].d_y = new double[NDataMax];
 		//ScopeData[j].d_yt = new double[NDataMax];
 		cData[j]->setRawData(d_x, ScopeData[j].d_y, NDataSoll);
+		int k=0;
+		for (int nn=0;nn<j;nn++)
+			if (TraceOptions[nn].traceLabel.isVisible())
+				k++;
+		TraceOptions[j].traceLabel.setXValue(0.+k*xmax/7.);
+		TraceOptions[j].averageLabel.setXValue(0.+k*xmax/7.);
 	}
 	for (unsigned int i = 0; i< NDataSoll; i++)
     	{
@@ -458,45 +489,13 @@ void QRL_ScopeWindow::setGridColor(QColor gridcolor){
 	bottomText->setLabel(bt);
 	zeroLine->setLinePen(QPen(QColor(gridColor),1,Qt::DotLine));
 	vertLine->setLinePen(QPen(QColor(gridColor),1,Qt::DotLine));
+	
 }
 void QRL_ScopeWindow::setBgColor(QColor bgcolor){
 	bgColor=bgcolor;
 	qwtPlot->setCanvasBackground(bgColor);
 }
-/*
-void QRL_ScopeWindow::startSaving(QString filename){
-	if (isSaving==0){
-		File_Name=filename;
-		if (QFile::exists(File_Name)) {
-			printf("File %s exists already.",File_Name.toLocal8Bit().data() );
-			QMessageBox::critical(this, tr("QMessageBox::critical()"),
-                                     tr("The File exists! Please change the name!"),
-                                     QMessageBox::Abort);
-			emit stopSaving(index);
-		} else {
-		isSaving=1;
-		if ((Save_File_Pointer = fopen((File_Name.toLocal8Bit()).data(), "a+")) == NULL) {
-			printf("Error in opening file %s",File_Name.toLocal8Bit().data() );
-			isSaving=0;
-		}
-		}
-	}
-}
 
-int QRL_ScopeWindow::n_points_to_save(){
-	int n_points;
-
-	n_points = (int)(Save_Time/Scope->dt);
-	if (n_points < 0) return 0;
-	return n_points;
-}
-
-void QRL_ScopeWindow::stop_saving(){
-	isSaving=0;
-	fclose(Save_File_Pointer);
-	emit stopSaving(index);
-	
-}*/
 
 void QRL_ScopeWindow::setTraceColor(const QColor& c,int trace)
 {
@@ -507,6 +506,7 @@ void QRL_ScopeWindow::setTraceColor(const QColor& c,int trace)
 		pen.setWidth(TraceOptions[trace].lineWidth);
 		cData[trace]->setPen(pen);
 		TraceOptions[trace].zeroAxis.setLinePen(QPen(TraceOptions[trace].brush,2.,Qt::DashDotLine));
+		TraceOptions[trace].traceLabel.setLinePen(QPen(TraceOptions[trace].brush,2.,Qt::DashDotLine));
 	}
 }
 
@@ -599,6 +599,216 @@ TraceOptions[trace].zeroAxis.hide();
 
 }
 
+void QRL_ScopeWindow::setTraceLabel(bool b,int trace){
+
+if (b) {
+	TraceOptions[trace].traceLabel.show();
+	for (unsigned int j=0;j<Ncurve;j++){
+		int k=0;
+		for (int nn=0;nn<j;nn++)
+			if (TraceOptions[nn].traceLabel.isVisible())
+				k++;
+		TraceOptions[j].traceLabel.setXValue(0.+k*xmax/7.);
+	}
+
+}else
+TraceOptions[trace].traceLabel.hide();
+
+}
+
+void QRL_ScopeWindow::setAverageLabel(bool b,int trace){
+
+if (b) {
+	TraceOptions[trace].averageLabel.show();
+	for (unsigned int j=0;j<Ncurve;j++){
+		int k=0;
+		for (int nn=0;nn<j;nn++)
+			if (TraceOptions[nn].traceLabel.isVisible())
+				k++;
+		TraceOptions[j].averageLabel.setXValue(0.+k*xmax/7.);
+	}
+
+}else
+TraceOptions[trace].averageLabel.hide();
+
+}
+
+void QRL_ScopeWindow::setTraceName(int trace, const QString &text){
+
+	
+	TraceOptions[trace].traceName=QString(text);
+	
+	QwtText ttext(TraceOptions[trace].traceName);
+   	ttext.setColor(QColor(TraceOptions[trace].brush.color()));
+    	TraceOptions[trace].traceLabel.setLabel(ttext);
+
+
+
+
+}
+
+void QRL_ScopeWindow::setValue(const QVector< QVector<float> > &v)
+{			
+for (int nn=0; nn<v.size();++nn){
+if (v.at(nn).size()<NDataSoll){
+	TraceOptions[nn].average*=((double)NDataSoll-(double)v.at(nn).size())/(double)NDataSoll;
+	for (int k=0; k<v.at(nn).size(); ++k){
+		TraceOptions[nn].average+=v.at(nn).at(k)/((double)NDataSoll);
+	}
+} else {
+	TraceOptions[nn].average=0.;
+	for (int k=v.at(nn).size(); k>v.at(nn).size()-NDataSoll; --k){
+		TraceOptions[nn].average+=v.at(nn).at(k)/((double)NDataSoll);
+	}
+
+}
+//printf("average for trace %d is %f\n",nn,TraceOptions[nn].average);
+QwtText atext(tr("%1").arg(TraceOptions[nn].average));
+   		 atext.setColor(QColor(gridColor));
+    		TraceOptions[nn].averageLabel.setLabel(atext);
+}
+
+
+int time;
+switch(plottingMode){
+case roll:
+  for (int nn=0; nn<v.size();++nn){
+     for (int k=0; k<v.at(nn).size(); ++k){
+	time=ScopeData[nn].time;
+	ScopeData[nn].d_yt[time]=((double)v.at(nn).at(k))/TraceOptions[nn].dy+TraceOptions[nn].offset;
+	
+	time++;
+	
+        if((time>(1/dt/RefreshRate)) || time>NDataMax-1){
+		//printf("time %d for trace %d\n",time,nn);
+		time--;
+		if (time<0)
+			time=0;
+		if (Qt::LeftToRight==direction){ // Segmentation fault for   ndatasoll<5 
+		for (unsigned int i = NDataSoll - 1; i > time; i-- ){
+        		ScopeData[nn].d_y[i] = ScopeData[nn].d_y[i-1-time];
+		}
+		for ( unsigned int i = 0; i<=time; i++){
+			ScopeData[nn].d_y[i]=ScopeData[nn].d_yt[time-i];
+			//ScopeData[nn].d_y[i]=(double)temp[nn][time-i];
+		}
+		} else { //right to left
+		for (unsigned int i = 0; i < NDataSoll-time-1; i++ ){
+		if ((i+time+1)<NDataSoll)
+			ScopeData[nn].d_y[i] = ScopeData[nn].d_y[i+time+1];
+		}
+		for ( int i =  0; i<=time; i++){
+			
+			ScopeData[nn].d_y[NDataSoll+i-time-1]=ScopeData[nn].d_yt[i];
+			//ScopeData[nn].d_y[i]=(double)temp[nn][time-i];
+		}
+
+
+		}
+		time=0;
+		//qwtPlot->replot();
+	}
+	ScopeData[nn].time=time;
+     }
+  }	
+	break;
+case overwrite:
+ for (int nn=0; nn<v.size();++nn){
+     for (int k=0; k<v.at(nn).size(); ++k){
+	time=ScopeData[nn].time;
+	ScopeData[nn].d_y[time]=((double)v.at(nn).at(k))/TraceOptions[nn].dy+TraceOptions[nn].offset;
+	if (Qt::LeftToRight==direction)
+		time++;
+	else
+		time--;
+	if (time<0)
+		time=NDataSoll-1;
+	if(time>NDataSoll-1)
+		time=0;
+	ScopeData[nn].time=time;
+}}
+	break;
+
+case trigger:
+ for (int nn=0; nn<v.size();++nn){
+     for (int k=0; k<v.at(nn).size(); ++k){
+	if (triggerSearch){ //search for next trigger event
+	  if (nn==triggerChannel) {
+		double y= (double)v.at(nn).at(k);
+		if (!singleModeRunning && singleMode) {
+			// do nothing
+		} else 	if (triggerUp){
+			if (y>triggerLevel && lastValue<triggerLevel){
+				triggerSearch=false;singleModeRunning=false;
+				for (int n=0;n<Ncurve;n++){ // reset time counter
+					if (Qt::LeftToRight==direction)
+					ScopeData[n].time=0;
+					else
+					ScopeData[n].time=NDataSoll-1;
+				}
+			}
+		} else {
+			if (y<triggerLevel && lastValue>triggerLevel){
+				triggerSearch=false;singleModeRunning=false;
+				for (int n=0;n<Ncurve;n++){ //reset time counter
+					if (Qt::LeftToRight==direction)
+					ScopeData[n].time=0;
+					else
+					ScopeData[n].time=NDataSoll-1;
+				}
+			}
+		}
+		lastValue=y;
+	  } else { // plot last data for the other traces
+		time=ScopeData[nn].time;
+		if (time>0 && time <NDataSoll-1){
+			ScopeData[nn].d_y[time]=((double)v.at(nn).at(k))/TraceOptions[nn].dy+TraceOptions[nn].offset;
+			if (Qt::LeftToRight==direction)
+				time++;
+			else
+				time--;
+			ScopeData[nn].time=time;
+		}
+
+	  }
+	} else {
+	time=ScopeData[nn].time;
+	ScopeData[nn].d_y[time]=((double)v.at(nn).at(k))/TraceOptions[nn].dy+TraceOptions[nn].offset;
+	if (Qt::LeftToRight==direction)
+		time++;
+	else
+		time--;
+	if (time<0){
+		time=NDataSoll-1;
+		if (nn==triggerChannel){// start searching
+			triggerSearch=true;
+			lastValue=(double)v.at(nn).at(k);
+		}
+	}
+	if(time>NDataSoll-1){
+		time=0;
+		if (nn==triggerChannel){ // start searching
+			triggerSearch=true;
+			lastValue=(double)v.at(nn).at(k);
+		}
+	}
+	ScopeData[nn].time=time;
+	}
+}}
+	break;
+
+
+case hold:
+	break;
+default:
+	break;
+}
+//}
+//	time2++;
+//	ScopeData[nn].time2=time2;
+}
+
+/*
 void QRL_ScopeWindow::setValue( int nn, float v)
 {			
 
@@ -609,9 +819,11 @@ case roll:
 
 	time=ScopeData[nn].time;
 	ScopeData[nn].d_yt[time]=((double)v)/TraceOptions[nn].dy+TraceOptions[nn].offset;
+	
 	time++;
+	
         if((time>(1/dt/RefreshRate)) || time>NDataMax-1){
-		//printf("time %d\n",time);
+		//printf("time %d for trace %d\n",time,nn);
 		time--;
 		if (time<0)
 			time=0;
@@ -730,7 +942,7 @@ default:
 //}
 //	time2++;
 //	ScopeData[nn].time2=time2;
-}
+}*/
 
 QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d){
 	out  << d.size()  << d.pos() << d.isVisible();
