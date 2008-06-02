@@ -252,7 +252,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 //Plotting_Scope_Data_Thread = new PlottingScopeDataThread;
 //Plotting_Scope_Data_Thread->start(this);
 
-	isSaving=0;Save_Time=1.0;File_Name=tr(Scope->name);
+//	isSaving=0;Save_Time=1.0;File_Name=tr(Scope->name);
 }
 
 QRL_ScopeWindow::~QRL_ScopeWindow(){
@@ -324,10 +324,10 @@ void QRL_ScopeWindow::refresh()
 
 }
 
-  void QRL_ScopeWindow::setSaveTime(double time)
-{
-	Save_Time=time;
-}
+//   void QRL_ScopeWindow::setSaveTime(double time)
+// {
+// 	Save_Time=time;
+// }
 
    void QRL_ScopeWindow::changeDataPoints(double dp)
 {
@@ -463,7 +463,7 @@ void QRL_ScopeWindow::setBgColor(QColor bgcolor){
 	bgColor=bgcolor;
 	qwtPlot->setCanvasBackground(bgColor);
 }
-
+/*
 void QRL_ScopeWindow::startSaving(QString filename){
 	if (isSaving==0){
 		File_Name=filename;
@@ -496,7 +496,7 @@ void QRL_ScopeWindow::stop_saving(){
 	fclose(Save_File_Pointer);
 	emit stopSaving(index);
 	
-}
+}*/
 
 void QRL_ScopeWindow::setTraceColor(const QColor& c,int trace)
 {

@@ -181,6 +181,7 @@ QRL_MainWindow::QRL_MainWindow()
   statusMessage = new QLabel(this);
     statusBar()->addWidget(statusMessage);
 
+	setlocale( LC_NUMERIC, "en_US.utf8");
 
     qTargetInterface = new QRtaiLabCore(this,Verbose);
     //targetthread = new TargetThread();
@@ -196,6 +197,8 @@ QRL_MainWindow::QRL_MainWindow()
 
 	profileName=tr("demo");
 	Verbose=0;
+
+
 
 /*
 

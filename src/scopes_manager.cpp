@@ -42,7 +42,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	for (int i=0; i<Num_Scopes; ++i){
 		scopeItems << new QListWidgetItem(ScopeIcon,qTargetInterface->getScopeName(i), scopeListWidget);
 		ScopeWindows[i]=new QRL_ScopeWindow(parent,&Scopes[i],i);
-		connect( ScopeWindows[i], SIGNAL( stopSaving(int) ), this, SLOT( stopSaving(int) ) );
+		//connect( ScopeWindows[i], SIGNAL( stopSaving(int) ), this, SLOT( stopSaving(int) ) );
 	}
 	tabWidget->setCurrentIndex(0);
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showScope(int) ) );
@@ -52,7 +52,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	//connect( rrLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeRefreshRate(const QString&) ) );
 	connect( rrCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeRefreshRate(double) ) );
 	connect( dataCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDataPoints(double) ) );
-	connect( timeCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeSaveTime(double) ) );
+// 	connect( timeCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeSaveTime(double) ) );
 	connect( dxComboBox, SIGNAL( currentIndexChanged(const QString &) ), this, SLOT( changeDX(const QString&) ) );
 	connect( dxComboBox, SIGNAL( editTextChanged(const QString &) ), this, SLOT( changeDX(const QString&) ) );
 	connect( savePushButton, SIGNAL( pressed() ), this, SLOT( startSaving() ) );
@@ -170,12 +170,12 @@ void QRL_ScopesManager::changeDataPoints(double dp)
 	if (Num_Scopes > 0)  showScopeOptions(currentScope);
 
 }
-void QRL_ScopesManager::changeSaveTime(double time)
-{
-	//double rr=text.toDouble();
-	ScopeWindows[currentScope]->setSaveTime(time);
-
-}
+// void QRL_ScopesManager::changeSaveTime(double time)
+// {
+// 	//double rr=text.toDouble();
+// 	ScopeWindows[currentScope]->setSaveTime(time);
+// 
+// }
 
 void QRL_ScopesManager::setOptions(int index)
 {
@@ -195,11 +195,39 @@ void QRL_ScopesManager::setOptions(int index)
 
 void QRL_ScopesManager::startSaving()
 {
-	if(ScopeWindows[currentScope]->start_saving()==0){
-		savePushButton->setEnabled(false);
-		ScopeWindows[currentScope]->startSaving(fileLineEdit->text());
+	 FILE* Save_File_Pointer;
+	double Save_Time=timeCounter->value();
+	if( qTargetInterface->getTargetThread()->start_saving(currentScope)==0){
+
+		QString File_Name=fileLineEdit->text();
+		if (QFile::exists(File_Name)) {
+			printf("File %s exists already.",File_Name.toLocal8Bit().data() );
+			QMessageBox::critical(this, tr("QMessageBox::critical()"),
+                                     tr("The File exists! Please change the name!"),
+                                     QMessageBox::Abort);
+		} else {
+		 
+		  
+		
+		if ((Save_File_Pointer = fopen((File_Name.toLocal8Bit()).data(), "a+")) == NULL) {
+			printf("Error in opening file %s",File_Name.toLocal8Bit().data() );
+			QMessageBox::critical(this, tr("QMessageBox::critical()"),
+                                     tr("Error in opening file!"),
+                                     QMessageBox::Abort);
+		} else {
+			//savePushButton->setEnabled(false);
+			qTargetInterface->getTargetThread()->startSaving(currentScope,Save_File_Pointer,Save_Time);
+		}
+
+		
+		//ScopeWindows[currentScope]->startSaving(fileLineEdit->text());
 		//targetThread->startSaving(fileLineEdit->text(),currentScope);
-	}
+
+
+	       }
+       }
+
+
 }
 
 void QRL_ScopesManager::stopSaving(int index)
@@ -267,7 +295,7 @@ void QRL_ScopesManager::changeTraceText(const QString & text ){
 void QRL_ScopesManager::showScopeOptions( int index ){
 
 	currentScope=index;
-	if(ScopeWindows[currentScope]->start_saving()==0){
+	if(qTargetInterface->getTargetThread()->start_saving(currentScope)==0){
 		savePushButton->setEnabled(true);
 	}
 	tabWidget->setTabText(0,tr(Scopes[currentScope].name));
