@@ -45,17 +45,17 @@ using namespace qrl_types;
 
 TargetThread::~TargetThread(){
 	
-	if (Tunable_Blocks)
-		delete[] Tunable_Blocks;
-	if (Scopes)
-		delete[] Scopes;
-	if (Logs)
+ 	if (Num_Tunable_Blocks>0)
+ 		delete[] Tunable_Blocks;
+ 	if (Num_Scopes>0)
+ 		delete[] Scopes;
+	if (Num_Logs>0)
 		delete[] Logs;
-	if (ALogs)
+	if (Num_ALogs>0)
 		delete[] ALogs;
-	if (Leds)
+	if (Num_Leds>0)
 		delete[] Leds;
-	if (Meters)
+	if (Num_Meters>0)
 		delete[] Meters;
 	qDebug() << "deleting all pointer";
 /*	stopScopeThreads();
@@ -227,9 +227,12 @@ void TargetThread::upload_parameters_info(long port, RT_TASK *task)
 		}
 	}
 	if (n_scopes > 0) Scopes = new Target_Scopes_T [n_scopes];
+	if (n_scopes > 0) SaveScopes = new Save_Scopes_T [n_scopes];
 	for (int n = 0; n < n_scopes; n++) {
 		char scope_name[MAX_NAMES_SIZE];
 		Scopes[n].visible = false;
+		SaveScopes[n].isSaving=0;
+		SaveScopes[n].Save_File_Pointer=NULL;
 		RT_rpcx(Target_Node, port, task, &n, &Scopes[n].ntraces, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &scope_name, sizeof(int), sizeof(scope_name));
 		strncpy(Scopes[n].name, scope_name, MAX_NAMES_SIZE);
@@ -918,6 +921,37 @@ return ret;
 	return tr(Scopes[i].name);
 }
 
+int  TargetThread::start_saving(int index) {return SaveScopes[index].isSaving ;}
+
+void  TargetThread::startSaving(int index,FILE* Save_File_Pointer,double Save_Time){ 
+	SaveScopes[index].Save_File_Pointer=Save_File_Pointer;
+	SaveScopes[index].Save_Time=Save_Time;
+	SaveScopes[index].isSaving=1;
+}
+FILE*  TargetThread::save_file(int index) {
+
+	return SaveScopes[index].Save_File_Pointer;
+
+}
+     void  TargetThread::stop_saving(int index){
+	SaveScopes[index].isSaving=0;
+	fclose(SaveScopes[index].Save_File_Pointer);
+	SaveScopes[index].Save_File_Pointer=NULL;
+	//emit stopSaving(index);
+
+}
+      int  TargetThread::n_points_to_save(int index){
+	int n_points;
+
+	n_points = (int)(SaveScopes[index].Save_Time/Scopes[index].dt);
+	if (n_points < 0) return 0;
+	return n_points;
+
+}
+
+
+
+
 
 /**
 * @brief starting all meter threads
@@ -1364,6 +1398,10 @@ int	    QRtaiLabCore::getScopeDt(int n){
       return ntraces;
 
 }
+
+
+
+
 
 int QRtaiLabCore::getMeterNumber(){
 int Num_Meters=targetthread->getMeterNumber();

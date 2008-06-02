@@ -109,15 +109,13 @@ class TargetThread : public QThread
     QVector<float> getScopeValue(int t, int n);	 
     QVector< QVector<float> > getScopeValue(int n);
     QString getScopeName(int);
-/*
-    int start_saving(int n);
-     FILE* save_file(int n);
-      void setSaveTime(int n);
-     void stop_saving(int n);
-      int n_points_to_save(int n);
-      void startSaving(QString, int n);
-*/
-    void startMeterThreads();//QRL_MeterWindow** MeterWindows);
+
+    int start_saving(int index);
+    void startSaving(int index,FILE* Save_File_Pointer,double Save_Time);
+     FILE* save_file(int index);
+     void stop_saving(int index);
+      int n_points_to_save(int index);
+   void startMeterThreads();//QRL_MeterWindow** MeterWindows);
     void stopMeterThreads();
     int setMeterRefreshRate(double rr,int n);
     double getMeterRefreshRate(int n);
@@ -167,6 +165,7 @@ class TargetThread : public QThread
   Target_Parameters_T *Tunable_Parameters;
   Target_Blocks_T *Tunable_Blocks;
   Target_Scopes_T *Scopes;
+  Save_Scopes_T *SaveScopes;
   Target_Logs_T *Logs;
   Target_ALogs_T *ALogs;
   Target_Leds_T *Leds;

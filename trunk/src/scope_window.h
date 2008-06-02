@@ -113,21 +113,21 @@ public:
    ~QRL_ScopeWindow();
    void changeRefreshRate(double);
    void changeDataPoints(double);
-   void setSaveTime(double);
+//    void setSaveTime(double);
    void changeDX(double);
    double getDt(){return dt;}
    double getRefreshRate(){return RefreshRate;}
    int getDataPoints(){return NDataSoll;}
    double getDX(){return dx;}
-   int start_saving(){return isSaving;}
-   FILE* save_file(){return Save_File_Pointer;}
+//    int start_saving(){return isSaving;}
+//    FILE* save_file(){return Save_File_Pointer;}
    void setGridColor(QColor);
    QColor getGridColor(){return gridColor;}
    void setBgColor(QColor);
    QColor getBgColor(){return bgColor;}
-   void startSaving(QString);
-   void stop_saving();
-   int n_points_to_save();
+//    void startSaving(QString);
+//    void stop_saving();
+//    int n_points_to_save();
    void setTraceColor(const QColor&,int);
    void setTraceWidth(int ,int );
    int getTraceWidth(int);
@@ -145,8 +145,8 @@ public:
    bool getZeroAxis(int trace){return TraceOptions[trace].zeroAxis.isVisible();}
    //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
     void setValue(int,float);
-signals:
-   void stopSaving(int);
+// signals:
+//    void stopSaving(int);
 public slots:
    void refresh();
   //void setValue(int,float);
@@ -173,10 +173,10 @@ private:
   QwtPlotMarker *bottomText;
   QwtPlotZoomer *zoomer[2];
   QwtPlotPanner *panner;
-  int isSaving;
-  FILE* Save_File_Pointer;
-  double Save_Time;
-  QString File_Name;
+//   int isSaving;
+//   FILE* Save_File_Pointer;
+//   double Save_Time;
+//   QString File_Name;
   int index;
   int yMajorTicks;
   double yStep, yOffset, dy ,ymin,ymax;

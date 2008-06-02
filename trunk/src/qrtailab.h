@@ -133,6 +133,7 @@ namespace qrl_types {
 typedef struct Target_Parameters_Struct Target_Parameters_T;
 typedef struct Target_Blocks_Struct Target_Blocks_T;
 typedef struct Target_Scopes_Struct Target_Scopes_T;
+typedef struct Save_Scopes_Struct Save_Scopes_T;
 typedef struct Target_Logs_Struct Target_Logs_T;
 typedef struct Target_ALogs_Struct Target_ALogs_T;
 typedef struct Target_Leds_Struct Target_Leds_T;
@@ -200,6 +201,13 @@ struct Target_Scopes_Struct
 	int ntraces;
 	int visible;
 	float dt;
+};
+
+struct Save_Scopes_Struct
+{
+   int isSaving;
+   FILE* Save_File_Pointer;
+   double Save_Time;
 };
 
 struct Target_Logs_Struct

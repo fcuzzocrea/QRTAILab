@@ -37,6 +37,8 @@
 #include "parameters_manager.h"
 #include "qrtailab_core.h"
 #include "targets_manager.h"
+#include <locale.h>
+
 /**
  * @brief Main QThread 
  */
@@ -92,7 +94,7 @@ friend QDataStream& operator>>(QDataStream &in, QRL_connectDialog(&d));
 /**
  * @brief Main Window
  * @todo save and load settings
- * @bug  in closeEvent: segfault caused by free()
+ * @todo change locale to en -> decimal point instead of komma
  */
 class QRL_MainWindow : public QMainWindow, private Ui::QRL_MainWindow
 {
