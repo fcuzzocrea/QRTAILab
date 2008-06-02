@@ -78,6 +78,8 @@ public slots:
   void startSingleRun();
   void changeTraceText(const QString & text );
   void changeZeroAxis(int);
+  void changeTraceLabel(int);
+    void changeAverageLabel(int);
 private:
   int Num_Scopes;
   Target_Scopes_T *Scopes;
