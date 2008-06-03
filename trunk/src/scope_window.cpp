@@ -200,6 +200,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 		TraceOptions[j].dy=1.;
 		TraceOptions[j].offset=0.;
 		TraceOptions[j].average=0.;
+		TraceOptions[j].visible=true;
 		switch(j){
 			case 0:TraceOptions[j].brush=QBrush(Qt::red);
 				break;
@@ -333,6 +334,7 @@ void QRL_ScopeWindow::refresh()
 	qwtPlot->replot();
 
 for (int nn=0; nn<Ncurve;++nn){
+if ( getAverageLabel(nn)){
 	TraceOptions[nn].average=0.;
 	for (int k=0;k<NDataSoll;k++)
 		TraceOptions[nn].average+=ScopeData[nn].d_y[k]/((double)NDataSoll);
@@ -346,7 +348,7 @@ QwtText atext(tr("Avg: ")+astr);
    		 atext.setColor(QColor(gridColor));
     		TraceOptions[nn].averageLabel.setLabel(atext);
 }
-
+}
 }
 
 
@@ -540,6 +542,16 @@ void QRL_ScopeWindow::setBgColor(QColor bgcolor){
 	qwtPlot->setCanvasBackground(bgColor);
 }
 
+
+void QRL_ScopeWindow::showTrace(bool visible,int trace){
+
+	TraceOptions[trace].visible=visible;
+	if (!visible) {
+		cData[trace]->setStyle(QwtPlotCurve::NoCurve);
+	}else{	
+		cData[trace]->setStyle(QwtPlotCurve::Lines);
+	}
+}
 
 void QRL_ScopeWindow::setTraceColor(const QColor& c,int trace)
 {
@@ -1008,6 +1020,7 @@ QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d){
 		out << d.TraceOptions[nn].dy;
 		out << d.TraceOptions[nn].brush.color();
 		a=d.TraceOptions[nn].lineWidth; out <<a;
+		out << d.TraceOptions[nn].visible;
 	}	
 
 	return out;
@@ -1031,6 +1044,7 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 		in >> dd; d.setTraceDy(dd,nn);
 		in >> c; d.setTraceColor(c,nn);
 		in >> a; d.setTraceWidth((int)a,nn);
+		in >> b; d.showTrace(b,nn);
 	  } else {
 		in >> str;
 		in >> b; 
@@ -1040,6 +1054,7 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 		in >> dd; 
 		in >> c;
 		in >> a;
+		in >> b;
 	  }
 	}
 

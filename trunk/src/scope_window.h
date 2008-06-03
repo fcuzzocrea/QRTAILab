@@ -70,6 +70,7 @@ struct Trace_Options_Struct
 	QwtPlotMarker traceLabel;
 	QwtPlotMarker averageLabel;
 	QString traceName;
+	bool visible;
 };
 
 
@@ -136,6 +137,8 @@ public:
    double getTraceOffset(int);
    void setTraceDy(double,int);
    double getTraceDy(int);
+   void showTrace(bool,int);
+   bool isTraceVisible(int trace){return  TraceOptions[trace].visible;}
    void setPlottingMode(PlottingMode p,Qt::LayoutDirection d);
    void setTriggerUpDirection(bool b){triggerUp=b;}
    void manualTriggerSignal(){triggerSearch=false;}
