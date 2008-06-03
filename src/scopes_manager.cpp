@@ -122,7 +122,7 @@ void QRL_ScopesManager::refresh()
 	QVector< QVector<float> > v;
 	v = qTargetInterface->getTargetThread()->getScopeValue(n);
 	if (v.size()>0) {
-	printf("size scopevector:  %d x %d\n",v.size(),v.at(0).size());
+//	printf("size scopevector:  %d x %d\n",v.size(),v.at(0).size());
 
 // 	for (int t=0; t<qTargetInterface->getNumberOfTraces(n);++t)
 // 	for (int k=0; k<v.at(0).size(); ++k){
@@ -286,6 +286,10 @@ void QRL_ScopesManager::showTraceOptions(int index)
 		labelCheckBox->setCheckState(Qt::Checked);
 	else
 		labelCheckBox->setCheckState(Qt::Unchecked);
+	if (ScopeWindows[currentScope]->getAverageLabel(currentTrace))
+		averageCheckBox->setCheckState(Qt::Checked);
+	else
+		averageCheckBox->setCheckState(Qt::Unchecked);
 }
 
 void QRL_ScopesManager::changeTraceText(const QString & text ){
@@ -322,7 +326,7 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 		delete traceItems[i];
 	traceItems.clear();
 	for(int i=0; i<Scopes[currentScope].ntraces;i++){
-		traceItems << new QListWidgetItem(QIcon(),tr("trace %1").arg(i+1), scopeListWidget);
+		traceItems << new QListWidgetItem(QIcon(),ScopeWindows[currentScope]->getTraceName(i), scopeListWidget);
 		if (i<traceItems.size())
 		traceItems[i]->setHidden(true);
 	}
@@ -465,7 +469,7 @@ void QRL_ScopesManager::changeDisplayModus(int mode)
 
 void QRL_ScopesManager::changeTraceColor()
 {
-	QColor color= QColorDialog::getColor();
+	QColor color= QColorDialog::getColor(ScopeWindows[currentScope]->getTraceColor(currentTrace));
 	ScopeWindows[currentScope]->setTraceColor(color,currentTrace);
 }
 
@@ -543,6 +547,7 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopesManager(&d)){
 		else 
 			in>>*(d.ScopeWindows[d.Num_Scopes-1]);
 	}
+	d.showScopeOptions(d.currentScope);
 	return in;
 }
 

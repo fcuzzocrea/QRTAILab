@@ -65,6 +65,8 @@ struct Trace_Options_Struct
 	QBrush brush;
   	QwtPlotMarker zeroAxis;
 	double average;
+	double min,max;
+	double PP,RMS;
 	QwtPlotMarker traceLabel;
 	QwtPlotMarker averageLabel;
 	QString traceName;
@@ -126,6 +128,7 @@ public:
    QColor getGridColor(){return gridColor;}
    void setBgColor(QColor);
    QColor getBgColor(){return bgColor;}
+   QColor getTraceColor(int trace){return  TraceOptions[trace].brush.color();}
    void setTraceColor(const QColor&,int);
    void setTraceWidth(int ,int );
    int getTraceWidth(int);
@@ -143,10 +146,12 @@ public:
    void setTraceLabel(bool b, int);
    void setAverageLabel(bool b, int);
  bool getTraceLabel(int trace){return TraceOptions[trace].traceLabel.isVisible();}
+ bool getAverageLabel(int trace){return TraceOptions[trace].averageLabel.isVisible();}
    bool getZeroAxis(int trace){return TraceOptions[trace].zeroAxis.isVisible();}
    //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
     void setValue(const QVector< QVector<float> > &v);
    void setTraceName(int trace, const QString &text);
+   QString getTraceName(int trace){return TraceOptions[trace].traceName;}
 public slots:
    void refresh();
   //void setValue(int,float);
