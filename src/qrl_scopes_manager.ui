@@ -60,14 +60,14 @@
    <item row="1" column="1" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="Scope" >
       <property name="geometry" >
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>220</width>
+        <width>221</width>
         <height>365</height>
        </rect>
       </property>
@@ -85,15 +85,15 @@
        <item row="1" column="0" >
         <widget class="QToolBox" name="toolBox" >
          <property name="currentIndex" >
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="Seite" >
           <property name="geometry" >
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>150</width>
-            <height>192</height>
+            <width>203</width>
+            <height>222</height>
            </rect>
           </property>
           <attribute name="label" >
@@ -382,8 +382,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>96</width>
-            <height>163</height>
+            <width>203</width>
+            <height>222</height>
            </rect>
           </property>
           <attribute name="label" >
@@ -486,14 +486,14 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>220</width>
+        <width>221</width>
         <height>365</height>
        </rect>
       </property>
       <attribute name="title" >
        <string>Trace options</string>
       </attribute>
-      <layout class="QGridLayout" >
+      <layout class="QGridLayout" name="gridLayout" >
        <item row="0" column="0" colspan="2" >
         <layout class="QHBoxLayout" >
          <item>
@@ -508,7 +508,7 @@
          </item>
         </layout>
        </item>
-       <item row="1" column="0" >
+       <item rowspan="2" row="1" column="0" >
         <widget class="QGroupBox" name="groupBox_2" >
          <property name="title" >
           <string>Line Width</string>
@@ -531,16 +531,25 @@
            </widget>
           </item>
          </layout>
+         <zorder>lineWidthCounter</zorder>
+         <zorder>showTraceCheckBox</zorder>
         </widget>
        </item>
        <item row="1" column="1" >
+        <widget class="QCheckBox" name="showTraceCheckBox" >
+         <property name="text" >
+          <string>Show/Hide</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" >
         <widget class="QPushButton" name="traceColorPushButton" >
          <property name="text" >
           <string>Line Color</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="0" >
+       <item row="3" column="0" >
         <widget class="QGroupBox" name="groupBox_3" >
          <property name="title" >
           <string>offset</string>
@@ -575,7 +584,7 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="1" >
+       <item row="3" column="1" >
         <widget class="QGroupBox" name="groupBox_4" >
          <property name="title" >
           <string>dy</string>
@@ -684,7 +693,7 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0" colspan="2" >
+       <item row="4" column="0" colspan="2" >
         <widget class="QGroupBox" name="groupBox" >
          <property name="title" >
           <string>show</string>

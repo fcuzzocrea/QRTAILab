@@ -54,6 +54,7 @@ public:
 public slots:
    void refresh();
   void  showScope(int);
+  void  showTrace(int);
   void showScopeOptions( int );
   void showSelectedOptions();
   void showOptions( QListWidgetItem * item );

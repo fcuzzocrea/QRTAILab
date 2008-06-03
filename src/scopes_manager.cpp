@@ -74,6 +74,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
         connect( zeroAxisCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeZeroAxis(int) ) );
 	 connect( labelCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeTraceLabel(int) ) );
 	 connect( averageCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeAverageLabel(int) ) );
+	connect( showTraceCheckBox , SIGNAL( stateChanged(int) ), this, SLOT( showTrace(int) ) );
 
 	currentScope=0;
 // 	for(int i=0; i<1; ++i){
@@ -290,6 +291,10 @@ void QRL_ScopesManager::showTraceOptions(int index)
 		averageCheckBox->setCheckState(Qt::Checked);
 	else
 		averageCheckBox->setCheckState(Qt::Unchecked);
+	if (ScopeWindows[currentScope]->isTraceVisible(currentTrace))
+		showTraceCheckBox->setCheckState(Qt::Checked);
+	else
+		showTraceCheckBox->setCheckState(Qt::Unchecked);
 }
 
 void QRL_ScopesManager::changeTraceText(const QString & text ){
@@ -360,6 +365,16 @@ void QRL_ScopesManager::showScope(int state)
 		ScopeWindows[currentScope]->show();
 	} else {
 		ScopeWindows[currentScope]->hide();
+	}
+
+}
+
+void QRL_ScopesManager::showTrace(int state) 
+{
+	if(state==Qt::Checked){
+		ScopeWindows[currentScope]->showTrace(true,currentTrace);
+	} else {
+		ScopeWindows[currentScope]->showTrace(false,currentTrace);
 	}
 
 }
