@@ -101,6 +101,8 @@ static void *rt_get_scope_data(void *arg)
 
 	// Ndistance defines the distance between plotted datapoints, to archive the given refresh rate.
 	long int Ndistance=(long int)(dt/scope.dt);
+	if (Ndistance<1)
+		Ndistance=1;
 	int ntraces=scope.ntraces;
 
 	rt_send(Target_Interface_Task, 0);
@@ -282,7 +284,8 @@ static void *rt_get_meter_data(void *arg)
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/DataBytes;
 	Ndistance=(long int)(1./RefreshRate/meter.dt);
-
+	if (Ndistance<1)
+		Ndistance=1;
 	rt_send(Target_Interface_Task, 0);
 	mlockall(MCL_CURRENT | MCL_FUTURE);
 	n=Ndistance;
@@ -294,8 +297,8 @@ static void *rt_get_meter_data(void *arg)
 		while (RT_mbx_receive_if(targetThread->getTargetNode(), GetMeterDataPort, GetMeterDataMbx, &MsgBuf, MsgLen)) {
 			if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) goto end;
 
-			//msleep(12); //waits for new Data from the mailbox
-			rt_sleep(nano2count(TEN_MS_IN_NS));
+			msleep(10); //waits for new Data from the mailbox
+			//rt_sleep(nano2count(TEN_MS_IN_NS)); should not be used to high cpu load
 		}
 
 		if (n>MsgData)

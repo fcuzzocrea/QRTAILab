@@ -574,8 +574,8 @@ end:
 // 				}
  			//	if (Num_Meters > 0) Get_Meter_Data_Thread = new GetMeterDataThread [Num_Meters];
 				if (Num_Meters > 0) {
-					Get_Meter_Data_Thread = new pthread_t [Num_Meters];
-					startMeterThreads();
+ 					Get_Meter_Data_Thread = new pthread_t [Num_Meters];
+ 					startMeterThreads();
 				}
 // 				for (int n = 0; n < Num_Meters; n++) {
 // 					unsigned int msg;

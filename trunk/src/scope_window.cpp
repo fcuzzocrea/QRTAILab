@@ -337,8 +337,7 @@ for (int nn=0; nn<Ncurve;++nn){
 if ( getAverageLabel(nn)){
 	TraceOptions[nn].average=0.;
 	for (int k=0;k<NDataSoll;k++)
-		TraceOptions[nn].average+=ScopeData[nn].d_y[k]/((double)NDataSoll);
-
+		TraceOptions[nn].average+=(ScopeData[nn].d_y[k]-TraceOptions[nn].offset)*TraceOptions[nn].dy/((double)NDataSoll);
 
 //printf("average for trace %d is %f\n",nn,TraceOptions[nn].average);
 QString astr;
