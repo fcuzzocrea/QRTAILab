@@ -33,14 +33,23 @@
   <property name="dockOptions" >
    <set>QMainWindow::ForceTabbedDocks</set>
   </property>
-  <widget class="QWidget" name="centralwidget" />
+  <widget class="QWidget" name="centralwidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>69</y>
+     <width>802</width>
+     <height>487</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QMenuBar" name="menubar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
      <y>0</y>
      <width>802</width>
-     <height>29</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuView" >
@@ -84,8 +93,25 @@
    <addaction name="menuView" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>556</y>
+     <width>802</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="toolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>30</y>
+     <width>802</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="minimumSize" >
     <size>
      <width>0</width>
@@ -127,7 +153,8 @@
   </widget>
   <action name="actionConnect" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/connect_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/connect_icon.xpm</normaloff>:/icons/connect_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Connect</string>
@@ -143,7 +170,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/disconnect_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/disconnect_icon.xpm</normaloff>:/icons/disconnect_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Disconnect</string>
@@ -151,7 +179,8 @@
   </action>
   <action name="actionExit" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/exit_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/exit_icon.xpm</normaloff>:/icons/exit_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>&amp;Quit</string>
@@ -159,7 +188,8 @@
   </action>
   <action name="actionStart" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/start_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/start_icon.xpm</normaloff>:/icons/start_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Start</string>
@@ -167,7 +197,8 @@
   </action>
   <action name="actionStop" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/stop_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/stop_icon.xpm</normaloff>:/icons/stop_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Stop</string>
@@ -175,7 +206,8 @@
   </action>
   <action name="actionShowMeter" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/meter_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/meter_icon.xpm</normaloff>:/icons/meter_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Meter</string>
@@ -183,7 +215,8 @@
   </action>
   <action name="actionShowScope" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/scope_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/scope_icon.xpm</normaloff>:/icons/scope_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Scope</string>
@@ -191,7 +224,8 @@
   </action>
   <action name="actionShowLed" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/led_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/led_icon.xpm</normaloff>:/icons/led_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Led</string>
@@ -199,7 +233,8 @@
   </action>
   <action name="actionShowParameter" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/parameters_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/parameters_icon.xpm</normaloff>:/icons/parameters_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Parameter</string>
@@ -207,7 +242,8 @@
   </action>
   <action name="actionLoadProfile" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/connect_profile_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/connect_profile_icon.xpm</normaloff>:/icons/connect_profile_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Load Profile</string>
@@ -215,7 +251,8 @@
   </action>
   <action name="actionSaveProfile" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/save_profile_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/save_profile_icon.xpm</normaloff>:/icons/save_profile_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Save Profile</string>
@@ -223,15 +260,20 @@
   </action>
   <action name="actionDeleteProfile" >
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/del_profile_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/del_profile_icon.xpm</normaloff>:/icons/del_profile_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Delete Profile</string>
    </property>
   </action>
   <action name="actionStartTarget" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
-    <iconset resource="qrtailab.qrc" >:/icons/session_open_icon.xpm</iconset>
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/session_open_icon.xpm</normaloff>:/icons/session_open_icon.xpm</iconset>
    </property>
    <property name="text" >
     <string>Start Target</string>

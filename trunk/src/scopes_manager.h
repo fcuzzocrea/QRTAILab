@@ -73,14 +73,22 @@ public slots:
   void changeDirection(int);
   void showTraceOptions(int);
   void changeScopeList(int);
+  void changeSaveTime(double);
+  void changeFileName(const QString&);
   void changeTriggerLevel(double);
+  void changeTriggerChannel(int);
   void manualTrigger();
   void changeSingleMode(int);
   void startSingleRun();
   void changeTraceText(const QString & text );
   void changeZeroAxis(int);
   void changeTraceLabel(int);
+    void changeUnitLabel(int);
     void changeAverageLabel(int);
+    void changeMinLabel(int);
+    void changeMaxLabel(int);
+    void changePPLabel(int);
+    void changeRMSLabel(int);
 private:
   int Num_Scopes;
   Target_Scopes_T *Scopes;

@@ -68,8 +68,14 @@ struct Trace_Options_Struct
 	double min,max;
 	double PP,RMS;
 	QwtPlotMarker traceLabel;
+	QwtPlotMarker unitLabel;
 	QwtPlotMarker averageLabel;
+	QwtPlotMarker minLabel;
+	QwtPlotMarker maxLabel;
+	QwtPlotMarker ppLabel;
+	QwtPlotMarker rmsLabel;
 	QString traceName;
+	int labelCounter;
 	bool visible;
 };
 
@@ -137,30 +143,54 @@ public:
    double getTraceOffset(int);
    void setTraceDy(double,int);
    double getTraceDy(int);
+   void setSaveTime(double t) {saveTime=t;}
+   double getSaveTime(){return saveTime;}
+   void setFileName(QString str) {fileName=str;}
+   QString getFileName() {return fileName;}
    void showTrace(bool,int);
    bool isTraceVisible(int trace){return  TraceOptions[trace].visible;}
-   void setPlottingMode(PlottingMode p,Qt::LayoutDirection d);
+   void setPlottingMode(PlottingMode p);
+   void setPlottingDirection(Qt::LayoutDirection d);
+   int getPlottingMode() {return (int)plottingMode ;}
+   Qt::LayoutDirection getPlottingDirection() {return direction;}
    void setTriggerUpDirection(bool b){triggerUp=b;}
+   bool getTriggerUpDirection(){return triggerUp;}
    void manualTriggerSignal(){triggerSearch=false;}
    void setTriggerLevel(double l){triggerLevel=l;}
+   double getTriggerLevel(){return triggerLevel;}
+   void setTriggerChannel(int trace){if (trace<Ncurve) triggerChannel=trace;}
+   int getTriggerChannel(){return  triggerChannel;}
    void setSingleMode(bool b){singleMode=b;}
+    bool getSingleMode(){return singleMode;}
    void startSingleRun();
    void setZeroAxis(bool b,int);
    void setTraceLabel(bool b, int);
+   void setUnitLabel(bool b, int);
    void setAverageLabel(bool b, int);
+   void setMinLabel(bool b, int);
+   void setMaxLabel(bool b, int);
+   void setPPLabel(bool b, int);
+   void setRMSLabel(bool b, int);
  bool getTraceLabel(int trace){return TraceOptions[trace].traceLabel.isVisible();}
+ bool getUnitLabel(int trace){return TraceOptions[trace].unitLabel.isVisible();}
  bool getAverageLabel(int trace){return TraceOptions[trace].averageLabel.isVisible();}
+ bool getMinLabel(int trace){return TraceOptions[trace].minLabel.isVisible();}
+ bool getMaxLabel(int trace){return TraceOptions[trace].maxLabel.isVisible();}
+ bool getPPLabel(int trace){return TraceOptions[trace].ppLabel.isVisible();}
+ bool getRMSLabel(int trace){return TraceOptions[trace].rmsLabel.isVisible();}
    bool getZeroAxis(int trace){return TraceOptions[trace].zeroAxis.isVisible();}
    //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
     void setValue(const QVector< QVector<float> > &v);
    void setTraceName(int trace, const QString &text);
    QString getTraceName(int trace){return TraceOptions[trace].traceName;}
+    void setVerbose(int v){Verbose=v;}
 public slots:
    void refresh();
   //void setValue(int,float);
 protected slots:
   void closeEvent ( QCloseEvent * event ){event->ignore(); this->hide(); }
 private:
+  int Verbose;
   float Value;
   qrl_types::Target_Scopes_T *Scope;
   double *d_x; 
@@ -172,6 +202,8 @@ private:
   QTimer *timer;
   QwtPlot *qwtPlot;
   double RefreshRate;
+  double saveTime;
+  QString fileName;
   QwtPlotGrid *grid;
   QwtPlotCurve **cData;
   QColor gridColor;

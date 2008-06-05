@@ -80,8 +80,8 @@ int main(int argc, char *argv[])
 		return 1;
     }*/
      QApplication app(argc, argv);
-     QRL_MainWindow mainWin;
-     mainWin.setVerbose(verboseOutput);
+     QRL_MainWindow mainWin(verboseOutput);
+     //mainWin.setVerbose(verboseOutput);
      mainWin.show();
 
      
