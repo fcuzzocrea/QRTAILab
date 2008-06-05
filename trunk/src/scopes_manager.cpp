@@ -326,6 +326,7 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 		showCheckBox->setCheckState(Qt::Unchecked);
 	rrCounter->setValue(ScopeWindows[currentScope]->getRefreshRate());
 	dataCounter->setValue(ScopeWindows[currentScope]->getDataPoints());
+	dxComboBox->setEditText(tr("%1").arg(ScopeWindows[currentScope]->getDX()));
 	currentTrace=0;
 	for(int i=0; i<traceItems.size();i++)
 		delete traceItems[i];

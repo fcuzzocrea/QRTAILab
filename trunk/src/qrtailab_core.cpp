@@ -841,7 +841,7 @@ void TargetThread::stopScopeThreads()
 		pthread_join(Get_Scope_Data_Thread[n], NULL);
 		//Get_Scope_Data_Thread[n].wait();
 	}
-
+	delete[] Get_Scope_Data_Thread;
 
 }
 
@@ -991,7 +991,7 @@ void TargetThread::stopMeterThreads()
 		pthread_join(Get_Meter_Data_Thread[n], NULL);
 		//Get_Meter_Data_Thread[n].wait();
 	}
-
+	delete[] Get_Meter_Data_Thread;
 }
 
 
@@ -1085,7 +1085,7 @@ void TargetThread::stopLedThreads()
 		pthread_join(Get_Led_Data_Thread[n], NULL);
 		//Get_Led_Data_Thread[n].wait();
 	}
-
+	delete[] Get_Led_Data_Thread;
 }
 
 
@@ -1140,6 +1140,7 @@ void TargetThread::stopALogThreads()
 		pthread_join(Get_ALog_Data_Thread[n], NULL);
 		//Get_Led_Data_Thread[n].wait();
 	}
+	delete[] Get_ALog_Data_Thread;
 
 }
 
@@ -1170,7 +1171,7 @@ void TargetThread::stopLogThreads()
 		pthread_join(Get_Log_Data_Thread[n], NULL);
 		//Get_Led_Data_Thread[n].wait();
 	}
-
+	delete[] Get_Log_Data_Thread;
 }
 
 
