@@ -90,7 +90,8 @@ static void *rt_get_scope_data(void *arg)
 
 	TracesBytes = (scope.ntraces + 1)*sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/TracesBytes)*TracesBytes;
-	MsgLen = (((int)(TracesBytes*dt*(1./scope.dt)))/TracesBytes)*TracesBytes;
+	//MsgLen = (((int)(TracesBytes*dt*(1./scope.dt)))/TracesBytes)*TracesBytes;
+	MsgLen = (((int)(TracesBytes*(1./targetThread->getScopeRefreshRate(index))*(1./scope.dt)))/TracesBytes)*TracesBytes;
 	if (MsgLen < TracesBytes) MsgLen = TracesBytes;
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/TracesBytes;
@@ -104,6 +105,8 @@ static void *rt_get_scope_data(void *arg)
 	if (Ndistance<1)
 		Ndistance=1;
 	int ntraces=scope.ntraces;
+	//QVector <float>  data; 
+	//data.resize(ntraces);
 
 	rt_send(Target_Interface_Task, 0);
 	
@@ -151,20 +154,24 @@ static void *rt_get_scope_data(void *arg)
 			
 			// if (ScopeWindow)
 			  //  ScopeWindow->setValue(nn,MsgBuf[js++]);
-			targetThread->setScopeValue(MsgBuf[js++],index,nn);
+				//data[nn]=MsgBuf[js++];
+				targetThread->setScopeValue(MsgBuf[js++],index,nn);
 			    //emit value(nn,MsgBuf[js++]);
 				//temp1[nn][time-1]=MsgBuf[js++];
 			    //ScopeWindow->getThread()->setValue(nn,MsgBuf[js++]);
-			} time++;
+			}
+			time++;
 			js=js+(Ndistance-1)*(ntraces+1)+1;
 			n=n+Ndistance;
 		   }
 		   n=n-MsgData;
+		   
 		}
 
 		if (targetThread->getScopeDt(index)!=dt){
 			dt=targetThread->getScopeDt(index);
 			MsgLen = (((int)(TracesBytes*dt*(1./scope.dt)))/TracesBytes)*TracesBytes;
+			//MsgLen = (((int)(TracesBytes*(1./targetThread->getScopeRefreshRate(index))*(1./scope.dt)))/TracesBytes)*TracesBytes;
 			if (MsgLen < TracesBytes) MsgLen = TracesBytes;
 			if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 			MsgData = MsgLen/TracesBytes;
@@ -173,9 +180,13 @@ static void *rt_get_scope_data(void *arg)
 	
 			if (Ndistance<1)
 				Ndistance=1;
+
 			MsgWait = (int)(((int)((MAX_MSG_SIZE-MsgLen)/TracesBytes))*scope.dt*1000);
 			MsgWait=(MsgWait>WAIT_MIN)?MsgWait:WAIT_MIN;
 			MsgWait=(MsgWait<WAIT_MAX)?MsgWait:WAIT_MAX;
+			if (targetThread->getVerbose()){
+				printf("change in dt: %f, MsgLen= %d, MsgData= %d, Ndistance= %d, MsgWait= %d\n",dt,MsgLen,MsgData,Ndistance,MsgWait);
+			}
 		}
 
 
@@ -417,8 +428,8 @@ static void *rt_get_led_data(void *arg)
 		while (RT_mbx_receive_if(targetThread->getTargetNode(), GetLedDataPort, GetLedDataMbx, &MsgBuf, MsgLen)) {
 			if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) goto end;
 
-			//msleep(12);
-			rt_sleep(nano2count(TEN_MS_IN_NS));
+			msleep(10);
+			//rt_sleep(nano2count(TEN_MS_IN_NS));
 		}
 		//for (n = 0; n < MsgData; n++) {
 			Led_Mask = MsgBuf[0];

@@ -133,11 +133,12 @@ close();
 * @brief MainWindow
 */
 
-QRL_MainWindow::QRL_MainWindow()
+QRL_MainWindow::QRL_MainWindow(int v)
+:Verbose(v)
 {
     setupUi(this);
 
-
+	
 
 //  unsigned int msg;
     // signals/slots mechanism in action
@@ -171,32 +172,21 @@ QRL_MainWindow::QRL_MainWindow()
    enableActionShowLed(false); 
    enableActionShowParameter(false);
 
-/*
-   rt_allow_nonroot_hrt();
-   if (!(RLG_Main_Task = rt_task_init_schmod(qrl::get_an_id("RLGM"), 98, 0, 0, SCHED_FIFO, 0xFF))) {
-               printf("Cannot init RTAI-Lab GUI main task\n");
-               close();
-    }
-*/  
+
   statusMessage = new QLabel(this);
     statusBar()->addWidget(statusMessage);
 
 	setlocale( LC_ALL, "C");
 
     qTargetInterface = new QRtaiLabCore(this,Verbose);
-    //targetthread = new TargetThread();
-    //targetthread->start();
-  //  connect( this, SIGNAL( sendOrder(int) ), targetthread, SLOT( getOrder(int) ) ); 
 
     target = new QProcess(this);
    connect( qTargetInterface, SIGNAL( statusBarMessage(const QString &) ), this, SLOT( setStatusBarMessage(const QString &) ) ); 
 
      mdiArea = new QMdiArea;
      setCentralWidget(mdiArea);
-   // rt_receive(0, &msg);
 
-	profileName=tr("demo");
-	Verbose=0;
+	//Verbose=0;
 
 
 
@@ -216,7 +206,7 @@ QRL_MainWindow::QRL_MainWindow()
 	TargetsManager=new QRL_TargetsManager(this,qTargetInterface);
 	connect( actionStartTarget, SIGNAL( triggered() ), TargetsManager, SLOT( exec() ) ); 
         //targetthread->setPreferences(Preferences);
-	qTargetInterface->getReady();
+	emit setStatusBarMessage(tr("Ready..."));
 
 }
 
@@ -264,7 +254,8 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 	}
 	delete qTargetInterface;
 // 	rt_task_delete(RLG_Main_Task);
-	qDebug() << "Quitting Main window";
+	if (Verbose)
+	printf("Quitting Main window\n");
 }
 
  void QRL_MainWindow::connectDialog() 
@@ -494,6 +485,11 @@ void QRL_MainWindow::loadProfile() {
 		QMessageBox::warning(NULL,"Error","Wrong file format! Could not load file!", QMessageBox::Ok );
 		return;
 	}
+	QSize s;QPoint p;
+	if (version>100){
+		in >> s;this->resize(s);
+		in >> p; this->move(p);
+	}
 	in >> *ConnectDialog;
 	if (qTargetInterface->getIsTargetConnected()==0) {
 		connectToTarget(ConnectDialog->getPreferences());
@@ -596,10 +592,11 @@ QString filename = QFileDialog::getSaveFileName(this,tr("Save Profile"), NULL, t
    QDataStream out(&file);
    //ts << tr("#");
     // Write a header with a "magic number" and a version
- out << (quint32)0xA0B0C0D0;
- out << (qint32)100;
+ out << (quint32)DATA_STREAM_MAGIC_NUMBER;
+ out << (qint32)DATA_STREAM_VERSION;
  // version <=100
  out.setVersion(QDataStream::Qt_4_2);
+	out  << this->size()  << this->pos();
 	out<<*ConnectDialog;
 	if (LedsManager)
  		out << *LedsManager;

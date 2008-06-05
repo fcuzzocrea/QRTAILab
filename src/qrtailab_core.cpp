@@ -40,7 +40,16 @@ using namespace qrl_types;
 
 
 //Target_Synch_T Synchronoscope;
+TargetThread::TargetThread(){
 
+	Num_Tunable_Blocks=0;
+	Num_Scopes=0;
+	Num_Logs=0;
+	Num_ALogs=0;
+	Num_Leds=0;
+	Num_Meters=0;
+
+}
 
 
 TargetThread::~TargetThread(){
@@ -57,7 +66,6 @@ TargetThread::~TargetThread(){
 		delete[] Leds;
 	if (Num_Meters>0)
 		delete[] Meters;
-	qDebug() << "deleting all pointer";
 /*	stopScopeThreads();
 	//if (Get_Scope_Data_Thread)
 	//	delete[] Get_Scope_Data_Thread;
@@ -380,7 +388,7 @@ int TargetThread::get_synch_blocks_info(long port, RT_TASK *task, const char *mb
 
 void TargetThread::start()
 {
-  Verbose=1;test=1;
+  test=1;
   Is_Target_Connected=0;
   End_App=0;
   //MetersManager=NULL;
@@ -805,8 +813,10 @@ void TargetThread::startScopeThreads(  )//QRL_ScopeWindow** ScopeWindows)
 	ScopeValues.resize(Num_Scopes);
 	ScopeIndex.resize(Num_Scopes);
 	scopeDt.resize(Num_Scopes);
+	scopeRefreshRate.resize(Num_Scopes);
 	for (int n = 0; n < Num_Scopes; n++) {
 		unsigned int msg;
+		scopeRefreshRate[n]=30.;
 		ScopeValues[n].resize(Scopes[n].ntraces);
 		ScopeIndex[n].resize(Scopes[n].ntraces);
 		for (int t=0; t<Scopes[n].ntraces; t++){
@@ -867,7 +877,27 @@ if (n<Num_Scopes)
 return ret;
 }
 
+int TargetThread::setScopeRefreshRate(double rr,int n)
+{
+int ret=-1;
+if (rr>0. && rr<50.){
+if (n<Num_Scopes){
+	ret=1;
+	scopeRefreshRate[n]=rr;
+}
+}
+ //ret= Get_Meter_Data_Thread[n].setRefreshRate(rr);
+return ret;
+}
 
+double TargetThread::getScopeRefreshRate(int n)
+{
+	double ret=-1;
+	if (n<Num_Scopes){
+		ret=scopeRefreshRate[n];
+	}
+	return ret;
+}
 
  void TargetThread::setScopeValue(float v,int n, int t){
 if (n<ScopeValues.size()){
@@ -1183,7 +1213,17 @@ QRtaiLabCore::QRtaiLabCore(QObject *parent, int Verbose)
 
     targetthread = new TargetThread();
     targetthread->setVerbose(Verbose);
-   
+    unsigned int msg;
+   rt_allow_nonroot_hrt();
+   if (!(RLG_Main_Task = rt_task_init_schmod(qrl::get_an_id("RLGM"), 98, 0, 0, SCHED_FIFO, 0xFF))) {
+               printf("Cannot init RTAI-Lab GUI main task\n");
+		exit( 1 );	
+		//return 1;
+    }
+   targetthread->start();
+   rt_receive(0, &msg);
+   Target_Interface_Task=targetthread->getTask();
+   //statusBarMessage(tr("Ready..."));
 }
 
 QRtaiLabCore::~QRtaiLabCore(){
@@ -1191,23 +1231,8 @@ QRtaiLabCore::~QRtaiLabCore(){
  	targetthread->wait();
 	delete targetthread;
 	rt_task_delete(RLG_Main_Task);
-
 }
 
-void QRtaiLabCore::getReady(){
-
-unsigned int msg;
-	rt_allow_nonroot_hrt();
-   if (!(RLG_Main_Task = rt_task_init_schmod(qrl::get_an_id("RLGM"), 98, 0, 0, SCHED_FIFO, 0xFF))) {
-               printf("Cannot init RTAI-Lab GUI main task\n");
-		exit( 1 );	
-		//return 1;
-    }
- targetthread->start();
-rt_receive(0, &msg);
-    Target_Interface_Task=targetthread->getTask();
-    statusBarMessage(tr("Ready..."));
-}
 
 
 

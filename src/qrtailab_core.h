@@ -59,6 +59,7 @@ class TargetThread : public QThread
     enum Manager_Type {PARAMS_MANAGER,SCOPES_MANAGER,LOGS_MANAGER,ALOGS_MANAGER,LEDS_MANAGER,METERS_MANAGER,SYNCHS_MANAGER};
  enum Commands{	CONNECT_TO_TARGET,	CONNECT_TO_TARGET_WITH_PROFILE,	DISCONNECT_FROM_TARGET,	START_TARGET,	STOP_TARGET,	UPDATE_PARAM,	GET_TARGET_TIME,	BATCH_DOWNLOAD,	GET_PARAMS,	CLOSE} ;
    enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
+     TargetThread();
     ~TargetThread();
     void run();
     void setPreferences(Preferences_T);
@@ -105,7 +106,9 @@ class TargetThread : public QThread
     void stopScopeThreads();
     int setScopeDt(double,int);
     double getScopeDt(int);
-    void setScopeValue(float v,int t, int n);	 
+    int setScopeRefreshRate(double rr,int n);
+    double getScopeRefreshRate(int n);
+    void setScopeValue(float v,int nn, int t);	 
     QVector<float> getScopeValue(int t, int n);	 
     QVector< QVector<float> > getScopeValue(int n);
     QString getScopeName(int);
@@ -192,6 +195,7 @@ class TargetThread : public QThread
   QVector< QVector< QVector <float> > > ScopeValues;
   QVector<double> scopeDt;
   QVector<double> meterRefreshRate;
+  QVector<double> scopeRefreshRate;
   QVector< QVector <int> > ScopeIndex;
 
  pthread_t *Get_Led_Data_Thread;
@@ -215,7 +219,6 @@ public:
     QRtaiLabCore(QObject *parent=0,int Verbose = 0);
     ~QRtaiLabCore();
     TargetThread* getTargetThread(){return targetthread;}
-    void getReady();
     int stopTarget();
     int startTarget();
     int connectToTarget();

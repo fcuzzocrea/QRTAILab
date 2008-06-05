@@ -101,11 +101,11 @@ class QRL_MainWindow : public QMainWindow, private Ui::QRL_MainWindow
     Q_OBJECT
  friend class TestQrtaiLab;
 public:
-    QRL_MainWindow();
+    QRL_MainWindow(int);
   //  ~QRL_MainWindow();
 //signals:
  //    void sendOrder(int);
-    void setVerbose(int v){Verbose=v;}
+    //void setVerbose(int v){Verbose=v;}
 protected:
      void closeEvent(QCloseEvent *event);
 
@@ -146,7 +146,6 @@ private:
     QRL_TargetsManager *TargetsManager;
     QLabel* statusMessage;
     QMdiArea *mdiArea;
-    QString profileName;
     int Verbose;
     QRtaiLabCore	*qTargetInterface;
     QProcess *target;

@@ -172,7 +172,8 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 
        NDataMax=(int)((xmax-xmin)/Scope->dt);
        NDataSoll=100;
-	
+	saveTime=0.;
+       fileName=tr("SCOPE");
 	RefreshRate=30.;
 	//Werden genügend Daten bereitgestellt?
        if (NDataSoll>NDataMax)
@@ -200,7 +201,12 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 		TraceOptions[j].dy=1.;
 		TraceOptions[j].offset=0.;
 		TraceOptions[j].average=0.;
+		TraceOptions[j].min=0.;
+		TraceOptions[j].max=0.;
+		TraceOptions[j].PP=0.;
+		TraceOptions[j].RMS=0.;
 		TraceOptions[j].visible=true;
+		TraceOptions[j].labelCounter=0;
 		switch(j){
 			case 0:TraceOptions[j].brush=QBrush(Qt::red);
 				break;
@@ -257,6 +263,20 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
     		TraceOptions[j].traceLabel.attach(qwtPlot);
 		TraceOptions[j].traceLabel.hide();
 
+		QwtText unitText(tr("%1").arg(0.));
+   		 unitText.setColor(QColor(gridColor));
+    		TraceOptions[j].unitLabel.setLabel(unitText);
+		TraceOptions[j].unitLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    		TraceOptions[j].unitLabel.setLineStyle(QwtPlotMarker::NoLine);
+    		//TraceOptions[j].zeroAxis.setYValue(TraceOptions[j].offset/TraceOptions[j].dy);
+		TraceOptions[j].unitLabel.setXValue(0.+j*xmax/5.);
+		TraceOptions[j].unitLabel.setYValue(3.5);
+		
+    		TraceOptions[j].unitLabel.setLinePen(QPen(TraceOptions[j].brush,2.,Qt::DashDotLine));
+    		TraceOptions[j].unitLabel.attach(qwtPlot);
+		TraceOptions[j].unitLabel.hide();
+
+
 		QwtText atext(tr("%1").arg(0.));
    		 atext.setColor(QColor(gridColor));
     		TraceOptions[j].averageLabel.setLabel(atext);
@@ -270,6 +290,59 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
     		TraceOptions[j].averageLabel.attach(qwtPlot);
 		TraceOptions[j].averageLabel.hide();
 		
+		QwtText minText(tr("%1").arg(0.));
+   		 minText.setColor(QColor(gridColor));
+    		TraceOptions[j].minLabel.setLabel(minText);
+		TraceOptions[j].minLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    		TraceOptions[j].minLabel.setLineStyle(QwtPlotMarker::NoLine);
+    		//TraceOptions[j].zeroAxis.setYValue(TraceOptions[j].offset/TraceOptions[j].dy);
+		TraceOptions[j].minLabel.setXValue(0.+j*xmax/5.);
+		TraceOptions[j].minLabel.setYValue(3.5);
+		
+    		TraceOptions[j].minLabel.setLinePen(QPen(TraceOptions[j].brush,2.,Qt::DashDotLine));
+    		TraceOptions[j].minLabel.attach(qwtPlot);
+		TraceOptions[j].minLabel.hide();
+
+		QwtText maxText(tr("%1").arg(0.));
+   		 maxText.setColor(QColor(gridColor));
+    		TraceOptions[j].maxLabel.setLabel(maxText);
+		TraceOptions[j].maxLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    		TraceOptions[j].maxLabel.setLineStyle(QwtPlotMarker::NoLine);
+    		//TraceOptions[j].zeroAxis.setYValue(TraceOptions[j].offset/TraceOptions[j].dy);
+		TraceOptions[j].maxLabel.setXValue(0.+j*xmax/5.);
+		TraceOptions[j].maxLabel.setYValue(3.5);
+		
+    		TraceOptions[j].maxLabel.setLinePen(QPen(TraceOptions[j].brush,2.,Qt::DashDotLine));
+    		TraceOptions[j].maxLabel.attach(qwtPlot);
+		TraceOptions[j].maxLabel.hide();
+
+		QwtText ppText(tr("%1").arg(0.));
+   		 ppText.setColor(QColor(gridColor));
+    		TraceOptions[j].ppLabel.setLabel(ppText);
+		TraceOptions[j].ppLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    		TraceOptions[j].ppLabel.setLineStyle(QwtPlotMarker::NoLine);
+    		//TraceOptions[j].zeroAxis.setYValue(TraceOptions[j].offset/TraceOptions[j].dy);
+		TraceOptions[j].ppLabel.setXValue(0.+j*xmax/5.);
+		TraceOptions[j].ppLabel.setYValue(3.5);
+		
+    		TraceOptions[j].ppLabel.setLinePen(QPen(TraceOptions[j].brush,2.,Qt::DashDotLine));
+    		TraceOptions[j].ppLabel.attach(qwtPlot);
+		TraceOptions[j].ppLabel.hide();
+
+		QwtText rmsText(tr("%1").arg(0.));
+   		 rmsText.setColor(QColor(gridColor));
+    		TraceOptions[j].rmsLabel.setLabel(rmsText);
+		TraceOptions[j].rmsLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
+    		TraceOptions[j].rmsLabel.setLineStyle(QwtPlotMarker::NoLine);
+    		//TraceOptions[j].zeroAxis.setYValue(TraceOptions[j].offset/TraceOptions[j].dy);
+		TraceOptions[j].rmsLabel.setXValue(0.+j*xmax/5.);
+		TraceOptions[j].rmsLabel.setYValue(3.5);
+		
+    		TraceOptions[j].rmsLabel.setLinePen(QPen(TraceOptions[j].brush,2.,Qt::DashDotLine));
+    		TraceOptions[j].rmsLabel.attach(qwtPlot);
+		TraceOptions[j].rmsLabel.hide();
+
+
 
        		pen.setWidth(TraceOptions[j].lineWidth);
 		pen.setBrush(TraceOptions[j].brush);
@@ -339,20 +412,113 @@ if ( getAverageLabel(nn)){
 	for (int k=0;k<NDataSoll;k++)
 		TraceOptions[nn].average+=(ScopeData[nn].d_y[k]-TraceOptions[nn].offset)*TraceOptions[nn].dy/((double)NDataSoll);
 
-//printf("average for trace %d is %f\n",nn,TraceOptions[nn].average);
-QString astr;
-astr.setNum(TraceOptions[nn].average,'f',3);
-//QwtText atext(tr("Avg: %1").arg(TraceOptions[nn].average));
-QwtText atext(tr("Avg: ")+astr);
-   		 atext.setColor(QColor(gridColor));
-    		TraceOptions[nn].averageLabel.setLabel(atext);
+	QString astr;
+	astr.setNum(TraceOptions[nn].average,'f',3);
+	//QwtText atext(tr("Avg: %1").arg(TraceOptions[nn].average));
+	QwtText atext(tr("Avg: ")+astr);
+	atext.setColor(QColor(gridColor));
+	TraceOptions[nn].averageLabel.setLabel(atext);
+}
+if ( getUnitLabel(nn)){
+	QString astr;
+	astr.setNum(TraceOptions[nn].dy,'f',3);
+	//QwtText atext(tr("Avg: %1").arg(TraceOptions[nn].average));
+	QwtText atext(tr("U/d: ")+astr);
+	atext.setColor(QColor(gridColor));
+	TraceOptions[nn].unitLabel.setLabel(atext);
+}
+if ( getMinLabel(nn)){
+	TraceOptions[nn].min=(ScopeData[nn].d_y[0]-TraceOptions[nn].offset)*TraceOptions[nn].dy;
+	for (int k=0;k<NDataSoll;k++)
+		if (TraceOptions[nn].min>(ScopeData[nn].d_y[k]-TraceOptions[nn].offset)*TraceOptions[nn].dy)
+			TraceOptions[nn].min=(ScopeData[nn].d_y[k]-TraceOptions[nn].offset)*TraceOptions[nn].dy;
+
+	QString astr;
+	astr.setNum(TraceOptions[nn].min,'f',3);
+	QwtText atext(tr("Min: ")+astr);
+   	atext.setColor(QColor(gridColor));
+    	TraceOptions[nn].minLabel.setLabel(atext);
+}
+if ( getMaxLabel(nn)){
+	TraceOptions[nn].max=(ScopeData[nn].d_y[0]-TraceOptions[nn].offset)*TraceOptions[nn].dy;
+	for (int k=0;k<NDataSoll;k++)
+		if (TraceOptions[nn].max<(ScopeData[nn].d_y[k]-TraceOptions[nn].offset)*TraceOptions[nn].dy)
+			TraceOptions[nn].max=(ScopeData[nn].d_y[k]-TraceOptions[nn].offset)*TraceOptions[nn].dy;
+
+	QString astr;
+	astr.setNum(TraceOptions[nn].max,'f',3);
+	QwtText atext(tr("Max: ")+astr);
+   	atext.setColor(QColor(gridColor));
+    	TraceOptions[nn].maxLabel.setLabel(atext);
+}
+if ( getPPLabel(nn)){
+	TraceOptions[nn].min=(ScopeData[nn].d_y[0]-TraceOptions[nn].offset)*TraceOptions[nn].dy;
+	TraceOptions[nn].max=(ScopeData[nn].d_y[0]-TraceOptions[nn].offset)*TraceOptions[nn].dy;
+	for (int k=0;k<NDataSoll;k++){
+		if (TraceOptions[nn].max<(ScopeData[nn].d_y[k]-TraceOptions[nn].offset)*TraceOptions[nn].dy)
+			TraceOptions[nn].max=(ScopeData[nn].d_y[k]-TraceOptions[nn].offset)*TraceOptions[nn].dy;
+		if (TraceOptions[nn].min>(ScopeData[nn].d_y[k]-TraceOptions[nn].offset)*TraceOptions[nn].dy)
+			TraceOptions[nn].min=(ScopeData[nn].d_y[k]-TraceOptions[nn].offset)*TraceOptions[nn].dy;
+	}
+	TraceOptions[nn].PP=TraceOptions[nn].max-TraceOptions[nn].min;
+	QString astr;
+	astr.setNum(TraceOptions[nn].PP,'f',3);
+	QwtText atext(tr("PP: ")+astr);
+   	atext.setColor(QColor(gridColor));
+    	TraceOptions[nn].ppLabel.setLabel(atext);
+}
+if ( getRMSLabel(nn)){
+	TraceOptions[nn].RMS=0.;
+	for (int k=0;k<NDataSoll;k++)
+		TraceOptions[nn].RMS+=(ScopeData[nn].d_y[k]-TraceOptions[nn].offset)*TraceOptions[nn].dy*(ScopeData[nn].d_y[k]-TraceOptions[nn].offset)*TraceOptions[nn].dy;
+	TraceOptions[nn].RMS=sqrt(TraceOptions[nn].RMS/((double)NDataSoll));
+	QString astr;
+	astr.setNum(TraceOptions[nn].RMS,'f',3);
+	QwtText atext(tr("RMS: ")+astr);
+	atext.setColor(QColor(gridColor));
+	TraceOptions[nn].rmsLabel.setLabel(atext);
 }
 }
 }
 
 
- void QRL_ScopeWindow::setPlottingMode(PlottingMode p,Qt::LayoutDirection d){
-	direction=d;plottingMode=p;
+ void QRL_ScopeWindow::setPlottingMode(PlottingMode p){
+	plottingMode=p;
+ QwtText bt;
+    bt.setColor(QColor(gridColor));
+	switch(plottingMode){
+	case roll:
+		if (direction==Qt::LeftToRight)
+			bt.setText(tr("x: %1 sec/dev  roll ->").arg(dx));
+		else
+			bt.setText(tr("x: %1 sec/dev  roll <-").arg(dx));
+		bottomText->setLabel(bt);
+		break;
+	case overwrite:
+		if (direction==Qt::LeftToRight)
+			bt.setText(tr("x: %1 sec/dev  overwrite ->").arg(dx));
+		else
+			bt.setText(tr("x: %1 sec/dev  overwrite <-").arg(dx));
+		bottomText->setLabel(bt);
+		break;
+	case trigger:
+		if (direction==Qt::LeftToRight)
+			bt.setText(tr("x: %1 sec/dev  trigger ->").arg(dx));
+		else
+			bt.setText(tr("x: %1 sec/dev  trigger <-").arg(dx));
+		bottomText->setLabel(bt);
+		break;
+	case hold: //hold
+		bt.setText(tr("x: %1 sec/dev  hold").arg(dx));
+		bottomText->setLabel(bt);
+		break;
+
+	}
+
+}
+
+ void QRL_ScopeWindow::setPlottingDirection(Qt::LayoutDirection d){
+	direction=d;
  QwtText bt;
     bt.setColor(QColor(gridColor));
 	switch(plottingMode){
@@ -409,13 +575,15 @@ QwtText atext(tr("Avg: ")+astr);
 
 	if (NDataSoll<10)
 		NDataSoll=10;
-       dt=(xmax-xmin)/NDataSoll;
+      
 	/*if(NDataSoll<(1/dt/(xmax-xmin))){
 		NDataSoll=(1/dt/(xmax-xmin));
 		dt=(xmax-xmin)/NDataSoll;
 	}*/
+	if (Verbose) {
 	printf("xmin: %f,xmax %f, scope->dt ist %f\n",xmin,xmax,Scope->dt);
 	printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
+	}
 
     for (unsigned int i = 0; i< NDataSoll; i++)
     {
@@ -429,6 +597,7 @@ QwtText atext(tr("Avg: ")+astr);
      for (unsigned int j=0;j<Ncurve;j++){
   	cData[j]->setRawData(d_x, ScopeData[j].d_y, NDataSoll);
      }
+ dt=(xmax-xmin)/NDataSoll;
      timer->start((int)(1./RefreshRate*1000.));
 }
 
@@ -506,7 +675,12 @@ QwtText atext(tr("Avg: ")+astr);
 			if (TraceOptions[nn].traceLabel.isVisible())
 				k++;
 		TraceOptions[j].traceLabel.setXValue(0.+k*xmax/5.);
+		TraceOptions[j].unitLabel.setXValue(0.+k*xmax/5.);
 		TraceOptions[j].averageLabel.setXValue(0.+k*xmax/5.);
+		TraceOptions[j].minLabel.setXValue(0.+k*xmax/5.);
+		TraceOptions[j].maxLabel.setXValue(0.+k*xmax/5.);
+		TraceOptions[j].ppLabel.setXValue(0.+k*xmax/5.);
+		TraceOptions[j].rmsLabel.setXValue(0.+k*xmax/5.);
 	}
 	for (unsigned int i = 0; i< NDataSoll; i++)
     	{
@@ -516,8 +690,10 @@ QwtText atext(tr("Avg: ")+astr);
 	xStep=(xmax-xmin)/xMajorTicks;
 	qwtPlot->setAxisScale(QwtPlot::xBottom, xmin, xmax,xStep);
 	    vertLine->setXValue(xmax/2.);
-	printf("xmin: %f,xmax %f, scope->dt ist %f\n",xmin,xmax,Scope->dt);
-	printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
+	if (Verbose) {
+		printf("xmin: %f,xmax %f, scope->dt ist %f\n",xmin,xmax,Scope->dt);
+		printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
+	}
 	timer->start(1/RefreshRate*1000.);
 
 //changeDataPoints(NDataMax);
@@ -657,36 +833,208 @@ TraceOptions[trace].zeroAxis.hide();
 
 void QRL_ScopeWindow::setTraceLabel(bool b,int trace){
 
-if (b) {
-	TraceOptions[trace].traceLabel.show();
-	for (unsigned int j=0;j<Ncurve;j++){
-		int k=0;
-		for (int nn=0;nn<j;nn++)
-			if (TraceOptions[nn].traceLabel.isVisible())
-				k++;
-		TraceOptions[j].traceLabel.setXValue(0.+k*xmax/5.);
-		TraceOptions[j].averageLabel.setXValue(0.+k*xmax/5.);
-	}
+	if (b==getTraceLabel(trace))
+		return;
 
-}else
-TraceOptions[trace].traceLabel.hide();
+	if (b) {
+		TraceOptions[trace].traceLabel.show();
+		for (unsigned int j=0;j<Ncurve;j++){
+			int k=0;
+			for (int nn=0;nn<j;nn++)
+				if (TraceOptions[nn].traceLabel.isVisible())
+					k++;
+			TraceOptions[j].traceLabel.setXValue(0.+k*xmax/5.);
+			TraceOptions[j].unitLabel.setXValue(0.+k*xmax/5.);
+			TraceOptions[j].averageLabel.setXValue(0.+k*xmax/5.);
+			TraceOptions[j].minLabel.setXValue(0.+k*xmax/5.);
+			TraceOptions[j].maxLabel.setXValue(0.+k*xmax/5.);
+			TraceOptions[j].ppLabel.setXValue(0.+k*xmax/5.);
+			TraceOptions[j].rmsLabel.setXValue(0.+k*xmax/5.);
+		}
+	
+	}else {
+		TraceOptions[trace].traceLabel.hide();
+		setUnitLabel(false,trace);
+		setAverageLabel(false,trace);
+		setMinLabel(false,trace);
+		setMaxLabel(false,trace);
+		setPPLabel(false,trace);
+		setRMSLabel(false,trace);
+		TraceOptions[trace].labelCounter=0;
+	}
 
 }
 
-void QRL_ScopeWindow::setAverageLabel(bool b,int trace){
+void QRL_ScopeWindow::setUnitLabel(bool b,int trace){
 
-if (b) {
-	TraceOptions[trace].averageLabel.show();
-	for (unsigned int j=0;j<Ncurve;j++){
-		int k=0;
-		for (int nn=0;nn<j;nn++)
-			if (TraceOptions[nn].traceLabel.isVisible())
-				k++;
-		TraceOptions[j].averageLabel.setXValue(0.+k*xmax/5.);
+
+	if (b) {
+		setTraceLabel(true,trace);
+		TraceOptions[trace].unitLabel.show();
+		for (unsigned int j=0;j<Ncurve;j++){
+			int k=0;
+			for (int nn=0;nn<j;nn++)
+				if (TraceOptions[nn].traceLabel.isVisible())
+					k++;
+			TraceOptions[j].unitLabel.setXValue(0.+k*xmax/5.);
+		}
+		TraceOptions[trace].unitLabel.setYValue(3.5-(0.5*TraceOptions[trace].labelCounter));
+		TraceOptions[trace].labelCounter++;
+	
+	}else{
+		if (getUnitLabel(trace)==false)
+			return;
+		TraceOptions[trace].unitLabel.hide();
+		TraceOptions[trace].labelCounter=0;
+		setAverageLabel(getAverageLabel(trace),trace);
+		setMinLabel(getMinLabel(trace),trace);
+		setMaxLabel(getMaxLabel(trace),trace);
+		setPPLabel(getPPLabel(trace),trace);
+		setRMSLabel(getRMSLabel(trace),trace);
+	
 	}
 
-}else
-TraceOptions[trace].averageLabel.hide();
+}
+
+
+void QRL_ScopeWindow::setAverageLabel(bool b,int trace){
+
+
+	if (b) {
+		setTraceLabel(true,trace);
+		TraceOptions[trace].averageLabel.show();
+		for (unsigned int j=0;j<Ncurve;j++){
+			int k=0;
+			for (int nn=0;nn<j;nn++)
+				if (TraceOptions[nn].traceLabel.isVisible())
+					k++;
+			TraceOptions[j].averageLabel.setXValue(0.+k*xmax/5.);
+		}
+		TraceOptions[trace].averageLabel.setYValue(3.5-(0.5*TraceOptions[trace].labelCounter));
+		TraceOptions[trace].labelCounter++;
+	
+	}else{
+		if (getAverageLabel(trace)==false)
+			return;
+		TraceOptions[trace].averageLabel.hide();
+		TraceOptions[trace].labelCounter=0;
+		setUnitLabel(getUnitLabel(trace),trace);
+		setMinLabel(getMinLabel(trace),trace);
+		setMaxLabel(getMaxLabel(trace),trace);
+		setPPLabel(getPPLabel(trace),trace);
+		setRMSLabel(getRMSLabel(trace),trace);
+	}
+
+}
+
+void QRL_ScopeWindow::setMinLabel(bool b,int trace){
+
+	if (b) {
+		setTraceLabel(true,trace);
+		TraceOptions[trace].minLabel.show();
+		for (unsigned int j=0;j<Ncurve;j++){
+			int k=0;
+			for (int nn=0;nn<j;nn++)
+				if (TraceOptions[nn].traceLabel.isVisible())
+					k++;
+			TraceOptions[j].minLabel.setXValue(0.+k*xmax/5.);
+		}
+		TraceOptions[trace].minLabel.setYValue(3.5-(0.5*TraceOptions[trace].labelCounter));
+		TraceOptions[trace].labelCounter++;
+	}else{
+		if (getMinLabel(trace)==false)
+			return;
+		TraceOptions[trace].minLabel.hide();
+		TraceOptions[trace].labelCounter=0;
+		setUnitLabel(getUnitLabel(trace),trace);
+		setAverageLabel(getAverageLabel(trace),trace);
+		setMaxLabel(getMaxLabel(trace),trace);
+		setPPLabel(getPPLabel(trace),trace);
+		setRMSLabel(getRMSLabel(trace),trace);
+	}
+
+}
+
+void QRL_ScopeWindow::setMaxLabel(bool b,int trace){
+
+	if (b) {
+		setTraceLabel(true,trace);
+		TraceOptions[trace].maxLabel.show();
+		for (unsigned int j=0;j<Ncurve;j++){
+			int k=0;
+			for (int nn=0;nn<j;nn++)
+				if (TraceOptions[nn].traceLabel.isVisible())
+					k++;
+			TraceOptions[j].maxLabel.setXValue(0.+k*xmax/5.);
+		}
+		TraceOptions[trace].maxLabel.setYValue(3.5-(0.5*TraceOptions[trace].labelCounter));
+		TraceOptions[trace].labelCounter++;
+	}else{
+		if (getMaxLabel(trace)==false)
+			return;
+		TraceOptions[trace].maxLabel.hide();
+		TraceOptions[trace].labelCounter=0;
+		setUnitLabel(getUnitLabel(trace),trace);
+		setAverageLabel(getAverageLabel(trace),trace);
+		setMinLabel(getMinLabel(trace),trace);
+		setPPLabel(getPPLabel(trace),trace);
+		setRMSLabel(getRMSLabel(trace),trace);
+	}
+
+}
+
+void QRL_ScopeWindow::setPPLabel(bool b,int trace){
+
+	if (b) {
+		setTraceLabel(true,trace);
+		TraceOptions[trace].ppLabel.show();
+		for (unsigned int j=0;j<Ncurve;j++){
+			int k=0;
+			for (int nn=0;nn<j;nn++)
+				if (TraceOptions[nn].traceLabel.isVisible())
+					k++;
+			TraceOptions[j].ppLabel.setXValue(0.+k*xmax/5.);
+		}
+		TraceOptions[trace].ppLabel.setYValue(3.5-(0.5*TraceOptions[trace].labelCounter));
+		TraceOptions[trace].labelCounter++;
+	}else{
+		if (getPPLabel(trace)==false)
+			return;
+		TraceOptions[trace].ppLabel.hide();
+		TraceOptions[trace].labelCounter=0;
+		setUnitLabel(getUnitLabel(trace),trace);
+		setAverageLabel(getAverageLabel(trace),trace);
+		setMinLabel(getMinLabel(trace),trace);
+		setMaxLabel(getMaxLabel(trace),trace);
+		setRMSLabel(getRMSLabel(trace),trace);
+	}
+
+}
+
+void QRL_ScopeWindow::setRMSLabel(bool b,int trace){
+	if (b) {
+		setTraceLabel(true,trace);
+		TraceOptions[trace].rmsLabel.show();
+		for (unsigned int j=0;j<Ncurve;j++){
+			int k=0;
+			for (int nn=0;nn<j;nn++)
+				if (TraceOptions[nn].traceLabel.isVisible())
+					k++;
+			TraceOptions[j].rmsLabel.setXValue(0.+k*xmax/5.);
+		}
+		TraceOptions[trace].rmsLabel.setYValue(3.5-(0.5*TraceOptions[trace].labelCounter));
+		TraceOptions[trace].labelCounter++;
+	}else{
+		if (getRMSLabel(trace)==false)
+			return;
+		TraceOptions[trace].rmsLabel.hide();
+		TraceOptions[trace].labelCounter=0;
+		setUnitLabel(getUnitLabel(trace),trace);
+		setAverageLabel(getAverageLabel(trace),trace);
+		setMinLabel(getMinLabel(trace),trace);
+		setMaxLabel(getMaxLabel(trace),trace);
+		setPPLabel(getPPLabel(trace),trace);
+	}
 
 }
 
@@ -706,31 +1054,18 @@ void QRL_ScopeWindow::setTraceName(int trace, const QString &text){
 
 void QRL_ScopeWindow::setValue(const QVector< QVector<float> > &v)
 {			
-// for (int nn=0; nn<v.size();++nn){
-// if (v.at(nn).size()<NDataSoll){
-// 	TraceOptions[nn].average*=((double)NDataSoll-(double)v.at(nn).size())/(double)NDataSoll;
-// 	for (int k=0; k<v.at(nn).size(); ++k){
-// 		TraceOptions[nn].average+=v.at(nn).at(k)/((double)NDataSoll);
-// 	}
-// } else {
-// 	TraceOptions[nn].average=0.;
-// 	for (int k=v.at(nn).size(); k>v.at(nn).size()-NDataSoll; --k){
-// 		TraceOptions[nn].average+=v.at(nn).at(k)/((double)NDataSoll);
-// 	}
-// 
-// }
-// //printf("average for trace %d is %f\n",nn,TraceOptions[nn].average);
-// QwtText atext(tr("%1").arg(TraceOptions[nn].average));
-//    		 atext.setColor(QColor(gridColor));
-//     		TraceOptions[nn].averageLabel.setLabel(atext);
-// }
 
 
-int time;
-switch(plottingMode){
+
+int time; int start=0;  PlottingMode PM=plottingMode;
+if (v.at(0).size()>NDataSoll){  //roll mode is to cpu expensive and not necassary -> switch to overwrite mode
+	if (PM==roll)
+		PM=overwrite;
+} 
+switch(PM){
 case roll:
   for (int nn=0; nn<v.size();++nn){
-     for (int k=0; k<v.at(nn).size(); ++k){
+     for (int k=start; k<v.at(nn).size(); ++k){
 	time=ScopeData[nn].time;
 	ScopeData[nn].d_yt[time]=((double)v.at(nn).at(k))/TraceOptions[nn].dy+TraceOptions[nn].offset;
 	
@@ -741,7 +1076,7 @@ case roll:
 		time--;
 		if (time<0)
 			time=0;
-		if (Qt::LeftToRight==direction){ // Segmentation fault for   ndatasoll<5 
+		if (Qt::LeftToRight==direction){ 
 		for (unsigned int i = NDataSoll - 1; i > time; i-- ){
         		ScopeData[nn].d_y[i] = ScopeData[nn].d_y[i-1-time];
 		}
@@ -771,7 +1106,7 @@ case roll:
 	break;
 case overwrite:
  for (int nn=0; nn<v.size();++nn){
-     for (int k=0; k<v.at(nn).size(); ++k){
+     for (int k=start; k<v.at(nn).size(); ++k){
 	time=ScopeData[nn].time;
 	ScopeData[nn].d_y[time]=((double)v.at(nn).at(k))/TraceOptions[nn].dy+TraceOptions[nn].offset;
 	if (Qt::LeftToRight==direction)
@@ -788,7 +1123,7 @@ case overwrite:
 
 case trigger:
  for (int nn=0; nn<v.size();++nn){
-     for (int k=0; k<v.at(nn).size(); ++k){
+     for (int k=start; k<v.at(nn).size(); ++k){
 	if (triggerSearch){ //search for next trigger event
 	  if (nn==triggerChannel) {
 		double y= (double)v.at(nn).at(k);
@@ -817,15 +1152,15 @@ case trigger:
 		}
 		lastValue=y;
 	  } else { // plot last data for the other traces
-		time=ScopeData[nn].time;
-		if (time>0 && time <NDataSoll-1){
-			ScopeData[nn].d_y[time]=((double)v.at(nn).at(k))/TraceOptions[nn].dy+TraceOptions[nn].offset;
-			if (Qt::LeftToRight==direction)
-				time++;
-			else
-				time--;
-			ScopeData[nn].time=time;
-		}
+// 		time=ScopeData[nn].time;
+// 		if (time>0 && time <NDataSoll-1){
+// 			ScopeData[nn].d_y[time]=((double)v.at(nn).at(k))/TraceOptions[nn].dy+TraceOptions[nn].offset;
+// 			if (Qt::LeftToRight==direction)
+// 				time++;
+// 			else
+// 				time--;
+// 			ScopeData[nn].time=time;
+// 		}
 
 	  }
 	} else {
@@ -1016,12 +1351,24 @@ QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d){
 	a=d.NDataSoll;out << a;
 	a=(qint32)d.plottingMode;out << a;
 	a=(qint32)d.direction; out << a;
+	a=d.triggerChannel; out << a;
+	out << d.triggerLevel;
+	out << d.triggerUp;
+	out << d.singleMode;
+	out << d.saveTime;
+	out << d.fileName;
 	
 	 for (int nn=0; nn<d.Ncurve;++nn){
 		
 		out << d.TraceOptions[nn].traceName;
 		out << d.TraceOptions[nn].zeroAxis.isVisible();
 		out << d.TraceOptions[nn].averageLabel.isVisible();
+		out << d.TraceOptions[nn].unitLabel.isVisible();
+		out << d.TraceOptions[nn].minLabel.isVisible();
+		out << d.TraceOptions[nn].maxLabel.isVisible();
+		out << d.TraceOptions[nn].ppLabel.isVisible();
+		out << d.TraceOptions[nn].rmsLabel.isVisible();
+
 		out << d.TraceOptions[nn].traceLabel.isVisible();
 
 		out << d.TraceOptions[nn].offset;
@@ -1047,13 +1394,26 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 	in >> dd; d.changeRefreshRate(dd);
 	in >> dd; d.changeDX(dd);
 	in >> a; d.changeDataPoints(a);
-	in >> a; in >> a2;
-	d.setPlottingMode((QRL_ScopeWindow::PlottingMode)a,(Qt::LayoutDirection)a2);
+	in >> a >> a2;
+	d.setPlottingMode((QRL_ScopeWindow::PlottingMode)a);
+	d.setPlottingDirection((Qt::LayoutDirection)a2);
+	in >> a; d.setTriggerChannel(a);
+	in >> dd; d.setTriggerLevel(dd);
+	in >> b; d.setTriggerUpDirection(b);
+	in >> b; d.setSingleMode(b);
+	in >> dd; d.setSaveTime(dd);
+        in >> str; d.setFileName(str);
+	
 	 for (int nn=0; nn<Ncurve;++nn){
 	   if (nn<d.Ncurve) {
 		in >> str; d.setTraceName(nn, str);
 		in >> b; d.setZeroAxis(b,nn);
 		in >> b; d.setAverageLabel(b,nn);
+		in >> b; d.setUnitLabel(b,nn);
+		in >> b; d.setMinLabel(b,nn);
+		in >> b; d.setMaxLabel(b,nn);
+		in >> b; d.setPPLabel(b,nn);
+		in >> b; d.setRMSLabel(b,nn);
 		in >> b; d.setTraceLabel(b,nn);
 		in >> dd; d.setTraceOffset(dd,nn);
 		in >> dd; d.setTraceDy(dd,nn);
@@ -1064,6 +1424,11 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 
 	  } else {
 		in >> str;
+		in >> b; 
+		in >> b; 
+		in >> b; 
+		in >> b; 
+		in >> b; 
 		in >> b; 
 		in >> b; 
 		in >> b; 

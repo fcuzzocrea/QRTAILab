@@ -43,6 +43,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 		scopeItems << new QListWidgetItem(ScopeIcon,qTargetInterface->getScopeName(i), scopeListWidget);
 		ScopeWindows[i]=new QRL_ScopeWindow(parent,&Scopes[i],i);
 		//connect( ScopeWindows[i], SIGNAL( stopSaving(int) ), this, SLOT( stopSaving(int) ) );
+		ScopeWindows[i]->setVerbose(qTargetInterface->getVerbose());
 	}
 	tabWidget->setCurrentIndex(0);
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showScope(int) ) );
@@ -52,7 +53,6 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	//connect( rrLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeRefreshRate(const QString&) ) );
 	connect( rrCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeRefreshRate(double) ) );
 	connect( dataCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDataPoints(double) ) );
-// 	connect( timeCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeSaveTime(double) ) );
 	connect( dxComboBox, SIGNAL( currentIndexChanged(const QString &) ), this, SLOT( changeDX(const QString&) ) );
 	connect( dxComboBox, SIGNAL( editTextChanged(const QString &) ), this, SLOT( changeDX(const QString&) ) );
 	connect( savePushButton, SIGNAL( pressed() ), this, SLOT( startSaving() ) );
@@ -71,10 +71,18 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	connect( oneShotCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( changeSingleMode(int) ) );
 	connect( startTriggerPushButton, SIGNAL( pressed()), this, SLOT(startSingleRun() ) );
 	connect( traceNameLineEdit,SIGNAL( textChanged ( const QString &  ) ), this , SLOT( changeTraceText(const QString & ) ) );
+        connect( traceComboBox,SIGNAL( currentIndexChanged(int) ),this, SLOT(changeTriggerChannel(int) ) );
         connect( zeroAxisCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeZeroAxis(int) ) );
 	 connect( labelCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeTraceLabel(int) ) );
+	 connect( unitCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeUnitLabel(int) ) );
 	 connect( averageCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeAverageLabel(int) ) );
+	 connect( minCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeMinLabel(int) ) );
+	 connect( maxCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeMaxLabel(int) ) );
+	 connect( ppCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changePPLabel(int) ) );
+	 connect( rmsCheckBox,SIGNAL( stateChanged(int)),this,SLOT(changeRMSLabel(int) ) );
 	connect( showTraceCheckBox , SIGNAL( stateChanged(int) ), this, SLOT( showTrace(int) ) );
+         connect( timeCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeSaveTime(double) ) );
+	connect( fileLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeFileName(const QString&) ) );
 
 	currentScope=0;
 // 	for(int i=0; i<1; ++i){
@@ -150,6 +158,7 @@ void QRL_ScopesManager::changeRefreshRate(double rr)
 {
 	//double rr=text.toDouble();
 	ScopeWindows[currentScope]->changeRefreshRate(rr);
+	qTargetInterface->getTargetThread()->setScopeRefreshRate(rr,currentScope);
 }
 void QRL_ScopesManager::changeDX(const QString& text)
 {
@@ -177,12 +186,6 @@ void QRL_ScopesManager::changeDataPoints(double dp)
 	if (Num_Scopes > 0)  showScopeOptions(currentScope);
 
 }
-// void QRL_ScopesManager::changeSaveTime(double time)
-// {
-// 	//double rr=text.toDouble();
-// 	ScopeWindows[currentScope]->setSaveTime(time);
-// 
-// }
 
 void QRL_ScopesManager::setOptions(int index)
 {
@@ -283,14 +286,42 @@ void QRL_ScopesManager::showTraceOptions(int index)
 		zeroAxisCheckBox->setCheckState(Qt::Checked);
 	else
 		zeroAxisCheckBox->setCheckState(Qt::Unchecked);
+
 	if (ScopeWindows[currentScope]->getTraceLabel(currentTrace))
 		labelCheckBox->setCheckState(Qt::Checked);
 	else
 		labelCheckBox->setCheckState(Qt::Unchecked);
+
+	if (ScopeWindows[currentScope]->getUnitLabel(currentTrace))
+		unitCheckBox->setCheckState(Qt::Checked);
+	else
+		unitCheckBox->setCheckState(Qt::Unchecked);
+
 	if (ScopeWindows[currentScope]->getAverageLabel(currentTrace))
 		averageCheckBox->setCheckState(Qt::Checked);
 	else
 		averageCheckBox->setCheckState(Qt::Unchecked);
+
+	if (ScopeWindows[currentScope]->getMinLabel(currentTrace))
+		minCheckBox->setCheckState(Qt::Checked);
+	else
+		minCheckBox->setCheckState(Qt::Unchecked);
+
+	if (ScopeWindows[currentScope]->getMaxLabel(currentTrace))
+		maxCheckBox->setCheckState(Qt::Checked);
+	else
+		maxCheckBox->setCheckState(Qt::Unchecked);
+
+	if (ScopeWindows[currentScope]->getPPLabel(currentTrace))
+		ppCheckBox->setCheckState(Qt::Checked);
+	else
+		ppCheckBox->setCheckState(Qt::Unchecked);
+
+	if (ScopeWindows[currentScope]->getRMSLabel(currentTrace))
+		rmsCheckBox->setCheckState(Qt::Checked);
+	else
+		rmsCheckBox->setCheckState(Qt::Unchecked);
+
 	if (ScopeWindows[currentScope]->isTraceVisible(currentTrace))
 		showTraceCheckBox->setCheckState(Qt::Checked);
 	else
@@ -302,6 +333,7 @@ void QRL_ScopesManager::changeTraceText(const QString & text ){
 	traceItems[currentTrace]->setText(text);
 	//tabWidget->setTabText(1,traceItems[currentTrace]->text());
 	 ScopeWindows[currentScope]->setTraceName(currentTrace, text);
+	traceComboBox->setItemText(currentTrace,text);
 }
 
 /**
@@ -331,14 +363,51 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 	for(int i=0; i<traceItems.size();i++)
 		delete traceItems[i];
 	traceItems.clear();
+	traceComboBox->clear();
 	for(int i=0; i<Scopes[currentScope].ntraces;i++){
 		traceItems << new QListWidgetItem(QIcon(),ScopeWindows[currentScope]->getTraceName(i), scopeListWidget);
 		if (i<traceItems.size())
-		traceItems[i]->setHidden(true);
+			traceItems[i]->setHidden(true);
+		traceComboBox->addItem(	ScopeWindows[currentScope]->getTraceName(i) );
 	}
 	
-	
+	traceComboBox->setCurrentIndex(	ScopeWindows[currentScope]->getTriggerChannel());
+	triggerCounter->setValue(ScopeWindows[currentScope]->getTriggerLevel() );
+	oneShotCheckBox->setChecked( ScopeWindows[currentScope]->getSingleMode() );
+	timeCounter->setValue(ScopeWindows[currentScope]->getSaveTime() );
+	fileLineEdit->setText(ScopeWindows[currentScope]->getFileName() );
 
+	disconnect( directionComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeDirection(int) ) );
+	disconnect( displayComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeDisplayModus(int) ) );
+
+	if (ScopeWindows[currentScope]->getPlottingDirection()==Qt::RightToLeft)
+		directionComboBox->setCurrentIndex(0);
+	else
+		directionComboBox->setCurrentIndex(1);
+	
+	switch(ScopeWindows[currentScope]->getPlottingMode())
+	{
+		case 0:	
+			displayComboBox->setCurrentIndex(0);
+			break;
+		case 1:
+			displayComboBox->setCurrentIndex(1);
+			break;
+		case 2://trigger down
+			if (ScopeWindows[currentScope]->getTriggerUpDirection())
+				displayComboBox->setCurrentIndex(3);
+			else
+				displayComboBox->setCurrentIndex(2);
+			break;
+		case 3:
+			displayComboBox->setCurrentIndex(4);
+			break;
+		default:
+			displayComboBox->setCurrentIndex(0);
+			break;
+	}
+	connect( directionComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeDirection(int) ) );
+        connect( displayComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeDisplayModus(int) ) );
 }
 
 void QRL_ScopesManager::showOptions(QListWidgetItem * item )
@@ -384,6 +453,11 @@ void QRL_ScopesManager::showTrace(int state)
 	ScopeWindows[currentScope]->setTriggerLevel(l);
 
 }
+
+  void QRL_ScopesManager::changeTriggerChannel(int trace) {
+	ScopeWindows[currentScope]->setTriggerChannel(trace);
+
+}
 void QRL_ScopesManager::manualTrigger(){
 
 	ScopeWindows[currentScope]->manualTriggerSignal();
@@ -407,43 +481,11 @@ void QRL_ScopesManager::changeDirection(int d)
 {
 	switch(d)
 	{
-	case 0:	
-		switch(displayComboBox->currentIndex())
-		{
-		case 0:	
-			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::roll,Qt::RightToLeft);
-			break;
-		case 1:
-			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::overwrite,Qt::RightToLeft);
-			break;
-		case 2://trigger down
-			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::RightToLeft);
-			break;
-		case 3: // trigger up
-			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::RightToLeft);
-			break;
-		default:
-			break;
-		}
+	case 0:		
+		ScopeWindows[currentScope]->setPlottingDirection(Qt::RightToLeft);
 		break;
 	case 1:
-		switch(displayComboBox->currentIndex())
-		{
-		case 0:	
-			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::roll,Qt::LeftToRight);
-			break;
-		case 1:
-			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::overwrite,Qt::LeftToRight);
-			break;
-		case 2://trigger down
-			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::LeftToRight);
-			break;
-		case 3: // trigger up
-			ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::LeftToRight);
-			break;
-		default:
-			break;
-		}
+		ScopeWindows[currentScope]->setPlottingDirection(Qt::LeftToRight);
 		break;
 	default:
 		break;
@@ -456,25 +498,29 @@ void QRL_ScopesManager::changeDisplayModus(int mode)
 	switch(mode)
 	{
 	case 0:	
-		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::roll,Qt::RightToLeft);
+		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::roll);
+		ScopeWindows[currentScope]->setPlottingDirection(Qt::RightToLeft);
 		directionComboBox->setCurrentIndex(0);
 		break;
 	case 1:
-		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::overwrite,Qt::LeftToRight);
+		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::overwrite);
+		ScopeWindows[currentScope]->setPlottingDirection(Qt::LeftToRight);
 		directionComboBox->setCurrentIndex(1);
 		break;
 	case 2://trigger down
-		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::LeftToRight);
+		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger);
+		ScopeWindows[currentScope]->setPlottingDirection(Qt::LeftToRight);
 		directionComboBox->setCurrentIndex(1);
 		ScopeWindows[currentScope]->setTriggerUpDirection(false);
 		break;
 	case 3: // trigger up
-		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger,Qt::LeftToRight);
+		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::trigger);
+		ScopeWindows[currentScope]->setPlottingDirection(Qt::LeftToRight);
 		ScopeWindows[currentScope]->setTriggerUpDirection(true);
 		directionComboBox->setCurrentIndex(1);
 		break;
 	case 4: //hold
-		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::hold,Qt::LeftToRight);
+		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::hold);
 		break;
 	default:
 		break;
@@ -503,6 +549,17 @@ void QRL_ScopesManager::changeOffset(double offset)
 	
 }
 
+void QRL_ScopesManager::changeSaveTime(double time)
+{
+	ScopeWindows[currentScope]->setSaveTime(time);
+	
+}
+
+void QRL_ScopesManager::changeFileName(const QString& str)
+{
+	ScopeWindows[currentScope]->setFileName(str);
+}
+
 void QRL_ScopesManager::changeDy(const QString& text)
 {
 	if (!text.isEmpty() &&text.toDouble()!=0.0 ){
@@ -528,8 +585,20 @@ void QRL_ScopesManager::changeDy(const QString& text)
 	} else {
 		ScopeWindows[currentScope]->setTraceLabel(false,currentTrace);
 	}
+	showTraceOptions(currentTrace+scopeItems.size());
 
 }
+
+  void QRL_ScopesManager::changeUnitLabel(int state){
+
+	if(state==Qt::Checked){
+		ScopeWindows[currentScope]->setUnitLabel(true,currentTrace);
+	} else {
+		ScopeWindows[currentScope]->setUnitLabel(false,currentTrace);
+	}
+	showTraceOptions(currentTrace+scopeItems.size());
+}
+
   void QRL_ScopesManager::changeAverageLabel(int state){
 
 	if(state==Qt::Checked){
@@ -537,7 +606,47 @@ void QRL_ScopesManager::changeDy(const QString& text)
 	} else {
 		ScopeWindows[currentScope]->setAverageLabel(false,currentTrace);
 	}
+	showTraceOptions(currentTrace+scopeItems.size());
+}
 
+  void QRL_ScopesManager::changeMinLabel(int state){
+
+	if(state==Qt::Checked){
+		ScopeWindows[currentScope]->setMinLabel(true,currentTrace);
+	} else {
+		ScopeWindows[currentScope]->setMinLabel(false,currentTrace);
+	}
+	showTraceOptions(currentTrace+scopeItems.size());
+}
+
+  void QRL_ScopesManager::changeMaxLabel(int state){
+
+	if(state==Qt::Checked){
+		ScopeWindows[currentScope]->setMaxLabel(true,currentTrace);
+	} else {
+		ScopeWindows[currentScope]->setMaxLabel(false,currentTrace);
+	}
+	showTraceOptions(currentTrace+scopeItems.size());
+}
+
+  void QRL_ScopesManager::changePPLabel(int state){
+
+	if(state==Qt::Checked){
+		ScopeWindows[currentScope]->setPPLabel(true,currentTrace);
+	} else {
+		ScopeWindows[currentScope]->setPPLabel(false,currentTrace);
+	}
+	showTraceOptions(currentTrace+scopeItems.size());
+}
+
+  void QRL_ScopesManager::changeRMSLabel(int state){
+
+	if(state==Qt::Checked){
+		ScopeWindows[currentScope]->setRMSLabel(true,currentTrace);
+	} else {
+		ScopeWindows[currentScope]->setRMSLabel(false,currentTrace);
+	}
+	showTraceOptions(currentTrace+scopeItems.size());
 }
 
 QDataStream& operator<<(QDataStream &out, const QRL_ScopesManager &d){
