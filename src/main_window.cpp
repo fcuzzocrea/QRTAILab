@@ -216,7 +216,7 @@ QRL_MainWindow::QRL_MainWindow()
 	TargetsManager=new QRL_TargetsManager(this,qTargetInterface);
 	connect( actionStartTarget, SIGNAL( triggered() ), TargetsManager, SLOT( exec() ) ); 
         //targetthread->setPreferences(Preferences);
-
+	qTargetInterface->getReady();
 
 }
 
@@ -230,7 +230,8 @@ void QRL_MainWindow::setStatusBarMessage(const QString & message){
 
 void QRL_MainWindow::closeEvent(QCloseEvent *event)
 {
-	qTargetInterface->disconnectFromTarget();
+	if (qTargetInterface->getIsTargetConnected()==1)
+		qTargetInterface->disconnectFromTarget();
 	if (ScopesManager) {
 		ScopesManager->hide();
 		delete ScopesManager;
@@ -279,7 +280,8 @@ if(qTargetInterface->getIsTargetConnected()==0){
 		connectToTarget(ConnectDialog->getPreferences());
 	else
 		return;
-    }
+    } else
+	connectToTarget(ConnectDialog->getPreferences());
 	
 	//rt_send(Target_Interface_Task, CONNECT_TO_TARGET);
 }
@@ -287,7 +289,7 @@ if(qTargetInterface->getIsTargetConnected()==0){
 }
 
 void QRL_MainWindow::connectToTarget(Preferences_T p){
-qTargetInterface->getReady();
+
 qTargetInterface->setPreferences(p);
 //targetthread->setVerbose(Verbose);
 	qTargetInterface->connectToTarget();
@@ -409,6 +411,30 @@ qTargetInterface->setPreferences(p);
  void QRL_MainWindow::disconnectDialog() 
 {
 	disconnectFromTarget();
+
+	if (ScopesManager) {
+		ScopesManager->hide();
+		delete ScopesManager;
+		ScopesManager=NULL;
+	}
+
+	//if (Logs_Manager) Logs_Manager->hide();
+	//if (ALogs_Manager) ALogs_Manager->hide();
+	if (LedsManager) {
+		LedsManager->hide();
+		delete LedsManager;
+		LedsManager=NULL;
+	}
+	if (MetersManager) {
+		MetersManager->hide();
+		delete MetersManager;
+		MetersManager=NULL;
+	}
+	if (ParametersManager) {
+		ParametersManager->hide();
+		delete ParametersManager;
+		ParametersManager=NULL;
+	}
 	//qTargetInterface->disconnectFromTarget();
 	
 	//if (MetersManager) {
@@ -428,7 +454,7 @@ qTargetInterface->setPreferences(p);
 		enableActionStart(false);
 		enableActionStop(false);
 	}
-	
+	//emit close();
 }
 
  void QRL_MainWindow::disconnectFromTarget(){
@@ -709,6 +735,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
         		enableActionShowParameter(false);
 		}
 	}
+	emit close();
 }
 
 void QRL_MainWindow::showScopesManager()

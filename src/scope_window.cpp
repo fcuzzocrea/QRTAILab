@@ -388,7 +388,8 @@ QwtText atext(tr("Avg: ")+astr);
    void QRL_ScopeWindow::changeRefreshRate(double rr)
 {
 	RefreshRate=rr;
-	
+	if (	RefreshRate<0.)
+		RefreshRate=20.;
 	timer->stop();
 	timer->start((int)(1./RefreshRate*1000.));
 	
@@ -519,7 +520,7 @@ QwtText atext(tr("Avg: ")+astr);
 	printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
 	timer->start(1/RefreshRate*1000.);
 
-changeDataPoints(NDataMax);
+//changeDataPoints(NDataMax);
 
 }
 
@@ -1008,6 +1009,14 @@ QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d){
         qint32 a;
 	out  << d.size()  << d.pos() << d.isVisible();
 	a=d.Ncurve; out << a;
+	out << d.gridColor;
+	out << d.bgColor;
+	out << d.RefreshRate;
+	out << d.dx;
+	a=d.NDataSoll;out << a;
+	a=(qint32)d.plottingMode;out << a;
+	a=(qint32)d.direction; out << a;
+	
 	 for (int nn=0; nn<d.Ncurve;++nn){
 		
 		out << d.TraceOptions[nn].traceName;
@@ -1027,15 +1036,22 @@ QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d){
 
 
 QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
-	QSize s;QPoint p;bool b; QColor c; qint32 a;QFont f; double dd;
+	QSize s;QPoint p;bool b; QColor c; qint32 a,a2;QFont f; double dd;
 	QString str; int Ncurve;
 	in >> s;d.resize(s);
 	in >> p; d.move(p);
 	in >> b; d.setVisible(b);
 	in >> a; Ncurve=(int)a;
+	in >> c; d.setGridColor(c);
+	in >> c; d.setBgColor(c);
+	in >> dd; d.changeRefreshRate(dd);
+	in >> dd; d.changeDX(dd);
+	in >> a; d.changeDataPoints(a);
+	in >> a; in >> a2;
+	d.setPlottingMode((QRL_ScopeWindow::PlottingMode)a,(Qt::LayoutDirection)a2);
 	 for (int nn=0; nn<Ncurve;++nn){
 	   if (nn<d.Ncurve) {
-		in >> str; d.TraceOptions[nn].traceName=str;
+		in >> str; d.setTraceName(nn, str);
 		in >> b; d.setZeroAxis(b,nn);
 		in >> b; d.setAverageLabel(b,nn);
 		in >> b; d.setTraceLabel(b,nn);
@@ -1044,6 +1060,8 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 		in >> c; d.setTraceColor(c,nn);
 		in >> a; d.setTraceWidth((int)a,nn);
 		in >> b; d.showTrace(b,nn);
+
+
 	  } else {
 		in >> str;
 		in >> b; 
@@ -1054,6 +1072,7 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 		in >> c;
 		in >> a;
 		in >> b;
+
 	  }
 	}
 
