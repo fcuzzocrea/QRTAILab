@@ -480,16 +480,18 @@ void QRL_MainWindow::loadProfile() {
     QDataStream in(&file);
 	qint32 mm,version;
 	in >> mm >> version;
-	if (mm!=0xA0B0C0D0) {
+	if (mm!=DATA_STREAM_MAGIC_NUMBER) {
 		file.close();
 		QMessageBox::warning(NULL,"Error","Wrong file format! Could not load file!", QMessageBox::Ok );
 		return;
+	} else 	if (version!=DATA_STREAM_VERSION) {
+		file.close();
+		QMessageBox::warning(NULL,"Error","Wrong version number! Could not load file!", QMessageBox::Ok );
+		return;
 	}
 	QSize s;QPoint p;
-	if (version>100){
-		in >> s;this->resize(s);
-		in >> p; this->move(p);
-	}
+	in >> s;this->resize(s);
+	in >> p; this->move(p);
 	in >> *ConnectDialog;
 	if (qTargetInterface->getIsTargetConnected()==0) {
 		connectToTarget(ConnectDialog->getPreferences());
