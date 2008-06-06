@@ -934,7 +934,6 @@ return ret;
 
 QVector< QVector<float> > ret;
 ret.resize(ScopeValues.at(n).size());
-if (n<ScopeValues.size()){
  //ret= Get_Led_Data_Thread[n].getValue();
 
    for (int t=0; t<ScopeValues.at(n).size(); ++t){
@@ -943,9 +942,25 @@ if (n<ScopeValues.size()){
   	// ScopeValues[n][t].clear();
 	 ScopeIndex[n][t]=0;
    }
+	return ret;
 }
-return ret;
-} 
+
+//  QVector< QVector<float> > TargetThread::getScopeValue(int n){
+// 	
+// 
+// //QVector< QVector<float> > ret;
+// //ret.resize(ScopeValues.at(n).size());
+//  //ret= Get_Led_Data_Thread[n].getValue();
+// 
+//    for (int t=0; t<ScopeValues.at(n).size(); ++t){
+// //	for (int i=0;i<ScopeIndex[n][t];i++)
+// //  	 	ret[t].append(ScopeValues.at(n).at(t).at(i));
+//   	// ScopeValues[n][t].clear();
+// 	 ScopeIndex[n][t]=0;
+//    }
+// 	//ret=ScopeValues[n];
+// return ScopeValues[n];
+// } 
 
    QString TargetThread::getScopeName(int i){
 	return tr(Scopes[i].name);
