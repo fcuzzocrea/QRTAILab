@@ -96,7 +96,6 @@
 
 
 
-
 namespace qrl {
 
 static volatile int GlobalRet[16];
@@ -135,7 +134,6 @@ namespace qrl_types {
 typedef struct Target_Parameters_Struct Target_Parameters_T;
 typedef struct Target_Blocks_Struct Target_Blocks_T;
 typedef struct Target_Scopes_Struct Target_Scopes_T;
-typedef struct Save_Scopes_Struct Save_Scopes_T;
 typedef struct Target_Logs_Struct Target_Logs_T;
 typedef struct Target_ALogs_Struct Target_ALogs_T;
 typedef struct Target_Leds_Struct Target_Leds_T;
@@ -176,8 +174,8 @@ struct Args_Struct_ALog
 	const char *mbx_id;
 	int index;
 	const char *alog_name;
-	void *targetThread;
 	int hardRealTime;
+	void *targetThread;
 };
 struct Target_Parameters_Struct
 {
@@ -203,14 +201,11 @@ struct Target_Scopes_Struct
 	int ntraces;
 	int visible;
 	float dt;
+	int isSaving;
+  	FILE* Save_File_Pointer;
+  	double Save_Time;
 };
 
-struct Save_Scopes_Struct
-{
-   int isSaving;
-   FILE* Save_File_Pointer;
-   double Save_Time;
-};
 
 struct Target_Logs_Struct
 {
@@ -218,6 +213,9 @@ struct Target_Logs_Struct
 	int nrow;
 	int ncol;
 	float dt;
+	int isSaving;
+   	FILE* Save_File_Pointer;
+   	double Save_Time;
 };
 
 struct Target_ALogs_Struct

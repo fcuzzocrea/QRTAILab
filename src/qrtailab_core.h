@@ -70,6 +70,7 @@ class TargetThread : public QThread
     int getScopeNumber(){return Num_Scopes;}
     int getMeterNumber(){return Num_Meters;}
     int getLedNumber(){return Num_Leds;}
+    int getLogNumber(){return Num_Logs;}
     int getParameterNumber(){return Num_Tunable_Parameters;}
     int getBlockNumber(){return Num_Tunable_Blocks;}
       long getTargetNode(){return Target_Node;}
@@ -113,7 +114,7 @@ class TargetThread : public QThread
     QVector< QVector<float> > getScopeValue(int n);
     QString getScopeName(int);
 
-    int start_saving(int index);
+    int start_saving_scope(int index);
     void startSaving(int index,FILE* Save_File_Pointer,double Save_Time);
      FILE* save_file(int index);
      void stop_saving(int index);
@@ -136,6 +137,14 @@ class TargetThread : public QThread
     void stopALogThreads();
     void startLogThreads();
     void stopLogThreads();
+
+    int start_saving_log(int index);
+    void startSavingLog(int index,FILE* Save_File_Pointer,double Save_Time);
+     FILE* save_file_log(int index);
+     void stop_saving_log(int index);
+      int n_points_to_save_log(int index);
+
+
     const char* getTargetName(){return RLG_Target_Name;}
     long getTargetPort(){return Target_Port;}
     RT_TASK * getTask(){return Target_Interface_Task;}
@@ -168,7 +177,6 @@ class TargetThread : public QThread
   Target_Parameters_T *Tunable_Parameters;
   Target_Blocks_T *Tunable_Blocks;
   Target_Scopes_T *Scopes;
-  Save_Scopes_T *SaveScopes;
   Target_Logs_T *Logs;
   Target_ALogs_T *ALogs;
   Target_Leds_T *Leds;
@@ -204,6 +212,8 @@ class TargetThread : public QThread
  pthread_t *Get_ALog_Data_Thread;
  pthread_t *Get_Log_Data_Thread;
 
+
+
  };
 
 
@@ -235,6 +245,7 @@ public:
     int getScopeNumber();
     int getMeterNumber();
     int getLedNumber();
+    int getLogNumber();
     int getParameterNumber(){return targetthread->getParameterNumber();}
     int getBlockNumber(){return targetthread->getBlockNumber();}
     int getEndApp(){return targetthread->getEndApp();}
@@ -262,6 +273,7 @@ public:
     int	    getLedDt(int);
     int     getNumberOfLeds(int);
 
+    QString getLogName(int);
 
 public slots:
     //void refreshData();

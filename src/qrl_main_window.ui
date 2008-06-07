@@ -150,6 +150,7 @@
    <addaction name="actionShowScope" />
    <addaction name="actionShowMeter" />
    <addaction name="actionShowLed" />
+   <addaction name="actionShowLog" />
   </widget>
   <action name="actionConnect" >
    <property name="icon" >
@@ -277,6 +278,15 @@
    </property>
    <property name="text" >
     <string>Start Target</string>
+   </property>
+  </action>
+  <action name="actionShowLog" >
+   <property name="icon" >
+    <iconset resource="qrtailab.qrc" >
+     <normaloff>:/icons/log_icon.xpm</normaloff>:/icons/log_icon.xpm</iconset>
+   </property>
+   <property name="text" >
+    <string>Log</string>
    </property>
   </action>
  </widget>

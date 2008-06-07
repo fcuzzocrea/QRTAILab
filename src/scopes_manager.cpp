@@ -128,9 +128,10 @@ void QRL_ScopesManager::refresh()
 
 //try {
   for (int n=0; n<Num_Scopes; ++n){
-	QVector< QVector<float> > v;
-	v = qTargetInterface->getTargetThread()->getScopeValue(n);
-	if (v.size()>0) {
+	//QVector< QVector<float> > v;
+	//v = qTargetInterface->getTargetThread()->getScopeValue(n);
+	//if (v.size()>0) {
+
 //	printf("size scopevector:  %d x %d\n",v.size(),v.at(0).size());
 
 // 	for (int t=0; t<qTargetInterface->getNumberOfTraces(n);++t)
@@ -139,8 +140,8 @@ void QRL_ScopesManager::refresh()
 // 			ScopeWindows[n]->setValue(t,v.at(t).at(k));
 // 	}
 
-	ScopeWindows[n]->setValue(v);
-	}
+	ScopeWindows[n]->setValue( qTargetInterface->getTargetThread()->getScopeValue(n));
+	//}
    }
 // } catch (...){
 // 	qDebug()<<"error in ScopesManager::refresh";
@@ -207,7 +208,7 @@ void QRL_ScopesManager::startSaving()
 {
 	 FILE* Save_File_Pointer;
 	double Save_Time=timeCounter->value();
-	if( qTargetInterface->getTargetThread()->start_saving(currentScope)==0){
+	if( qTargetInterface->getTargetThread()->start_saving_scope(currentScope)==0){
 
 		QString File_Name=fileLineEdit->text();
 		if (QFile::exists(File_Name)) {
@@ -347,7 +348,7 @@ void QRL_ScopesManager::changeTraceText(const QString & text ){
 void QRL_ScopesManager::showScopeOptions( int index ){
 
 	currentScope=index;
-	if(qTargetInterface->getTargetThread()->start_saving(currentScope)==0){
+	if(qTargetInterface->getTargetThread()->start_saving_scope(currentScope)==0){
 		savePushButton->setEnabled(true);
 	}
 	tabWidget->setTabText(0,tr(Scopes[currentScope].name));

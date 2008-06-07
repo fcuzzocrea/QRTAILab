@@ -49,11 +49,13 @@ TargetThread::TargetThread(){
 	Num_Leds=0;
 	Num_Meters=0;
 
+
 }
 
 
 TargetThread::~TargetThread(){
-	
+
+
  	if (Num_Tunable_Blocks>0)
  		delete[] Tunable_Blocks;
  	if (Num_Scopes>0)
@@ -105,8 +107,6 @@ double TargetThread::get_parameter(Target_Parameters_T p, int nr, int nc, int *v
 			return (0.0);
 	}
 }
-
-
 
 
 
@@ -235,12 +235,11 @@ void TargetThread::upload_parameters_info(long port, RT_TASK *task)
 		}
 	}
 	if (n_scopes > 0) Scopes = new Target_Scopes_T [n_scopes];
-	if (n_scopes > 0) SaveScopes = new Save_Scopes_T [n_scopes];
 	for (int n = 0; n < n_scopes; n++) {
 		char scope_name[MAX_NAMES_SIZE];
 		Scopes[n].visible = false;
-		SaveScopes[n].isSaving=0;
-		SaveScopes[n].Save_File_Pointer=NULL;
+		Scopes[n].isSaving=0;
+		Scopes[n].Save_File_Pointer=NULL;
 		RT_rpcx(Target_Node, port, task, &n, &Scopes[n].ntraces, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &scope_name, sizeof(int), sizeof(scope_name));
 		strncpy(Scopes[n].name, scope_name, MAX_NAMES_SIZE);
@@ -267,6 +266,8 @@ int TargetThread::get_log_blocks_info(long port, RT_TASK *task, const char *mbx_
 	if (n_logs > 0) Logs = new Target_Logs_T [n_logs];
 	for (int n = 0; n < n_logs; n++) {
 		char log_name[MAX_NAMES_SIZE];
+		Logs[n].isSaving=0;
+		Logs[n].Save_File_Pointer=NULL;
 		RT_rpcx(Target_Node, port, task, &n, &Logs[n].nrow, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &Logs[n].ncol, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &log_name, sizeof(int), sizeof(log_name));
@@ -913,21 +914,21 @@ if (t<ScopeValues.at(n).size()){
 }
 }
 
- QVector<float> TargetThread::getScopeValue(int n, int t){
-	
-
-QVector<float> ret;
-if (n<ScopeValues.size()){
-if (t<ScopeValues.at(n).size()){
- //ret= Get_Led_Data_Thread[n].getValue();
-   for (int i=0;i<ScopeIndex[n][t];i++)
-   	ret.append(ScopeValues.at(n).at(t).at(i));
-  // ScopeValues[n][t].clear();
-   ScopeIndex[n][t]=0;
-}
-}
-return ret;
-} 
+//  QVector<float> TargetThread::getScopeValue(int n, int t){
+// 	
+// 
+// QVector<float> ret;
+// if (n<ScopeValues.size()){
+// if (t<ScopeValues.at(n).size()){
+//  //ret= Get_Led_Data_Thread[n].getValue();
+//    for (int i=0;i<ScopeIndex[n][t];i++)
+//    	ret.append(ScopeValues.at(n).at(t).at(i));
+//   // ScopeValues[n][t].clear();
+//    ScopeIndex[n][t]=0;
+// }
+// }
+// return ret;
+// } 
 
  QVector< QVector<float> > TargetThread::getScopeValue(int n){
 	
@@ -937,8 +938,9 @@ ret.resize(ScopeValues.at(n).size());
  //ret= Get_Led_Data_Thread[n].getValue();
 
    for (int t=0; t<ScopeValues.at(n).size(); ++t){
-	for (int i=0;i<ScopeIndex[n][t];i++)
-  	 	ret[t].append(ScopeValues.at(n).at(t).at(i));
+// 	for (int i=0;i<ScopeIndex[n][t];i++)
+//   	 	ret[t].append(ScopeValues.at(n).at(t).at(i));
+	ret[t]=ScopeValues.at(n).at(t).mid(0,ScopeIndex[n][t]);
   	// ScopeValues[n][t].clear();
 	 ScopeIndex[n][t]=0;
    }
@@ -966,29 +968,29 @@ ret.resize(ScopeValues.at(n).size());
 	return tr(Scopes[i].name);
 }
 
-int  TargetThread::start_saving(int index) {return SaveScopes[index].isSaving ;}
+int  TargetThread::start_saving_scope(int index) {return Scopes[index].isSaving ;}
 
 void  TargetThread::startSaving(int index,FILE* Save_File_Pointer,double Save_Time){ 
-	SaveScopes[index].Save_File_Pointer=Save_File_Pointer;
-	SaveScopes[index].Save_Time=Save_Time;
-	SaveScopes[index].isSaving=1;
+	Scopes[index].Save_File_Pointer=Save_File_Pointer;
+	Scopes[index].Save_Time=Save_Time;
+	Scopes[index].isSaving=1;
 }
 FILE*  TargetThread::save_file(int index) {
 
-	return SaveScopes[index].Save_File_Pointer;
+	return Scopes[index].Save_File_Pointer;
 
 }
      void  TargetThread::stop_saving(int index){
-	SaveScopes[index].isSaving=0;
-	fclose(SaveScopes[index].Save_File_Pointer);
-	SaveScopes[index].Save_File_Pointer=NULL;
+	Scopes[index].isSaving=0;
+	fclose(Scopes[index].Save_File_Pointer);
+	Scopes[index].Save_File_Pointer=NULL;
 	//emit stopSaving(index);
 
 }
       int  TargetThread::n_points_to_save(int index){
 	int n_points;
 
-	n_points = (int)(SaveScopes[index].Save_Time/Scopes[index].dt);
+	n_points = (int)(Scopes[index].Save_Time/Scopes[index].dt);
 	if (n_points < 0) return 0;
 	return n_points;
 
@@ -1218,6 +1220,44 @@ void TargetThread::stopLogThreads()
 	}
 	delete[] Get_Log_Data_Thread;
 }
+
+
+
+int  TargetThread::start_saving_log(int index) {return Logs[index].isSaving ;}
+
+void  TargetThread::startSavingLog(int index,FILE* Save_File_Pointer,double Save_Time){ 
+	Logs[index].Save_File_Pointer=Save_File_Pointer;
+	Logs[index].Save_Time=Save_Time;
+	Logs[index].isSaving=1;
+}
+FILE*  TargetThread::save_file_log(int index) {
+
+	return Logs[index].Save_File_Pointer;
+
+}
+     void  TargetThread::stop_saving_log(int index){
+	Logs[index].isSaving=0;
+	fclose(Logs[index].Save_File_Pointer);
+	Logs[index].Save_File_Pointer=NULL;
+	//emit stopSaving(index);
+
+}
+      int  TargetThread::n_points_to_save_log(int index){
+	int n_points;
+
+	n_points = (int)(Logs[index].Save_Time/Logs[index].dt);
+	if (n_points < 0) return 0;
+	return n_points;
+
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -1504,3 +1544,18 @@ int	    QRtaiLabCore::getLedDt(int n){
 
 
 
+
+int QRtaiLabCore::getLogNumber()
+{
+	 int Num_Logs= targetthread->getLogNumber();
+return Num_Logs;
+
+}
+
+QString QRtaiLabCore::getLogName(int n){
+  QString str;
+  if (n<targetthread->getLogNumber())
+	str=tr(targetthread->getLogs()[n].name);
+  return str;
+
+}

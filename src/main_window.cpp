@@ -144,6 +144,7 @@ QRL_MainWindow::QRL_MainWindow(int v)
     // signals/slots mechanism in action
 	ScopesManager=NULL;
 	LedsManager=NULL;
+	LogsManager=NULL;
 	MetersManager=NULL;
 	ParametersManager=NULL;
 	
@@ -158,6 +159,7 @@ QRL_MainWindow::QRL_MainWindow(int v)
 	connect( actionShowScope, SIGNAL( triggered() ), this, SLOT( showScopesManager() ) ); 
 	connect( actionShowMeter, SIGNAL( triggered() ), this, SLOT( showMetersManager() ) ); 
 	connect( actionShowLed, SIGNAL( triggered() ), this, SLOT( showLedsManager() ) ); 
+	connect( actionShowLog, SIGNAL( triggered() ), this, SLOT( showLogsManager() ) ); 
 	connect( actionShowParameter, SIGNAL( triggered() ), this, SLOT( showParametersManager() ) ); 
 	//connect( actionStartTarget, SIGNAL( triggered() ), this, SLOT( startTarget() ) ); 
    enableActionConnect(true);
@@ -170,6 +172,7 @@ QRL_MainWindow::QRL_MainWindow(int v)
    enableActionShowScope(false);
    enableActionShowMeter(false); 
    enableActionShowLed(false); 
+   enableActionShowLog(false); 
    enableActionShowParameter(false);
 
 
@@ -231,6 +234,10 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 	if (LedsManager) {
 		LedsManager->hide();
 		delete LedsManager;
+	}
+	if (LogsManager) {
+		LogsManager->hide();
+		delete LogsManager;
 	}
 	if (MetersManager) {
 		MetersManager->hide();
@@ -332,6 +339,23 @@ qTargetInterface->setPreferences(p);
 					LedsManager->show();
 				}
 			}
+			}			
+			if (qTargetInterface->getLogNumber()>0){
+			enableActionShowLog(true);
+			if (! LogsManager){
+				LogsManager = new QRL_LogsManager(this,qTargetInterface);
+			}
+			if (LogsManager) {
+				//targetthread->startLedThreads();//LedsManager->getLedWindows());
+				LogsManager->setGeometry(0,0,200,300);
+				
+				bool view_flag=false;
+				if (!view_flag) {
+					LogsManager->hide();
+				} else {
+					LogsManager->show();
+				}
+			}
 			}
 			if (qTargetInterface->getScopeNumber()>0){
 				enableActionShowScope(true);
@@ -390,6 +414,7 @@ qTargetInterface->setPreferences(p);
 		enableActionShowScope(false);
         	enableActionShowMeter(false); 
         	enableActionShowLed(false); 
+		enableActionShowLog(false); 
         	enableActionShowParameter(false);
 	}
 
@@ -409,12 +434,16 @@ qTargetInterface->setPreferences(p);
 		ScopesManager=NULL;
 	}
 
-	//if (Logs_Manager) Logs_Manager->hide();
 	//if (ALogs_Manager) ALogs_Manager->hide();
 	if (LedsManager) {
 		LedsManager->hide();
 		delete LedsManager;
 		LedsManager=NULL;
+	}
+	if (LogsManager) {
+		LogsManager->hide();
+		delete LogsManager;
+		LogsManager=NULL;
 	}
 	if (MetersManager) {
 		MetersManager->hide();
@@ -496,7 +525,8 @@ void QRL_MainWindow::loadProfile() {
 	if (qTargetInterface->getIsTargetConnected()==0) {
 		connectToTarget(ConnectDialog->getPreferences());
 	}
-
+	if (LogsManager)
+ 		in >> *LogsManager;
 	if (LedsManager)
  		in >> *LedsManager;
 	if (MetersManager)
@@ -600,6 +630,8 @@ QString filename = QFileDialog::getSaveFileName(this,tr("Save Profile"), NULL, t
  out.setVersion(QDataStream::Qt_4_2);
 	out  << this->size()  << this->pos();
 	out<<*ConnectDialog;
+	if (LogsManager)
+ 		out << *LogsManager;
 	if (LedsManager)
  		out << *LedsManager;
 	if (MetersManager)
@@ -731,6 +763,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 			enableActionShowScope(false);
         		enableActionShowMeter(false); 
         		enableActionShowLed(false); 
+			enableActionShowLog(false); 
         		enableActionShowParameter(false);
 		}
 	}
@@ -765,6 +798,14 @@ if (LedsManager)
  		LedsManager->show();
 }
 
+void QRL_MainWindow::showLogsManager()
+{
+if (LogsManager)
+	if (LogsManager->isVisible())
+		LogsManager->hide();
+	else
+ 		LogsManager->show();
+}
 void QRL_MainWindow::showParametersManager()
 {
 if (ParametersManager)
@@ -825,6 +866,11 @@ void QRL_MainWindow::enableActionShowScope(bool b)
 void QRL_MainWindow::enableActionShowLed(bool b)
 {
 	actionShowLed->setEnabled(b);
+}
+
+void QRL_MainWindow::enableActionShowLog(bool b)
+{
+	actionShowLog->setEnabled(b);
 }
 
 void QRL_MainWindow::enableActionShowParameter(bool b)
