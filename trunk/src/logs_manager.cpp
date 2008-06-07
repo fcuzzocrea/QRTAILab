@@ -53,7 +53,6 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
 // 		traceComboBox->addItem(tr("Trace ")+tr("%1").arg(i+1));
 // 	}
-
 	if (Num_Logs > 0)  showLogOptions(currentLog);
 	
 //	if (Num_Scopes > 0) Get_Scope_Data_Thread = new GetScopeDataThread [Num_Scopes];
@@ -66,6 +65,7 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
 }
 QRL_LogsManager::~QRL_LogsManager()
 {
+
 	//stopScopeThreads();
 	//if (Get_Scope_Data_Thread)
 	//	delete[] Get_Scope_Data_Thread;
@@ -128,6 +128,8 @@ void QRL_LogsManager::showLogOptions( QListWidgetItem * item ){
 
 	currentLog= logListWidget->row(item);
 	tabWidget->setTabText(0,qTargetInterface->getLogName(currentLog));
+//  	timeCounter->setValue(saveTime[currentLog] );
+//  	fileLineEdit->setText(fileName[currentLog] );
 }
 
 void QRL_LogsManager::showLogOptions( int index ){
@@ -137,8 +139,8 @@ void QRL_LogsManager::showLogOptions( int index ){
 		savePushButton->setEnabled(true);
 	}
 	tabWidget->setTabText(0,tr(Logs[currentLog].name));
-//	timeCounter->setValue(ScopeWindows[currentScope]->getSaveTime() );
-//	fileLineEdit->setText(ScopeWindows[currentScope]->getFileName() );
+//  	timeCounter->setValue(saveTime[currentLog] );
+//  	fileLineEdit->setText(fileName[currentLog] );
 
 }
 
@@ -147,37 +149,45 @@ void QRL_LogsManager::showLogOptions( int index ){
 void QRL_LogsManager::changeSaveTime(double time)
 {
 	//ScopeWindows[currentScope]->setSaveTime(time);
-	Logs[currentLog].Save_Time=time;
+// 	Logs[currentLog].Save_Time=time;
+// 	saveTime[currentLog]=time;
 	
 }
 
 void QRL_LogsManager::changeFileName(const QString& str)
 {
 	//ScopeWindows[currentScope]->setFileName(str);
+// 	fileName[currentLog]=str;
 }
 
 
 QDataStream& operator<<(QDataStream &out, const QRL_LogsManager &d){
 	out << d.size()  << d.pos() << d.isVisible();
 	out <<(qint32) d.Num_Logs;
+	out << d.fileLineEdit->text() << d.timeCounter->value();
 	for (int i = 0; i < d.Num_Logs; ++i) {
+		//out << d.file_name.at(i) << d.save_time.at(i);
 	}
 	return out;
 }
 
 
 QDataStream& operator>>(QDataStream &in, QRL_LogsManager(&d)){
-	QSize s;QPoint p;bool b; int i;
+	QSize s;QPoint p;bool b; int i;QString str;double dd;
 	in >> s;d.resize(s);
 	in >> p; d.move(p);
 	in >> b; d.setVisible(b);
 	qint32 a;
 	in >> a;
+	in >> str >> dd;
+ 	d.timeCounter->setValue(dd);
+ 	d.fileLineEdit->setText(str );
+
 	for (int i = 0; i < (int)a; ++i) {
 // 		if (d.Num_Logs>i)
-// 			in>>*(d.ScopeWindows[i]);
+// 			in>>d.file_name[i]>>d.save_time[i];
 // 		else 
-// 			in>>*(d.ScopeWindows[d.Num_Scopes-1]);
+// 			in>>str>>dd;
 	}
 	d.showLogOptions(d.currentLog);
 	return in;
