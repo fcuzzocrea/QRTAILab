@@ -49,8 +49,6 @@ struct Scopes_Data_Struct
 {
 	double * d_y;
 	double * d_yempty;
-	double* d_yt;
-	double* d_yt2;
 	int time;
 	int yt;
 };

@@ -35,6 +35,7 @@
 #include "leds_manager.h"
 #include "scopes_manager.h"
 #include "parameters_manager.h"
+#include "logs_manager.h"
 #include "qrtailab_core.h"
 #include "targets_manager.h"
 #include <locale.h>
@@ -121,6 +122,7 @@ protected slots:
     void showMetersManager();
     void showScopesManager();
     void showLedsManager();
+    void showLogsManager();
     void showParametersManager();
     void setStatusBarMessage(const QString &);
  
@@ -135,11 +137,13 @@ private:
     void enableActionShowMeter(bool);
     void enableActionShowScope(bool);
     void enableActionShowLed(bool);
+    void enableActionShowLog(bool);
     void enableActionShowParameter(bool);
     void enableActionSaveProfile(bool);
     void enableActionDeleteProfile(bool);
     QRL_MetersManager *MetersManager;
     QRL_LedsManager *LedsManager;
+    QRL_LogsManager *LogsManager;
     QRL_ScopesManager *ScopesManager;
     QRL_ParametersManager *ParametersManager;
     QRL_connectDialog *ConnectDialog;
