@@ -883,7 +883,7 @@ void QRL_MainWindow::enableActionShowParameter(bool b)
 void QRL_MainWindow::about() 
 {
     QMessageBox::about(this,"About QRtaiLab",
-		"Version 0.1\n"
+		"Version 0.1.1\n"
                 "This app was coded for educational purposes.\n\n"
                 "Copyright (C) 2008 Holger Nahrstaedt. \n"
 		"              Control system group, TU-Berlin\n"

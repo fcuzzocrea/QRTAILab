@@ -87,7 +87,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 	ymin=yOffset-0.5*(yMajorTicks*dy);
        ymax=yOffset+0.5*(yMajorTicks*dy);
       yStep=(ymax-ymin)/yMajorTicks;
-	MaxDataPoints=100000;
+	MaxDataPoints=1000000;
 	dx=0.1;
 	xMajorTicks=10;
 	xmin=0;
