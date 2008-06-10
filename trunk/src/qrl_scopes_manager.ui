@@ -109,6 +109,9 @@
            </item>
            <item row="0" column="1" >
             <widget class="QwtCounter" name="dataCounter" >
+             <property name="enabled" >
+              <bool>true</bool>
+             </property>
              <property name="numButtons" >
               <number>1</number>
              </property>
@@ -119,7 +122,7 @@
               <double>5.000000000000000</double>
              </property>
              <property name="maxValue" >
-              <double>10000.000000000000000</double>
+              <double>100000.000000000000000</double>
              </property>
              <property name="stepButton1" >
               <number>100</number>
@@ -288,8 +291,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>203</width>
-            <height>240</height>
+            <width>178</width>
+            <height>152</height>
            </rect>
           </property>
           <attribute name="label" >
@@ -382,8 +385,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>203</width>
-            <height>240</height>
+            <width>96</width>
+            <height>163</height>
            </rect>
           </property>
           <attribute name="label" >

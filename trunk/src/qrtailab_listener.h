@@ -91,8 +91,9 @@ static void *rt_get_scope_data(void *arg)
 
 	TracesBytes = (scope.ntraces + 1)*sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/TracesBytes)*TracesBytes;
-	//MsgLen = (((int)(TracesBytes*dt*(1./scope.dt)))/TracesBytes)*TracesBytes;
-	MsgLen = (((int)(TracesBytes*(1./targetThread->getScopeRefreshRate(index))*(1./scope.dt)))/TracesBytes)*TracesBytes;
+	MsgLen = (((int)(TracesBytes*dt*(1./scope.dt)))/TracesBytes)*TracesBytes;
+	//MsgLen = (((int)(TracesBytes*(1./targetThread->getScopeRefreshRate(index))*(1./scope.dt)))/TracesBytes)*TracesBytes;
+
 	if (MsgLen < TracesBytes) MsgLen = TracesBytes;
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/TracesBytes;
@@ -102,8 +103,8 @@ static void *rt_get_scope_data(void *arg)
 	MsgWait=(MsgWait<WAIT_MAX)?MsgWait:WAIT_MAX;
 
 	// Ndistance defines the distance between plotted datapoints, to archive the given refresh rate.
-	long int Ndistance=(long int)(dt/scope.dt);
-	if (Ndistance<1)
+	int Ndistance=(int)(dt*(1./scope.dt));  //doesnt work
+	//if (Ndistance<1)
 		Ndistance=1;
 	int ntraces=scope.ntraces;
 	//QVector <float>  data; 
@@ -111,7 +112,7 @@ static void *rt_get_scope_data(void *arg)
 
 	rt_send(Target_Interface_Task, 0);
 	
-	n=Ndistance;
+	n=(int)Ndistance;
 	RTIME t0,t,told; int time=0; double time10=0.;double t10;int n10=0;
 	t0 = rt_get_cpu_time_ns();
 	mlockall(MCL_CURRENT | MCL_FUTURE);
@@ -139,8 +140,8 @@ static void *rt_get_scope_data(void *arg)
 			t10+=(t - told)*1.0E-6;
 			time10+=time*dt*1.0E3;
 		}
-		if (((t - told)*1.0E-6)>25.)
-		   printf("Time failure  %f (%f)\n",(t - told)*1.0E-6,time*dt*1.0E3 );
+// 		if (((t - told)*1.0E-6)>25.)
+// 		   printf("Time failure  %f (%f)\n",(t - told)*1.0E-6,time*dt*1.0E3 );
 		}
 		time=0;
 		if (n>MsgData)
@@ -171,16 +172,16 @@ static void *rt_get_scope_data(void *arg)
 
 		if (targetThread->getScopeDt(index)!=dt){
 			dt=targetThread->getScopeDt(index);
+			Ndistance=(int)(dt*(1./scope.dt));  //doesnt work
+			//if (Ndistance<1)
+				Ndistance=1;
 			MsgLen = (((int)(TracesBytes*dt*(1./scope.dt)))/TracesBytes)*TracesBytes;
 			//MsgLen = (((int)(TracesBytes*(1./targetThread->getScopeRefreshRate(index))*(1./scope.dt)))/TracesBytes)*TracesBytes;
 			if (MsgLen < TracesBytes) MsgLen = TracesBytes;
 			if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 			MsgData = MsgLen/TracesBytes;
 			// Ndistance defines the distance between plotted datapoints, to archive the given refresh rate.
-			Ndistance=(long int)(dt/scope.dt);
-	
-			if (Ndistance<1)
-				Ndistance=1;
+
 
 			MsgWait = (int)(((int)((MAX_MSG_SIZE-MsgLen)/TracesBytes))*scope.dt*1000);
 			MsgWait=(MsgWait>WAIT_MIN)?MsgWait:WAIT_MIN;
