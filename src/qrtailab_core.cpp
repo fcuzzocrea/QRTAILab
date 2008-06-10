@@ -902,13 +902,16 @@ double TargetThread::getScopeRefreshRate(int n)
 
  void TargetThread::setScopeValue(float v,int n, int t){
 if (n<ScopeValues.size()){
+
 if (t<ScopeValues.at(n).size()){
-	if (ScopeIndex[n][t]<MAX_SCOPE_DATA){
-		ScopeValues[n][t][ScopeIndex[n][t]]=(v);
-		ScopeIndex[n][t]++;
+	if (ScopeIndex[n][0]<MAX_SCOPE_DATA){
+		ScopeValues[n][t][ScopeIndex[n][0]]=(v);
+		if (t==(Scopes[n].ntraces-1))
+			ScopeIndex[n][0]++;
 	} else {
 		ScopeValues[n][t][0]=(v);
-		ScopeIndex[n][t]=1;
+		if (t==(Scopes[n].ntraces-1))
+			ScopeIndex[n][0]=1;
 	}
 }
 }
@@ -940,10 +943,11 @@ ret.resize(ScopeValues.at(n).size());
    for (int t=0; t<ScopeValues.at(n).size(); ++t){
 // 	for (int i=0;i<ScopeIndex[n][t];i++)
 //   	 	ret[t].append(ScopeValues.at(n).at(t).at(i));
-	ret[t]=ScopeValues.at(n).at(t).mid(0,ScopeIndex[n][t]);
+	ret[t]=ScopeValues.at(n).at(t).mid(0,ScopeIndex[n][0]);
   	// ScopeValues[n][t].clear();
-	 ScopeIndex[n][t]=0;
+	// ScopeIndex[n][0]=0;
    }
+ScopeIndex[n][0]=0;
 	return ret;
 }
 

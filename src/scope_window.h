@@ -129,6 +129,7 @@ public:
    double getRefreshRate(){return RefreshRate;}
    int getDataPoints(){return NDataSoll;}
    double getDX(){return dx;}
+   int getDXDistance(){return NDistance;}
    void setGridColor(QColor);
    QColor getGridColor(){return gridColor;}
    void setBgColor(QColor);
@@ -156,7 +157,7 @@ public:
    void manualTriggerSignal(){triggerSearch=false;}
    void setTriggerLevel(double l){triggerLevel=l;}
    double getTriggerLevel(){return triggerLevel;}
-   void setTriggerChannel(int trace){if (trace<Ncurve) triggerChannel=trace;}
+   void setTriggerChannel(int trace){ triggerChannel=trace;}
    int getTriggerChannel(){return  triggerChannel;}
    void setSingleMode(bool b){singleMode=b;}
     bool getSingleMode(){return singleMode;}
@@ -196,6 +197,7 @@ private:
   int time,time2;
   double xmin,xmax,dx,dt;
   double xMajorTicks,xStep;
+  int NDistance;
   Scopes_Data_T *ScopeData;
   QTimer *timer;
   QwtPlot *qwtPlot;

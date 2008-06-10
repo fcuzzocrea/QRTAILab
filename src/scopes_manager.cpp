@@ -89,7 +89,10 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
 // 		traceComboBox->addItem(tr("Trace ")+tr("%1").arg(i+1));
 // 	}
-
+	traceComboBox->clear();
+	for(int i=0; i<Scopes[currentScope].ntraces;i++){
+		traceComboBox->addItem(	ScopeWindows[currentScope]->getTraceName(i) );
+	}
 	if (Num_Scopes > 0)  showScopeOptions(currentScope);
 	
 //	if (Num_Scopes > 0) Get_Scope_Data_Thread = new GetScopeDataThread [Num_Scopes];
@@ -166,6 +169,7 @@ void QRL_ScopesManager::changeDX(const QString& text)
 	if (!text.isEmpty() &&text.toDouble()!=0.0 ){
 	double dx=text.toDouble();
 	ScopeWindows[currentScope]->changeDX(dx);
+	emit dxComboBox->setEditText(tr("%1").arg(ScopeWindows[currentScope]->getDX()));
 	//Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
 	 qTargetInterface->getTargetThread()->setScopeDt(ScopeWindows[currentScope]->getDt(),currentScope);
 
@@ -181,6 +185,7 @@ void QRL_ScopesManager::changeDataPoints(double dp)
 {
 	//double rr=text.toDouble();
 	ScopeWindows[currentScope]->changeDataPoints(dp);
+	//ScopeWindows[currentScope]->changeDX(dxComboBox->currentText().toDouble());
 	//Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
 	 qTargetInterface->getTargetThread()->setScopeDt(ScopeWindows[currentScope]->getDt(),currentScope);
 
@@ -335,6 +340,7 @@ void QRL_ScopesManager::changeTraceText(const QString & text ){
 	//tabWidget->setTabText(1,traceItems[currentTrace]->text());
 	 ScopeWindows[currentScope]->setTraceName(currentTrace, text);
 	traceComboBox->setItemText(currentTrace,text);
+	//traceComboBox->setCurrentIndex(	ScopeWindows[currentScope]->getTriggerChannel());
 }
 
 /**
@@ -364,12 +370,13 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 	for(int i=0; i<traceItems.size();i++)
 		delete traceItems[i];
 	traceItems.clear();
-	traceComboBox->clear();
+	//traceComboBox->clear();
 	for(int i=0; i<Scopes[currentScope].ntraces;i++){
 		traceItems << new QListWidgetItem(QIcon(),ScopeWindows[currentScope]->getTraceName(i), scopeListWidget);
 		if (i<traceItems.size())
 			traceItems[i]->setHidden(true);
-		traceComboBox->addItem(	ScopeWindows[currentScope]->getTraceName(i) );
+		//traceComboBox->addItem(	ScopeWindows[currentScope]->getTraceName(i) );
+		traceComboBox->setItemText(i,ScopeWindows[currentScope]->getTraceName(i) );
 	}
 	
 	traceComboBox->setCurrentIndex(	ScopeWindows[currentScope]->getTriggerChannel());

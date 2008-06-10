@@ -87,7 +87,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 	ymin=yOffset-0.5*(yMajorTicks*dy);
        ymax=yOffset+0.5*(yMajorTicks*dy);
       yStep=(ymax-ymin)/yMajorTicks;
-	MaxDataPoints=10000;
+	MaxDataPoints=100000;
 	dx=0.1;
 	xMajorTicks=10;
 	xmin=0;
@@ -172,6 +172,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 
        NDataMax=(int)((xmax-xmin)/Scope->dt);
        NDataSoll=100;
+	NDataSoll=NDataMax;
 	saveTime=0.;
        fileName=tr("SCOPE");
 	RefreshRate=30.;
@@ -179,6 +180,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
        if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
        dt=(xmax-xmin)/NDataSoll;
+       NDistance=(int)(dt*(1./Scope->dt));  //doesnt work
 	//Achtung Arrayüberlauf verhindern!
        //if ((1/dt/RefreshRate)>NDataSoll)
 	//	RefreshRate=1/dt/NDataSoll;
@@ -483,6 +485,8 @@ if ( getRMSLabel(nn)){
 	plottingMode=p;
  QwtText bt;
     bt.setColor(QColor(gridColor));
+	for (int nn=0; nn<Ncurve;nn++)
+	ScopeData[nn].time=0;
 	switch(plottingMode){
 	case roll:
 		if (direction==Qt::LeftToRight)
@@ -516,6 +520,8 @@ if ( getRMSLabel(nn)){
 
  void QRL_ScopeWindow::setPlottingDirection(Qt::LayoutDirection d){
 	direction=d;
+	for (int nn=0; nn<Ncurve;nn++)
+	ScopeData[nn].time=0;
  QwtText bt;
     bt.setColor(QColor(gridColor));
 	switch(plottingMode){
@@ -561,24 +567,40 @@ if ( getRMSLabel(nn)){
 }
 
 
+
+
+
+
+
    void QRL_ScopeWindow::changeDataPoints(double dp)
 {
 	//if (dp<(1/((xmax-xmin)/dp)/100))
 	//	return;
        timer->stop();
 	NDataSoll=(int)dp;
+
+	NDistance=(int)(dt*(1./Scope->dt));  //doesnt work
+       if (NDistance<1)
+		NDistance=1;
+
+	NDataSoll=NDataSoll;
 	if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
 
 	if (NDataSoll<10)
 		NDataSoll=10;
-      
+      NDataSoll=NDataMax;
+
+	
+
+       if (NDistance<1)
+		NDistance=1;
 	/*if(NDataSoll<(1/dt/(xmax-xmin))){
 		NDataSoll=(1/dt/(xmax-xmin));
 		dt=(xmax-xmin)/NDataSoll;
 	}*/
 	if (Verbose) {
-	printf("xmin: %f,xmax %f, scope->dt ist %f\n",xmin,xmax,Scope->dt);
+	printf("xmin: %f,xmax %f, scope->dt ist %f, NDistance %d\n",xmin,xmax,Scope->dt,NDistance);
 	printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
 	}
 
@@ -614,13 +636,17 @@ changeDX(dx);  //FIXME should be removed
 	 xmax=(xMajorTicks*dx);
 	
 	//xmax=dx;
-
+	
 	NDataMax=(int)((xmax-xmin)/Scope->dt);
-	if (NDataMax>MaxDataPoints)
+	if (NDataMax>MaxDataPoints){
 		NDataMax=MaxDataPoints;
+		dx=((NDataMax*Scope->dt)+xmin)/xMajorTicks;
+ 		xmax=(xMajorTicks*dx);
+	}
 	if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
 
+	NDataSoll=NDataMax;
 
 	 QwtText bt;
     bt.setColor(QColor(gridColor));
@@ -655,6 +681,9 @@ changeDX(dx);  //FIXME should be removed
 
 
 	dt=(xmax-xmin)/NDataSoll;
+NDistance=(int)(dt*(1./Scope->dt));  //doesnt work
+        if (NDistance<1)
+		NDistance=1;
 	/*delete[] d_x;
 	for (unsigned int j=0;j<Ncurve;j++){
 		delete[] ScopeData[j].d_y;
@@ -1049,7 +1078,7 @@ void QRL_ScopeWindow::setTraceName(int trace, const QString &text){
 
 
 void QRL_ScopeWindow::setValue(const QVector< QVector<float> > &v)
-{			
+{
 
 
 
@@ -1060,6 +1089,7 @@ if (v.at(0).size()>NDataSoll){  //roll mode is to cpu expensive and not necassar
 } 
 switch(PM){
 case roll:
+
   for (int nn=0; nn<v.size();++nn){
      time=v.at(nn).size()-1;
 	//printf("time %d, NDataSoll %d\n",time,NDataSoll);
@@ -1095,25 +1125,46 @@ case roll:
   	
 	break;
 case overwrite:
- for (int nn=0; nn<v.size();++nn){
-     for (int k=start; k<v.at(nn).size(); ++k){
+   for (int k=start; k<v.at(0).size(); ++k){
+      for (int nn=0; nn<v.size();++nn){
 	time=ScopeData[nn].time;
+
+
 	ScopeData[nn].d_y[time]=((double)v.at(nn).at(k))/TraceOptions[nn].dy+TraceOptions[nn].offset;
 	if (Qt::LeftToRight==direction)
 		time++;
 	else
 		time--;
-	if (time<0)
+	if (time<0){
+		
+// 		for (int n=0;n<Ncurve;n++){ // reset time counter
+// 			ScopeData[nn].d_y[ScopeData[n].time]=((double)v.at(nn).at(k))/TraceOptions[nn].dy+TraceOptions[nn].offset;
+// 			ScopeData[n].time=NDataSoll-1;
+// 			
+// 		}
 		time=NDataSoll-1;
-	if(time>NDataSoll-1)
+		//break;
+	}
+	if(time>NDataSoll-1){
+		
+// 		for (int n=0;n<Ncurve;n++){ // reset time counter
+// 			ScopeData[nn].d_y[ScopeData[n].time]=((double)v.at(nn).at(k))/TraceOptions[nn].dy+TraceOptions[nn].offset;
+// 			ScopeData[n].time=0;
+// 		
+// 			
+// 		}
 		time=0;
+		//break;
+	}
 	ScopeData[nn].time=time;
-}}
+}
+}
 	break;
 
 case trigger:
+     for (int k=start; k<v.at(0).size(); ++k){
  for (int nn=0; nn<v.size();++nn){
-     for (int k=start; k<v.at(nn).size(); ++k){
+
 	if (triggerSearch){ //search for next trigger event
 	  if (nn==triggerChannel) {
 		double y= (double)v.at(nn).at(k);
