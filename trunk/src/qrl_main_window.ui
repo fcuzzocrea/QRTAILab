@@ -135,6 +135,7 @@
    </attribute>
    <addaction name="actionExit" />
    <addaction name="separator" />
+   <addaction name="actionStartTarget" />
    <addaction name="actionConnect" />
    <addaction name="actionDisconnect" />
    <addaction name="separator" />

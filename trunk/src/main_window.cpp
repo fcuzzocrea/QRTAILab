@@ -148,8 +148,8 @@ QRL_MainWindow::QRL_MainWindow(int v)
 	MetersManager=NULL;
 	ParametersManager=NULL;
 	
-	//connect( actionConnect, SIGNAL( triggered() ), this, SLOT( connectDialog() ) ); 
-	connect( actionConnect, SIGNAL( triggered() ), this, SLOT( showTargetsManager() ) ); 
+	connect( actionConnect, SIGNAL( triggered() ), this, SLOT( connectDialog() ) ); 
+	//connect( actionConnect, SIGNAL( triggered() ), this, SLOT( showTargetsManager() ) ); 
 	connect( actionDisconnect, SIGNAL( triggered() ), this, SLOT( disconnectDialog() ) ); 
 	connect( actionStart, SIGNAL( triggered() ), this, SLOT( start() ) ); 
 	connect( actionStop, SIGNAL( triggered() ), this, SLOT( stop() ) ); 
@@ -211,7 +211,7 @@ QRL_MainWindow::QRL_MainWindow(int v)
 	connect( TargetsManager, SIGNAL( stopTarget() ), this, SLOT( stop() ) ); 
 	connect( TargetsManager, SIGNAL( disconnectFromTarget() ), this, SLOT(disconnectDialog() ) ); 
 	connect( TargetsManager, SIGNAL( connectToTarget() ), this, SLOT(connectDialog() ) );
-	connect( actionStartTarget, SIGNAL( triggered() ), TargetsManager, SLOT( exec() ) ); 
+	connect( actionStartTarget, SIGNAL( triggered() ), this, SLOT( showTargetsManager() ) ); 
         //targetthread->setPreferences(Preferences);
 	emit setStatusBarMessage(tr("Ready..."));
 
