@@ -269,15 +269,18 @@
    </property>
   </action>
   <action name="actionStartTarget" >
-   <property name="enabled" >
+   <property name="checkable" >
     <bool>false</bool>
+   </property>
+   <property name="enabled" >
+    <bool>true</bool>
    </property>
    <property name="icon" >
     <iconset resource="qrtailab.qrc" >
      <normaloff>:/icons/session_open_icon.xpm</normaloff>:/icons/session_open_icon.xpm</iconset>
    </property>
    <property name="text" >
-    <string>Start Target</string>
+    <string>Target Manager</string>
    </property>
   </action>
   <action name="actionShowLog" >

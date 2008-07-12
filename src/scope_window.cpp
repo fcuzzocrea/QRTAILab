@@ -197,6 +197,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 		cData[j] = new QwtPlotCurve(Scope->name);
 	 	cData[j]->attach(qwtPlot);
 		cData[j]->setPaintAttribute(QwtPlotCurve::PaintFiltered,true);
+		cData[j]->setPaintAttribute(QwtPlotCurve::ClipPolygons,true);
 		TraceOptions[j].index=j;
 		TraceOptions[j].lineWidth=3;
 		TraceOptions[j].dy=1.;

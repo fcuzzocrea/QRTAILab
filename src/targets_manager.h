@@ -42,8 +42,13 @@ class QRL_TargetsManager : public QDialog, private Ui::QRL_TargetsManager
 public:
   QRL_TargetsManager(QWidget *parent = 0, QRtaiLabCore* qtargetinterface=NULL);
   ~QRL_TargetsManager();
+  void setTargetIsConnected(bool);
+  void setTargetIsRunning(bool);
+    void setPreferences(Preferences_T p);
+    Preferences_T getPreferences();
 public slots:
 private:
+    Preferences_T Preferences;
   QRtaiLabCore* qTargetInterface;
   int currentTarget;
   QList<QListWidgetItem *> targetItems;
