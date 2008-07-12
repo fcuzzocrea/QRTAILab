@@ -1273,7 +1273,9 @@ QRtaiLabCore::QRtaiLabCore(QObject *parent, int Verbose)
     targetthread = new TargetThread();
     targetthread->setVerbose(Verbose);
     unsigned int msg;
-   rt_allow_nonroot_hrt();
+
+   	rt_allow_nonroot_hrt();
+
    if (!(RLG_Main_Task = rt_task_init_schmod(qrl::get_an_id("RLGM"), 98, 0, 0, SCHED_FIFO, 0xFF))) {
                printf("Cannot init RTAI-Lab GUI main task\n");
 		exit( 1 );	
@@ -1283,6 +1285,7 @@ QRtaiLabCore::QRtaiLabCore(QObject *parent, int Verbose)
    rt_receive(0, &msg);
    Target_Interface_Task=targetthread->getTask();
    //statusBarMessage(tr("Ready..."));
+
 }
 
 QRtaiLabCore::~QRtaiLabCore(){
@@ -1560,6 +1563,25 @@ QString QRtaiLabCore::getLogName(int n){
   QString str;
   if (n<targetthread->getLogNumber())
 	str=tr(targetthread->getLogs()[n].name);
+  return str;
+
+}
+
+
+
+
+
+int QRtaiLabCore::getALogNumber()
+{
+	 int Num_Logs= targetthread->getALogNumber();
+return Num_Logs;
+
+}
+
+QString QRtaiLabCore::getALogName(int n){
+  QString str;
+  if (n<targetthread->getALogNumber())
+	str=tr(targetthread->getALogs()[n].name);
   return str;
 
 }

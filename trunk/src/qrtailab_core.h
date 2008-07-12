@@ -70,6 +70,7 @@ class TargetThread : public QThread
     int getScopeNumber(){return Num_Scopes;}
     int getMeterNumber(){return Num_Meters;}
     int getLedNumber(){return Num_Leds;}
+ int getALogNumber(){return Num_ALogs;}
     int getLogNumber(){return Num_Logs;}
     int getParameterNumber(){return Num_Tunable_Parameters;}
     int getBlockNumber(){return Num_Tunable_Blocks;}
@@ -246,10 +247,12 @@ public:
     int getMeterNumber();
     int getLedNumber();
     int getLogNumber();
+    int getALogNumber();
     int getParameterNumber(){return targetthread->getParameterNumber();}
     int getBlockNumber(){return targetthread->getBlockNumber();}
     int getEndApp(){return targetthread->getEndApp();}
     int getVerbose(){return targetthread->getVerbose();}
+    const char* getTargetName(){return targetthread->getTargetName();}
 
    QString getParameterName(int blk,int prm);
    QString getBlockName(int blk);
@@ -274,6 +277,7 @@ public:
     int     getNumberOfLeds(int);
 
     QString getLogName(int);
+     QString getALogName(int);
 
 public slots:
     //void refreshData();

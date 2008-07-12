@@ -180,7 +180,6 @@ QRL_MainWindow::QRL_MainWindow(int v)
     statusBar()->addWidget(statusMessage);
 
 	setlocale( LC_ALL, "C");
-
     qTargetInterface = new QRtaiLabCore(this,Verbose);
 
     target = new QProcess(this);
@@ -293,6 +292,7 @@ qTargetInterface->setPreferences(p);
 	qTargetInterface->connectToTarget();
 	//sendOrder(qrl_types::CONNECT_TO_TARGET);
 	if (qTargetInterface->getIsTargetConnected()==1){
+		TargetsManager->setTargetIsConnected(true);
 		enableActionDisconnect(true);
 		enableActionConnect(false);
 		enableActionLoadProfile(true);
@@ -480,7 +480,7 @@ qTargetInterface->setPreferences(p);
  void QRL_MainWindow::disconnectFromTarget(){
 
 	qTargetInterface->disconnectFromTarget();
-
+	TargetsManager->setTargetIsConnected(false);
 }
 
 /*
@@ -746,6 +746,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 	if (qTargetInterface->getIsTargetRunning()){
 		enableActionStart(false);
 		enableActionStop(true);
+		TargetsManager->setTargetIsRunning(true);
 	}
 }
 
@@ -754,6 +755,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 	qTargetInterface->stopTarget();
 	if (qTargetInterface->getIsTargetRunning()==0){
 		enableActionStop(false);
+		TargetsManager->setTargetIsRunning(false);
 		if (qTargetInterface->getIsTargetConnected()==0){
 			enableActionDisconnect(false);
 			enableActionConnect(true);
@@ -765,6 +767,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
         		enableActionShowLed(false); 
 			enableActionShowLog(false); 
         		enableActionShowParameter(false);
+			TargetsManager->setTargetIsConnected(false);
 		}
 	}
 	emit close();
