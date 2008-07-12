@@ -185,6 +185,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
        //if ((1/dt/RefreshRate)>NDataSoll)
 	//	RefreshRate=1/dt/NDataSoll;
        Ncurve=Scope->ntraces;
+//if (Ncurve>0){
        ScopeData = new Scopes_Data_T[Ncurve];
        cData = new QwtPlotCurve*[Ncurve];
        d_x = new double[MaxDataPoints+1];
@@ -368,7 +369,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
         	ScopeData[j].d_y[i] = TraceOptions[j].offset;
 	}
     }
-    
+  //  }
 	   // grid
     grid = new QwtPlotGrid;
     //grid->enableXMin(true);

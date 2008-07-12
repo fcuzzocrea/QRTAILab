@@ -901,7 +901,7 @@ double TargetThread::getScopeRefreshRate(int n)
 }
 
  void TargetThread::setScopeValue(float v,int n, int t){
-if (n<ScopeValues.size()){
+if (n<ScopeValues.size() && Scopes[n].ntraces>0){
 
 if (t<ScopeValues.at(n).size()){
 	if (ScopeIndex[n][0]<MAX_SCOPE_DATA){

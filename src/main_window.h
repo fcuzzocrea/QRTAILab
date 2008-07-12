@@ -119,16 +119,17 @@ protected slots:
     void saveProfile();
     void start();
     void stop();
+    void connectToTarget(Preferences_T p);
+    void disconnectFromTarget();
     void showMetersManager();
     void showScopesManager();
     void showLedsManager();
     void showLogsManager();
+    void showTargetsManager();
     void showParametersManager();
     void setStatusBarMessage(const QString &);
  
 private:
-    void connectToTarget(Preferences_T p);
-    void disconnectFromTarget();
     void enableActionStart(bool);
     void enableActionStop(bool);
     void enableActionConnect(bool);

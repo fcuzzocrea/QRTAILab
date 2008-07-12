@@ -41,9 +41,12 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	ScopeWindows = new QRL_ScopeWindow* [Num_Scopes]; 
 	for (int i=0; i<Num_Scopes; ++i){
 		scopeItems << new QListWidgetItem(ScopeIcon,qTargetInterface->getScopeName(i), scopeListWidget);
-		ScopeWindows[i]=new QRL_ScopeWindow(parent,&Scopes[i],i);
-		//connect( ScopeWindows[i], SIGNAL( stopSaving(int) ), this, SLOT( stopSaving(int) ) );
-		ScopeWindows[i]->setVerbose(qTargetInterface->getVerbose());
+		//if (qTargetInterface->getNumberOfTraces(i)>0){
+			ScopeWindows[i]=new QRL_ScopeWindow(parent,&Scopes[i],i);
+			//connect( ScopeWindows[i], SIGNAL( stopSaving(int) ), this, SLOT( stopSaving(int) ) );
+			ScopeWindows[i]->setVerbose(qTargetInterface->getVerbose());
+		//} else
+		//	ScopeWindows[i]=NULL;
 	}
 	tabWidget->setCurrentIndex(0);
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showScope(int) ) );
@@ -142,7 +145,7 @@ void QRL_ScopesManager::refresh()
 // 			if (k<v.at(t).size())
 // 			ScopeWindows[n]->setValue(t,v.at(t).at(k));
 // 	}
-
+	if (Scopes[n].ntraces>0)
 	ScopeWindows[n]->setValue( qTargetInterface->getTargetThread()->getScopeValue(n));
 	//}
    }
@@ -262,18 +265,21 @@ void QRL_ScopesManager::changeScopeList(int index)
 		for(int i=0; i<traceItems.size();i++)
 			traceItems[i]->setHidden(true);
 	}else{
-
-	//scopeListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
-	for(int i=0; i<scopeItems.size();i++)
-		scopeItems[i]->setHidden(true);
-	if (traceItems.size()==0) {
-		for(int i=0; i<Scopes[currentScope].ntraces;i++)
-			traceItems << new QListWidgetItem(QIcon(),tr("trace %1").arg(i), scopeListWidget);
-	} else {
-		for(int i=0; i<traceItems.size();i++)
-			traceItems[i]->setHidden(false);
-	}
-		showTraceOptions(currentTrace+scopeItems.size());
+	   if (Scopes[currentScope].ntraces>0) {
+		//scopeListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
+		for(int i=0; i<scopeItems.size();i++)
+			scopeItems[i]->setHidden(true);
+		if (traceItems.size()==0) {
+			for(int i=0; i<Scopes[currentScope].ntraces;i++)
+				traceItems << new QListWidgetItem(QIcon(),tr("trace %1").arg(i), scopeListWidget);
+		} else {
+			for(int i=0; i<traceItems.size();i++)
+				traceItems[i]->setHidden(false);
+		}
+			showTraceOptions(currentTrace+scopeItems.size());
+           } else {
+		tabWidget->setCurrentIndex(0);
+	  }
 	}
 }
 
