@@ -46,13 +46,28 @@ public:
   void setTargetIsRunning(bool);
     void setPreferences(Preferences_T p);
     Preferences_T getPreferences();
+signals:
+    void startTarget();
+    void stopTarget();
+    void connectToTarget();
+    void disconnectFromTarget();
 public slots:
+protected slots:
+    void start();
+    void stop();
+    void connectTarget();
+    void disconnectTarget();
 private:
     Preferences_T Preferences;
   QRtaiLabCore* qTargetInterface;
   int currentTarget;
   QList<QListWidgetItem *> targetItems;
+friend QDataStream& operator<<(QDataStream &out, const QRL_TargetsManager &d);
+friend QDataStream& operator>>(QDataStream &in, QRL_TargetsManager(&d));
 };
+	QDataStream& operator<<(QDataStream &out, const QRL_TargetsManager &d);
+	QDataStream& operator>>(QDataStream &in, QRL_TargetsManager(&d));
+
 
 
 #endif

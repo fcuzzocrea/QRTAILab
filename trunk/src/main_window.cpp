@@ -148,7 +148,8 @@ QRL_MainWindow::QRL_MainWindow(int v)
 	MetersManager=NULL;
 	ParametersManager=NULL;
 	
-	connect( actionConnect, SIGNAL( triggered() ), this, SLOT( connectDialog() ) ); 
+	//connect( actionConnect, SIGNAL( triggered() ), this, SLOT( connectDialog() ) ); 
+	connect( actionConnect, SIGNAL( triggered() ), this, SLOT( showTargetsManager() ) ); 
 	connect( actionDisconnect, SIGNAL( triggered() ), this, SLOT( disconnectDialog() ) ); 
 	connect( actionStart, SIGNAL( triggered() ), this, SLOT( start() ) ); 
 	connect( actionStop, SIGNAL( triggered() ), this, SLOT( stop() ) ); 
@@ -206,6 +207,10 @@ QRL_MainWindow::QRL_MainWindow(int v)
 */
 	ConnectDialog = new QRL_connectDialog(this);
 	TargetsManager=new QRL_TargetsManager(this,qTargetInterface);
+	connect( TargetsManager, SIGNAL( startTarget() ), this, SLOT( start() ) ); 
+	connect( TargetsManager, SIGNAL( stopTarget() ), this, SLOT( stop() ) ); 
+	connect( TargetsManager, SIGNAL( disconnectFromTarget() ), this, SLOT(disconnectDialog() ) ); 
+	connect( TargetsManager, SIGNAL( connectToTarget() ), this, SLOT(connectDialog() ) );
 	connect( actionStartTarget, SIGNAL( triggered() ), TargetsManager, SLOT( exec() ) ); 
         //targetthread->setPreferences(Preferences);
 	emit setStatusBarMessage(tr("Ready..."));
@@ -272,13 +277,13 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 if(qTargetInterface->getIsTargetConnected()==0){
 
   //QRL_connectDialog *connectDialog = new QRL_connectDialog(this);
-    if(qTargetInterface->getPreferences().Target_IP==NULL) {
-   	 if (ConnectDialog->exec()) 
-		connectToTarget(ConnectDialog->getPreferences());
-	else
-		return;
-    } else
-	connectToTarget(ConnectDialog->getPreferences());
+//     if(qTargetInterface->getPreferences().Target_IP==NULL) {
+//    	 if (ConnectDialog->exec()) 
+// 		connectToTarget(ConnectDialog->getPreferences());
+// 	else
+// 		return;
+//     } else
+	connectToTarget(TargetsManager->getPreferences());
 	
 	//rt_send(Target_Interface_Task, CONNECT_TO_TARGET);
 }
@@ -521,9 +526,9 @@ void QRL_MainWindow::loadProfile() {
 	QSize s;QPoint p;
 	in >> s;this->resize(s);
 	in >> p; this->move(p);
-	in >> *ConnectDialog;
+	in >> *TargetsManager;
 	if (qTargetInterface->getIsTargetConnected()==0) {
-		connectToTarget(ConnectDialog->getPreferences());
+		connectToTarget(TargetsManager->getPreferences());
 	}
 	if (LogsManager)
  		in >> *LogsManager;
@@ -629,7 +634,7 @@ QString filename = QFileDialog::getSaveFileName(this,tr("Save Profile"), NULL, t
  // version <=100
  out.setVersion(QDataStream::Qt_4_2);
 	out  << this->size()  << this->pos();
-	out<<*ConnectDialog;
+	out<<*TargetsManager;
 	if (LogsManager)
  		out << *LogsManager;
 	if (LedsManager)
@@ -770,7 +775,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 			TargetsManager->setTargetIsConnected(false);
 		}
 	}
-	emit close();
+	close();
 }
 
 void QRL_MainWindow::showScopesManager()
@@ -816,6 +821,11 @@ if (ParametersManager)
 		ParametersManager->hide();
 	else
  		ParametersManager->show();
+}
+void QRL_MainWindow::showTargetsManager()
+{
+if (TargetsManager)
+		TargetsManager->exec();
 }
 
 

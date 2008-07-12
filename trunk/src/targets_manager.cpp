@@ -45,10 +45,38 @@ QRL_TargetsManager::QRL_TargetsManager(QWidget *parent,QRtaiLabCore* qtargetinte
 	Preferences.Target_Meter_Mbx_ID="RTM";
 	Preferences.Target_Synch_Mbx_ID="RTY";
 	setPreferences(Preferences);
+	
+	connect( connectPushButton, SIGNAL( pressed() ), this, SLOT( connectTarget() ) ); 
+	connect( disconnectPushButton, SIGNAL( pressed() ), this, SLOT( disconnectTarget() ) ); 
+	connect( startPushButton, SIGNAL( pressed() ), this, SLOT( start() ) ); 
+	connect( stopPushButton, SIGNAL( pressed() ), this, SLOT( stop() ) ); 
 
+	connectPushButton->setEnabled(true);
+	disconnectPushButton->setEnabled(false);
+	startPushButton->setEnabled(false);
+	stopPushButton->setEnabled(false);
 }
 QRL_TargetsManager::~QRL_TargetsManager()
 {
+}
+
+void QRL_TargetsManager::connectTarget(){
+
+	emit connectToTarget();
+}
+
+void QRL_TargetsManager::disconnectTarget(){
+	emit disconnectFromTarget();
+}
+
+void QRL_TargetsManager::start(){
+	emit startTarget();
+
+}
+
+void QRL_TargetsManager::stop(){
+	emit stopTarget();
+
 }
 
  void QRL_TargetsManager::setPreferences(Preferences_T p)
@@ -93,9 +121,12 @@ Preferences_T QRL_TargetsManager::getPreferences()
 void QRL_TargetsManager::setTargetIsConnected(bool connected){
 
 if (connected){
-	targetNameLineEdit->setText(tr(qTargetInterface->getTargetName()));
+	connectPushButton->setEnabled(false);
+	disconnectPushButton->setEnabled(true);
+	//targetNameLineEdit->setText(tr(qTargetInterface->getTargetName()));
 	targetNameLineEdit_2->setText(tr(qTargetInterface->getTargetName()));
 	targetConnectedLabel->setText(tr("connected"));
+	targetParameterGroupBox->setEnabled(false);
 	setTargetIsRunning(qTargetInterface->getIsTargetRunning()==1);
 	targetTableWidget->clear();
 	int jend=6,j=0;
@@ -269,23 +300,35 @@ if (connected){
 	}
 
 } else {
-	targetNameLineEdit->setText(tr(""));
-	targetStatusLineEdit->setText(tr("not running"));
+	targetNameLineEdit_2->setText(tr(""));
+	connectPushButton->setEnabled(true);
+	disconnectPushButton->setEnabled(false);
 	targetConnectedLabel->setText(tr("not connected"));
+	setTargetIsRunning(false);
+	targetParameterGroupBox->setEnabled(true);
+	targetTableWidget->clear();
+	
 }
 }
 
 void QRL_TargetsManager::setTargetIsRunning(bool running){
 
 if (running){
-	targetStatusLineEdit->setText(tr("running"));
-	targetRunningLabel->setText(tr("running"));
+	//targetStatusLineEdit->setText(tr("running"));
+	targetRunningLabel->setText(tr("started"));
+	startPushButton->setEnabled(false);
+	stopPushButton->setEnabled(true);
 
 
 } else {
 
 	targetStatusLineEdit->setText(tr("not running"));
-	targetRunningLabel->setText(tr("not running"));
+	targetRunningLabel->setText(tr("stopped"));
+	if (qTargetInterface->getIsTargetConnected()==1)
+		startPushButton->setEnabled(true);
+	else 
+		startPushButton->setEnabled(false);
+	stopPushButton->setEnabled(false);
 
 }
 
@@ -293,3 +336,31 @@ if (running){
 
 
 }
+
+QDataStream& operator<<(QDataStream &out, const QRL_TargetsManager &d){
+	out<<d.ipLineEdit->text();
+	out<<d.taskLineEdit->text();
+	out<<d.scopeLineEdit->text();
+	out<<d.logLineEdit->text();
+	out<<d.alogLineEdit->text();
+	out<<d.ledLineEdit->text();
+	out<<d.meterLineEdit->text();
+	out<<d.synchLineEdit->text();
+
+	return out;
+}
+
+
+QDataStream& operator>>(QDataStream &in, QRL_TargetsManager(&d)){
+	QString s;
+	in>>s;	d.ipLineEdit->setText(s);
+	in>>s;	d.taskLineEdit->setText(s);
+	in>>s;	d.scopeLineEdit->setText(s);
+	in>>s;	d.logLineEdit->setText(s);
+	in>>s;	d.alogLineEdit->setText(s);
+	in>>s;	d.ledLineEdit->setText(s);
+	in>>s;	d.meterLineEdit->setText(s);
+	in>>s;	d.synchLineEdit->setText(s);
+	return in;
+}
+
