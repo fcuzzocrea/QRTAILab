@@ -156,7 +156,12 @@ void QRL_ScopesManager::refresh()
 // }
 }
 
+    void QRL_ScopesManager::setFileVersion(qint32 v){
+      fileVersion=v;
+      for (int i=0; i<Num_Scopes;i++)
+	ScopeWindows[i]->setFileVersion(v);
 
+}
 
 /**
 * @brief set new refresh rate
@@ -168,6 +173,8 @@ void QRL_ScopesManager::changeRefreshRate(double rr)
 	ScopeWindows[currentScope]->changeRefreshRate(rr);
 	qTargetInterface->getTargetThread()->setScopeRefreshRate(rr,currentScope);
 }
+
+
 void QRL_ScopesManager::changeDX(const QString& text)
 {
 	if (!text.isEmpty() &&text.toDouble()!=0.0 ){
@@ -390,6 +397,7 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 	rrCounter->setValue(ScopeWindows[currentScope]->getRefreshRate());
 	dataCounter->setValue(ScopeWindows[currentScope]->getDataPoints());
 	dxComboBox->setEditText(tr("%1").arg(ScopeWindows[currentScope]->getDX()));
+	dividerCounter->setValue(ScopeWindows[currentScope]->getDivider());
 	currentTrace=0;
 	for(int i=0; i<traceItems.size();i++)
 		delete traceItems[i];
@@ -699,10 +707,14 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopesManager(&d)){
 	qint32 a;
 	in >> a;
 	for (int i = 0; i < (int)a; ++i) {
-		if (d.Num_Scopes>i)
+		if (d.Num_Scopes>i){
+			d.ScopeWindows[i]->setFileVersion(d.fileVersion);
 			in>>*(d.ScopeWindows[i]);
-		else 
+		}
+		else {
+			d.ScopeWindows[d.Num_Scopes-1]->setFileVersion(d.fileVersion);
 			in>>*(d.ScopeWindows[d.Num_Scopes-1]);
+		}
 	}
 	d.showScopeOptions(d.currentScope);
 	return in;

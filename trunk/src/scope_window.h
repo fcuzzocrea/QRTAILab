@@ -125,6 +125,7 @@ public:
    void changeRefreshRate(double);
    void changeDataPoints(double);
    void changeDivider(double);
+   unsigned int getDivider(){return Divider;}
    void changeDX(double);
    double getDt(){return dt;}
    double getRefreshRate(){return RefreshRate;}
@@ -184,12 +185,14 @@ public:
    void setTraceName(int trace, const QString &text);
    QString getTraceName(int trace){return TraceOptions[trace].traceName;}
     void setVerbose(int v){Verbose=v;}
+    void setFileVersion(qint32 v){fileVersion=v;}
 public slots:
    void refresh();
   //void setValue(int,float);
 protected slots:
   void closeEvent ( QCloseEvent * event ){event->ignore(); this->hide(); }
 private:
+  qint32 fileVersion;
   int Verbose;
   float Value;
   qrl_types::Target_Scopes_T *Scope;
