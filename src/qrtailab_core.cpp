@@ -1042,7 +1042,8 @@ void TargetThread::stopMeterThreads()
 		pthread_join(Get_Meter_Data_Thread[n], NULL);
 		//Get_Meter_Data_Thread[n].wait();
 	}
-	delete[] Get_Meter_Data_Thread;
+	if (Num_Meters>0)
+	  delete[] Get_Meter_Data_Thread;
 }
 
 
@@ -1136,7 +1137,8 @@ void TargetThread::stopLedThreads()
 		pthread_join(Get_Led_Data_Thread[n], NULL);
 		//Get_Led_Data_Thread[n].wait();
 	}
-	delete[] Get_Led_Data_Thread;
+	if (Num_Leds>0)
+	  delete[] Get_Led_Data_Thread;
 }
 
 
@@ -1191,7 +1193,8 @@ void TargetThread::stopALogThreads()
 		pthread_join(Get_ALog_Data_Thread[n], NULL);
 		//Get_Led_Data_Thread[n].wait();
 	}
-	delete[] Get_ALog_Data_Thread;
+	if (Num_ALogs>0)
+	  delete[] Get_ALog_Data_Thread;
 
 }
 
@@ -1222,7 +1225,8 @@ void TargetThread::stopLogThreads()
 		pthread_join(Get_Log_Data_Thread[n], NULL);
 		//Get_Led_Data_Thread[n].wait();
 	}
-	delete[] Get_Log_Data_Thread;
+	if (Num_Logs>0)
+	  delete[] Get_Log_Data_Thread;
 }
 
 
@@ -1349,9 +1353,11 @@ int QRtaiLabCore::disconnectFromTarget()
 {
 if(targetthread->getIsTargetConnected()==1){
 	qrl::RT_RPC(Target_Interface_Task, TargetThread::DISCONNECT_FROM_TARGET, 0);
-	if (targetthread->getIsTargetConnected()==0)
+	if (targetthread->getIsTargetConnected()==0){
 		statusBarMessage(tr("Ready..."));
+	}
 }
+
 return targetthread->getIsTargetConnected();
 }
 

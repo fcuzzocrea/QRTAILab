@@ -1459,6 +1459,7 @@ QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d){
 	out << d.singleMode;
 	out << d.saveTime;
 	out << d.fileName;
+	a=d.Divider;out << a;
 	
 	 for (int nn=0; nn<d.Ncurve;++nn){
 		
@@ -1495,7 +1496,7 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 	in >> c; d.setBgColor(c);
 	in >> dd; d.changeRefreshRate(dd);
 	in >> dd; d.changeDX(dd);
-	in >> a; d.changeDataPoints(a);
+	in >> a; //d.changeDataPoints(a);
 	in >> a >> a2;
 	d.setPlottingMode((QRL_ScopeWindow::PlottingMode)a);
 	d.setPlottingDirection((Qt::LayoutDirection)a2);
@@ -1505,6 +1506,10 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 	in >> b; d.setSingleMode(b);
 	in >> dd; d.setSaveTime(dd);
         in >> str; d.setFileName(str);
+	
+	if (d.fileVersion>101){
+	  in >> a; d.changeDivider(a);
+	}
 	
 	 for (int nn=0; nn<Ncurve;++nn){
 	   if (nn<d.Ncurve) {

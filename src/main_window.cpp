@@ -518,7 +518,7 @@ void QRL_MainWindow::loadProfile() {
 		file.close();
 		QMessageBox::warning(NULL,"Error","Wrong file format! Could not load file!", QMessageBox::Ok );
 		return;
-	} else 	if (version!=DATA_STREAM_VERSION) {
+	} else 	if (version<101) {
 		file.close();
 		QMessageBox::warning(NULL,"Error","Wrong version number! Could not load file!", QMessageBox::Ok );
 		return;
@@ -536,8 +536,10 @@ void QRL_MainWindow::loadProfile() {
  		in >> *LedsManager;
 	if (MetersManager)
  		in >> *MetersManager;
-	if (ScopesManager)
+	if (ScopesManager){
+		ScopesManager->setFileVersion(version);
  		in >> *ScopesManager;
+	}
 	if (ParametersManager)
  		in >> *ParametersManager;
    
@@ -896,7 +898,7 @@ void QRL_MainWindow::enableActionShowParameter(bool b)
 void QRL_MainWindow::about() 
 {
     QMessageBox::about(this,"About QRtaiLab",
-		"Version 0.1.1\n"
+		"Version 0.1.2\n"
                 "This app was coded for educational purposes.\n\n"
                 "Copyright (C) 2008 Holger Nahrstaedt. \n"
 		"              Control system group, TU-Berlin\n"

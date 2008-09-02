@@ -51,6 +51,7 @@ public:
   //void startScopeThreads();
   //void stopScopeThreads();
   QRL_ScopeWindow** getScopeWindows(){return ScopeWindows;}
+    void setFileVersion(qint32 v);
 public slots:
    void refresh();
   void  showScope(int);
@@ -91,6 +92,7 @@ public slots:
     void changePPLabel(int);
     void changeRMSLabel(int);
 private:
+  qint32 fileVersion;
   int Num_Scopes;
   Target_Scopes_T *Scopes;
   unsigned int currentScope;
