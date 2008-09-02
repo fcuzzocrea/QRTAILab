@@ -173,7 +173,7 @@ static void *rt_get_scope_data(void *arg)
 		if (targetThread->getScopeDt(index)!=dt){
 			dt=targetThread->getScopeDt(index);
 			Ndistance=(int)(dt*(1./scope.dt));  //doesnt work
-			//if (Ndistance<1)
+			if (Ndistance<1)
 				Ndistance=1;
 			MsgLen = (((int)(TracesBytes*dt*(1./scope.dt)))/TracesBytes)*TracesBytes;
 			//MsgLen = (((int)(TracesBytes*(1./targetThread->getScopeRefreshRate(index))*(1./scope.dt)))/TracesBytes)*TracesBytes;

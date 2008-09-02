@@ -86,6 +86,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	connect( showTraceCheckBox , SIGNAL( stateChanged(int) ), this, SLOT( showTrace(int) ) );
          connect( timeCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeSaveTime(double) ) );
 	connect( fileLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeFileName(const QString&) ) );
+	connect( dividerCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDivider(double) ) );
 
 	currentScope=0;
 // 	for(int i=0; i<1; ++i){
@@ -188,6 +189,23 @@ void QRL_ScopesManager::changeDataPoints(double dp)
 {
 	//double rr=text.toDouble();
 	ScopeWindows[currentScope]->changeDataPoints(dp);
+	//ScopeWindows[currentScope]->changeDX(dxComboBox->currentText().toDouble());
+	//Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
+	 qTargetInterface->getTargetThread()->setScopeDt(ScopeWindows[currentScope]->getDt(),currentScope);
+
+	if (Num_Scopes > 0)  showScopeOptions(currentScope);
+
+}
+
+/**
+* @brief change the number of datapoints in the plot
+* @param dp data points
+*/
+void QRL_ScopesManager::changeDivider(double div)
+{
+	//double rr=text.toDouble();
+	ScopeWindows[currentScope]->changeDivider(div);
+	//ScopeWindows[currentScope]->changeDataPoints(dataCounter->value()/div);
 	//ScopeWindows[currentScope]->changeDX(dxComboBox->currentText().toDouble());
 	//Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
 	 qTargetInterface->getTargetThread()->setScopeDt(ScopeWindows[currentScope]->getDt(),currentScope);

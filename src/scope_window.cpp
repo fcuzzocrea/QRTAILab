@@ -92,7 +92,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 	xMajorTicks=10;
 	xmin=0;
        xmax=(xMajorTicks*dx);
-
+	Divider=1;
 	 xStep=(xmax-xmin)/xMajorTicks;
 
 	gridColor=Qt::blue;
@@ -570,9 +570,57 @@ if ( getRMSLabel(nn)){
 
 
 
+ void QRL_ScopeWindow::changeDivider(double div)
+{
+
+       timer->stop();
+	Divider=(unsigned int)div;
+	NDataSoll=(int)((double)NDataMax/(double)Divider);
+
+	NDistance=(int)(dt*(1./Scope->dt));  //doesnt work
+       if (NDistance<1)
+		NDistance=1;
+
+	//NDataSoll=NDataSoll;
+	if (NDataSoll>NDataMax)
+		NDataSoll=NDataMax;
+
+	if (NDataSoll<10)
+		NDataSoll=10;
+      //NDataSoll=NDataMax;
+
+	
+
+       if (NDistance<1)
+		NDistance=1;
+	/*if(NDataSoll<(1/dt/(xmax-xmin))){
+		NDataSoll=(1/dt/(xmax-xmin));
+		dt=(xmax-xmin)/NDataSoll;
+	}*/
+
+ dt=(xmax-xmin)/NDataSoll;
+    for (unsigned int i = 0; i< NDataSoll; i++)
+    {
+	//if (Scope->dt<=0.05)
+        d_x[i] =dt * i;     // time axis
+	for (unsigned int j=0;j<Ncurve;j++){
+        	ScopeData[j].d_y[i] = TraceOptions[j].offset;
+	}
+    }
+     for (unsigned int j=0;j<Ncurve;j++){
+  	cData[j]->setRawData(d_x, ScopeData[j].d_y, NDataSoll);
+     }
+
+     timer->start((int)(1./RefreshRate*1000.));
 
 
+	if (Verbose) {
+	printf("xmin: %f,xmax %f, scope->dt ist %f, NDistance %d\n",xmin,xmax,Scope->dt,NDistance);
+	printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
+	}
+    //changeDX(dx);  //FIXME should be removed
 
+}
 
    void QRL_ScopeWindow::changeDataPoints(double dp)
 {
@@ -585,13 +633,13 @@ if ( getRMSLabel(nn)){
        if (NDistance<1)
 		NDistance=1;
 
-	NDataSoll=NDataSoll;
+	//NDataSoll=NDataSoll;
 	if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
 
 	if (NDataSoll<10)
 		NDataSoll=10;
-      NDataSoll=NDataMax;
+      //NDataSoll=NDataMax;
 
 	
 
@@ -601,10 +649,7 @@ if ( getRMSLabel(nn)){
 		NDataSoll=(1/dt/(xmax-xmin));
 		dt=(xmax-xmin)/NDataSoll;
 	}*/
-	if (Verbose) {
-	printf("xmin: %f,xmax %f, scope->dt ist %f, NDistance %d\n",xmin,xmax,Scope->dt,NDistance);
-	printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
-	}
+
 
     for (unsigned int i = 0; i< NDataSoll; i++)
     {
@@ -619,7 +664,13 @@ if ( getRMSLabel(nn)){
      }
  dt=(xmax-xmin)/NDataSoll;
      timer->start((int)(1./RefreshRate*1000.));
-changeDX(dx);  //FIXME should be removed
+
+
+	if (Verbose) {
+	printf("xmin: %f,xmax %f, scope->dt ist %f, NDistance %d\n",xmin,xmax,Scope->dt,NDistance);
+	printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
+	}
+    //changeDX(dx);  //FIXME should be removed
 }
 
 
@@ -645,10 +696,11 @@ changeDX(dx);  //FIXME should be removed
 		dx=((NDataMax*Scope->dt)+xmin)/xMajorTicks;
  		xmax=(xMajorTicks*dx);
 	}
+	NDataSoll=(int)((double)NDataMax/(double)Divider);
 	if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
 
-	NDataSoll=NDataMax;
+	//NDataSoll=NDataMax;
 
 	 QwtText bt;
     bt.setColor(QColor(gridColor));

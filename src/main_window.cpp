@@ -205,7 +205,7 @@ QRL_MainWindow::QRL_MainWindow(int v)
 	Preferences.Target_Meter_Mbx_ID="RTM";
 	Preferences.Target_Synch_Mbx_ID="RTY";
 */
-	ConnectDialog = new QRL_connectDialog(this);
+	//ConnectDialog = new QRL_connectDialog(this);
 	TargetsManager=new QRL_TargetsManager(this,qTargetInterface);
 	connect( TargetsManager, SIGNAL( startTarget() ), this, SLOT( start() ) ); 
 	connect( TargetsManager, SIGNAL( stopTarget() ), this, SLOT( stop() ) ); 
