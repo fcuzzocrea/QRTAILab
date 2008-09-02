@@ -124,6 +124,7 @@ public:
    ~QRL_ScopeWindow();
    void changeRefreshRate(double);
    void changeDataPoints(double);
+   void changeDivider(double);
    void changeDX(double);
    double getDt(){return dt;}
    double getRefreshRate(){return RefreshRate;}
@@ -193,7 +194,7 @@ private:
   float Value;
   qrl_types::Target_Scopes_T *Scope;
   double *d_x; 
-  unsigned int NDataMax,Ncurve,NDataSoll, MaxDataPoints;
+  unsigned int NDataMax,Ncurve,NDataSoll, MaxDataPoints,Divider;
   int time,time2;
   double xmin,xmax,dx,dt;
   double xMajorTicks,xStep;

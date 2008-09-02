@@ -60,6 +60,7 @@ public slots:
   void showOptions( QListWidgetItem * item );
   void changeRefreshRate(double);
   void changeDataPoints(double);
+  void changeDivider(double);
  // void changeSaveTime(double);
   void changeDX(const QString&);
   void startSaving();
