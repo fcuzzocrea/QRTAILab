@@ -99,6 +99,7 @@ QRL_MetersManager::~QRL_MetersManager()
 {
 	for (int i=0; i<Num_Meters; ++i){
 		MeterWindows[i]->hide();
+		delete MeterWindows[i];
 	}
 	delete[] MeterWindows;
 }

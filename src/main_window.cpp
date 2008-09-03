@@ -29,105 +29,7 @@
 //static RT_TASK *RLG_Main_Task;
 //extern unsigned long qrl::get_an_id(const char *root);
 
-QRL_connectDialog::QRL_connectDialog(QWidget *parent)
-	:QDialog(parent)
-{
-    setupUi(this);
-    // signals/slots mechanism in action
-    //connect( actionExit, SIGNAL(activated()), this , SLOT(close()));
-        Preferences_T Preferences;
-	Preferences.Target_IP="127.0.0.1";
-	Preferences.Target_Interface_Task_Name="IFTASK";
-	Preferences.Target_Scope_Mbx_ID="RTS";
-	Preferences.Target_Log_Mbx_ID="RTL";
-	Preferences.Target_ALog_Mbx_ID="RAL"; //aggiunto 4/5
-	Preferences.Target_Led_Mbx_ID="RTE";
-	Preferences.Target_Meter_Mbx_ID="RTM";
-	Preferences.Target_Synch_Mbx_ID="RTY";
-	setPreferences(Preferences);
-}
 
-
- void QRL_connectDialog::setPreferences(Preferences_T p)
-{ 
-	Preferences=p;
-	ipLineEdit->setText(QByteArray(Preferences.Target_IP));
-	taskLineEdit->setText(QByteArray(Preferences.Target_Interface_Task_Name));
-	scopeLineEdit->setText(QByteArray(Preferences.Target_Scope_Mbx_ID));
-	logLineEdit->setText(QByteArray(Preferences.Target_Log_Mbx_ID));
-	alogLineEdit->setText(QByteArray(Preferences.Target_ALog_Mbx_ID));
-	ledLineEdit->setText(QByteArray(Preferences.Target_Led_Mbx_ID));
-	meterLineEdit->setText(QByteArray(Preferences.Target_Meter_Mbx_ID));
-	synchLineEdit->setText(QByteArray(Preferences.Target_Synch_Mbx_ID));
-}
-
-Preferences_T QRL_connectDialog::getPreferences()
-{
-
-	QByteArray a;
-	a=ipLineEdit->text().toAscii();
-	Preferences.Target_IP=qstrdup(a.data());
-	a=taskLineEdit->text().toAscii() ;
-	Preferences.Target_Interface_Task_Name=qstrdup(a.data());
-	a=scopeLineEdit->text().toAscii() ;
-	Preferences.Target_Scope_Mbx_ID=qstrdup(a.data());
-	a=logLineEdit->text().toAscii() ;
-	Preferences.Target_Log_Mbx_ID=qstrdup(a.data());
-	a=alogLineEdit->text().toAscii() ;
-	Preferences.Target_ALog_Mbx_ID=qstrdup(a.data());
-	a=ledLineEdit->text().toAscii();
-	Preferences.Target_Led_Mbx_ID=qstrdup(a.data());
-	a=meterLineEdit->text().toAscii() ;
-	Preferences.Target_Meter_Mbx_ID=qstrdup(a.data());
-	a=synchLineEdit->text().toAscii() ;
-	Preferences.Target_Synch_Mbx_ID=qstrdup(a.data());
-
-
-	return Preferences;
-}
-
-
-QDataStream& operator<<(QDataStream &out, const QRL_connectDialog &d){
-	out<<d.ipLineEdit->text();
-	out<<d.taskLineEdit->text();
-	out<<d.scopeLineEdit->text();
-	out<<d.logLineEdit->text();
-	out<<d.alogLineEdit->text();
-	out<<d.ledLineEdit->text();
-	out<<d.meterLineEdit->text();
-	out<<d.synchLineEdit->text();
-
-	return out;
-}
-
-
-QDataStream& operator>>(QDataStream &in, QRL_connectDialog(&d)){
-	QString s;
-	in>>s;	d.ipLineEdit->setText(s);
-	in>>s;	d.taskLineEdit->setText(s);
-	in>>s;	d.scopeLineEdit->setText(s);
-	in>>s;	d.logLineEdit->setText(s);
-	in>>s;	d.alogLineEdit->setText(s);
-	in>>s;	d.ledLineEdit->setText(s);
-	in>>s;	d.meterLineEdit->setText(s);
-	in>>s;	d.synchLineEdit->setText(s);
-	return in;
-}
-/*
-void QRL_connectDialog::accept() 
-{
-	
-close();
-
-}
-
-void QRL_connectDialog::reject() 
-{
-
-close();
-
-}
-*/
 
 /**
 * @brief MainWindow
@@ -431,7 +333,7 @@ qTargetInterface->setPreferences(p);
 
  void QRL_MainWindow::disconnectDialog() 
 {
-	disconnectFromTarget();
+	
 
 	if (ScopesManager) {
 		ScopesManager->hide();
@@ -460,6 +362,7 @@ qTargetInterface->setPreferences(p);
 		delete ParametersManager;
 		ParametersManager=NULL;
 	}
+disconnectFromTarget();
 	//qTargetInterface->disconnectFromTarget();
 	
 	//if (MetersManager) {
