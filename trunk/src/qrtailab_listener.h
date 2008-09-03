@@ -77,7 +77,7 @@ static void *rt_get_scope_data(void *arg)
 	 long Target_Node = targetThread->getTargetNode();
 	Target_Scopes_T scope = targetThread->getScopes()[index];
 	rt_allow_nonroot_hrt();
-	mlockall(MCL_CURRENT | MCL_FUTURE);
+	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetScopeDataTask = rt_task_init_schmod(qrl::get_an_id("HGS"), 90, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetScopeData Task\n");
 		return (void *)1;
@@ -89,7 +89,7 @@ static void *rt_get_scope_data(void *arg)
 		printf("Error in getting %s mailbox address\n", GetScopeDataMbxName);
 		return (void *)1;
 	}
-	munlockall();
+	//munlockall();
 	TracesBytes = (scope.ntraces + 1)*sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/TracesBytes)*TracesBytes;
 	MsgLen = (((int)(TracesBytes*dt*(1./scope.dt)))/TracesBytes)*TracesBytes;
@@ -116,7 +116,7 @@ static void *rt_get_scope_data(void *arg)
 	n=(int)Ndistance;
 	RTIME t0,t,told; int time=0; double time10=0.;double t10;int n10=0;
 	t0 = rt_get_cpu_time_ns();
-	//mlockall(MCL_CURRENT | MCL_FUTURE);
+	mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (hardRealTime==1)
 		rt_make_hard_real_time();
 	while (true) {
@@ -279,7 +279,7 @@ static void *rt_get_meter_data(void *arg)
  	long Target_Node = targetThread->getTargetNode();
 	Target_Meters_T meter = targetThread->getMeters()[index];
 	rt_allow_nonroot_hrt();
-	mlockall(MCL_CURRENT | MCL_FUTURE);
+	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetMeterDataTask = rt_task_init_schmod(qrl::get_an_id("HGM"), 97, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetMeterData Task\n");
 		return (void *)1;
@@ -293,7 +293,7 @@ static void *rt_get_meter_data(void *arg)
 		printf("Error in getting %s mailbox address\n", GetMeterDataMbxName);
 		exit(1);
 	}
-	munlockall();
+	//munlockall();
 	DataBytes = sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
 	MsgLen = (((int)(DataBytes/RefreshRate*(1./meter.dt)))/DataBytes)*DataBytes;
@@ -304,7 +304,7 @@ static void *rt_get_meter_data(void *arg)
 	if (Ndistance<1)
 		Ndistance=1;
 	rt_send(Target_Interface_Task, 0);
-	//mlockall(MCL_CURRENT | MCL_FUTURE);
+	mlockall(MCL_CURRENT | MCL_FUTURE);
 	n=Ndistance;
 	if (hardRealTime==1)
 		rt_make_hard_real_time();
@@ -405,7 +405,7 @@ static void *rt_get_led_data(void *arg)
 	 long Target_Node = targetThread->getTargetNode();
 	Target_Leds_T led = targetThread->getLeds()[index];
 	rt_allow_nonroot_hrt();
-	mlockall(MCL_CURRENT | MCL_FUTURE);
+	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetLedDataTask = rt_task_init_schmod(qrl::get_an_id("HGE"), 97, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetLedData Task\n");
 		return (void *)1;
@@ -417,7 +417,7 @@ static void *rt_get_led_data(void *arg)
 		printf("Error in getting %s mailbox address\n", GetLedDataMbxName);
 		exit(1);
 	}
-	munlockall();
+	//munlockall();
 	DataBytes = sizeof(unsigned int);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
 	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./led.dt)))/DataBytes)*DataBytes;
@@ -427,7 +427,7 @@ static void *rt_get_led_data(void *arg)
 
 
 	rt_send(Target_Interface_Task, 0);
-	//mlockall(MCL_CURRENT | MCL_FUTURE);
+	mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (hardRealTime==1)
 		rt_make_hard_real_time();
 
@@ -497,7 +497,7 @@ static void *rt_get_alog_data(void *arg)
 		}
 	
 	rt_allow_nonroot_hrt();
-	mlockall(MCL_CURRENT | MCL_FUTURE);
+	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetALogDataTask = rt_task_init_schmod(qrl::get_an_id("HGA"), 95, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetALogData Task\n");
 		return (void *)1;
@@ -513,7 +513,7 @@ static void *rt_get_alog_data(void *arg)
 		printf("Error in getting %s mailbox address\n", GetALogDataMbxName);
 		exit(1);
 	}
-	 munlockall();
+	 //munlockall();
 	DataBytes = (alog.nrow*alog.ncol)*sizeof(float)+sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
 	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./alog.dt)))/DataBytes)*DataBytes;
@@ -524,7 +524,7 @@ static void *rt_get_alog_data(void *arg)
 	//printf("MsgData %d MsgLen %d MaxMsgLen %d DataBytes %d DimBuf= %d\n", MsgData, MsgLen, MaxMsgLen, DataBytes,MAX_MSG_LEN/sizeof(float));
 	
 	rt_send(Target_Interface_Task, 0);
-	//mlockall(MCL_CURRENT | MCL_FUTURE);
+	mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (hardRealTime==1)
 		rt_make_hard_real_time();
 	while (true) {
@@ -591,7 +591,7 @@ static void *rt_get_log_data(void *arg)
 	Target_Logs_T log = targetThread->getLogs()[index];
 	 long Target_Node = targetThread->getTargetNode();
 	rt_allow_nonroot_hrt();
-	mlockall(MCL_CURRENT | MCL_FUTURE);
+	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetLogDataTask = rt_task_init_schmod(qrl::get_an_id("HGL"), 90, 0, 0, SCHED_RR, 0xFF))) {
 		printf("Cannot init Host GetLogData Task\n");
 		return (void *)1;
@@ -605,7 +605,7 @@ static void *rt_get_log_data(void *arg)
 		printf("Error in getting %s mailbox address\n", GetLogDataMbxName);
 		exit(1);
 	}
-	munlockall();
+	//munlockall();
 	DataBytes = (log.nrow*log.ncol)*sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
 	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./log.dt)))/DataBytes)*DataBytes;
@@ -614,7 +614,7 @@ static void *rt_get_log_data(void *arg)
 	MsgData = MsgLen/DataBytes;
 
 	rt_send(Target_Interface_Task, 0);
-	//mlockall(MCL_CURRENT | MCL_FUTURE);
+	mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (hardRealTime==1)
 		rt_make_hard_real_time();
 	while (true) {

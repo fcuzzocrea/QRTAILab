@@ -63,6 +63,7 @@ QRL_LedsManager::~QRL_LedsManager()
 {
 	for (int i=0; i<Num_Leds; ++i){
 		LedWindows[i]->hide();
+		delete LedWindows[i];
 	}
 	delete[] LedWindows;
 }

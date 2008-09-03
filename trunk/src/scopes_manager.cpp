@@ -123,6 +123,8 @@ QRL_ScopesManager::~QRL_ScopesManager()
 {
 	for (int i=0; i<Num_Scopes; ++i){
 		ScopeWindows[i]->hide();
+		delete ScopeWindows[i];
+	  
 	}
 	delete[] ScopeWindows;
 	//stopScopeThreads();

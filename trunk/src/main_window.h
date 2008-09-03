@@ -29,7 +29,6 @@
 #define _MAIN_WINDOW_H 1
 
 #include "ui_qrl_main_window.h"
-#include "ui_qrl_connectdialog.h"
 #include <QtGui>
 #include "meters_manager.h"
 #include "leds_manager.h"
@@ -64,33 +63,6 @@ class MainThread : public QThread
 
 
 
-
-
-
-
-/**
- * @brief Connect Dialog
- */
-
-class QRL_connectDialog : public QDialog, private Ui::QRL_connectDialogWindow
-{
-    Q_OBJECT
- 
-public:
-    QRL_connectDialog(QWidget *parent = 0);
-    void setPreferences(Preferences_T p);
-    Preferences_T getPreferences();
- 
-public slots:
-  //void  accept();
-  //void  reject();
-private:
-    Preferences_T Preferences;
-friend QDataStream& operator<<(QDataStream &out, const QRL_connectDialog &d);
-friend QDataStream& operator>>(QDataStream &in, QRL_connectDialog(&d));
-};
-	QDataStream& operator<<(QDataStream &out, const QRL_connectDialog &d);
-	QDataStream& operator>>(QDataStream &in, QRL_connectDialog(&d));
 
 /**
  * @brief Main Window
@@ -147,7 +119,6 @@ private:
     QRL_LogsManager *LogsManager;
     QRL_ScopesManager *ScopesManager;
     QRL_ParametersManager *ParametersManager;
-    QRL_connectDialog *ConnectDialog;
     QRL_TargetsManager *TargetsManager;
     QLabel* statusMessage;
     QMdiArea *mdiArea;
