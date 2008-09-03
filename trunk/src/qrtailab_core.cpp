@@ -405,16 +405,19 @@ void TargetThread::run()
 	RT_TASK *If_Task = NULL, *task;
 
 	rt_allow_nonroot_hrt();
-
+	mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(Target_Interface_Task = rt_task_init_schmod(qrl::get_an_id("HTI"), 97, 0, 0, SCHED_FIFO, 0xFF))) {
 		printf("Cannot init Target_Interface_Task\n");
 		exit(1);
 	}
-	
+	munlockall();
 	rt_send(RLG_Main_Task, 0);
 	while (!End_App) {
 	
-		if (!(task = rt_receive(0, &code))) continue;
+		if (!(task = rt_receive(0, &code))) {
+		  sleep(0);
+		  continue;
+		}
 		if (Verbose) {
 			printf("Received code %d from task %p\n", code, task);
 		}
@@ -1279,12 +1282,13 @@ QRtaiLabCore::QRtaiLabCore(QObject *parent, int Verbose)
     unsigned int msg;
 
    	rt_allow_nonroot_hrt();
-
+mlockall(MCL_CURRENT | MCL_FUTURE);
    if (!(RLG_Main_Task = rt_task_init_schmod(qrl::get_an_id("RLGM"), 98, 0, 0, SCHED_FIFO, 0xFF))) {
                printf("Cannot init RTAI-Lab GUI main task\n");
 		exit( 1 );	
 		//return 1;
     }
+    munlockall();
    targetthread->start();
    rt_receive(0, &msg);
    Target_Interface_Task=targetthread->getTask();
