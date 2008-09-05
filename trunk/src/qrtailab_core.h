@@ -144,7 +144,7 @@ class TargetThread : public QThread
      FILE* save_file_log(int index);
      void stop_saving_log(int index);
       int n_points_to_save_log(int index);
-
+      void set_points_counter_log(int index,int cnt);
 
     const char* getTargetName(){return RLG_Target_Name;}
     long getTargetPort(){return Target_Port;}

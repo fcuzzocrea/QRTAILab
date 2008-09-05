@@ -638,6 +638,7 @@ static void *rt_get_log_data(void *arg)
 					}
 					fprintf(targetThread->save_file_log(index), "\n");
 				}
+				targetThread->set_points_counter_log(index,DataCnt);
 				if (DataCnt == targetThread->n_points_to_save_log(index)) {
 					targetThread->stop_saving_log(index);
 					DataCnt = 0;
