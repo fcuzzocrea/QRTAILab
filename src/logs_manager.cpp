@@ -77,10 +77,19 @@ QRL_LogsManager::~QRL_LogsManager()
 
 void QRL_LogsManager::refresh()
 {
-  if ((qTargetInterface->getTargetThread()->getLogs())[currentLog].isSaving==0)
+  if ((qTargetInterface->getTargetThread()->getLogs())[currentLog].isSaving==0){
       savePushButton->setEnabled(true);
+       saveProgressBar->setEnabled(false);
+      saveProgressBar->setMaximum(100);
+      saveProgressBar->setValue(100);
+  }
   else
+  {
      savePushButton->setEnabled(false);
+    saveProgressBar->setEnabled(true);
+    saveProgressBar->setMaximum(qTargetInterface->getTargetThread()->n_points_to_save_log(currentLog));
+     saveProgressBar->setValue((qTargetInterface->getTargetThread()->getLogs())[currentLog].Saved_Points);
+  }
 }
 
 

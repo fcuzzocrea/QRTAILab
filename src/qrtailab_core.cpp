@@ -1266,7 +1266,11 @@ FILE*  TargetThread::save_file_log(int index) {
 
 
 
+  void  TargetThread::set_points_counter_log(int index,int cnt){
 
+  Logs[index].Saved_Points=cnt;
+
+}
 
 
 

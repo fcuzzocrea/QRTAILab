@@ -216,6 +216,7 @@ struct Target_Logs_Struct
 	int isSaving;
    	FILE* Save_File_Pointer;
    	double Save_Time;
+	int Saved_Points;
 };
 
 struct Target_ALogs_Struct
