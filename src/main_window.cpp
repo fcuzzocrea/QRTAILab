@@ -681,7 +681,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 			TargetsManager->setTargetIsConnected(false);
 		}
 	}
-	close();
+	//close();
 }
 
 void QRL_MainWindow::showScopesManager()
