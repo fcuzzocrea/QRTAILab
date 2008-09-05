@@ -46,6 +46,7 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
 	connect( logListWidget, SIGNAL( itemClicked( QListWidgetItem * ) ), this, SLOT( showLogOptions( QListWidgetItem *  ) ) );
 	//connect( rrLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeRefreshRate(const QString&) ) );
 	connect( savePushButton, SIGNAL( pressed() ), this, SLOT( startSaving() ) );
+	connect( stopPushButton, SIGNAL( pressed() ), this, SLOT( stopSaving() ) );
 	connect( fileLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeFileName(const QString&) ) );
 
 	currentLog=0;
@@ -79,6 +80,7 @@ void QRL_LogsManager::refresh()
 {
   if ((qTargetInterface->getTargetThread()->getLogs())[currentLog].isSaving==0){
       savePushButton->setEnabled(true);
+	stopPushButton->setEnabled(false);
        saveProgressBar->setEnabled(false);
       saveProgressBar->setMaximum(100);
       saveProgressBar->setValue(100);
@@ -86,6 +88,7 @@ void QRL_LogsManager::refresh()
   else
   {
      savePushButton->setEnabled(false);
+      stopPushButton->setEnabled(true);
     saveProgressBar->setEnabled(true);
     saveProgressBar->setMaximum(qTargetInterface->getTargetThread()->n_points_to_save_log(currentLog));
      saveProgressBar->setValue((qTargetInterface->getTargetThread()->getLogs())[currentLog].Saved_Points);
@@ -130,11 +133,11 @@ void QRL_LogsManager::startSaving()
 
 }
 
-void QRL_LogsManager::stopSaving(int index)
+void QRL_LogsManager::stopSaving()
 {
-	if(currentLog==index){
-		savePushButton->setEnabled(true);
-	}
+   if ((qTargetInterface->getTargetThread()->getLogs())[currentLog].isSaving==1){
+	  qTargetInterface->getTargetThread()->stop_saving_log(currentLog);
+  }
 }
 
 

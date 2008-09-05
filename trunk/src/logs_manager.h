@@ -50,7 +50,7 @@ public slots:
   void showLogOptions( QListWidgetItem * item  );
   void showLogOptions( int );
   void startSaving();
-  void stopSaving(int);
+  void stopSaving();
   void changeSaveTime(double);
   void changeFileName(const QString&);
    void refresh();
