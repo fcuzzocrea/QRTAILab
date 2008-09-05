@@ -53,12 +53,14 @@ public slots:
   void stopSaving(int);
   void changeSaveTime(double);
   void changeFileName(const QString&);
+   void refresh();
 private:
   int Num_Logs;
   Target_Logs_T *Logs;
   unsigned int currentLog;
  // GetScopeDataThread* Get_Scope_Data_Thread;
   QRtaiLabCore* qTargetInterface;
+  QTimer *timer;
   //TargetThread* targetThread;
   QList<QListWidgetItem *> logItems;
 friend QDataStream& operator<<(QDataStream &out, const QRL_LogsManager &d);
