@@ -87,7 +87,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
          connect( timeCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeSaveTime(double) ) );
 	connect( fileLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeFileName(const QString&) ) );
 	connect( dividerCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDivider(double) ) );
-
+	connect( stopPushButton, SIGNAL( pressed() ), this, SLOT( stopSaving() ) );
 	currentScope=0;
 // 	for(int i=0; i<1; ++i){
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
@@ -160,6 +160,7 @@ void QRL_ScopesManager::refresh()
 
   if ((qTargetInterface->getTargetThread()->getScopes())[currentScope].isSaving==0){
       savePushButton->setEnabled(true);
+      stopPushButton->setEnabled(false);
        saveProgressBar->setEnabled(false);
       saveProgressBar->setMaximum(100);
       saveProgressBar->setValue(100);
@@ -167,6 +168,7 @@ void QRL_ScopesManager::refresh()
   else
   {
      savePushButton->setEnabled(false);
+     stopPushButton->setEnabled(true);
     saveProgressBar->setEnabled(true);
     saveProgressBar->setMaximum(qTargetInterface->getTargetThread()->n_points_to_save(currentScope));
      saveProgressBar->setValue((qTargetInterface->getTargetThread()->getScopes())[currentScope].Saved_Points);
@@ -293,11 +295,11 @@ void QRL_ScopesManager::startSaving()
 
 }
 
-void QRL_ScopesManager::stopSaving(int index)
+void QRL_ScopesManager::stopSaving()
 {
-	if(currentScope==index){
-		savePushButton->setEnabled(true);
-	}
+ if ((qTargetInterface->getTargetThread()->getScopes())[currentScope].isSaving==1){
+	  qTargetInterface->getTargetThread()->stop_saving(currentScope);
+  }
 }
 
 void QRL_ScopesManager::changeScopeList(int index)

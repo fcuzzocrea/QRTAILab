@@ -65,7 +65,7 @@ public slots:
  // void changeSaveTime(double);
   void changeDX(const QString&);
   void startSaving();
-  void stopSaving(int);
+  void stopSaving();
   void setOptions(int);
   void changeTraceColor();
   void changeTraceWidth(double);

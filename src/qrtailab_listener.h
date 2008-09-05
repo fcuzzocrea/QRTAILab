@@ -210,7 +210,8 @@ static void *rt_get_scope_data(void *arg)
 					break;
 				}
 			}
-		}
+		} else
+		  save_idx = 0;
 	}
 
 end:
@@ -646,7 +647,9 @@ static void *rt_get_log_data(void *arg)
 					break;
 				}
 			}
-		}
+		} else
+		    DataCnt = 0;
+		
 	}
 end:
 	if (hardRealTime==1)
