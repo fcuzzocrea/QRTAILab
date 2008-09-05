@@ -120,6 +120,8 @@ class TargetThread : public QThread
      FILE* save_file(int index);
      void stop_saving(int index);
       int n_points_to_save(int index);
+    void set_points_counter_scope(int index,int cnt);
+
    void startMeterThreads();//QRL_MeterWindow** MeterWindows);
     void stopMeterThreads();
     int setMeterRefreshRate(double rr,int n);
