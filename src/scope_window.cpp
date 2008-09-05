@@ -78,7 +78,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
     this->setWidget(qwtPlot);
     this->setWindowTitle(QApplication::translate("QRL_ScopeWindow", Scope->name, 0, QApplication::UnicodeUTF8));
     // Disable polygon clipping
-    QwtPainter::setDeviceClipping(false);
+   // QwtPainter::setDeviceClipping(false);
     // We don't need the cache here
 //     qwtPlot->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
 //     qwtPlot->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
@@ -89,7 +89,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
        Qt::WA_PaintOnScreen is only supported for X11, but leads
        to substantial bugs with Qt 4.2.x/Windows
      */
-    qwtPlot->canvas()->setAttribute(Qt::WA_PaintOnScreen, true);
+    //qwtPlot->canvas()->setAttribute(Qt::WA_PaintOnScreen, true);
     #endif
     #endif
 

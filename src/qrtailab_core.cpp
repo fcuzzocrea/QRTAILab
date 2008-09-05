@@ -48,7 +48,9 @@ TargetThread::TargetThread(){
 	Num_ALogs=0;
 	Num_Leds=0;
 	Num_Meters=0;
-
+	hardRealTimeScope=1;
+	hardRealTimeLog=1;
+	hardRealTimeALog=1;
 
 }
 
@@ -832,7 +834,7 @@ void TargetThread::startScopeThreads(  )//QRL_ScopeWindow** ScopeWindows)
 		thr_args.index = n;
 		thr_args.mbx_id = strdup((getPreferences()).Target_Scope_Mbx_ID);
 		thr_args.targetThread=(void*)this;
-		thr_args.hardRealTime=1;
+		thr_args.hardRealTime=hardRealTimeScope;
 		pthread_create(&Get_Scope_Data_Thread[n], NULL, rt_get_scope_data, &thr_args);
 // 		Get_Scope_Data_Thread[n].mutex.lock();
 // 		Get_Scope_Data_Thread[n].start(&thr_args,this);//,ScopeWindows[n]);
@@ -1181,7 +1183,7 @@ void TargetThread::startALogThreads()//QRL_LedWindow** LedWindows)
 		thr_args.alog_name = strdup(ALogs[n].name);
 		printf("%s alog name\n", ALogs[n].name);
 		thr_args.targetThread=(void*)this;
-		thr_args.hardRealTime=1;
+		thr_args.hardRealTime=hardRealTimeALog;
 		pthread_create(&Get_ALog_Data_Thread[n], NULL, rt_get_alog_data, &thr_args);
 		rt_receive(0, &msg);
 	}
@@ -1213,7 +1215,7 @@ void TargetThread::startLogThreads()
 		thr_args.index = n;
 		thr_args.mbx_id = strdup(getPreferences().Target_Log_Mbx_ID);
 		thr_args.targetThread=(void*)this;
-		thr_args.hardRealTime=1;
+		thr_args.hardRealTime=hardRealTimeLog;
 		pthread_create(&Get_Log_Data_Thread[n], NULL, rt_get_log_data, &thr_args);
  		rt_receive(0, &msg);
 	}

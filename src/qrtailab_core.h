@@ -86,7 +86,7 @@ class TargetThread : public QThread
     Target_Parameters_T* getParameters(){return Tunable_Parameters;}
     Target_Blocks_T* getBlocks(){return Tunable_Blocks;}
    // Batch_Parameters_T* getBatchParameters(){return Batch_Parameters;}
-
+    void setHardRealTime(int hrScope,int hrLog,int hrAlog){hardRealTimeScope=hrScope;hardRealTimeLog=hrLog;hardRealTimeALog=hrAlog;}
    //prameter down- and upload
 
  int addToBatch(int map_offset,int ind,double value);
@@ -175,6 +175,9 @@ class TargetThread : public QThread
   int Num_Leds;
   int Num_Meters;
   int Num_Synchs;
+  int hardRealTimeScope;
+  int hardRealTimeLog;
+  int hardRealTimeALog;
   Target_Parameters_T *Tunable_Parameters;
   Target_Blocks_T *Tunable_Blocks;
   Target_Scopes_T *Scopes;
@@ -252,6 +255,7 @@ public:
     int getBlockNumber(){return targetthread->getBlockNumber();}
     int getEndApp(){return targetthread->getEndApp();}
     int getVerbose(){return targetthread->getVerbose();}
+    void setHardRealTime(int hrScope,int hrLog,int hrAlog){targetthread->setHardRealTime( hrScope, hrLog, hrAlog);}
     const char* getTargetName(){return targetthread->getTargetName();}
 
    QString getParameterName(int blk,int prm);
