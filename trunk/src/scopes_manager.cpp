@@ -156,6 +156,23 @@ void QRL_ScopesManager::refresh()
 // 	qDebug()<<"error in ScopesManager::refresh";
 // 
 // }
+
+
+  if ((qTargetInterface->getTargetThread()->getScopes())[currentScope].isSaving==0){
+      savePushButton->setEnabled(true);
+       saveProgressBar->setEnabled(false);
+      saveProgressBar->setMaximum(100);
+      saveProgressBar->setValue(100);
+  }
+  else
+  {
+     savePushButton->setEnabled(false);
+    saveProgressBar->setEnabled(true);
+    saveProgressBar->setMaximum(qTargetInterface->getTargetThread()->n_points_to_save(currentScope));
+     saveProgressBar->setValue((qTargetInterface->getTargetThread()->getScopes())[currentScope].Saved_Points);
+  }
+
+
 }
 
     void QRL_ScopesManager::setFileVersion(qint32 v){

@@ -22,7 +22,7 @@
    </size>
   </property>
   <property name="windowTitle" >
-   <string>Rtai-Lab Graphical User Interface</string>
+   <string>QRtaiLab Graphical User Interface</string>
   </property>
   <property name="autoFillBackground" >
    <bool>false</bool>
@@ -33,23 +33,14 @@
   <property name="dockOptions" >
    <set>QMainWindow::ForceTabbedDocks</set>
   </property>
-  <widget class="QWidget" name="centralwidget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>69</y>
-     <width>802</width>
-     <height>487</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QWidget" name="centralwidget" />
   <widget class="QMenuBar" name="menubar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
      <y>0</y>
      <width>802</width>
-     <height>30</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuView" >
@@ -93,25 +84,8 @@
    <addaction name="menuView" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>556</y>
-     <width>802</width>
-     <height>23</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>30</y>
-     <width>802</width>
-     <height>39</height>
-    </rect>
-   </property>
    <property name="minimumSize" >
     <size>
      <width>0</width>

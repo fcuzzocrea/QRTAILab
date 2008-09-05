@@ -1005,7 +1005,11 @@ FILE*  TargetThread::save_file(int index) {
 
 }
 
+  void  TargetThread::set_points_counter_scope(int index,int cnt){
 
+  Scopes[index].Saved_Points=cnt;
+
+}
 
 
 
@@ -1255,6 +1259,7 @@ FILE*  TargetThread::save_file_log(int index) {
 	//emit stopSaving(index);
 
 }
+
       int  TargetThread::n_points_to_save_log(int index){
 	int n_points;
 

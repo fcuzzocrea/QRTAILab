@@ -196,13 +196,14 @@ static void *rt_get_scope_data(void *arg)
 
 		if (targetThread->start_saving_scope(index)) {
 			jl = 0;
-			printf("%d from %d saved\n",save_idx,targetThread->n_points_to_save(index));
+			//printf("%d from %d saved\n",save_idx,targetThread->n_points_to_save(index));
 			for (n = 0; n < MsgData; n++) {
 				for (nn = 0; nn < ntraces + 1; nn++) {
 					fprintf(targetThread->save_file(index), "%1.10f ", MsgBuf[jl++]);
 				}
 				fprintf(targetThread->save_file(index), "\n");
 				save_idx++;
+				targetThread->set_points_counter_scope(index,save_idx);
 				if (save_idx == targetThread->n_points_to_save(index)) {
 					targetThread->stop_saving(index);
 					save_idx = 0;
