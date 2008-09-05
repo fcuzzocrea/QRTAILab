@@ -62,6 +62,10 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
 	
 //	tabWidget->addTab(traceWidget,tr("trace %1").arg(Scopes[currentScope].ntraces));
 
+	timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
+        timer->start((int)(1./10*1000.));
+
 }
 QRL_LogsManager::~QRL_LogsManager()
 {
@@ -69,6 +73,14 @@ QRL_LogsManager::~QRL_LogsManager()
 	//stopScopeThreads();
 	//if (Get_Scope_Data_Thread)
 	//	delete[] Get_Scope_Data_Thread;
+}
+
+void QRL_LogsManager::refresh()
+{
+  if ((qTargetInterface->getTargetThread()->getLogs())[currentLog].isSaving==0)
+      savePushButton->setEnabled(true);
+  else
+     savePushButton->setEnabled(false);
 }
 
 
