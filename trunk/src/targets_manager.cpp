@@ -50,6 +50,9 @@ QRL_TargetsManager::QRL_TargetsManager(QWidget *parent,QRtaiLabCore* qtargetinte
 	connect( disconnectPushButton, SIGNAL( pressed() ), this, SLOT( disconnectTarget() ) ); 
 	connect( startPushButton, SIGNAL( pressed() ), this, SLOT( start() ) ); 
 	connect( stopPushButton, SIGNAL( pressed() ), this, SLOT( stop() ) ); 
+	connect( scopesHRTCheckBox, SIGNAL(stateChanged(int) ), this, SLOT( hrtModusChanged(int) ) );
+	connect( logsHRTCheckBox, SIGNAL(stateChanged(int) ), this, SLOT( hrtModusChanged(int) ) );
+	connect( aLogsHRTCheckBox, SIGNAL(stateChanged(int) ), this, SLOT( hrtModusChanged(int) ) );
 
 	connectPushButton->setEnabled(true);
 	disconnectPushButton->setEnabled(false);
@@ -77,6 +80,23 @@ void QRL_TargetsManager::start(){
 void QRL_TargetsManager::stop(){
 	emit stopTarget();
 
+}
+
+void QRL_TargetsManager::hrtModusChanged(int state){
+  int hrtScope,hrtLog,hrtALog;
+  if (scopesHRTCheckBox->checkState()==Qt::Checked)
+    hrtScope=1;
+  else
+    hrtScope=0;
+  if (logsHRTCheckBox->checkState()==Qt::Checked)
+    hrtLog=1;
+  else
+    hrtLog=0;
+  if (aLogsHRTCheckBox->checkState()==Qt::Checked)
+    hrtALog=1;
+  else
+    hrtALog=0;
+  qTargetInterface->setHardRealTime(hrtScope,hrtLog,hrtALog);
 }
 
  void QRL_TargetsManager::setPreferences(Preferences_T p)
@@ -121,6 +141,7 @@ Preferences_T QRL_TargetsManager::getPreferences()
 void QRL_TargetsManager::setTargetIsConnected(bool connected){
 
 if (connected){
+	hartRTGroupBox->setEnabled(false);
 	connectPushButton->setEnabled(false);
 	disconnectPushButton->setEnabled(true);
 	//targetNameLineEdit->setText(tr(qTargetInterface->getTargetName()));
@@ -300,6 +321,7 @@ if (connected){
 	}
 
 } else {
+	hartRTGroupBox->setEnabled(true);
 	targetNameLineEdit_2->setText(tr(""));
 	connectPushButton->setEnabled(true);
 	disconnectPushButton->setEnabled(false);
@@ -346,13 +368,26 @@ QDataStream& operator<<(QDataStream &out, const QRL_TargetsManager &d){
 	out<<d.ledLineEdit->text();
 	out<<d.meterLineEdit->text();
 	out<<d.synchLineEdit->text();
-
+  qint32 hrtScope,hrtLog,hrtALog;
+  if (d.scopesHRTCheckBox->checkState()==Qt::Checked)
+    hrtScope=1;
+  else
+    hrtScope=0;
+  if (d.logsHRTCheckBox->checkState()==Qt::Checked)
+    hrtLog=1;
+  else
+    hrtLog=0;
+  if (d.aLogsHRTCheckBox->checkState()==Qt::Checked)
+    hrtALog=1;
+  else
+    hrtALog=0;
+    out<<hrtScope<<hrtLog<<hrtALog;
 	return out;
 }
 
 
 QDataStream& operator>>(QDataStream &in, QRL_TargetsManager(&d)){
-	QString s;
+	QString s;qint32 hrtScope,hrtLog,hrtALog;
 	in>>s;	d.ipLineEdit->setText(s);
 	in>>s;	d.taskLineEdit->setText(s);
 	in>>s;	d.scopeLineEdit->setText(s);
@@ -361,6 +396,22 @@ QDataStream& operator>>(QDataStream &in, QRL_TargetsManager(&d)){
 	in>>s;	d.ledLineEdit->setText(s);
 	in>>s;	d.meterLineEdit->setText(s);
 	in>>s;	d.synchLineEdit->setText(s);
+	if (d.fileVersion>102){
+	  in >> hrtScope>>hrtLog>>hrtALog; 
+	    if (hrtScope==1)
+	      d.scopesHRTCheckBox->setCheckState(Qt::Checked);
+	    else
+	      d.scopesHRTCheckBox->setCheckState(Qt::Unchecked);
+	    if (hrtLog==1)
+	     d.logsHRTCheckBox->setCheckState(Qt::Checked);
+	    else
+	      d.logsHRTCheckBox->setCheckState(Qt::Unchecked);
+	    if (hrtALog==1)
+	    d.aLogsHRTCheckBox->setCheckState(Qt::Checked);
+	    else
+	     d.aLogsHRTCheckBox->setCheckState(Qt::Unchecked);
+	    emit d.hrtModusChanged(0);
+	}
 	return in;
 }
 

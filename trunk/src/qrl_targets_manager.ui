@@ -249,9 +249,9 @@
            </widget>
           </item>
           <item row="4" column="1" >
-           <widget class="QGroupBox" name="hartGroupBox" >
+           <widget class="QGroupBox" name="hartRTGroupBox" >
             <property name="enabled" >
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="title" >
              <string>hard real time mode</string>
@@ -261,7 +261,7 @@
             </property>
             <layout class="QGridLayout" name="gridLayout" >
              <item row="0" column="0" >
-              <widget class="QCheckBox" name="scopesCheckBox" >
+              <widget class="QCheckBox" name="scopesHRTCheckBox" >
                <property name="text" >
                 <string>Scopes</string>
                </property>
@@ -271,7 +271,7 @@
               </widget>
              </item>
              <item row="1" column="0" >
-              <widget class="QCheckBox" name="logsCheckbox" >
+              <widget class="QCheckBox" name="logsHRTCheckBox" >
                <property name="text" >
                 <string>Logs</string>
                </property>
@@ -281,7 +281,7 @@
               </widget>
              </item>
              <item row="2" column="0" >
-              <widget class="QCheckBox" name="aLogsCheckBox" >
+              <widget class="QCheckBox" name="aLogsHRTCheckBox" >
                <property name="text" >
                 <string>ALogs</string>
                </property>
@@ -310,9 +310,7 @@
          <zorder>targetNameLabel</zorder>
          <zorder>targetNameLineEdit_2</zorder>
          <zorder>statusGroupBox</zorder>
-         <zorder>groupBox_2</zorder>
-         <zorder>frame</zorder>
-         <zorder>hartGroupBox</zorder>
+         <zorder>hartRTGroupBox</zorder>
          <zorder>verticalSpacer</zorder>
         </widget>
        </item>

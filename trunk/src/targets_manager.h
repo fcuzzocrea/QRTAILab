@@ -46,6 +46,7 @@ public:
   void setTargetIsRunning(bool);
     void setPreferences(Preferences_T p);
     Preferences_T getPreferences();
+    void setFileVersion(qint32 v){fileVersion=v;}
 signals:
     void startTarget();
     void stopTarget();
@@ -57,7 +58,9 @@ protected slots:
     void stop();
     void connectTarget();
     void disconnectTarget();
+    void hrtModusChanged(int);
 private:
+  qint32 fileVersion;
     Preferences_T Preferences;
   QRtaiLabCore* qTargetInterface;
   int currentTarget;

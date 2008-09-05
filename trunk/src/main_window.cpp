@@ -429,6 +429,7 @@ void QRL_MainWindow::loadProfile() {
 	QSize s;QPoint p;
 	in >> s;this->resize(s);
 	in >> p; this->move(p);
+	TargetsManager->setFileVersion(version);
 	in >> *TargetsManager;
 	if (qTargetInterface->getIsTargetConnected()==0) {
 		connectToTarget(TargetsManager->getPreferences());
@@ -801,7 +802,7 @@ void QRL_MainWindow::enableActionShowParameter(bool b)
 void QRL_MainWindow::about() 
 {
     QMessageBox::about(this,"About QRtaiLab",
-		"Version 0.1.2\n"
+		"Version 0.1.3\n"
                 "This app was coded for educational purposes.\n\n"
                 "Copyright (C) 2008 Holger Nahrstaedt. \n"
 		"              Control system group, TU-Berlin\n"
