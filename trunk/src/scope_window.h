@@ -43,39 +43,7 @@
 #include <qwt_scale_draw.h>
 #include <qwt_math.h>
 #include "qrtailab.h"
-
-typedef struct Scopes_Data_Struct Scopes_Data_T;
-struct Scopes_Data_Struct
-{
-	double * d_y;
-	double * d_yempty;
-	int time;
-	int yt;
-};
-
-typedef struct Trace_Options_Struct Trace_Options_T;
-struct Trace_Options_Struct
-{
-	int index;
-	double offset;
-	double dy;
-	int lineWidth;
-	QBrush brush;
-  	QwtPlotMarker zeroAxis;
-	double average;
-	double min,max;
-	double PP,RMS;
-	QwtPlotMarker traceLabel;
-	QwtPlotMarker unitLabel;
-	QwtPlotMarker averageLabel;
-	QwtPlotMarker minLabel;
-	QwtPlotMarker maxLabel;
-	QwtPlotMarker ppLabel;
-	QwtPlotMarker rmsLabel;
-	QString traceName;
-	int labelCounter;
-	bool visible;
-};
+#include "scope_trace.h"
 
 
 // class QRL_ScopeWindow;
@@ -136,7 +104,7 @@ public:
    QColor getGridColor(){return gridColor;}
    void setBgColor(QColor);
    QColor getBgColor(){return bgColor;}
-   QColor getTraceColor(int trace){return  TraceOptions[trace].brush.color();}
+   QColor getTraceColor(int trace){return  traceOptions[trace]->getColor();}
    void setTraceColor(const QColor&,int);
    void setTraceWidth(int ,int );
    int getTraceWidth(int);
@@ -149,7 +117,7 @@ public:
    void setFileName(QString str) {fileName=str;}
    QString getFileName() {return fileName;}
    void showTrace(bool,int);
-   bool isTraceVisible(int trace){return  TraceOptions[trace].visible;}
+   bool isTraceVisible(int trace){return  traceOptions[trace]->isVisible();}
    void setPlottingMode(PlottingMode p);
    void setPlottingDirection(Qt::LayoutDirection d);
    int getPlottingMode() {return (int)plottingMode ;}
@@ -172,18 +140,18 @@ public:
    void setMaxLabel(bool b, int);
    void setPPLabel(bool b, int);
    void setRMSLabel(bool b, int);
- bool getTraceLabel(int trace){return TraceOptions[trace].traceLabel.isVisible();}
- bool getUnitLabel(int trace){return TraceOptions[trace].unitLabel.isVisible();}
- bool getAverageLabel(int trace){return TraceOptions[trace].averageLabel.isVisible();}
- bool getMinLabel(int trace){return TraceOptions[trace].minLabel.isVisible();}
- bool getMaxLabel(int trace){return TraceOptions[trace].maxLabel.isVisible();}
- bool getPPLabel(int trace){return TraceOptions[trace].ppLabel.isVisible();}
- bool getRMSLabel(int trace){return TraceOptions[trace].rmsLabel.isVisible();}
-   bool getZeroAxis(int trace){return TraceOptions[trace].zeroAxis.isVisible();}
+ bool getTraceLabel(int trace){return traceOptions[trace]->getLabel();}
+ bool getUnitLabel(int trace){return traceOptions[trace]->unitLabel.isVisible();}
+ bool getAverageLabel(int trace){return traceOptions[trace]->getAverageLabel();}
+ bool getMinLabel(int trace){return traceOptions[trace]->getMinLabel();}
+ bool getMaxLabel(int trace){return traceOptions[trace]->getMaxLabel();}
+ bool getPPLabel(int trace){return traceOptions[trace]->getPPLabel();}
+ bool getRMSLabel(int trace){return traceOptions[trace]->getRMSLabel();}
+   bool getZeroAxis(int trace){return traceOptions[trace]->zeroAxis.isVisible();}
    //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
     void setValue(const QVector< QVector<float> > &v);
    void setTraceName(int trace, const QString &text);
-   QString getTraceName(int trace){return TraceOptions[trace].traceName;}
+   QString getTraceName(int trace){return traceOptions[trace]->getName();}
     void setVerbose(int v){Verbose=v;}
     void setFileVersion(qint32 v){fileVersion=v;}
 public slots:
@@ -196,20 +164,17 @@ private:
   int Verbose;
   float Value;
   qrl_types::Target_Scopes_T *Scope;
-  double *d_x; 
   unsigned int NDataMax,Ncurve,NDataSoll, MaxDataPoints,Divider;
   int time,time2;
   double xmin,xmax,dx,dt;
   double xMajorTicks,xStep;
   int NDistance;
-  Scopes_Data_T *ScopeData;
   QTimer *timer;
   QwtPlot *qwtPlot;
   double RefreshRate;
   double saveTime;
   QString fileName;
   QwtPlotGrid *grid;
-  QwtPlotCurve **cData;
   QColor gridColor;
   QColor bgColor;
   QwtPlotPicker *picker;
@@ -220,7 +185,7 @@ private:
   int index;
   int yMajorTicks;
   double yStep, yOffset, dy ,ymin,ymax;
-  Trace_Options_T *TraceOptions;
+  TraceOptions **traceOptions;
   Qt::LayoutDirection direction;
   PlottingMode plottingMode;
   bool triggerSearch,triggerUp,singleMode,singleModeRunning;
