@@ -40,11 +40,11 @@ TraceOptions::TraceOptions(QwtPlot *parent, unsigned int maxdatapoints, int j){
 		  d_x[i] =0.;     // time axis
 		  d_y[i] = 0.;
 	      }
-		cData = new QwtPlotCurve(Scope->name);
+		cData = new QwtPlotCurve(QObject::tr("Trace %1").arg(j));
 	 	cData->attach(qwtPlot);
 		cData->setPaintAttribute(QwtPlotCurve::PaintFiltered,true);
 		cData->setPaintAttribute(QwtPlotCurve::ClipPolygons,true);
-
+		xmax=1;
 		lineWidth=3;
 		dy=1.;
 		offset=0.;
@@ -99,7 +99,7 @@ TraceOptions::TraceOptions(QwtPlot *parent, unsigned int maxdatapoints, int j){
 	
 
 
-		zeroAxis.setLabel(tr("%1").arg(j));    
+		zeroAxis.setLabel(QObject::tr("%1").arg(j));    
 		zeroAxis.setLabelAlignment(Qt::AlignLeft|Qt::AlignTop);
     		zeroAxis.setLineStyle(QwtPlotMarker::HLine);
     		//zeroAxis.setYValue(offset/dy);
@@ -108,7 +108,7 @@ TraceOptions::TraceOptions(QwtPlot *parent, unsigned int maxdatapoints, int j){
     		zeroAxis.attach(qwtPlot);
 		zeroAxis.hide();
 
-		traceName=tr("Trace %1").arg(j);
+		traceName=QObject::tr("Trace %1").arg(j);
 		QwtText ttext(traceName);
    		 ttext.setColor(QColor(brush.color()));
     		traceLabel.setLabel(ttext);
@@ -122,7 +122,7 @@ TraceOptions::TraceOptions(QwtPlot *parent, unsigned int maxdatapoints, int j){
     		traceLabel.attach(qwtPlot);
 		traceLabel.hide();
 
-		QwtText unitText(tr("%1").arg(0.));
+		QwtText unitText(QObject::tr("%1").arg(0.));
    		 unitText.setColor(QColor(gridColor));
     		unitLabel.setLabel(unitText);
 		unitLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -136,7 +136,7 @@ TraceOptions::TraceOptions(QwtPlot *parent, unsigned int maxdatapoints, int j){
 		unitLabel.hide();
 
 
-		QwtText atext(tr("%1").arg(0.));
+		QwtText atext(QObject::tr("%1").arg(0.));
    		 atext.setColor(QColor(gridColor));
     		averageLabel.setLabel(atext);
 		averageLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -149,7 +149,7 @@ TraceOptions::TraceOptions(QwtPlot *parent, unsigned int maxdatapoints, int j){
     		averageLabel.attach(qwtPlot);
 		averageLabel.hide();
 		
-		QwtText minText(tr("%1").arg(0.));
+		QwtText minText(QObject::tr("%1").arg(0.));
    		 minText.setColor(QColor(gridColor));
     		minLabel.setLabel(minText);
 		minLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -162,7 +162,7 @@ TraceOptions::TraceOptions(QwtPlot *parent, unsigned int maxdatapoints, int j){
     		minLabel.attach(qwtPlot);
 		minLabel.hide();
 
-		QwtText maxText(tr("%1").arg(0.));
+		QwtText maxText(QObject::tr("%1").arg(0.));
    		 maxText.setColor(QColor(gridColor));
     		maxLabel.setLabel(maxText);
 		maxLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -175,7 +175,7 @@ TraceOptions::TraceOptions(QwtPlot *parent, unsigned int maxdatapoints, int j){
     		maxLabel.attach(qwtPlot);
 		maxLabel.hide();
 
-		QwtText ppText(tr("%1").arg(0.));
+		QwtText ppText(QObject::tr("%1").arg(0.));
    		 ppText.setColor(QColor(gridColor));
     		ppLabel.setLabel(ppText);
 		ppLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -188,7 +188,7 @@ TraceOptions::TraceOptions(QwtPlot *parent, unsigned int maxdatapoints, int j){
     		ppLabel.attach(qwtPlot);
 		ppLabel.hide();
 
-		QwtText rmsText(tr("%1").arg(0.));
+		QwtText rmsText(QObject::tr("%1").arg(0.));
    		 rmsText.setColor(QColor(gridColor));
     		rmsLabel.setLabel(rmsText);
 		rmsLabel.setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -224,20 +224,20 @@ void TraceOptions::refresh()
 if ( getAverageLabel()){
 	average=0.;
 	for (int k=0;k<NDataSoll;k++)
-		average+=(ScopeData[nn].d_y[k]-offset)*dy/((double)NDataSoll);
+		average+=(d_y[k]-offset)*dy/((double)NDataSoll);
 
 	QString astr;
 	astr.setNum(average,'f',3);
-	//QwtText atext(tr("Avg: %1").arg(average));
-	QwtText atext(tr("Avg: ")+astr);
+	//QwtText atext(QObject::tr("Avg: %1").arg(average));
+	QwtText atext(QObject::tr("Avg: ")+astr);
 	atext.setColor(QColor(gridColor));
 	averageLabel.setLabel(atext);
 }
 if ( getUnitLabel()){
 	QString astr;
 	astr.setNum(dy,'f',3);
-	//QwtText atext(tr("Avg: %1").arg(average));
-	QwtText atext(tr("U/d: ")+astr);
+	//QwtText atext(QObject::tr("Avg: %1").arg(average));
+	QwtText atext(QObject::tr("U/d: ")+astr);
 	atext.setColor(QColor(gridColor));
 	unitLabel.setLabel(atext);
 }
@@ -249,7 +249,7 @@ if ( getMinLabel()){
 
 	QString astr;
 	astr.setNum(min,'f',3);
-	QwtText atext(tr("Min: ")+astr);
+	QwtText atext(QObject::tr("Min: ")+astr);
    	atext.setColor(QColor(gridColor));
     	minLabel.setLabel(atext);
 }
@@ -261,7 +261,7 @@ if ( getMaxLabel()){
 
 	QString astr;
 	astr.setNum(max,'f',3);
-	QwtText atext(tr("Max: ")+astr);
+	QwtText atext(QObject::tr("Max: ")+astr);
    	atext.setColor(QColor(gridColor));
     	maxLabel.setLabel(atext);
 }
@@ -269,7 +269,7 @@ if ( getPPLabel()){
 	min=(d_y[0]-offset)*dy;
 	max=(d_y[0]-offset)*dy;
 	for (int k=0;k<NDataSoll;k++){
-		if (max<(.d_y[k]-offset)*dy)
+		if (max<(d_y[k]-offset)*dy)
 			max=(d_y[k]-offset)*dy;
 		if (min>(d_y[k]-offset)*dy)
 			min=(d_y[k]-offset)*dy;
@@ -277,7 +277,7 @@ if ( getPPLabel()){
 	PP=max-min;
 	QString astr;
 	astr.setNum(PP,'f',3);
-	QwtText atext(tr("PP: ")+astr);
+	QwtText atext(QObject::tr("PP: ")+astr);
    	atext.setColor(QColor(gridColor));
     	ppLabel.setLabel(atext);
 }
@@ -288,19 +288,19 @@ if ( getRMSLabel()){
 	RMS=sqrt(RMS/((double)NDataSoll));
 	QString astr;
 	astr.setNum(RMS,'f',3);
-	QwtText atext(tr("RMS: ")+astr);
+	QwtText atext(QObject::tr("RMS: ")+astr);
 	atext.setColor(QColor(gridColor));
 	rmsLabel.setLabel(atext);
 }
 }
-}
 
 
 
 
 
 
-   void TraceOptions::changeNDataSoll(int ds, int dt)
+
+   void TraceOptions::changeNDataSoll(int ds, double dt)
 {
 	NDataSoll=(int)ds;
 
@@ -387,9 +387,90 @@ double  TraceOptions::getDy()
 		return dy;
 }
 
+   void TraceOptions::showUnitLabel(){
+    		unitLabel.setYValue(3.5-(0.5*labelCounter));
+		labelCounter++;
+		unitLabel.show();
+}
+   void TraceOptions::hideUnitLabel(){
+	      unitLabel.hide();
+labelCounter=0;
+
+}
+
+   void TraceOptions::showAverageLabel(){
+    		averageLabel.setYValue(3.5-(0.5*labelCounter));
+		labelCounter++;
+		averageLabel.show();
+}
+   void TraceOptions::hideAverageLabel(){
+	      averageLabel.hide();
+labelCounter=0;
+
+}
+
+   void TraceOptions::showMinLabel(){
+    		minLabel.setYValue(3.5-(0.5*labelCounter));
+		labelCounter++;
+		minLabel.show();
+}
+   void TraceOptions::hideMinLabel(){
+	      minLabel.hide();
+labelCounter=0;
+
+}
+
+   void TraceOptions::showMaxLabel(){
+    		maxLabel.setYValue(3.5-(0.5*labelCounter));
+		labelCounter++;
+		maxLabel.show();
+}
+   void TraceOptions::hideMaxLabel(){
+	      maxLabel.hide();
+labelCounter=0;
 
 
-void QRL_ScopeWindow::setZeroAxis(bool b){
+}
+   void TraceOptions::showPPLabel(){
+    		ppLabel.setYValue(3.5-(0.5*labelCounter));
+		labelCounter++;
+		ppLabel.show();
+}
+   void TraceOptions::hidePPLabel(){
+	      ppLabel.hide();
+labelCounter=0;
+
+
+}
+   void TraceOptions::showRMSLabel(){
+    		rmsLabel.setYValue(3.5-(0.5*labelCounter));
+		labelCounter++;
+		rmsLabel.show();
+}
+   void TraceOptions::hideRMSLabel(){
+	      rmsLabel.hide();
+	      labelCounter=0;
+
+}
+
+
+
+  void TraceOptions::setLabelsXValue(double x){
+
+		traceLabel.setXValue(x);
+		unitLabel.setXValue(x);
+		averageLabel.setXValue(x);
+		minLabel.setXValue(x);
+		maxLabel.setXValue(x);
+		ppLabel.setXValue(x);
+		rmsLabel.setXValue(x);
+
+
+
+
+}
+
+void TraceOptions::setZeroAxis(bool b){
 
 if (b)
 zeroAxis.show();
@@ -401,49 +482,9 @@ zeroAxis.hide();
 
 }
 
-void QRL_ScopeWindow::setTraceLabel(bool b){
-
-	
-}
-
-void QRL_ScopeWindow::setUnitLabel(bool b){
 
 
-
-
-}
-
-
-void QRL_ScopeWindow::setAverageLabel(bool b){
-
-
-	
-
-}
-
-void QRL_ScopeWindow::setMinLabel(bool b){
-
-	
-}
-
-void QRL_ScopeWindow::setMaxLabel(bool b){
-
-	
-
-}
-
-void QRL_ScopeWindow::setPPLabel(bool b){
-
-	
-
-}
-
-void QRL_ScopeWindow::setRMSLabel(bool b){
-
-
-}
-
-void QRL_ScopeWindow::setTraceName(const QString &text){
+void TraceOptions::setName(const QString &text){
 
 	
 	traceName=QString(text);
@@ -460,48 +501,62 @@ void QRL_ScopeWindow::setTraceName(const QString &text){
 
 
 
-QDataStream& operator<<(QDataStream &out, const TraceOptions &d){
+QDataStream& operator<<(QDataStream &out, const TraceOptions *d){
         qint32 a;
-		out << d.traceName;
-		out << d.zeroAxis.isVisible();
-		out << d.averageLabel.isVisible();
-		out << d.unitLabel.isVisible();
-		out << d.minLabel.isVisible();
-		out << d.maxLabel.isVisible();
-		out << d.ppLabel.isVisible();
-		out << d.rmsLabel.isVisible();
+		out << d->traceName;
+		out << d->zeroAxis.isVisible();
+		out << d->averageLabel.isVisible();
+		out << d->unitLabel.isVisible();
+		out << d->minLabel.isVisible();
+		out << d->maxLabel.isVisible();
+		out << d->ppLabel.isVisible();
+		out << d->rmsLabel.isVisible();
 
-		out << d.traceLabel.isVisible();
+		out << d->traceLabel.isVisible();
 
-		out << d.offset;
-		out << d.dy;
-		out << d.brush.color();
-		a=d.lineWidth; out <<a;
-		out << d.visible;
+		out << d->offset;
+		out << d->dy;
+		out << d->brush.color();
+		a=d->lineWidth; out <<a;
+		out << d->visible;
 
 	return out;
 }
 
 
-QDataStream& operator>>(QDataStream &in, TraceOptions(&d)){
-	QSize s;QPoint p;bool b; QColor c; qint32 a,a2;QFont f; double dd;
-	QString str; int Ncurve;
+QDataStream& operator>>(QDataStream &in, TraceOptions(*d)){
+	QSize s;QPoint p;bool b; QColor c; qint32 a;QFont f; double dd;
+	QString str; 
 
 	
-		in >> str; d.setTraceName( str);
-		in >> b; d.setZeroAxis(b);
-		in >> b; d.setAverageLabel(b);
-		in >> b; d.setUnitLabel(b);
-		in >> b; d.setMinLabel(b);
-		in >> b; d.setMaxLabel(b);
-		in >> b; d.setPPLabel(b);
-		in >> b; d.setRMSLabel(b);
-		in >> b; d.setTraceLabel(b);
-		in >> dd; d.setTraceOffset(dd);
-		in >> dd; d.setTraceDy(dd);
-		in >> c; d.setTraceColor(c);
-		in >> a; d.setTraceWidth((int)a);
-		in >> b; d.showTrace(b);
+// 		in >> str; d.setName( str);
+// 		in >> b; d.setZeroAxis(b);
+// 		in >> b; d.averageLabel.isVisible()(b);
+// 		in >> b; d.setUnitLabel(b);
+// 		in >> b; d.setMinLabel(b);
+// 		in >> b; d.setMaxLabel(b);
+// 		in >> b; d.setPPLabel(b);
+// 		in >> b; d.setRMSLabel(b);
+// 		in >> b; d.setLabel(b);
+// 		in >> dd; d.setOffset(dd);
+// 		in >> dd; d.setDy(dd);
+// 		in >> c; d.setColor(c);
+// 		in >> a; d.setWidth((int)a);
+// 		in >> b; d.show(b);
+		in >> str;
+		in >> b; 
+		in >> b; 
+		in >> b; 
+		in >> b; 
+		in >> b; 
+		in >> b; 
+		in >> b; 
+		in >> b; 
+		in >> dd; 
+		in >> dd; 
+		in >> c;
+		in >> a;
+		in >> b;
 
 
 
