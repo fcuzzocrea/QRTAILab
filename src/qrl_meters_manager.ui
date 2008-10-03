@@ -5,19 +5,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>367</width>
+    <width>400</width>
     <height>277</height>
    </rect>
   </property>
   <property name="minimumSize" >
    <size>
-    <width>367</width>
+    <width>400</width>
     <height>277</height>
    </size>
   </property>
   <property name="maximumSize" >
    <size>
-    <width>367</width>
+    <width>400</width>
     <height>277</height>
    </size>
   </property>
@@ -25,9 +25,67 @@
    <string>Meters Manager</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="qrtailab.qrc" >:/icons/meter_icon.xpm</iconset>
+   <iconset resource="qrtailab.qrc" >
+    <normaloff>:/icons/meter_icon.xpm</normaloff>:/icons/meter_icon.xpm</iconset>
   </property>
   <layout class="QGridLayout" >
+   <item row="1" column="1" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="helpButton" >
+       <property name="text" >
+        <string>Help</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>16</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeButton" >
+       <property name="text" >
+        <string>Close Manager</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>16</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
    <item rowspan="2" row="0" column="0" >
     <widget class="QListWidget" name="meterListWidget" >
      <property name="baseSize" >
@@ -87,20 +145,32 @@
        <item row="2" column="0" >
         <widget class="QLabel" name="minLabel" >
          <property name="text" >
-          <string>Minimum:</string>
+          <string>Min:</string>
          </property>
         </widget>
        </item>
        <item row="2" column="1" colspan="2" >
         <widget class="QwtCounter" name="minCounter" >
+         <property name="numButtons" >
+          <number>0</number>
+         </property>
          <property name="basicstep" stdset="0" >
-          <double>0.100000000000000</double>
+          <double>0.500000000000000</double>
          </property>
          <property name="minValue" >
-          <double>-32000.000000000000000</double>
+          <double>-2147483647.000000000000000</double>
          </property>
          <property name="maxValue" >
-          <double>32000.000000000000000</double>
+          <double>2147483647.000000000000000</double>
+         </property>
+         <property name="stepButton1" >
+          <number>10</number>
+         </property>
+         <property name="stepButton2" >
+          <number>100</number>
+         </property>
+         <property name="stepButton3" >
+          <number>1000</number>
          </property>
          <property name="value" >
           <double>-1.000000000000000</double>
@@ -110,20 +180,32 @@
        <item row="3" column="0" >
         <widget class="QLabel" name="maxLabel" >
          <property name="text" >
-          <string>Maximum:</string>
+          <string>Max:</string>
          </property>
         </widget>
        </item>
        <item row="3" column="1" colspan="2" >
         <widget class="QwtCounter" name="maxCounter" >
+         <property name="numButtons" >
+          <number>0</number>
+         </property>
          <property name="basicstep" stdset="0" >
-          <double>0.100000000000000</double>
+          <double>0.500000000000000</double>
          </property>
          <property name="minValue" >
-          <double>-32000.000000000000000</double>
+          <double>-2147483647.000000000000000</double>
          </property>
          <property name="maxValue" >
-          <double>32000.000000000000000</double>
+          <double>2147483647.000000000000000</double>
+         </property>
+         <property name="stepButton1" >
+          <number>10</number>
+         </property>
+         <property name="stepButton2" >
+          <number>100</number>
+         </property>
+         <property name="stepButton3" >
+          <number>1000</number>
          </property>
          <property name="value" >
           <double>1.000000000000000</double>
@@ -154,7 +236,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>207</width>
            <height>21</height>
@@ -390,75 +472,84 @@
       <widget class="QPushButton" name="fontPushButton" >
        <property name="geometry" >
         <rect>
-         <x>60</x>
-         <y>70</y>
-         <width>97</width>
-         <height>27</height>
+         <x>50</x>
+         <y>100</y>
+         <width>111</width>
+         <height>31</height>
         </rect>
        </property>
        <property name="text" >
         <string>Change Fonts</string>
        </property>
       </widget>
+      <widget class="QComboBox" name="formatComboBox" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>191</width>
+         <height>29</height>
+        </rect>
+       </property>
+       <property name="currentIndex" >
+        <number>1</number>
+       </property>
+       <item>
+        <property name="text" >
+         <string> e - exp. format</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>f - fixed format</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>g - mixed format</string>
+        </property>
+       </item>
+      </widget>
+      <widget class="QLabel" name="label_4" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>60</y>
+         <width>69</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text" >
+        <string>Precision:</string>
+       </property>
+      </widget>
+      <widget class="QwtCounter" name="precisionCounter" >
+       <property name="geometry" >
+        <rect>
+         <x>90</x>
+         <y>50</y>
+         <width>84</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="numButtons" >
+        <number>0</number>
+       </property>
+       <property name="basicstep" stdset="0" >
+        <double>1.000000000000000</double>
+       </property>
+       <property name="minValue" >
+        <double>-1.000000000000000</double>
+       </property>
+       <property name="maxValue" >
+        <double>100.000000000000000</double>
+       </property>
+       <property name="value" >
+        <double>4.000000000000000</double>
+       </property>
+      </widget>
      </widget>
     </widget>
-   </item>
-   <item row="1" column="1" >
-    <layout class="QHBoxLayout" >
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="helpButton" >
-       <property name="text" >
-        <string>Help</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>16</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="closeButton" >
-       <property name="text" >
-        <string>Close Manager</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>16</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>

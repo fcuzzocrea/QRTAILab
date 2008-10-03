@@ -22,13 +22,13 @@
 /*
  file:		scopes_trace.cpp
  describtion:
-   file for the classes TraceOptions
+   file for the classes QRL_ScopeTrace
 */
 
 #include "scope_trace.h"
 #include <stdlib.h>
 
-TraceOptions::TraceOptions(QwtPlot *parent, unsigned int maxdatapoints, int j){
+QRL_ScopeTrace::QRL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int j){
 		qwtPlot=parent;
 		MaxDataPoints=maxdatapoints;
 		index = j;
@@ -206,7 +206,7 @@ TraceOptions::TraceOptions(QwtPlot *parent, unsigned int maxdatapoints, int j){
 
 }
 
-TraceOptions::~TraceOptions(){
+QRL_ScopeTrace::~QRL_ScopeTrace(){
 //Plotting_Scope_Data_Thread->stopThread();
 //Plotting_Scope_Data_Thread->wait();
 //delete Plotting_Scope_Data_Thread;
@@ -218,10 +218,10 @@ TraceOptions::~TraceOptions(){
 }
 
 
-void TraceOptions::refresh()
+void QRL_ScopeTrace::refresh()
 {
 
-if ( getAverageLabel()){
+if ( isLabelVisible(lt_average)){
 	average=0.;
 	for (int k=0;k<NDataSoll;k++)
 		average+=(d_y[k]-offset)*dy/((double)NDataSoll);
@@ -233,7 +233,7 @@ if ( getAverageLabel()){
 	atext.setColor(QColor(gridColor));
 	averageLabel.setLabel(atext);
 }
-if ( getUnitLabel()){
+if ( isLabelVisible(lt_unit)){
 	QString astr;
 	astr.setNum(dy,'f',3);
 	//QwtText atext(QObject::tr("Avg: %1").arg(average));
@@ -241,7 +241,7 @@ if ( getUnitLabel()){
 	atext.setColor(QColor(gridColor));
 	unitLabel.setLabel(atext);
 }
-if ( getMinLabel()){
+if ( isLabelVisible(lt_min)){
 	min=(d_y[0]-offset)*dy;
 	for (int k=0;k<NDataSoll;k++)
 		if (min>(d_y[k]-offset)*dy)
@@ -253,7 +253,7 @@ if ( getMinLabel()){
    	atext.setColor(QColor(gridColor));
     	minLabel.setLabel(atext);
 }
-if ( getMaxLabel()){
+if ( isLabelVisible(lt_max)){
 	max=(d_y[0]-offset)*dy;
 	for (int k=0;k<NDataSoll;k++)
 		if (max<(d_y[k]-offset)*dy)
@@ -265,7 +265,7 @@ if ( getMaxLabel()){
    	atext.setColor(QColor(gridColor));
     	maxLabel.setLabel(atext);
 }
-if ( getPPLabel()){
+if ( isLabelVisible(lt_pp)){
 	min=(d_y[0]-offset)*dy;
 	max=(d_y[0]-offset)*dy;
 	for (int k=0;k<NDataSoll;k++){
@@ -281,7 +281,7 @@ if ( getPPLabel()){
    	atext.setColor(QColor(gridColor));
     	ppLabel.setLabel(atext);
 }
-if ( getRMSLabel()){
+if ( isLabelVisible(lt_rms)){
 	RMS=0.;
 	for (int k=0;k<NDataSoll;k++)
 		RMS+=(d_y[k]-offset)*dy*(d_y[k]-offset)*dy;
@@ -300,7 +300,7 @@ if ( getRMSLabel()){
 
 
 
-   void TraceOptions::changeNDataSoll(int ds, double dt)
+   void QRL_ScopeTrace::changeNDataSoll(int ds, double dt)
 {
 	NDataSoll=(int)ds;
 
@@ -315,7 +315,7 @@ if ( getRMSLabel()){
 
 
 
-void TraceOptions::show(bool v){
+void QRL_ScopeTrace::show(bool v){
 
 	visible=v;
 	if (!visible) {
@@ -325,7 +325,7 @@ void TraceOptions::show(bool v){
 	}
 }
 
-void TraceOptions::setColor(const QColor& c)
+void QRL_ScopeTrace::setColor(const QColor& c)
 {
 		QPen pen;
 		pen.setBrush(c);
@@ -336,7 +336,7 @@ void TraceOptions::setColor(const QColor& c)
 		traceLabel.setLinePen(QPen(brush,2.,Qt::DashDotLine));
 }
 
-void TraceOptions::setWidth(int traceWidth)
+void QRL_ScopeTrace::setWidth(int traceWidth)
 {
 		QPen pen;
 		pen.setBrush(brush);
@@ -345,14 +345,14 @@ void TraceOptions::setWidth(int traceWidth)
 		cData->setPen(pen);
 }
 
-int  TraceOptions::getWidth()
+int  QRL_ScopeTrace::getWidth()
 {
 		return cData->pen().width();
 }
 
-   void TraceOptions::setOffset(double o)
+   void QRL_ScopeTrace::setOffset(double o)
 {
-		//TraceOptions[trace].offset=o;
+		//QRL_ScopeTrace[trace].offset=o;
    		 for (unsigned int i = 0; i< NDataSoll; i++)
   		  {
 			d_y[i]=(((d_y[i]-offset)*dy))/dy+o;
@@ -365,11 +365,11 @@ int  TraceOptions::getWidth()
 
 }
 
-double  TraceOptions::getOffset()
+double  QRL_ScopeTrace::getOffset()
 {
 		return offset;
 }
-   void TraceOptions::setDy(double d){
+   void QRL_ScopeTrace::setDy(double d){
 
    		 for (unsigned int i = 0; i< NDataSoll; i++)
   		  {
@@ -382,80 +382,161 @@ double  TraceOptions::getOffset()
 
 }
 
-double  TraceOptions::getDy()
+double  QRL_ScopeTrace::getDy()
 {
 		return dy;
 }
 
-   void TraceOptions::showUnitLabel(){
-    		unitLabel.setYValue(3.5-(0.5*labelCounter));
+
+
+   void QRL_ScopeTrace::showLabel(labelTypes lt){
+
+  switch(lt){
+    case lt_trace:traceLabel.show();
+		  break;
+    case lt_unit:
+		unitLabel.setYValue(3.5-(0.5*labelCounter));
 		labelCounter++;
 		unitLabel.show();
-}
-   void TraceOptions::hideUnitLabel(){
-	      unitLabel.hide();
-labelCounter=0;
-
-}
-
-   void TraceOptions::showAverageLabel(){
-    		averageLabel.setYValue(3.5-(0.5*labelCounter));
+		break;
+  case lt_average:
+	      averageLabel.setYValue(3.5-(0.5*labelCounter));
 		labelCounter++;
 		averageLabel.show();
-}
-   void TraceOptions::hideAverageLabel(){
-	      averageLabel.hide();
-labelCounter=0;
-
-}
-
-   void TraceOptions::showMinLabel(){
-    		minLabel.setYValue(3.5-(0.5*labelCounter));
+	      break;
+  case lt_min:
+	      minLabel.setYValue(3.5-(0.5*labelCounter));
 		labelCounter++;
 		minLabel.show();
-}
-   void TraceOptions::hideMinLabel(){
-	      minLabel.hide();
-labelCounter=0;
-
-}
-
-   void TraceOptions::showMaxLabel(){
-    		maxLabel.setYValue(3.5-(0.5*labelCounter));
+	      break;
+   case lt_max:
+	         maxLabel.setYValue(3.5-(0.5*labelCounter));
 		labelCounter++;
 		maxLabel.show();
-}
-   void TraceOptions::hideMaxLabel(){
-	      maxLabel.hide();
-labelCounter=0;
-
-
-}
-   void TraceOptions::showPPLabel(){
-    		ppLabel.setYValue(3.5-(0.5*labelCounter));
+		break;
+  case lt_pp:
+		ppLabel.setYValue(3.5-(0.5*labelCounter));
 		labelCounter++;
 		ppLabel.show();
-}
-   void TraceOptions::hidePPLabel(){
-	      ppLabel.hide();
-labelCounter=0;
-
-
-}
-   void TraceOptions::showRMSLabel(){
-    		rmsLabel.setYValue(3.5-(0.5*labelCounter));
+		break;
+  case lt_rms:
+		rmsLabel.setYValue(3.5-(0.5*labelCounter));
 		labelCounter++;
 		rmsLabel.show();
+		break;
 }
-   void TraceOptions::hideRMSLabel(){
-	      rmsLabel.hide();
-	      labelCounter=0;
+		
 
 }
 
 
 
-  void TraceOptions::setLabelsXValue(double x){
+
+
+
+   void QRL_ScopeTrace::hideLabel(labelTypes lt){
+
+
+
+
+  switch(lt){
+    case lt_trace:traceLabel.hide();
+		  break;
+    case lt_unit:
+		labelCounter=0;
+		unitLabel.hide();
+		break;
+  case lt_average:
+		labelCounter=0;
+		averageLabel.hide();
+	      break;
+  case lt_min:
+		labelCounter=0;
+		minLabel.hide();
+	      break;
+   case lt_max:
+		labelCounter=0;
+		maxLabel.hide();
+		break;
+  case lt_pp:
+		labelCounter=0;
+		ppLabel.hide();
+		break;
+  case lt_rms:
+		labelCounter=0;
+		rmsLabel.hide();
+		break;
+}
+
+
+
+}
+   bool QRL_ScopeTrace::isLabelVisible(labelTypes lt){
+bool isvisible=false;
+  switch(lt){
+    case lt_trace:isvisible=traceLabel.isVisible();
+		  break;
+    case lt_unit:
+		isvisible=unitLabel.isVisible();
+		break;
+  case lt_average:
+		isvisible=averageLabel.isVisible();
+	      break;
+  case lt_min:
+		isvisible=minLabel.isVisible();
+	      break;
+   case lt_max:
+		isvisible=maxLabel.isVisible();
+		break;
+  case lt_pp:
+		isvisible=ppLabel.isVisible();
+		break;
+  case lt_rms:
+		isvisible=rmsLabel.isVisible();
+		break;
+}
+return isvisible;
+
+
+
+
+}
+   void QRL_ScopeTrace::setLabelVisible(labelTypes lt, bool setvisible){
+  switch(lt){
+    case lt_trace:
+		  traceLabel.setVisible(setvisible);
+		  break;
+    case lt_unit:
+		unitLabel.setVisible(setvisible);
+		break;
+  case lt_average:
+		averageLabel.setVisible(setvisible);
+	      break;
+  case lt_min:
+		minLabel.setVisible(setvisible);
+	      break;
+   case lt_max:
+		maxLabel.setVisible(setvisible);
+		break;
+  case lt_pp:
+		ppLabel.setVisible(setvisible);
+		break;
+  case lt_rms:
+		rmsLabel.setVisible(setvisible);
+		break;
+}
+
+
+
+
+}
+
+
+
+
+
+
+  void QRL_ScopeTrace::setLabelsXValue(double x){
 
 		traceLabel.setXValue(x);
 		unitLabel.setXValue(x);
@@ -465,12 +546,9 @@ labelCounter=0;
 		ppLabel.setXValue(x);
 		rmsLabel.setXValue(x);
 
-
-
-
 }
 
-void TraceOptions::setZeroAxis(bool b){
+void QRL_ScopeTrace::setZeroAxis(bool b){
 
 if (b)
 zeroAxis.show();
@@ -484,7 +562,7 @@ zeroAxis.hide();
 
 
 
-void TraceOptions::setName(const QString &text){
+void QRL_ScopeTrace::setName(const QString &text){
 
 	
 	traceName=QString(text);
@@ -501,7 +579,7 @@ void TraceOptions::setName(const QString &text){
 
 
 
-QDataStream& operator<<(QDataStream &out, const TraceOptions *d){
+QDataStream& operator<<(QDataStream &out, const QRL_ScopeTrace *d){
         qint32 a;
 		out << d->traceName;
 		out << d->zeroAxis.isVisible();
@@ -524,7 +602,7 @@ QDataStream& operator<<(QDataStream &out, const TraceOptions *d){
 }
 
 
-QDataStream& operator>>(QDataStream &in, TraceOptions(*d)){
+QDataStream& operator>>(QDataStream &in, QRL_ScopeTrace(*d)){
 	QSize s;QPoint p;bool b; QColor c; qint32 a;QFont f; double dd;
 	QString str; 
 

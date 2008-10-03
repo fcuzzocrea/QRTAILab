@@ -124,11 +124,14 @@ Thermo->setFillBrush(QBrush(gradient));
 	Lcd->setNumDigits(5);
 	Lcd->setSegmentStyle(QLCDNumber::Flat);
 	Lcd->hide();*/
+	precision=4;
+	format='f';
 	Lcd = new QLabel(this);
 	 QFont font("Helvetica", 15, QFont::DemiBold);
  	Lcd->setFont(font);
+	Lcd->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 	Lcd->hide();
-
+      
   
 
     this->setWindowTitle(name);
@@ -188,18 +191,20 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 * @brief setting the actual value of the meter
 * @param v meter value
 */
-void QRL_MeterWindow::setValue(float v)
+void QRL_MeterWindow::setValue(double v)
 {
 	QString str;
+	QLocale loc;
 	switch (MeterType){
 	case DIAL:
-		Dial->setValue((double)v);
+		Dial->setValue(v);
 		break;
 	case THERMO:
 		Thermo->setValue(v);
 		break;
 	case LCD:
-		str.setNum(v,'g',4);
+		//str.setNum(v,'g',4);
+		str=loc.toString(v,format,precision);
 		if (v >= 0)
 			str.insert(0,QString(" "));
 		Lcd->setText(str);
@@ -414,11 +419,32 @@ void  QRL_MeterWindow::setThermoDirection(Qt::Orientation o)
 	Lcd->setFont(font);
 
 }
+void QRL_MeterWindow::setLcdPrecision(int p) {
+  precision=p;
+
+}
+
+void QRL_MeterWindow::setLcdFormat(char c) {
+  switch(c){
+  case 'e':	Lcd->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+     format=c;
+    break;
+  case 'f': 	Lcd->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+     format=c;
+    break;
+  case 'g':	Lcd->setAlignment(Qt::AlignLeft|Qt::AlignVCenter);
+     format=c;
+    break;
+  }
+}
+
    void QRL_MeterWindow::setNeedleColor(const QColor& c){
 	QPalette p(c);
 	// p.setColor(QPalette::Base,c); //knob
 	needle->setPalette(p);
 }
+
+
 
 QDataStream& operator<<(QDataStream &out, const QRL_MeterWindow &d){
 
@@ -431,17 +457,18 @@ QDataStream& operator<<(QDataStream &out, const QRL_MeterWindow &d){
  	out << (qint32)d.pipeWidth;
 	out << d.Min << d.Max;
  	out << d.alarmLevel << d.Thermo->alarmEnabled();
-  // 	out << (QFont)d.Lcd->font() ;
+   	//out << (QFont)d.Lcd->font() ;
  	out << (d.needle->palette().button().color());
  	out << (qint32)d.MeterType;
 	out  << d.size()  << d.pos() << d.isVisible();
+	out << (qint32)d.precision << (QChar)d.format;
 	return out;
 }
 
 
 QDataStream& operator>>(QDataStream &in, QRL_MeterWindow(&d)){
 	QSize s;QPoint p;bool b; QColor c; qint32 a;QFont f; double dd;
-
+	QChar ch;
 
   	in >> dd; d.changeRefreshRate(dd);
  	in >> b; d.setGradientEnabled(b);
@@ -454,12 +481,15 @@ QDataStream& operator>>(QDataStream &in, QRL_MeterWindow(&d)){
 	in >> dd;  d.setMax(dd);
  	in >> dd;d.setAlarmLevel(dd);
  	in >> b; d.setThermoAlarm(b);
-// 	in >> f; d.setLcdFont(f);
+ 	//in >> f; d.setLcdFont(f);
  	in >> c; d.setNeedleColor(c);
  	in >> a; d.setMeter((QRL_MeterWindow::Meter_Type)a);
 	in >> s;d.resize(s);
 	in >> p; d.move(p);
 	in >> b; d.setVisible(b);
-	
+	if (d.fileVersion > 103){
+	  in >> a; d.setLcdPrecision(a);
+	  in >> ch; d.setLcdFormat(ch.toAscii());
+	}
 	return in;
 }

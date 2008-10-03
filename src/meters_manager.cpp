@@ -65,6 +65,8 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent, QRtaiLabCore* qtargetinter
 	connect( directionComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeThermoDirection(int) ) );
 	connect( dialColorPushButton, SIGNAL( pressed() ), this, SLOT( changeNeedleColor() ) );
 	connect( fontPushButton, SIGNAL( pressed() ), this, SLOT( changeLcdFont() ) );
+    connect( precisionCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeLcdPrecision(double) ) );
+    connect( formatComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeLcdFormat(int) ) );
 	currentMeter=0;
 	switch(MeterWindows[currentMeter]->getMeterType())
 	{
@@ -104,6 +106,12 @@ QRL_MetersManager::~QRL_MetersManager()
 	delete[] MeterWindows;
 }
 
+void QRL_MetersManager::setFileVersion(qint32 v){
+      fileVersion=v;
+      for (int i=0; i<Num_Meters;i++)
+	MeterWindows[i]->setFileVersion(v);
+
+}
 
 void QRL_MetersManager::refresh()
 {
@@ -319,6 +327,27 @@ void QRL_MetersManager::showMeter(int state)
 	MeterWindows[currentMeter]->setLcdFont(font);
 }
 
+void QRL_MetersManager::changeLcdPrecision(double p){
+
+  MeterWindows[currentMeter]->setLcdPrecision(p);
+}
+
+void QRL_MetersManager::changeLcdFormat(int d){
+  switch(d){
+	case 0:
+		MeterWindows[currentMeter]->setLcdFormat('e');
+		break;
+	case 1:
+		MeterWindows[currentMeter]->setLcdFormat('f');
+		break;
+	case 2:
+		MeterWindows[currentMeter]->setLcdFormat('g');
+		break;
+	default:
+		break;
+  }
+
+}
 
 
 QDataStream& operator<<(QDataStream &out, const QRL_MetersManager &d){
