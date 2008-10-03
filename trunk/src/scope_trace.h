@@ -22,7 +22,7 @@
 /*
  file:		scopes_trace.h
  describtion:
-   file for the classes TraceOptions
+   file for the classes QRL_ScopeTrace
 */
 #ifndef _SCOPE_TRACE_H
 #define _SCOPE_TRACE_H 1
@@ -50,13 +50,14 @@
  * @brief Display Trace
  */
 
-class TraceOptions
+class QRL_ScopeTrace
 {
    
  //friend class PlottingScopeDataThread;
 public:
-  TraceOptions(QwtPlot *parent, unsigned int maxdatapoints, int j);
-~TraceOptions();
+  enum labelTypes{lt_trace,lt_unit,lt_average,lt_min,lt_max,lt_pp,lt_rms};
+  QRL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int j);
+~QRL_ScopeTrace();
     void refresh();
   void changeNDataSoll(int ds, double dt);
 void setLabelsXValue(double x);
@@ -76,27 +77,10 @@ void setLabelsXValue(double x);
    void show(bool);
    bool isVisible(){return  visible;}
    void setZeroAxis(bool b);
-   void showLabel(){traceLabel.show();}
-   void hideLabel(){traceLabel.hide();}
-   void showUnitLabel();
-   void hideUnitLabel();
-   void showAverageLabel();
- void hideAverageLabel();
-  void showMinLabel();
-void hideMinLabel();
-  void showMaxLabel();
-  void hideMaxLabel();
-void showPPLabel();
-  void hidePPLabel();
-void showRMSLabel();
-void hideRMSLabel();
- bool getLabel(){return traceLabel.isVisible();}
- bool getUnitLabel(){return unitLabel.isVisible();}
- bool getAverageLabel(){return averageLabel.isVisible();}
- bool getMinLabel(){return minLabel.isVisible();}
- bool getMaxLabel(){return maxLabel.isVisible();}
- bool getPPLabel(){return ppLabel.isVisible();}
- bool getRMSLabel(){return rmsLabel.isVisible();}
+   void showLabel(labelTypes lt);
+   void hideLabel(labelTypes lt);
+   bool isLabelVisible(labelTypes lt);
+   void setLabelVisible(labelTypes lt, bool setvisible);
    bool getZeroAxis(){return zeroAxis.isVisible();}
   void setLabelCounter(int counter){labelCounter=counter;}
   int getLabelCounter(){return labelCounter;}
@@ -138,14 +122,14 @@ private:
 //curve
   QwtPlotCurve *cData;
   //PlottingScopeDataThread* Plotting_Scope_Data_Thread;
-//    friend QDataStream& operator<<(QDataStream &out, const TraceOptions &d);
-//    friend QDataStream& operator>>(QDataStream &in, TraceOptions(&d));
-   friend QDataStream& operator<<(QDataStream &out, const TraceOptions* d);
-   friend QDataStream& operator>>(QDataStream &in, TraceOptions* d);
+//    friend QDataStream& operator<<(QDataStream &out, const QRL_ScopeTrace &d);
+//    friend QDataStream& operator>>(QDataStream &in, QRL_ScopeTrace(&d));
+   friend QDataStream& operator<<(QDataStream &out, const QRL_ScopeTrace* d);
+   friend QDataStream& operator>>(QDataStream &in, QRL_ScopeTrace* d);
   friend class QRL_ScopeWindow;
 };
-	QDataStream& operator<<(QDataStream &out, const TraceOptions *d);
-	QDataStream& operator>>(QDataStream &in, TraceOptions(*d));
+	QDataStream& operator<<(QDataStream &out, const QRL_ScopeTrace *d);
+	QDataStream& operator>>(QDataStream &in, QRL_ScopeTrace(*d));
 
 
 #endif

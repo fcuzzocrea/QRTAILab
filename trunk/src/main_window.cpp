@@ -438,8 +438,10 @@ void QRL_MainWindow::loadProfile() {
  		in >> *LogsManager;
 	if (LedsManager)
  		in >> *LedsManager;
-	if (MetersManager)
+	if (MetersManager){
+		MetersManager->setFileVersion(version);
  		in >> *MetersManager;
+	}
 	if (ScopesManager){
 		ScopesManager->setFileVersion(version);
  		in >> *ScopesManager;

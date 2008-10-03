@@ -35,7 +35,7 @@
 #include <qwt_dial.h>
 #include <qwt_dial_needle.h>
 //#include "qmeter.h"
-
+ #include <QMdiSubWindow>
 
 /**
  * @brief Display Meter 
@@ -51,7 +51,7 @@ public:
    ~QRL_MeterWindow();
    double getRefreshRate(){return RefreshRate;}
    void changeRefreshRate(double);
-   void setValue(float);
+   void setValue(double);
    void setMin(double);
    double getMin(){return Min;}
    void setMax(double);
@@ -78,11 +78,17 @@ public:
    void setThermoDirection(Qt::Orientation o);
    void setLcdFont(const QFont& font);
    QFont getLcdFont(){return Lcd->font();}
+  void setLcdFormat(char c) ;
+  char getLcdFormat() {return format;}
+  void setLcdPrecision(int p);
+  int getLcdPrecision(){return precision;}
    void setNeedleColor(const QColor&);
    QColor getNeedleColor(){return needle->palette().button().color();}
+   void setFileVersion(qint32 v){fileVersion=v;}
 protected slots:
   void closeEvent ( QCloseEvent * event ){event->ignore(); this->hide(); }
 private:
+  qint32 fileVersion;
   // void setDistance(const QwtThermo* const);
   float Value;
   QwtThermo *Thermo;
@@ -100,6 +106,8 @@ private:
   QBrush brush;
   QLinearGradient gradient,alarmGradient;
   QwtDialSimpleNeedle *needle;
+  int precision;
+  char format;
   friend QDataStream& operator<<(QDataStream &out, const QRL_MeterWindow &d);
   friend QDataStream& operator>>(QDataStream &in, QRL_MeterWindow(&d));
 };

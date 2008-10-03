@@ -52,6 +52,7 @@ public:
     void stopMeterThreads();
     QRL_MeterWindow** getMeterWindows(){return MeterWindows;}
  void refreshView();
+   void setFileVersion(qint32 v);
 public slots:
    void refresh();
   void  showMeter(int);
@@ -71,7 +72,10 @@ public slots:
   void changeThermoDirection(int);
   void changeNeedleColor();
   void changeLcdFont();
+  void changeLcdPrecision(double);
+  void changeLcdFormat(int);
 private:
+    qint32 fileVersion;
    int Num_Meters;
   //Target_Meters_T *Meters;
   unsigned int currentMeter;
