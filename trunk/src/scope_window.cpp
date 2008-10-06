@@ -58,7 +58,7 @@ public:
 //  Initialize Scope window
 //
 
-QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QRL_Scopes *scope,int ind)
+QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QRL_ScopeData *scope,int ind)
 	:QMdiSubWindow(parent),Scope(scope),index(ind)
 {
     if (this->objectName().isEmpty())
