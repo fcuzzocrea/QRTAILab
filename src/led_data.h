@@ -18,56 +18,28 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
 /*
- file:		scopes_manager.h
+ file:		parameters.h
  describtion:
-   file for the class  QRL_ScopesManager
+   file for the classes QRL_ParametersManager
 */
 
-#ifndef _LOGS_MANAGER_H
-#define _LOGS_MANAGER_H 1
-
-
-#include "ui_qrl_logs_manager.h"
-#include "qrtailab_core.h"
+#ifndef _LEDS_DATA_H
+#define _LED_DATA_H 1
 
 
 
-
-
-
-/**
- * @brief Managed all Logs windows
- */
-class QRL_LogsManager : public QDialog, private Ui::QRL_LogsManager
+class QRL_LedData
 {
-   Q_OBJECT
 public:
-  QRL_LogsManager(QWidget *parent = 0, QRtaiLabCore* qtargetinterface=NULL);
-  ~QRL_LogsManager();
-public slots:
-  void showLogOptions( QListWidgetItem * item  );
-  void showLogOptions( int );
-  void startSaving();
-  void stopSaving();
-  void changeSaveTime(double);
-  void changeFileName(const QString&);
-   void refresh();
-private:
-  int Num_Logs;
-  QRL_LogData *Logs;
-  unsigned int currentLog;
- // GetScopeDataThread* Get_Scope_Data_Thread;
-  QRtaiLabCore* qTargetInterface;
-  QTimer *timer;
-  //TargetThread* targetThread;
-  QList<QListWidgetItem *> logItems;
-friend QDataStream& operator<<(QDataStream &out, const QRL_LogsManager &d);
-friend QDataStream& operator>>(QDataStream &in, QRL_LogsManager(&d));
+  // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
+
+	char name[MAX_NAMES_SIZE];
+	int n_leds;
+	int visible;
+	float dt;
 };
-	QDataStream& operator<<(QDataStream &out, const QRL_LogsManager &d);
-	QDataStream& operator>>(QDataStream &in, QRL_LogsManager(&d));
+
 
 
 #endif

@@ -36,11 +36,11 @@
 
 #include <QtGui> 
 #include "qrtailab.h"
-#include "scopes.h"
-#include "leds.h"
-#include "meters.h"
-#include "logs.h"
-#include "alogs.h"
+#include "scope_data.h"
+#include "led_data.h"
+#include "meter_data.h"
+#include "log_data.h"
+#include "alog_data.h"
 
 
 
@@ -81,11 +81,11 @@ class TargetThread : public QThread
     int getEndApp(){return End_App;}
     int getVerbose(){return Verbose;}
     // should  be removed
-    QRL_Scopes** getScopes(){return Scopes;}
-    QRL_Meters* getMeters(){return Meters;}
-    QRL_Leds* getLeds(){return Leds;}
-    QRL_ALogs* getALogs(){return ALogs;}
-    QRL_Logs* getLogs(){return Logs;}
+    QRL_ScopeData** getScopes(){return Scopes;}
+    QRL_MeterData* getMeters(){return Meters;}
+    QRL_LedData* getLeds(){return Leds;}
+    QRL_ALogData* getALogs(){return ALogs;}
+    QRL_LogData* getLogs(){return Logs;}
     Target_Parameters_T* getParameters(){return Tunable_Parameters;}
     Target_Blocks_T* getBlocks(){return Tunable_Blocks;}
    // Batch_Parameters_T* getBatchParameters(){return Batch_Parameters;}
@@ -176,11 +176,11 @@ class TargetThread : public QThread
   int hardRealTimeALog;
   Target_Parameters_T *Tunable_Parameters;
   Target_Blocks_T *Tunable_Blocks;
-  QRL_Scopes **Scopes;
-  QRL_Logs *Logs;
-  QRL_ALogs *ALogs;
-  QRL_Leds *Leds;
-  QRL_Meters *Meters;
+  QRL_ScopeData **Scopes;
+  QRL_LogData *Logs;
+  QRL_ALogData *ALogs;
+  QRL_LedData *Leds;
+  QRL_MeterData *Meters;
   Target_Synchs_T *Synchs;
   Batch_Parameters_T Batch_Parameters[MAX_BATCH_PARAMS];
   Profile_T *Profile;

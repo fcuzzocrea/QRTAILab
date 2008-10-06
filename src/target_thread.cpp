@@ -247,7 +247,7 @@ void TargetThread::upload_parameters_info(long port, RT_TASK *task)
 		delete Scopes[i];
 	      delete[] Scopes;
 	  }
-	  Scopes = new QRL_Scopes* [n_scopes];
+	  Scopes = new QRL_ScopeData* [n_scopes];
 	}
 	for (int n = 0; n < n_scopes; n++) {
 		char scope_name[MAX_NAMES_SIZE];
@@ -259,7 +259,7 @@ void TargetThread::upload_parameters_info(long port, RT_TASK *task)
 		RT_rpcx(Target_Node, port, task, &n, &ntraces, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &scope_name, sizeof(int), sizeof(scope_name));
 		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
-		Scopes[n] = new QRL_Scopes();
+		Scopes[n] = new QRL_ScopeData();
 		Scopes[n]->setDt(dt);
 		Scopes[n]->setNTraces(ntraces);
 		strncpy(Scopes[n]->name, scope_name, MAX_NAMES_SIZE);
@@ -282,7 +282,7 @@ int TargetThread::get_log_blocks_info(long port, RT_TASK *task, const char *mbx_
 			break;
 		}
 	}
-	if (n_logs > 0) Logs = new QRL_Logs [n_logs];
+	if (n_logs > 0) Logs = new QRL_LogData [n_logs];
 	for (int n = 0; n < n_logs; n++) {
 		char log_name[MAX_NAMES_SIZE];
 		Logs[n].isSaving=0;
@@ -310,7 +310,7 @@ int TargetThread::get_alog_blocks_info(long port, RT_TASK *task, const char *mbx
 			break;
 		}
 	}
-	if (n_alogs > 0) ALogs = new QRL_ALogs [n_alogs];
+	if (n_alogs > 0) ALogs = new QRL_ALogData [n_alogs];
 	for (int n = 0; n < n_alogs; n++) {
 		char alog_name[MAX_NAMES_SIZE];
 		RT_rpcx(Target_Node, port, task, &n, &ALogs[n].nrow, sizeof(int), sizeof(int));
@@ -337,7 +337,7 @@ int TargetThread::get_led_blocks_info(long port, RT_TASK *task, const char *mbx_
 			break;
 		}
 	}
-	if (n_leds > 0) Leds = new QRL_Leds [n_leds];
+	if (n_leds > 0) Leds = new QRL_LedData [n_leds];
 	for (int n = 0; n < n_leds; n++) {
 		char led_name[MAX_NAMES_SIZE];
 		Leds[n].visible = false;
@@ -364,7 +364,7 @@ int TargetThread::get_meter_blocks_info(long port, RT_TASK *task, const char *mb
 			break;
 		}
 	}
-	if (n_meters > 0) Meters = new QRL_Meters [n_meters];
+	if (n_meters > 0) Meters = new QRL_MeterData [n_meters];
 	for (int n = 0; n < n_meters; n++) {
 		char meter_name[MAX_NAMES_SIZE];
 		Meters[n].visible = false;

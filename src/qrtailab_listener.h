@@ -73,7 +73,7 @@ static void *rt_get_scope_data(void *arg)
 	int save_idx = 0;
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
-	QRL_Scopes* scope = targetThread->getScopes()[index];
+	QRL_ScopeData* scope = targetThread->getScopes()[index];
 	double dt=scope->getScopeDt();
 	 long Target_Node = targetThread->getTargetNode();
 	RT_TASK *Target_Interface_Task = targetThread->getTask();
@@ -282,7 +282,7 @@ static void *rt_get_meter_data(void *arg)
 	double RefreshRate=targetThread->getMeterRefreshRate(index);
  	long Target_Node = targetThread->getTargetNode();
       	RT_TASK *Target_Interface_Task = targetThread->getTask();
-	QRL_Meters meter = targetThread->getMeters()[index];
+	QRL_MeterData meter = targetThread->getMeters()[index];
 	rt_allow_nonroot_hrt();
 	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetMeterDataTask = rt_task_init_schmod(qrl::get_an_id("HGM"), 97, 0, 0, SCHED_RR, 0xFF))) {
@@ -409,7 +409,7 @@ static void *rt_get_led_data(void *arg)
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	 long Target_Node = targetThread->getTargetNode();
 		RT_TASK *Target_Interface_Task = targetThread->getTask();
-	QRL_Leds led = targetThread->getLeds()[index];
+	QRL_LedData led = targetThread->getLeds()[index];
 	rt_allow_nonroot_hrt();
 	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetLedDataTask = rt_task_init_schmod(qrl::get_an_id("HGE"), 97, 0, 0, SCHED_RR, 0xFF))) {
@@ -491,7 +491,7 @@ static void *rt_get_alog_data(void *arg)
 	char *mbx_id = strdup(((Alog_T *)arg)->mbx_id);
 	char *alog_file_name = strdup(((Alog_T *)arg)->alog_name);   //read alog block name and set it to file name
 	TargetThread* targetThread=(TargetThread*)((Alog_T *)arg)->targetThread;
-	QRL_ALogs alog = targetThread->getALogs()[index];
+	QRL_ALogData alog = targetThread->getALogs()[index];
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	FILE *saving;
 	long size_counter = 0;
@@ -594,7 +594,7 @@ static void *rt_get_log_data(void *arg)
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
-	QRL_Logs log = targetThread->getLogs()[index];
+	QRL_LogData log = targetThread->getLogs()[index];
 	 long Target_Node = targetThread->getTargetNode();
 	RT_TASK *Target_Interface_Task = targetThread->getTask();
 	rt_allow_nonroot_hrt();
