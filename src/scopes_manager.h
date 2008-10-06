@@ -94,7 +94,7 @@ public slots:
 private:
   qint32 fileVersion;
   int Num_Scopes;
-  Target_Scopes_T *Scopes;
+  QRL_Scopes **Scopes;
   unsigned int currentScope;
  // GetScopeDataThread* Get_Scope_Data_Thread;
   QRtaiLabCore* qTargetInterface;

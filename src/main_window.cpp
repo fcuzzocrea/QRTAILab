@@ -64,7 +64,8 @@ QRL_MainWindow::QRL_MainWindow(int v)
 	connect( actionShowLed, SIGNAL( triggered() ), this, SLOT( showLedsManager() ) ); 
 	connect( actionShowLog, SIGNAL( triggered() ), this, SLOT( showLogsManager() ) ); 
 	connect( actionShowParameter, SIGNAL( triggered() ), this, SLOT( showParametersManager() ) ); 
-	//connect( actionStartTarget, SIGNAL( triggered() ), this, SLOT( startTarget() ) ); 
+	//connect( actionStartTarget, SIGNAL( triggered() ), this, SLOT( startTarget()) );
+	  connect(actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
    enableActionConnect(true);
    enableActionLoadProfile(true);
    enableActionDisconnect(false);
@@ -84,7 +85,7 @@ QRL_MainWindow::QRL_MainWindow(int v)
 
 	setlocale( LC_ALL, "C");
     qTargetInterface = new QRtaiLabCore(this,Verbose);
-
+    Parameters = new QRL_Parameters(qTargetInterface);
     target = new QProcess(this);
    connect( qTargetInterface, SIGNAL( statusBarMessage(const QString &) ), this, SLOT( setStatusBarMessage(const QString &) ) ); 
 
@@ -199,6 +200,7 @@ qTargetInterface->setPreferences(p);
 	qTargetInterface->connectToTarget();
 	//sendOrder(qrl_types::CONNECT_TO_TARGET);
 	if (qTargetInterface->getIsTargetConnected()==1){
+		
 		TargetsManager->setTargetIsConnected(true);
 		enableActionDisconnect(true);
 		enableActionConnect(false);
@@ -287,9 +289,10 @@ qTargetInterface->setPreferences(p);
 				//targetthread->setScopesManager(ScopesManager);
 			}
 			if (qTargetInterface->getParameterNumber()>0){
+				Parameters->reload();
 				enableActionShowParameter(true);
 				if (! ParametersManager){
-					ParametersManager = new QRL_ParametersManager(this,qTargetInterface);
+					ParametersManager = new QRL_ParametersManager(this,Parameters);
 					//connect( ParametersManager, SIGNAL( uploadParameter(int,int) ), this, SLOT( uploadParameter(int,int) ) );
 				}
 				if (ParametersManager) {
@@ -665,6 +668,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 
  void QRL_MainWindow::stop() 
 {
+
 	qTargetInterface->stopTarget();
 	if (qTargetInterface->getIsTargetRunning()==0){
 		enableActionStop(false);
@@ -804,7 +808,9 @@ void QRL_MainWindow::enableActionShowParameter(bool b)
 void QRL_MainWindow::about() 
 {
     QMessageBox::about(this,"About QRtaiLab",
-		"Version 0.1.3\n"
+		"Version "
+		QRTAILAB_VERSION
+		"\n"
                 "This app was coded for educational purposes.\n\n"
                 "Copyright (C) 2008 Holger Nahrstaedt. \n"
 		"              Control system group, TU-Berlin\n"

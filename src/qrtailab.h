@@ -98,20 +98,27 @@
 
 namespace qrl {
 
-static volatile int GlobalRet[16];
+// static volatile int GlobalRet[16];
 
 static inline void RT_RPC(RT_TASK *task, unsigned int msg, unsigned int *reply)
 {
-	GlobalRet[msg & 0xf] = 0;
+// 	GlobalRet[msg & 0xf] = 0;
 	rt_send(task, msg);
-	while (!GlobalRet[msg & 0xf]) {
-		usleep(1000*QT_EVENTS_TICK); //linux
-	}
+// 	printf("rt send reply %d GlobalRet %d\n",(msg & 0xf),GlobalRet[msg & 0xf]);
+// 	while (GlobalRet[msg & 0xf]==0) {
+// 		usleep(1000*QT_EVENTS_TICK); //linux
+// 		printf(" GlobalRet %d\n",GlobalRet[msg & 0xf]);
+// 	}
+// 	printf("RT_RPC ok \n");
+	rt_receive(0, reply);
 }
 
 static inline void RT_RETURN(RT_TASK *task, unsigned int reply)
 {
-	GlobalRet[reply] = 1;
+// 	GlobalRet[reply] = 1;
+// 	printf("return reply %d GlobalRet %d\n",reply,GlobalRet[reply]);
+	rt_send(task,reply);
+
 }
 
 static inline unsigned long get_an_id(const char *root)
@@ -195,53 +202,53 @@ struct Target_Blocks_Struct
 	int offset;
 };
 
-struct Target_Scopes_Struct
-{
-	char name[MAX_NAMES_SIZE];
-	int ntraces;
-	int visible;
-	float dt;
-	int isSaving;
-  	FILE* Save_File_Pointer;
-  	double Save_Time;
-	int Saved_Points;
-};
-
-
-struct Target_Logs_Struct
-{
-	char name[MAX_NAMES_SIZE];
-	int nrow;
-	int ncol;
-	float dt;
-	int isSaving;
-   	FILE* Save_File_Pointer;
-   	double Save_Time;
-	int Saved_Points;
-};
-
-struct Target_ALogs_Struct
-{
-	char name[MAX_NAMES_SIZE];
-	int nrow;
-	int ncol;
-	float dt;
-};
-
-struct Target_Leds_Struct
-{
-	char name[MAX_NAMES_SIZE];
-	int n_leds;
-	int visible;
-	float dt;
-};
-
-struct Target_Meters_Struct
-{
-	char name[MAX_NAMES_SIZE];
-	int visible;
-	float dt;
-};
+// struct Target_Scopes_Struct
+// {
+// 	char name[MAX_NAMES_SIZE];
+// 	int ntraces;
+// 	int visible;
+// 	float dt;
+// 	int isSaving;
+//   	FILE* Save_File_Pointer;
+//   	double Save_Time;
+// 	int Saved_Points;
+// };
+// 
+// 
+// struct Target_Logs_Struct
+// {
+// 	char name[MAX_NAMES_SIZE];
+// 	int nrow;
+// 	int ncol;
+// 	float dt;
+// 	int isSaving;
+//    	FILE* Save_File_Pointer;
+//    	double Save_Time;
+// 	int Saved_Points;
+// };
+// 
+// struct Target_ALogs_Struct
+// {
+// 	char name[MAX_NAMES_SIZE];
+// 	int nrow;
+// 	int ncol;
+// 	float dt;
+// };
+// 
+// struct Target_Leds_Struct
+// {
+// 	char name[MAX_NAMES_SIZE];
+// 	int n_leds;
+// 	int visible;
+// 	float dt;
+// };
+// 
+// struct Target_Meters_Struct
+// {
+// 	char name[MAX_NAMES_SIZE];
+// 	int visible;
+// 	float dt;
+// };
 
 struct Target_Synchs_Struct
 {

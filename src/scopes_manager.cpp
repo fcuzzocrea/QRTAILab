@@ -42,7 +42,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	for (int i=0; i<Num_Scopes; ++i){
 		scopeItems << new QListWidgetItem(ScopeIcon,qTargetInterface->getScopeName(i), scopeListWidget);
 		//if (qTargetInterface->getNumberOfTraces(i)>0){
-			ScopeWindows[i]=new QRL_ScopeWindow(parent,&Scopes[i],i);
+			ScopeWindows[i]=new QRL_ScopeWindow(parent,Scopes[i],i);
 			//connect( ScopeWindows[i], SIGNAL( stopSaving(int) ), this, SLOT( stopSaving(int) ) );
 			ScopeWindows[i]->setVerbose(qTargetInterface->getVerbose());
 		//} else
@@ -94,7 +94,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 // 		traceComboBox->addItem(tr("Trace ")+tr("%1").arg(i+1));
 // 	}
 	traceComboBox->clear();
-	for(int i=0; i<Scopes[currentScope].ntraces;i++){
+	for(int i=0; i<Scopes[currentScope]->getNTraces();i++){
 		traceComboBox->addItem(	ScopeWindows[currentScope]->getTraceName(i) );
 	}
 	if (Num_Scopes > 0)  showScopeOptions(currentScope);
@@ -116,7 +116,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
         timer->start((int)(1./RefreshRate*1000.));
 	
 	
-//	tabWidget->addTab(traceWidget,tr("trace %1").arg(Scopes[currentScope].ntraces));
+//	tabWidget->addTab(traceWidget,tr("trace %1").arg(Scopes[currentScope].getNTraces()));
 
 }
 QRL_ScopesManager::~QRL_ScopesManager()
@@ -148,8 +148,9 @@ void QRL_ScopesManager::refresh()
 // 			if (k<v.at(t).size())
 // 			ScopeWindows[n]->setValue(t,v.at(t).at(k));
 // 	}
-	if (Scopes[n].ntraces>0)
-	ScopeWindows[n]->setValue( qTargetInterface->getTargetThread()->getScopeValue(n));
+     
+	if (Scopes[n]->getNTraces()>0)
+	ScopeWindows[n]->setValue( Scopes[n]->getScopeValue());
 	//}
    }
 // } catch (...){
@@ -158,7 +159,7 @@ void QRL_ScopesManager::refresh()
 // }
 
 
-  if ((qTargetInterface->getTargetThread()->getScopes())[currentScope].isSaving==0){
+  if (Scopes[currentScope]->getIsSaving()==0){
       savePushButton->setEnabled(true);
       stopPushButton->setEnabled(false);
        saveProgressBar->setEnabled(false);
@@ -170,8 +171,8 @@ void QRL_ScopesManager::refresh()
      savePushButton->setEnabled(false);
      stopPushButton->setEnabled(true);
     saveProgressBar->setEnabled(true);
-    saveProgressBar->setMaximum(qTargetInterface->getTargetThread()->n_points_to_save(currentScope));
-     saveProgressBar->setValue((qTargetInterface->getTargetThread()->getScopes())[currentScope].Saved_Points);
+    saveProgressBar->setMaximum(Scopes[currentScope]->n_points_to_save());
+     saveProgressBar->setValue(Scopes[currentScope]->getSavedPoints());
   }
 
 
@@ -192,7 +193,7 @@ void QRL_ScopesManager::changeRefreshRate(double rr)
 {
 	//double rr=text.toDouble();
 	ScopeWindows[currentScope]->changeRefreshRate(rr);
-	qTargetInterface->getTargetThread()->setScopeRefreshRate(rr,currentScope);
+	Scopes[currentScope]->setScopeRefreshRate(rr);
 }
 
 
@@ -203,7 +204,7 @@ void QRL_ScopesManager::changeDX(const QString& text)
 	ScopeWindows[currentScope]->changeDX(dx);
 	emit dxComboBox->setEditText(tr("%1").arg(ScopeWindows[currentScope]->getDX()));
 	//Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
-	 qTargetInterface->getTargetThread()->setScopeDt(ScopeWindows[currentScope]->getDt(),currentScope);
+	 Scopes[currentScope]->setScopeDt(ScopeWindows[currentScope]->getDt());
 
 	showScopeOptions(currentScope);
 	}
@@ -219,7 +220,7 @@ void QRL_ScopesManager::changeDataPoints(double dp)
 	ScopeWindows[currentScope]->changeDataPoints(dp);
 	//ScopeWindows[currentScope]->changeDX(dxComboBox->currentText().toDouble());
 	//Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
-	 qTargetInterface->getTargetThread()->setScopeDt(ScopeWindows[currentScope]->getDt(),currentScope);
+	 Scopes[currentScope]->setScopeDt(ScopeWindows[currentScope]->getDt());
 
 	if (Num_Scopes > 0)  showScopeOptions(currentScope);
 
@@ -236,7 +237,7 @@ void QRL_ScopesManager::changeDivider(double div)
 	//ScopeWindows[currentScope]->changeDataPoints(dataCounter->value()/div);
 	//ScopeWindows[currentScope]->changeDX(dxComboBox->currentText().toDouble());
 	//Get_Scope_Data_Thread[currentScope].setDt(ScopeWindows[currentScope]->getDt());
-	 qTargetInterface->getTargetThread()->setScopeDt(ScopeWindows[currentScope]->getDt(),currentScope);
+	 Scopes[currentScope]->setScopeDt(ScopeWindows[currentScope]->getDt());
 
 	if (Num_Scopes > 0)  showScopeOptions(currentScope);
 
@@ -262,7 +263,7 @@ void QRL_ScopesManager::startSaving()
 {
 	 FILE* Save_File_Pointer;
 	double Save_Time=timeCounter->value();
-	if( qTargetInterface->getTargetThread()->start_saving_scope(currentScope)==0){
+	if( Scopes[currentScope]->start_saving_scope()==0){
 
 		QString File_Name=fileLineEdit->text();
 		if (QFile::exists(File_Name)) {
@@ -281,7 +282,7 @@ void QRL_ScopesManager::startSaving()
                                      QMessageBox::Abort);
 		} else {
 			//savePushButton->setEnabled(false);
-			qTargetInterface->getTargetThread()->startSaving(currentScope,Save_File_Pointer,Save_Time);
+			Scopes[currentScope]->startSaving(Save_File_Pointer,Save_Time);
 		}
 
 		
@@ -297,8 +298,8 @@ void QRL_ScopesManager::startSaving()
 
 void QRL_ScopesManager::stopSaving()
 {
- if ((qTargetInterface->getTargetThread()->getScopes())[currentScope].isSaving==1){
-	  qTargetInterface->getTargetThread()->stop_saving(currentScope);
+ if (Scopes[currentScope]->getIsSaving()==1){
+	 Scopes[currentScope]->stop_saving();
   }
 }
 
@@ -311,12 +312,12 @@ void QRL_ScopesManager::changeScopeList(int index)
 		for(int i=0; i<traceItems.size();i++)
 			traceItems[i]->setHidden(true);
 	}else{
-	   if (Scopes[currentScope].ntraces>0) {
+	   if (Scopes[currentScope]->getNTraces()>0) {
 		//scopeListWidget->setSelectionMode(QAbstractItemView::MultiSelection);
 		for(int i=0; i<scopeItems.size();i++)
 			scopeItems[i]->setHidden(true);
 		if (traceItems.size()==0) {
-			for(int i=0; i<Scopes[currentScope].ntraces;i++)
+			for(int i=0; i<Scopes[currentScope]->getNTraces();i++)
 				traceItems << new QListWidgetItem(QIcon(),tr("trace %1").arg(i), scopeListWidget);
 		} else {
 			for(int i=0; i<traceItems.size();i++)
@@ -406,11 +407,11 @@ void QRL_ScopesManager::changeTraceText(const QString & text ){
 void QRL_ScopesManager::showScopeOptions( int index ){
 
 	currentScope=index;
-	if(qTargetInterface->getTargetThread()->start_saving_scope(currentScope)==0){
+	if(Scopes[currentScope]->start_saving_scope()==0){
 		savePushButton->setEnabled(true);
 	}
-	tabWidget->setTabText(0,tr(Scopes[currentScope].name));
-	fileLineEdit->setText(tr(Scopes[currentScope].name));
+	tabWidget->setTabText(0,tr(Scopes[currentScope]->getName()));
+	fileLineEdit->setText(tr(Scopes[currentScope]->getName()));
 	if(ScopeWindows[currentScope]->isVisible())
 		showCheckBox->setCheckState(Qt::Checked);
 	else
@@ -424,7 +425,7 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 		delete traceItems[i];
 	traceItems.clear();
 	//traceComboBox->clear();
-	for(int i=0; i<Scopes[currentScope].ntraces;i++){
+	for(int i=0; i<Scopes[currentScope]->getNTraces();i++){
 		traceItems << new QListWidgetItem(QIcon(),ScopeWindows[currentScope]->getTraceName(i), scopeListWidget);
 		if (i<traceItems.size())
 			traceItems[i]->setHidden(true);
@@ -721,7 +722,7 @@ QDataStream& operator<<(QDataStream &out, const QRL_ScopesManager &d){
 
 
 QDataStream& operator>>(QDataStream &in, QRL_ScopesManager(&d)){
-	QSize s;QPoint p;bool b; int i;
+	QSize s;QPoint p;bool b; 
 	in >> s;d.resize(s);
 	in >> p; d.move(p);
 	in >> b; d.setVisible(b);

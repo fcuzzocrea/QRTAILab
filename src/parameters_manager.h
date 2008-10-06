@@ -30,6 +30,7 @@
 
 #include "ui_qrl_parameters_manager.h"
 #include "qrtailab_core.h"
+#include "parameters.h"
 
 /**
  * @brief Parameter Manager
@@ -42,7 +43,7 @@ class QRL_ParametersManager : public QDialog, private Ui::QRL_ParametersManager
    Q_ENUMS (Param_Class)
 public:
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
-   QRL_ParametersManager(QWidget *parent = 0,    QRtaiLabCore	*qtargetinterface=NULL);
+   QRL_ParametersManager(QWidget *parent = 0,    QRL_Parameters	*parameters=NULL);
    ~QRL_ParametersManager();
 public slots:
   void batchMode(int);
@@ -52,10 +53,11 @@ public slots:
   void downloadBatchParameters();
 private:
    //  double get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx);
+  
   int update_parameter(int idx, int mat_idx, double val);
   int Num_Tunable_Parameters;
   int Num_Tunable_Blocks;
-   QRtaiLabCore	*qTargetInterface;
+  QRL_Parameters *Parameters;
   int batchModus;
 friend QDataStream& operator<<(QDataStream &out, const QRL_ParametersManager &d);
 friend QDataStream& operator>>(QDataStream &in, QRL_ParametersManager(&d));
@@ -65,3 +67,4 @@ friend QDataStream& operator>>(QDataStream &in, QRL_ParametersManager(&d));
 
 
 #endif
+
