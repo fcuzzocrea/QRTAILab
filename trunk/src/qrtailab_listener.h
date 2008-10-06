@@ -23,7 +23,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "qrtailab_core.h"
+#include "target_thread.h"
 /**
  * @brief QThread for reading Scope data
  */
@@ -73,9 +73,11 @@ static void *rt_get_scope_data(void *arg)
 	int save_idx = 0;
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
-	double dt=targetThread->getScopeDt(index);
+	QRL_Scopes* scope = targetThread->getScopes()[index];
+	double dt=scope->getScopeDt();
 	 long Target_Node = targetThread->getTargetNode();
-	Target_Scopes_T scope = targetThread->getScopes()[index];
+	RT_TASK *Target_Interface_Task = targetThread->getTask();
+	
 	rt_allow_nonroot_hrt();
 	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetScopeDataTask = rt_task_init_schmod(qrl::get_an_id("HGS"), 90, 0, 0, SCHED_RR, 0xFF))) {
@@ -90,24 +92,24 @@ static void *rt_get_scope_data(void *arg)
 		return (void *)1;
 	}
 	//munlockall();
-	TracesBytes = (scope.ntraces + 1)*sizeof(float);
+	TracesBytes = (scope->getNTraces() + 1)*sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/TracesBytes)*TracesBytes;
-	MsgLen = (((int)(TracesBytes*dt*(1./scope.dt)))/TracesBytes)*TracesBytes;
+	MsgLen = (((int)(TracesBytes*dt*(1./scope->getDt())))/TracesBytes)*TracesBytes;
 	//MsgLen = (((int)(TracesBytes*(1./targetThread->getScopeRefreshRate(index))*(1./scope.dt)))/TracesBytes)*TracesBytes;
 
 	if (MsgLen < TracesBytes) MsgLen = TracesBytes;
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/TracesBytes;
 
-	MsgWait = (int)(((int)((MAX_MSG_SIZE-MsgLen)/TracesBytes))*scope.dt*1000);
+	MsgWait = (int)(((int)((MAX_MSG_SIZE-MsgLen)/TracesBytes))*scope->getDt()*1000);
 	MsgWait=(MsgWait>WAIT_MIN)?MsgWait:WAIT_MIN;
 	MsgWait=(MsgWait<WAIT_MAX)?MsgWait:WAIT_MAX;
 
 	// Ndistance defines the distance between plotted datapoints, to archive the given refresh rate.
-	int Ndistance=(int)(dt*(1./scope.dt));  //doesnt work
+	int Ndistance=(int)(dt*(1./scope->getDt()));  //doesnt work
 	//if (Ndistance<1)
 		Ndistance=1;
-	int ntraces=scope.ntraces;
+	int ntraces=scope->getNTraces();
 	//QVector <float>  data; 
 	//data.resize(ntraces);
 
@@ -158,7 +160,7 @@ static void *rt_get_scope_data(void *arg)
 			// if (ScopeWindow)
 			  //  ScopeWindow->setValue(nn,MsgBuf[js++]);
 				//data[nn]=MsgBuf[js++];
-				targetThread->setScopeValue(MsgBuf[js++],index,nn);
+				scope->setScopeValue(MsgBuf[js++],nn);
 			    //emit value(nn,MsgBuf[js++]);
 				//temp1[nn][time-1]=MsgBuf[js++];
 			    //ScopeWindow->getThread()->setValue(nn,MsgBuf[js++]);
@@ -171,12 +173,12 @@ static void *rt_get_scope_data(void *arg)
 		   
 		}
 
-		if (targetThread->getScopeDt(index)!=dt){
-			dt=targetThread->getScopeDt(index);
-			Ndistance=(int)(dt*(1./scope.dt));  //doesnt work
+		if (scope->getScopeDt()!=dt){
+			dt=scope->getScopeDt();
+			Ndistance=(int)(dt*(1./scope->getDt()));  //doesnt work
 			if (Ndistance<1)
 				Ndistance=1;
-			MsgLen = (((int)(TracesBytes*dt*(1./scope.dt)))/TracesBytes)*TracesBytes;
+			MsgLen = (((int)(TracesBytes*dt*(1./scope->getDt())))/TracesBytes)*TracesBytes;
 			//MsgLen = (((int)(TracesBytes*(1./targetThread->getScopeRefreshRate(index))*(1./scope.dt)))/TracesBytes)*TracesBytes;
 			if (MsgLen < TracesBytes) MsgLen = TracesBytes;
 			if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
@@ -184,7 +186,7 @@ static void *rt_get_scope_data(void *arg)
 			// Ndistance defines the distance between plotted datapoints, to archive the given refresh rate.
 
 
-			MsgWait = (int)(((int)((MAX_MSG_SIZE-MsgLen)/TracesBytes))*scope.dt*1000);
+			MsgWait = (int)(((int)((MAX_MSG_SIZE-MsgLen)/TracesBytes))*scope->getDt()*1000);
 			MsgWait=(MsgWait>WAIT_MIN)?MsgWait:WAIT_MIN;
 			MsgWait=(MsgWait<WAIT_MAX)?MsgWait:WAIT_MAX;
 			if (targetThread->getVerbose()){
@@ -194,18 +196,18 @@ static void *rt_get_scope_data(void *arg)
 
 
 
-		if (targetThread->start_saving_scope(index)) {
+		if (scope->start_saving_scope()) {
 			jl = 0;
 			//printf("%d from %d saved\n",save_idx,targetThread->n_points_to_save(index));
 			for (n = 0; n < MsgData; n++) {
 				for (nn = 0; nn < ntraces + 1; nn++) {
-					fprintf(targetThread->save_file(index), "%1.10f ", MsgBuf[jl++]);
+					fprintf(scope->save_file(), "%1.10f ", MsgBuf[jl++]);
 				}
-				fprintf(targetThread->save_file(index), "\n");
+				fprintf(scope->save_file(), "\n");
 				save_idx++;
-				targetThread->set_points_counter_scope(index,save_idx);
-				if (save_idx == targetThread->n_points_to_save(index)) {
-					targetThread->stop_saving(index);
+				scope->set_points_counter_scope(save_idx);
+				if (save_idx == scope->n_points_to_save()) {
+					scope->stop_saving();
 					save_idx = 0;
 					break;
 				}
@@ -279,7 +281,8 @@ static void *rt_get_meter_data(void *arg)
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	double RefreshRate=targetThread->getMeterRefreshRate(index);
  	long Target_Node = targetThread->getTargetNode();
-	Target_Meters_T meter = targetThread->getMeters()[index];
+      	RT_TASK *Target_Interface_Task = targetThread->getTask();
+	QRL_Meters meter = targetThread->getMeters()[index];
 	rt_allow_nonroot_hrt();
 	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetMeterDataTask = rt_task_init_schmod(qrl::get_an_id("HGM"), 97, 0, 0, SCHED_RR, 0xFF))) {
@@ -405,7 +408,8 @@ static void *rt_get_led_data(void *arg)
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	 long Target_Node = targetThread->getTargetNode();
-	Target_Leds_T led = targetThread->getLeds()[index];
+		RT_TASK *Target_Interface_Task = targetThread->getTask();
+	QRL_Leds led = targetThread->getLeds()[index];
 	rt_allow_nonroot_hrt();
 	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetLedDataTask = rt_task_init_schmod(qrl::get_an_id("HGE"), 97, 0, 0, SCHED_RR, 0xFF))) {
@@ -487,13 +491,13 @@ static void *rt_get_alog_data(void *arg)
 	char *mbx_id = strdup(((Alog_T *)arg)->mbx_id);
 	char *alog_file_name = strdup(((Alog_T *)arg)->alog_name);   //read alog block name and set it to file name
 	TargetThread* targetThread=(TargetThread*)((Alog_T *)arg)->targetThread;
-	Target_ALogs_T alog = targetThread->getALogs()[index];
+	QRL_ALogs alog = targetThread->getALogs()[index];
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	FILE *saving;
 	long size_counter = 0;
 	long logging = 0;
 	 long Target_Node = targetThread->getTargetNode();
-	
+		RT_TASK *Target_Interface_Task = targetThread->getTask();
 	if((saving = fopen(alog_file_name, "a+")) == NULL){
 		printf("Error opening auto log file %s\n", alog_file_name);
 		}
@@ -590,8 +594,9 @@ static void *rt_get_log_data(void *arg)
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
-	Target_Logs_T log = targetThread->getLogs()[index];
+	QRL_Logs log = targetThread->getLogs()[index];
 	 long Target_Node = targetThread->getTargetNode();
+	RT_TASK *Target_Interface_Task = targetThread->getTask();
 	rt_allow_nonroot_hrt();
 	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetLogDataTask = rt_task_init_schmod(qrl::get_an_id("HGL"), 90, 0, 0, SCHED_RR, 0xFF))) {

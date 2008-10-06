@@ -58,7 +58,7 @@ public:
 //  Initialize Scope window
 //
 
-QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *scope,int ind)
+QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QRL_Scopes *scope,int ind)
 	:QMdiSubWindow(parent),Scope(scope),index(ind)
 {
     if (this->objectName().isEmpty())
@@ -184,7 +184,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
 
 
 
-       NDataMax=(int)((xmax-xmin)/Scope->dt);
+       NDataMax=(int)((xmax-xmin)/Scope->getDt());
        NDataSoll=100;
 	NDataSoll=NDataMax;
 	saveTime=0.;
@@ -194,11 +194,11 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,qrl_types::Target_Scopes_T *sco
        if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
        dt=(xmax-xmin)/NDataSoll;
-       NDistance=(int)(dt*(1./Scope->dt));  //doesnt work
+       NDistance=(int)(dt*(1./Scope->getDt()));  //doesnt work
 	//Achtung Arrayüberlauf verhindern!
        //if ((1/dt/RefreshRate)>NDataSoll)
 	//	RefreshRate=1/dt/NDataSoll;
-       Ncurve=Scope->ntraces;
+       Ncurve=Scope->getNTraces();
 //if (Ncurve>0){
        QPen pen;
 	Traces = new QRL_ScopeTrace*[Ncurve];
@@ -409,7 +409,7 @@ for (int nn=0; nn<Ncurve;++nn){
 	Divider=(unsigned int)div;
 	NDataSoll=(int)((double)NDataMax/(double)Divider);
 
-	NDistance=(int)(dt*(1./Scope->dt));  //doesnt work
+	NDistance=(int)(dt*(1./Scope->getDt()));  //doesnt work
        if (NDistance<1)
 		NDistance=1;
 
@@ -440,7 +440,7 @@ for (int nn=0; nn<Ncurve;++nn){
 
 
 	if (Verbose) {
-	printf("xmin: %f,xmax %f, scope->dt ist %f, NDistance %d\n",xmin,xmax,Scope->dt,NDistance);
+	printf("xmin: %f,xmax %f, scope->dt ist %f, NDistance %d\n",xmin,xmax,Scope->getDt(),NDistance);
 	printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
 	}
     //changeDX(dx);  //FIXME should be removed
@@ -454,7 +454,7 @@ for (int nn=0; nn<Ncurve;++nn){
        timer->stop();
 	NDataSoll=(int)dp;
 
-	NDistance=(int)(dt*(1./Scope->dt));  //doesnt work
+	NDistance=(int)(dt*(1./Scope->getDt()));  //doesnt work
        if (NDistance<1)
 		NDistance=1;
 
@@ -484,7 +484,7 @@ for (int nn=0; nn<Ncurve;++nn){
 
 
 	if (Verbose) {
-	printf("xmin: %f,xmax %f, scope->dt ist %f, NDistance %d\n",xmin,xmax,Scope->dt,NDistance);
+	printf("xmin: %f,xmax %f, scope->dt ist %f, NDistance %d\n",xmin,xmax,Scope->getDt(),NDistance);
 	printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
 	}
     //changeDX(dx);  //FIXME should be removed
@@ -507,10 +507,10 @@ for (int nn=0; nn<Ncurve;++nn){
 	
 	//xmax=dx;
 	
-	NDataMax=(int)((xmax-xmin)/Scope->dt);
+	NDataMax=(int)((xmax-xmin)/Scope->getDt());
 	if (NDataMax>MaxDataPoints){
 		NDataMax=MaxDataPoints;
-		dx=((NDataMax*Scope->dt)+xmin)/xMajorTicks;
+		dx=((NDataMax*Scope->getDt())+xmin)/xMajorTicks;
  		xmax=(xMajorTicks*dx);
 	}
 	NDataSoll=(int)((double)NDataMax/(double)Divider);
@@ -552,7 +552,7 @@ for (int nn=0; nn<Ncurve;++nn){
 
 
 	dt=(xmax-xmin)/NDataSoll;
-NDistance=(int)(dt*(1./Scope->dt));  //doesnt work
+NDistance=(int)(dt*(1./Scope->getDt()));  //doesnt work
         if (NDistance<1)
 		NDistance=1;
 	/*delete[] d_x;
@@ -574,7 +574,7 @@ NDistance=(int)(dt*(1./Scope->dt));  //doesnt work
 	qwtPlot->setAxisScale(QwtPlot::xBottom, xmin, xmax,xStep);
 	    vertLine->setXValue(xmax/2.);
 	if (Verbose) {
-		printf("xmin: %f,xmax %f, scope->dt ist %f\n",xmin,xmax,Scope->dt);
+		printf("xmin: %f,xmax %f, scope->dt ist %f\n",xmin,xmax,Scope->getDt());
 		printf("datasoll: %d,datamax %d, dt ist %f\n",NDataSoll,NDataMax,dt);
 	}
 	timer->start(1/RefreshRate*1000.);
@@ -612,21 +612,21 @@ void QRL_ScopeWindow::showTrace(bool visible,int trace){
 
 void QRL_ScopeWindow::setTraceColor(const QColor& c,int trace)
 {
-	if (trace<Scope->ntraces){
+	if (trace<Scope->getNTraces()){
 	  Traces[trace]->setColor(c);
 	}
 }
 
 void QRL_ScopeWindow::setTraceWidth(int traceWidth,int trace)
 {
-	if (trace<Scope->ntraces){
+	if (trace<Scope->getNTraces()){
 		 Traces[trace]->setWidth(traceWidth);
 	}
 }
 
 int  QRL_ScopeWindow::getTraceWidth(int trace)
 {
-	if (trace<Scope->ntraces){
+	if (trace<Scope->getNTraces()){
 		return  Traces[trace]->getWidth();
 	}
 	return 1;
@@ -634,7 +634,7 @@ int  QRL_ScopeWindow::getTraceWidth(int trace)
 
    void QRL_ScopeWindow::setTraceOffset(double o,int trace)
 {
-	if (trace<Scope->ntraces){
+	if (trace<Scope->getNTraces()){
 		//TraceOptions[trace].offset=o;
 		 timer->stop();
 		  Traces[trace]->setOffset(o);
@@ -646,14 +646,14 @@ int  QRL_ScopeWindow::getTraceWidth(int trace)
 
 double  QRL_ScopeWindow::getTraceOffset(int trace)
 {
-	if (trace<Scope->ntraces){
+	if (trace<Scope->getNTraces()){
 		return Traces[trace]->getOffset();
 	}
 	return 0.;
 }
    void QRL_ScopeWindow::setTraceDy(double d, int trace){
 
-	if (trace<Scope->ntraces){
+	if (trace<Scope->getNTraces()){
 		 timer->stop();
 		  Traces[trace]->setDy(d);
 	     timer->start((int)(1./RefreshRate*1000.));
@@ -663,7 +663,7 @@ double  QRL_ScopeWindow::getTraceOffset(int trace)
 
 double  QRL_ScopeWindow::getTraceDy(int trace)
 {
-	if (trace<Scope->ntraces){
+	if (trace<Scope->getNTraces()){
 		return Traces[trace]->getDy();
 	}
 	return 1.;
@@ -886,6 +886,7 @@ void QRL_ScopeWindow::setTraceName(int trace, const QString &text){
 
 void QRL_ScopeWindow::setValue(const QVector< QVector<float> > &v)
 {
+
 
 
 

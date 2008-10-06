@@ -44,7 +44,7 @@
 #include <qwt_math.h>
 #include "qrtailab.h"
 #include "scope_trace.h"
-
+#include "scopes.h"
 
 // class QRL_ScopeWindow;
 // 
@@ -88,7 +88,7 @@ class QRL_ScopeWindow : public QMdiSubWindow
  //friend class PlottingScopeDataThread;
 public:
    enum PlottingMode {roll,overwrite,trigger,hold};
-   QRL_ScopeWindow(QWidget *parent = 0,qrl_types::Target_Scopes_T *scope=0,int ind=0);
+   QRL_ScopeWindow(QWidget *parent = 0,QRL_Scopes *scope=0,int ind=0);
    ~QRL_ScopeWindow();
    void changeRefreshRate(double);
    void changeDataPoints(double);
@@ -163,7 +163,7 @@ private:
   qint32 fileVersion;
   int Verbose;
   float Value;
-  qrl_types::Target_Scopes_T *Scope;
+ QRL_Scopes *Scope;
   unsigned int NDataMax,Ncurve,NDataSoll, MaxDataPoints,Divider;
   int time,time2;
   double xmin,xmax,dx,dt;

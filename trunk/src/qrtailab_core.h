@@ -36,11 +36,11 @@
 
 #include <QtGui> 
 #include "qrtailab.h"
+#include "target_thread.h"
 
 
-
-static RT_TASK *Target_Interface_Task;
-static RT_TASK *RLG_Main_Task;
+// static RT_TASK *Target_Interface_Task;
+// static RT_TASK *RLG_Main_Task;
 using namespace qrl_types;
 
 /**
@@ -49,188 +49,11 @@ using namespace qrl_types;
 * @todo  prevent multiple access to variables at the same time. make it threadsafe
 
 */
-class TargetThread : public QThread
- {
- Q_OBJECT
- Q_ENUMS( Manager_Type )
- Q_ENUMS( Commands )
- Q_ENUMS( Param_Class )
- public:
-    enum Manager_Type {PARAMS_MANAGER,SCOPES_MANAGER,LOGS_MANAGER,ALOGS_MANAGER,LEDS_MANAGER,METERS_MANAGER,SYNCHS_MANAGER};
- enum Commands{	CONNECT_TO_TARGET,	CONNECT_TO_TARGET_WITH_PROFILE,	DISCONNECT_FROM_TARGET,	START_TARGET,	STOP_TARGET,	UPDATE_PARAM,	GET_TARGET_TIME,	BATCH_DOWNLOAD,	GET_PARAMS,	CLOSE} ;
-   enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
-     TargetThread();
-    ~TargetThread();
-    void run();
-    void setPreferences(Preferences_T);
-
-    //get information about target //should be removed not threadsafe -> segfault?
-    unsigned int getIsTargetConnected(){return Is_Target_Connected;}
-    int getIsTargetRunning(){return Is_Target_Running;}
-    int getScopeNumber(){return Num_Scopes;}
-    int getMeterNumber(){return Num_Meters;}
-    int getLedNumber(){return Num_Leds;}
- int getALogNumber(){return Num_ALogs;}
-    int getLogNumber(){return Num_Logs;}
-    int getParameterNumber(){return Num_Tunable_Parameters;}
-    int getBlockNumber(){return Num_Tunable_Blocks;}
-      long getTargetNode(){return Target_Node;}
-    int getEndApp(){return End_App;}
-    int getVerbose(){return Verbose;}
-    // should  be removed
-    Target_Scopes_T* getScopes(){return Scopes;}
-    Target_Meters_T* getMeters(){return Meters;}
-    Target_Leds_T* getLeds(){return Leds;}
-   Target_ALogs_T* getALogs(){return ALogs;}
-    Target_Logs_T* getLogs(){return Logs;}
-    Target_Parameters_T* getParameters(){return Tunable_Parameters;}
-    Target_Blocks_T* getBlocks(){return Tunable_Blocks;}
-   // Batch_Parameters_T* getBatchParameters(){return Batch_Parameters;}
-    void setHardRealTime(int hrScope,int hrLog,int hrAlog){hardRealTimeScope=hrScope;hardRealTimeLog=hrLog;hardRealTimeALog=hrAlog;}
-   //prameter down- and upload
-
- int addToBatch(int map_offset,int ind,double value);
-    double get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx);
-
-    int update_parameter(int idx, int mat_idx, double val);
-    int get_map_offset(int blk, int prm);
-    int get_parameter_ind(int blk, int prm, int prm_row,int prm_col);
-
-    void resetBatchMode();
-
-   int getBatchCounter(){return batchCounter;}
-
-    void setVerbose(int v){Verbose=v;}
-    Preferences_T getPreferences(){return Preferences;}
-
-
-    void startScopeThreads(); //QRL_ScopeWindow** ScopeWindows);
-    void stopScopeThreads();
-    int setScopeDt(double,int);
-    double getScopeDt(int);
-    int setScopeRefreshRate(double rr,int n);
-    double getScopeRefreshRate(int n);
-    void setScopeValue(float v,int nn, int t);	 
-    QVector<float> getScopeValue(int t, int n);	 
-    QVector< QVector<float> > getScopeValue(int n);
-    QString getScopeName(int);
-
-    int start_saving_scope(int index);
-    void startSaving(int index,FILE* Save_File_Pointer,double Save_Time);
-     FILE* save_file(int index);
-     void stop_saving(int index);
-      int n_points_to_save(int index);
-    void set_points_counter_scope(int index,int cnt);
-
-   void startMeterThreads();//QRL_MeterWindow** MeterWindows);
-    void stopMeterThreads();
-    int setMeterRefreshRate(double rr,int n);
-    double getMeterRefreshRate(int n);
-    void setMeterValue(float v, int n);
-    float getMeterValue(int n);
-    QString getMeterName(int);
-
-    void startLedThreads();//QRL_LedWindow** LedWindows);
-    void stopLedThreads();
-    void setLedValue(unsigned int v, int n);
-    unsigned int getLedValue(int n);
-    QString getLedName(int);
-
-    void startALogThreads();
-    void stopALogThreads();
-    void startLogThreads();
-    void stopLogThreads();
-
-    int start_saving_log(int index);
-    void startSavingLog(int index,FILE* Save_File_Pointer,double Save_Time);
-     FILE* save_file_log(int index);
-     void stop_saving_log(int index);
-      int n_points_to_save_log(int index);
-      void set_points_counter_log(int index,int cnt);
-
-    const char* getTargetName(){return RLG_Target_Name;}
-    long getTargetPort(){return Target_Port;}
-    RT_TASK * getTask(){return Target_Interface_Task;}
-
-// friend
-   
- public slots:
-    void start();
- private:
-
-    void setEndApp(int EndApp){End_App=EndApp;}
-    void setLedValue(int,unsigned int);
-   int  get_synch_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int get_meter_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int get_led_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int  get_alog_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int  get_log_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int  get_scope_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int  get_parameters_info(long port, RT_TASK *task);
-   long try_to_connect(const char *IP);
-   void upload_parameters_info(long port, RT_TASK *task);
-  int Num_Tunable_Parameters;
-  int Num_Tunable_Blocks;
-  int Num_Scopes;
-  int Num_Logs;
-  int Num_ALogs;
-  int Num_Leds;
-  int Num_Meters;
-  int Num_Synchs;
-  int hardRealTimeScope;
-  int hardRealTimeLog;
-  int hardRealTimeALog;
-  Target_Parameters_T *Tunable_Parameters;
-  Target_Blocks_T *Tunable_Blocks;
-  Target_Scopes_T *Scopes;
-  Target_Logs_T *Logs;
-  Target_ALogs_T *ALogs;
-  Target_Leds_T *Leds;
-  Target_Meters_T *Meters;
-  Target_Synchs_T *Synchs;
-  Batch_Parameters_T Batch_Parameters[MAX_BATCH_PARAMS];
-  Profile_T *Profile;
-  long Target_Port;
-  const char *RLG_Target_Name;
-  Preferences_T Preferences;
-   int Verbose;
-   int Is_Target_Connected;
-   unsigned int Is_Target_Running;
-   int End_App;
-   long Target_Node;
-   int test;
-   int batchCounter;
-  //GetScopeDataThread* Get_Scope_Data_Thread;
-  //GetMeterDataThread* Get_Meter_Data_Thread;
-  //GetLedDataThread* Get_Led_Data_Thread;
- 
-  QVector<unsigned int> LedValues; 
-  QVector< float > MeterValues;
-  QVector< QVector< QVector <float> > > ScopeValues;
-  QVector<double> scopeDt;
-  QVector<double> meterRefreshRate;
-  QVector<double> scopeRefreshRate;
-  QVector< QVector <int> > ScopeIndex;
-
- pthread_t *Get_Led_Data_Thread;
- pthread_t *Get_Meter_Data_Thread;
- pthread_t *Get_Scope_Data_Thread;
- pthread_t *Get_ALog_Data_Thread;
- pthread_t *Get_Log_Data_Thread;
-
-
-
- };
-
-
-
-
-
 
 class QRtaiLabCore :  public QObject {
 	
 	Q_OBJECT
-
+	Q_ENUMS( Commands )
 public:
     QRtaiLabCore(QObject *parent=0,int Verbose = 0);
     ~QRtaiLabCore();
@@ -294,6 +117,9 @@ private:
 	TargetThread* targetthread;
 	Preferences_T Preferences;
 	  QTimer *timer;
+ RT_TASK *Target_Interface_Task;
+ RT_TASK *RLG_Main_Task;
+
 };
 
 

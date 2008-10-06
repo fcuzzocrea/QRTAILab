@@ -28,12 +28,14 @@
 /**
  * @brief Initialize Parameters Manager
  */
-QRL_ParametersManager::QRL_ParametersManager(QWidget *parent, QRtaiLabCore	*qtargetinterface)
-	:QDialog(parent),qTargetInterface(qtargetinterface)
+QRL_ParametersManager::QRL_ParametersManager(QWidget *parent, QRL_Parameters	*parameters)
+	:QDialog(parent),Parameters(parameters)
 {
 	setupUi(this);
-	Num_Tunable_Parameters=qTargetInterface->getParameterNumber();
-	Num_Tunable_Blocks=qTargetInterface->getBlockNumber();
+	
+	Num_Tunable_Parameters=Parameters->getParameterNumber();
+	Num_Tunable_Blocks=Parameters->getBlockNumber();
+	
 	connect( blockListWidget, SIGNAL(itemEntered( QListWidgetItem * ) ), this, SLOT( showTunableParameter( QListWidgetItem *  ) ) );
 	connect( blockListWidget, SIGNAL(itemActivated( QListWidgetItem * ) ), this, SLOT( showTunableParameter( QListWidgetItem *  ) ) );
 	connect( parameterTableWidget, SIGNAL( itemChanged( QTableWidgetItem * ) ), this, SLOT( changeTunableParameter( QTableWidgetItem *  ) ) );
@@ -42,7 +44,7 @@ QRL_ParametersManager::QRL_ParametersManager(QWidget *parent, QRtaiLabCore	*qtar
 	connect( downloadPushButton, SIGNAL( pressed() ), this, SLOT( downloadBatchParameters() ) );
 	const QIcon BlockIcon =QIcon(QString::fromUtf8(":/icons/block_icon.xpm"));
 	for (int i=0; i<Num_Tunable_Blocks; ++i){
-		new QListWidgetItem(BlockIcon,qTargetInterface->getBlockName(i), blockListWidget);
+		new QListWidgetItem(BlockIcon,Parameters->getBlockName(i), blockListWidget);
 	}
 	batchModus=0;
 }
@@ -75,8 +77,8 @@ void QRL_ParametersManager::batchMode(int state){
  */
 void QRL_ParametersManager::uploadParameters()
 {
-	qTargetInterface->uploadParameters();
-	qTargetInterface->resetBatchMode();
+	Parameters->uploadParameters();
+	Parameters->resetBatchMode();
 	showTunableParameter(blockListWidget->currentItem());
 }
 /**
@@ -85,7 +87,7 @@ void QRL_ParametersManager::uploadParameters()
 void QRL_ParametersManager::downloadBatchParameters()
 {
 	if(batchModus)
-		qTargetInterface->batchParameterDownload();
+		Parameters->batchParameterDownload();
 
 }
 
@@ -104,14 +106,14 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 	int prm=prm_row;
 	int table_row=0;
 	// get old value
-	jend=qTargetInterface->getNumberOfParameters(blk);
+	jend=Parameters->getNumberOfParameters(blk);
 	for (int j = 0; j <  jend; j++) {
-		unsigned int ncols = qTargetInterface->getParameterCols(blk,j);
-		unsigned int nrows = qTargetInterface->getParameterRows(blk,j);
+		unsigned int ncols = Parameters->getParameterCols(blk,j);
+		unsigned int nrows = Parameters->getParameterRows(blk,j);
 		for (unsigned int nr = 0; nr < nrows; nr++) {
 			for (unsigned int nc = 0; nc < ncols; nc++) {
 				if ((prm_row==table_row) && (prm_col==nc)){
-					data_value=qTargetInterface->getParameterValue(blk,j,nr, nc);
+					data_value=Parameters->getParameterValue(blk,j,nr, nc);
 					prm=j;
 				}
 			}
@@ -129,11 +131,11 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 		if (batchModus==0){
 			double value=(item->text()).toDouble();
 			//printf("Item changed to %f (%d,%d)\n",value,blk,prm);
-			qTargetInterface->updateParameterValue(blk,prm,prm_row,prm_col,value);
+			Parameters->updateParameterValue(blk,prm,prm_row,prm_col,value);
 		} else {
 			double value=(item->text()).toDouble();
 			//printf("Item changed to %f (%d,%d)\n",value,blk,prm);
-			qTargetInterface->addToBatch(blk,prm,prm_row,prm_col,value);
+			Parameters->addToBatch(blk,prm,prm_row,prm_col,value);
 		}
 	}
 
@@ -150,20 +152,20 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 	int jend,val_idx;
 	double data_value;
 	//const QIcon BlockIcon =QIcon(QString::fromUtf8(":/icons/parameters_icon.xpm"));
-	jend=qTargetInterface->getNumberOfParameters(i);
+	jend=Parameters->getNumberOfParameters(i);
 	parameterTableWidget->setRowCount(jend);
 	parameterTableWidget->setColumnCount(2);
 	QTableWidgetItem *newItem;
 	int table_row=0;
 	for (int j = 0; j <  jend; j++) {
-		newItem = new QTableWidgetItem(qTargetInterface->getParameterName(i,j));
+		newItem = new QTableWidgetItem(Parameters->getParameterName(i,j));
 		newItem->setFlags(!Qt::ItemIsEditable|!Qt::ItemIsSelectable);
 		parameterTableWidget->setItem(table_row,0,newItem);
 
-		unsigned int ncols = qTargetInterface->getParameterCols(i,j);
+		unsigned int ncols = Parameters->getParameterCols(i,j);
 		if ((ncols+1)>parameterTableWidget->columnCount())
 			parameterTableWidget->setColumnCount(ncols+1);
-		unsigned int nrows =qTargetInterface->getParameterRows(i,j);;
+		unsigned int nrows =Parameters->getParameterRows(i,j);;
 		if (nrows>1)
 			parameterTableWidget->setRowCount(parameterTableWidget->rowCount()+nrows-1);
 		for (unsigned int nr = 0; nr < nrows; nr++) {
@@ -173,7 +175,7 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 				parameterTableWidget->setItem(table_row,0,newItem);
 			}
 			for (unsigned int nc = 0; nc < ncols; nc++) {
-				data_value=qTargetInterface->getParameterValue(i,j, nr, nc);
+				data_value=Parameters->getParameterValue(i,j, nr, nc);
 				newItem = new QTableWidgetItem(tr("%1").arg(data_value));
 				parameterTableWidget->setItem(table_row,nc+1,newItem);
 			}
