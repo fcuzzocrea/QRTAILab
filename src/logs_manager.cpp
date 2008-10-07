@@ -36,7 +36,7 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
 {
 	setupUi(this);
 	Num_Logs=qTargetInterface->getLogNumber();
-	Logs=qTargetInterface->getTargetThread()->getLogs();
+	Logs=qTargetInterface->getLogs();
 	const QIcon LogIcon =QIcon(QString::fromUtf8(":/icons/log_icon.xpm"));
 	for (int i=0; i<Num_Logs; ++i){
 		logItems << new QListWidgetItem(LogIcon,qTargetInterface->getLogName(i), logListWidget);
@@ -78,7 +78,7 @@ QRL_LogsManager::~QRL_LogsManager()
 
 void QRL_LogsManager::refresh()
 {
-  if ((qTargetInterface->getTargetThread()->getLogs())[currentLog].isSaving==0){
+  if (Logs[currentLog]->getIsSaving()==0){
       savePushButton->setEnabled(true);
 	stopPushButton->setEnabled(false);
        saveProgressBar->setEnabled(false);
@@ -90,8 +90,8 @@ void QRL_LogsManager::refresh()
      savePushButton->setEnabled(false);
       stopPushButton->setEnabled(true);
     saveProgressBar->setEnabled(true);
-    saveProgressBar->setMaximum(qTargetInterface->getTargetThread()->n_points_to_save_log(currentLog));
-     saveProgressBar->setValue((qTargetInterface->getTargetThread()->getLogs())[currentLog].Saved_Points);
+    saveProgressBar->setMaximum(Logs[currentLog]->n_points_to_save());
+     saveProgressBar->setValue(Logs[currentLog]->get_points_counter());
   }
 }
 
@@ -100,7 +100,7 @@ void QRL_LogsManager::startSaving()
 {
 	 FILE* Save_File_Pointer;
 	double Save_Time=timeCounter->value();
-	if( qTargetInterface->getTargetThread()->start_saving_log(currentLog)==0){
+	if( Logs[currentLog]->start_saving()==0){
 
 		QString File_Name=fileLineEdit->text();
 		if (QFile::exists(File_Name)) {
@@ -119,7 +119,7 @@ void QRL_LogsManager::startSaving()
                                      QMessageBox::Abort);
 		} else {
 			//savePushButton->setEnabled(false);
-			qTargetInterface->getTargetThread()->startSavingLog(currentLog,Save_File_Pointer,Save_Time);
+			Logs[currentLog]->startSaving(Save_File_Pointer,Save_Time);
 		}
 
 		
@@ -135,8 +135,8 @@ void QRL_LogsManager::startSaving()
 
 void QRL_LogsManager::stopSaving()
 {
-   if ((qTargetInterface->getTargetThread()->getLogs())[currentLog].isSaving==1){
-	  qTargetInterface->getTargetThread()->stop_saving_log(currentLog);
+   if (Logs[currentLog]->getIsSaving()==1){
+	  Logs[currentLog]->stop_saving();
   }
 }
 
@@ -159,10 +159,10 @@ void QRL_LogsManager::showLogOptions( QListWidgetItem * item ){
 void QRL_LogsManager::showLogOptions( int index ){
 
 	currentLog=index;
-	if(qTargetInterface->getTargetThread()->start_saving_log(currentLog)==0){
+	if(Logs[currentLog]->start_saving()==0){
 		savePushButton->setEnabled(true);
 	}
-	tabWidget->setTabText(0,tr(Logs[currentLog].name));
+	tabWidget->setTabText(0,tr(Logs[currentLog]->getName()));
 //  	timeCounter->setValue(saveTime[currentLog] );
 //  	fileLineEdit->setText(fileName[currentLog] );
 

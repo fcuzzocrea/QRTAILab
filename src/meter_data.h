@@ -27,16 +27,28 @@
 #ifndef _METER_DATA_H
 #define _METER_DATA_H 1
 
+#include <QtGui> 
 
+#include "qrtailab.h"
 
 class QRL_MeterData
 {
 public:
+QRL_MeterData();
+  float getDt(){return dt;} 
+  void setDt(float d){dt=d;}
+  const char* getName(){return name;}
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
-
+    int setMeterRefreshRate(double rr);
+    double getMeterRefreshRate();
+    void setMeterValue(float v);
+    float getMeterValue();
 	char name[MAX_NAMES_SIZE];
 	int visible;
 	float dt;
+private:
+  float  MeterValues;
+  double meterRefreshRate;
 };
 
 

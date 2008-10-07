@@ -279,10 +279,11 @@ static void *rt_get_meter_data(void *arg)
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
         TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
-	double RefreshRate=targetThread->getMeterRefreshRate(index);
+
  	long Target_Node = targetThread->getTargetNode();
       	RT_TASK *Target_Interface_Task = targetThread->getTask();
-	QRL_MeterData meter = targetThread->getMeters()[index];
+	QRL_MeterData* meter = targetThread->getMeters()[index];
+	double RefreshRate=meter->getMeterRefreshRate();
 	rt_allow_nonroot_hrt();
 	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetMeterDataTask = rt_task_init_schmod(qrl::get_an_id("HGM"), 97, 0, 0, SCHED_RR, 0xFF))) {
@@ -301,11 +302,11 @@ static void *rt_get_meter_data(void *arg)
 	//munlockall();
 	DataBytes = sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
-	MsgLen = (((int)(DataBytes/RefreshRate*(1./meter.dt)))/DataBytes)*DataBytes;
+	MsgLen = (((int)(DataBytes/RefreshRate*(1./meter->getDt())))/DataBytes)*DataBytes;
 	if (MsgLen < DataBytes) MsgLen = DataBytes;
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/DataBytes;
-	Ndistance=(long int)(1./RefreshRate/meter.dt);
+	Ndistance=(long int)(1./RefreshRate/meter->getDt());
 	if (Ndistance<1)
 		Ndistance=1;
 	rt_send(Target_Interface_Task, 0);
@@ -330,18 +331,18 @@ static void *rt_get_meter_data(void *arg)
 		   for (i=(int)n-1; i < MsgData; i=i+(int)Ndistance){
 			//if (MeterWindow)
 			  //  MeterWindow->setValue(MsgBuf[i]);
-			targetThread->setMeterValue(MsgBuf[i],index);
+			meter->setMeterValue(MsgBuf[i]);
 		   }
 		   n=Ndistance;
 		}
-		if (RefreshRate!=targetThread->getMeterRefreshRate(index)){
+		if (RefreshRate!=meter->getMeterRefreshRate()){
 		
-		RefreshRate=targetThread->getMeterRefreshRate(index);
-		MsgLen = (((int)(DataBytes/RefreshRate*(1./meter.dt)))/DataBytes)*DataBytes;
+		RefreshRate=meter->getMeterRefreshRate();
+		MsgLen = (((int)(DataBytes/RefreshRate*(1./meter->getDt())))/DataBytes)*DataBytes;
 		if (MsgLen < DataBytes) MsgLen = DataBytes;
 		if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 		MsgData = MsgLen/DataBytes;
-		Ndistance=(long int)(1./RefreshRate/meter.dt);
+		Ndistance=(long int)(1./RefreshRate/meter->getDt());
 		if (Ndistance<1)
 			Ndistance=1;
 		
@@ -409,7 +410,7 @@ static void *rt_get_led_data(void *arg)
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	 long Target_Node = targetThread->getTargetNode();
 		RT_TASK *Target_Interface_Task = targetThread->getTask();
-	QRL_LedData led = targetThread->getLeds()[index];
+	QRL_LedData* led = targetThread->getLeds()[index];
 	rt_allow_nonroot_hrt();
 	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetLedDataTask = rt_task_init_schmod(qrl::get_an_id("HGE"), 97, 0, 0, SCHED_RR, 0xFF))) {
@@ -426,7 +427,7 @@ static void *rt_get_led_data(void *arg)
 	//munlockall();
 	DataBytes = sizeof(unsigned int);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
-	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./led.dt)))/DataBytes)*DataBytes;
+	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./led->getDt())))/DataBytes)*DataBytes;
 	if (MsgLen < DataBytes) MsgLen = DataBytes;
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/DataBytes;
@@ -447,7 +448,7 @@ static void *rt_get_led_data(void *arg)
 		}
 		//for (n = 0; n < MsgData; n++) {
 			Led_Mask = MsgBuf[0];
-			targetThread->setLedValue(Led_Mask,index);
+			led->setLedValue(Led_Mask);
 		//}
 
 	}
@@ -491,7 +492,7 @@ static void *rt_get_alog_data(void *arg)
 	char *mbx_id = strdup(((Alog_T *)arg)->mbx_id);
 	char *alog_file_name = strdup(((Alog_T *)arg)->alog_name);   //read alog block name and set it to file name
 	TargetThread* targetThread=(TargetThread*)((Alog_T *)arg)->targetThread;
-	QRL_ALogData alog = targetThread->getALogs()[index];
+	QRL_ALogData* alog = targetThread->getALogs()[index];
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	FILE *saving;
 	long size_counter = 0;
@@ -520,9 +521,9 @@ static void *rt_get_alog_data(void *arg)
 		exit(1);
 	}
 	 //munlockall();
-	DataBytes = (alog.nrow*alog.ncol)*sizeof(float)+sizeof(float);
+	DataBytes = (alog->nrow*alog->ncol)*sizeof(float)+sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
-	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./alog.dt)))/DataBytes)*DataBytes;
+	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./alog->dt)))/DataBytes)*DataBytes;
 	if (MsgLen < DataBytes) MsgLen = DataBytes;
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/DataBytes;
@@ -544,13 +545,13 @@ static void *rt_get_alog_data(void *arg)
 			for (n = 0; n < MsgData; n++) {
 				size_counter=ftell(saving);    			//get file dimension in bytes
 				//printf("Size counter: %d\n", size_counter);
-				if(((int)MsgBuf[(((n+1)*alog.nrow*alog.ncol + (n+1))-1)]) &&
+				if(((int)MsgBuf[(((n+1)*alog->nrow*alog->ncol + (n+1))-1)]) &&
 				size_counter<=1000000){
-					for (i = 0; i < alog.nrow; i++) {
-						j = n*alog.nrow*alog.ncol + i;
-						for (k = 0; k < alog.ncol; k++) {
+					for (i = 0; i < alog->nrow; i++) {
+						j = n*alog->nrow*alog->ncol + i;
+						for (k = 0; k < alog->ncol; k++) {
 							fprintf(saving,"%1.5f ",MsgBuf[j]); 
-							j += alog.nrow;
+							j += alog->nrow;
 						}
 						fprintf(saving, "\n");
 						j++;
@@ -594,7 +595,7 @@ static void *rt_get_log_data(void *arg)
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
-	QRL_LogData log = targetThread->getLogs()[index];
+	QRL_LogData* log = targetThread->getLogs()[index];
 	 long Target_Node = targetThread->getTargetNode();
 	RT_TASK *Target_Interface_Task = targetThread->getTask();
 	rt_allow_nonroot_hrt();
@@ -613,9 +614,9 @@ static void *rt_get_log_data(void *arg)
 		exit(1);
 	}
 	//munlockall();
-	DataBytes = (log.nrow*log.ncol)*sizeof(float);
+	DataBytes = (log->getNRow()*log->getNCol())*sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
-	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./log.dt)))/DataBytes)*DataBytes;
+	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./log->getDt())))/DataBytes)*DataBytes;
 	if (MsgLen < DataBytes) MsgLen = DataBytes;
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/DataBytes;
@@ -633,21 +634,21 @@ static void *rt_get_log_data(void *arg)
 
 
 
-		if (targetThread->start_saving_log(index)) {
+		if (log->start_saving()) {
 			for (n = 0; n < MsgData; n++) {
 				++DataCnt;
 //				fprintf(targetThread->save_file_log(index), "Data # %d\n", ++DataCnt);
-				for (i = 0; i < log.nrow; i++) {
-					j = n*log.nrow*log.ncol + i;
-					for (k = 0; k < log.ncol; k++) {
-						fprintf(targetThread->save_file_log(index), "%1.5f ", MsgBuf[j]);
-						j += log.nrow;
+				for (i = 0; i < log->getNRow(); i++) {
+					j = n*log->getNRow()*log->getNCol() + i;
+					for (k = 0; k < log->getNCol(); k++) {
+						fprintf(log->save_file(), "%1.5f ", MsgBuf[j]);
+						j += log->getNRow();
 					}
-					fprintf(targetThread->save_file_log(index), "\n");
+					fprintf(log->save_file(), "\n");
 				}
-				targetThread->set_points_counter_log(index,DataCnt);
-				if (DataCnt == targetThread->n_points_to_save_log(index)) {
-					targetThread->stop_saving_log(index);
+				log->set_points_counter(DataCnt);
+				if (DataCnt == log->n_points_to_save()) {
+					log->stop_saving();
 					DataCnt = 0;
 					break;
 				}

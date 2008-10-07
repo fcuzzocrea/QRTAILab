@@ -56,7 +56,7 @@ public slots:
    void refresh();
 private:
   int Num_Logs;
-  QRL_LogData *Logs;
+  QRL_LogData **Logs;
   unsigned int currentLog;
  // GetScopeDataThread* Get_Scope_Data_Thread;
   QRtaiLabCore* qTargetInterface;

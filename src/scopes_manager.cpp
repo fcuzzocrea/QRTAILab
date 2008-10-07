@@ -36,7 +36,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 {
 	setupUi(this);
 	Num_Scopes=qTargetInterface->getScopeNumber();
-	Scopes=qTargetInterface->getTargetThread()->getScopes();
+	Scopes=qTargetInterface->getScopes();
 	const QIcon ScopeIcon =QIcon(QString::fromUtf8(":/icons/scope_icon.xpm"));
 	ScopeWindows = new QRL_ScopeWindow* [Num_Scopes]; 
 	for (int i=0; i<Num_Scopes; ++i){

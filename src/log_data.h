@@ -27,13 +27,27 @@
 #ifndef _LOG_DATA_H
 #define _LOG_DATA_H 1
 
+#include <QtGui> 
 
+#include "qrtailab.h"
 
 class QRL_LogData
 {
 public:
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
-
+	QRL_LogData();
+	const char* getName(){return name;}
+	float getDt(){return dt;} 
+	int getNRow(){return nrow;}
+	int getNCol(){return ncol;}
+    int get_points_counter(){return Saved_Points;}
+    int getIsSaving(){return isSaving;}
+    int start_saving();
+    void startSaving(FILE* Save_File_Pointer,double Save_Time);
+     FILE* save_file();
+     void stop_saving();
+      int n_points_to_save();
+      void set_points_counter(int cnt);
 	char name[MAX_NAMES_SIZE];
 	int nrow;
 	int ncol;

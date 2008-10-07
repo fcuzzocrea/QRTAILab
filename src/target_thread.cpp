@@ -67,14 +67,26 @@ TargetThread::~TargetThread(){
 	      delete Scopes[i];
 	    delete[] Scopes;
 	}
-// 	if (Logs)
-// 		delete[] Logs;
-// 	if (ALogs)
-// 		delete[] ALogs;
-// 	if (Leds)
-// 		delete[] Leds;
-// 	if (Meters)
-// 		delete[] Meters;
+ 	if (Num_Logs>0){
+	    for (int i=0; i<Num_Logs;i++)
+	      delete Logs[i];
+	    delete[] Logs;
+	}
+ 	if (Num_ALogs>0){
+	    for (int i=0; i<Num_ALogs;i++)
+	      delete ALogs[i];
+	    delete[] ALogs;
+	}
+ 	if (Num_Leds>0){
+	    for (int i=0; i<Num_Leds;i++)
+	      delete Leds[i];
+	    delete[] Leds;
+	}
+ 	if (Num_Meters>0){
+	    for (int i=0; i<Num_Meters;i++)
+	      delete Meters[i];
+	    delete[] Meters;
+	}
 /*	stopScopeThreads();
 	//if (Get_Scope_Data_Thread)
 	//	delete[] Get_Scope_Data_Thread;
@@ -281,17 +293,25 @@ int TargetThread::get_log_blocks_info(long port, RT_TASK *task, const char *mbx_
 			n_logs = n;
 			break;
 		}
+	}	
+	if (n_logs > 0) {
+	  if (Num_Logs>0){
+	      for (int i=0; i<Num_Logs;i++)
+		delete Logs[i];
+	      delete[] Logs;
+	  }
+	  Logs = new QRL_LogData* [n_logs];
 	}
-	if (n_logs > 0) Logs = new QRL_LogData [n_logs];
 	for (int n = 0; n < n_logs; n++) {
 		char log_name[MAX_NAMES_SIZE];
-		Logs[n].isSaving=0;
-		Logs[n].Save_File_Pointer=NULL;
-		RT_rpcx(Target_Node, port, task, &n, &Logs[n].nrow, sizeof(int), sizeof(int));
-		RT_rpcx(Target_Node, port, task, &n, &Logs[n].ncol, sizeof(int), sizeof(int));
+// 		Logs[n].isSaving=0;
+// 		Logs[n].Save_File_Pointer=NULL;
+		Logs[n] = new QRL_LogData();
+		RT_rpcx(Target_Node, port, task, &n, &Logs[n]->nrow, sizeof(int), sizeof(int));
+		RT_rpcx(Target_Node, port, task, &n, &Logs[n]->ncol, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &log_name, sizeof(int), sizeof(log_name));
-		strncpy(Logs[n].name, log_name, MAX_NAMES_SIZE);
-		RT_rpcx(Target_Node, port, task, &n, &Logs[n].dt, sizeof(int), sizeof(float));
+		strncpy(Logs[n]->name, log_name, MAX_NAMES_SIZE);
+		RT_rpcx(Target_Node, port, task, &n, &Logs[n]->dt, sizeof(int), sizeof(float));
 	}
 	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 
@@ -309,15 +329,23 @@ int TargetThread::get_alog_blocks_info(long port, RT_TASK *task, const char *mbx
 			n_alogs = n;
 			break;
 		}
+	}	
+	if (n_alogs > 0) {
+	  if (Num_ALogs>0){
+	      for (int i=0; i<Num_ALogs;i++)
+		delete ALogs[i];
+	      delete[] ALogs;
+	  }
+	 ALogs = new QRL_ALogData* [n_alogs];
 	}
-	if (n_alogs > 0) ALogs = new QRL_ALogData [n_alogs];
 	for (int n = 0; n < n_alogs; n++) {
 		char alog_name[MAX_NAMES_SIZE];
-		RT_rpcx(Target_Node, port, task, &n, &ALogs[n].nrow, sizeof(int), sizeof(int));
-		RT_rpcx(Target_Node, port, task, &n, &ALogs[n].ncol, sizeof(int), sizeof(int));
+		ALogs[n] = new QRL_ALogData();
+		RT_rpcx(Target_Node, port, task, &n, &ALogs[n]->nrow, sizeof(int), sizeof(int));
+		RT_rpcx(Target_Node, port, task, &n, &ALogs[n]->ncol, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &alog_name, sizeof(int), sizeof(alog_name));
-		strncpy(ALogs[n].name, alog_name, MAX_NAMES_SIZE);
-		RT_rpcx(Target_Node, port, task, &n, &ALogs[n].dt, sizeof(int), sizeof(float));
+		strncpy(ALogs[n]->name, alog_name, MAX_NAMES_SIZE);
+		RT_rpcx(Target_Node, port, task, &n, &ALogs[n]->dt, sizeof(int), sizeof(float));
 	}
 	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 
@@ -337,14 +365,24 @@ int TargetThread::get_led_blocks_info(long port, RT_TASK *task, const char *mbx_
 			break;
 		}
 	}
-	if (n_leds > 0) Leds = new QRL_LedData [n_leds];
+	if (n_leds > 0) {
+	  if (Num_Leds>0){
+	      for (int i=0; i<Num_Leds;i++)
+		delete Leds[i];
+	      delete[] Leds;
+	  }
+	  Leds = new QRL_LedData* [n_leds];
+	}
 	for (int n = 0; n < n_leds; n++) {
 		char led_name[MAX_NAMES_SIZE];
-		Leds[n].visible = false;
-		RT_rpcx(Target_Node, port, task, &n, &Leds[n].n_leds, sizeof(int), sizeof(int));
+		float dt;
+		//Leds[n].visible = false;
+		Leds[n] = new QRL_LedData();
+		RT_rpcx(Target_Node, port, task, &n, &Leds[n]->n_leds, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &led_name, sizeof(int), sizeof(led_name));
-		strncpy(Leds[n].name, led_name, MAX_NAMES_SIZE);
-		RT_rpcx(Target_Node, port, task, &n, &Leds[n].dt, sizeof(int), sizeof(float));
+		strncpy(Leds[n]->name, led_name, MAX_NAMES_SIZE);
+		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
+		Leds[n]->setDt(dt);
 	}
 	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 
@@ -364,13 +402,24 @@ int TargetThread::get_meter_blocks_info(long port, RT_TASK *task, const char *mb
 			break;
 		}
 	}
-	if (n_meters > 0) Meters = new QRL_MeterData [n_meters];
+	if (n_meters > 0){ 	  
+	     if (Num_Meters>0){
+	      for (int i=0; i<Num_Meters;i++)
+		delete Meters[i];
+	      delete[] Meters;
+	  }
+	  Meters = new QRL_MeterData* [n_meters];
+	}
 	for (int n = 0; n < n_meters; n++) {
 		char meter_name[MAX_NAMES_SIZE];
-		Meters[n].visible = false;
+		float dt;
+// 		Meters[n].visible = false;
 		RT_rpcx(Target_Node, port, task, &n, &meter_name, sizeof(int), sizeof(meter_name));
-		strncpy(Meters[n].name, meter_name, MAX_NAMES_SIZE);
-		RT_rpcx(Target_Node, port, task, &n, &Meters[n].dt, sizeof(int), sizeof(float));
+		
+		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
+		Meters[n] = new QRL_MeterData();
+		Meters[n]->setDt(dt);
+		strncpy(Meters[n]->name, meter_name, MAX_NAMES_SIZE);
 	}
 	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 
@@ -504,37 +553,37 @@ end:
 				if (Verbose) {
 					printf("Number of target real time logs: %d\n", Num_Logs);
 					for (int n = 0; n < Num_Logs; n++) {
-						printf("Log: %s\n", Logs[n].name);
-						printf(" Number of rows...%d\n", Logs[n].nrow);
-						printf(" Number of cols...%d\n", Logs[n].ncol);
-						printf(" Sampling time...%f\n", Logs[n].dt);
+						printf("Log: %s\n", Logs[n]->getName());
+						printf(" Number of rows...%d\n", Logs[n]->getNRow());
+						printf(" Number of cols...%d\n", Logs[n]->getNCol());
+						printf(" Sampling time...%f\n", Logs[n]->getDt());
 					}
 				}
 				Num_ALogs = get_alog_blocks_info(Target_Port, If_Task, Preferences.Target_ALog_Mbx_ID);
 				if (Verbose) {
 					printf("Number of target real time automatic logs: %d\n", Num_ALogs);
 					for (int n = 0; n < Num_ALogs; n++) {
-						printf("Log: %s\n", ALogs[n].name);
-						printf(" Number of rows...%d\n", ALogs[n].nrow);
-						printf(" Number of cols...%d\n", ALogs[n].ncol);
-						printf(" Sampling time...%f\n", ALogs[n].dt);
+						printf("Log: %s\n", ALogs[n]->getName());
+						printf(" Number of rows...%d\n", ALogs[n]->getNRow());
+						printf(" Number of cols...%d\n", ALogs[n]->getNCol());
+						printf(" Sampling time...%f\n", ALogs[n]->getDt());
 					}
 				}
 				Num_Leds = get_led_blocks_info(Target_Port, If_Task, Preferences.Target_Led_Mbx_ID);
 				if (Verbose) {
 					printf("Number of target real time leds: %d\n", Num_Leds);
 					for (int n = 0; n < Num_Leds; n++) {
-						printf("Led: %s\n", Leds[n].name);
-						printf(" Number of leds...%d\n", Leds[n].n_leds);
-						printf(" Sampling time...%f\n", Leds[n].dt);
+						printf("Led: %s\n", Leds[n]->getName());
+						printf(" Number of leds...%d\n", Leds[n]->getNLeds());
+						printf(" Sampling time...%f\n", Leds[n]->getDt());
 					}
 				}
 				Num_Meters = get_meter_blocks_info(Target_Port, If_Task, Preferences.Target_Meter_Mbx_ID);
 				if (Verbose) {
 					printf("Number of target real time meters: %d\n", Num_Meters);
 					for (int n = 0; n < Num_Meters; n++) {
-						printf("Meter: %s\n", Meters[n].name);
-						printf(" Sampling time...%f\n", Meters[n].dt);
+						printf("Meter: %s\n", Meters[n]->getName());
+						printf(" Sampling time...%f\n", Meters[n]->getDt());
 					}
 				}
 				Num_Synchs = get_synch_blocks_info(Target_Port, If_Task, Preferences.Target_Synch_Mbx_ID);
@@ -596,10 +645,6 @@ end:
 // 					Args_T thr_args;
 // 					thr_args.index = n;
 // 					thr_args.mbx_id = strdup(Preferences.Target_Led_Mbx_ID);
-// 					thr_args.x = 500; 
-// 					thr_args.y = 290;
-// 					thr_args.w = 250;
-// 					thr_args.h = 250;
 // 					//pthread_create(&Get_Led_Data_Thread[n], NULL, rt_get_led_data, &thr_args);
 // 					Get_Led_Data_Thread[n].start(&thr_args,this);
 // 					rt_receive(0, &msg);
@@ -614,10 +659,6 @@ end:
 // 					Args_T thr_args;
 // 					thr_args.index = n;
 // 					thr_args.mbx_id = strdup(Preferences.Target_Meter_Mbx_ID);
-// 					thr_args.x = 0; 
-// 					thr_args.y = 0;
-// 					thr_args.w = 300;
-// 					thr_args.h = 200;
 // 					//pthread_create(&Get_Meter_Data_Thread[n], NULL, rt_get_meter_data, &thr_args);
 // 					Get_Meter_Data_Thread[n].start(&thr_args,this);
 // 					rt_receive(0, &msg);
@@ -630,10 +671,6 @@ end:
 					Args_T thr_args;
 					thr_args.index = n;
 					thr_args.mbx_id = strdup(Preferences.Target_Synch_Mbx_ID);
-					thr_args.x = 0; 
-					thr_args.y = 0;
-					thr_args.w = 300;
-					thr_args.h = 200;
 					pthread_create(&Get_Synch_Data_Thread[n], NULL, rt_get_synch_data, &thr_args);
 					rt_receive(0, &msg);
 				}*/
@@ -658,14 +695,7 @@ end:
 				stopLogThreads();
 				if (Num_Tunable_Blocks>0)
 					delete[] Tunable_Blocks;
-				if (Num_Logs>0)
-					delete[] Logs;
-				if (Num_ALogs>0)
-					delete[] ALogs;
-				if (Num_Leds>0)
-					delete[] Leds;
-				if (Num_Meters>0)
-					delete[] Meters;
+
 /*				for (int n = 0; n < Num_Logs; n++) {
 					pthread_join(Get_Log_Data_Thread[n], NULL);
 				}
@@ -736,14 +766,6 @@ end:
 					Target_Port = 0;	
 				if (Num_Tunable_Blocks>0)
 					delete[] Tunable_Blocks;
-				if (Num_Logs>0)
-					delete[] Logs;
-				if (Num_ALogs>0)
-					delete[] ALogs;
-				if (Num_Leds>0)
-					delete[] Leds;
-				if (Num_Meters>0)
-					delete[] Meters;
 
 					//statusBarMessage(tr("Ready..."));
 					if (Verbose) {
@@ -907,11 +929,11 @@ void TargetThread::stopScopeThreads()
 */
 void TargetThread::startMeterThreads()//QRL_MeterWindow** MeterWindows)
 {
-	MeterValues.resize(Num_Meters);
-	meterRefreshRate.resize(Num_Meters);
+	//MeterValues.resize(Num_Meters);
+	//meterRefreshRate.resize(Num_Meters);
 	for (int n = 0; n < Num_Meters; n++) {
-		meterRefreshRate[n]=20.;
-		MeterValues[n]=0;
+// 		meterRefreshRate[n]=20.;
+// 		MeterValues[n]=0;
 		unsigned int msg;
 		Args_T thr_args;
 		thr_args.index = n;
@@ -946,61 +968,8 @@ void TargetThread::stopMeterThreads()
 
 
 
-int TargetThread::setMeterRefreshRate(double rr,int n)
-{
-int ret=-1;
-if (rr>0. && rr<50.){
-if (n<Num_Meters){
-	ret=1;
-	meterRefreshRate[n]=rr;
-}
-}
- //ret= Get_Meter_Data_Thread[n].setRefreshRate(rr);
-return ret;
-}
-
-double TargetThread::getMeterRefreshRate(int n)
-{
-	double ret=-1;
-	if (n<Num_Meters){
-		ret=meterRefreshRate[n];
-	}
-	return ret;
-}
-
-
-void TargetThread::setMeterValue(float v, int n){
-
-	//MeterValues[n].append(v);
-if (n<MeterValues.size()){
-// 	if (MeterValues[n].size()>0)
-// 		MeterValues[n][0]=(v);
-// 	else
-// 		MeterValues[n].append(v);
-	MeterValues[n]=v;
-}
-
-
-}
-
-float TargetThread::getMeterValue(int n){
-
-float ret=-1;
-if (n<MeterValues.size()){
- //ret= Get_Led_Data_Thread[n].getValue();
-//    if (MeterValues[n].size()>1)
-//      ret=MeterValues[n].takeAt(0);
-//    else
-//      ret=MeterValues[n].at(0);
-	ret = MeterValues.at(n);
-}
-return ret;
-
-
-
-}
    QString TargetThread::getMeterName(int i){
-	return tr(Meters[i].name);
+	return tr(Meters[i]->getName());
 }
 
 /**
@@ -1008,7 +977,7 @@ return ret;
 */
 void TargetThread::startLedThreads()//QRL_LedWindow** LedWindows)
 {
-	LedValues.resize(Num_Leds);
+// 	LedValues.resize(Num_Leds);
 	for (int n = 0; n < Num_Leds; n++) {
 		unsigned int msg;
 		Args_T thr_args;
@@ -1040,24 +1009,9 @@ void TargetThread::stopLedThreads()
 }
 
 
-void TargetThread::setLedValue(unsigned int v, int n){
-if (n<Num_Leds)
-	LedValues[n]=v;
-	
-}
-
-unsigned int TargetThread::getLedValue(int n){
-
-unsigned int ret=-1;
-if (n<Num_Leds)
- //ret= Get_Led_Data_Thread[n].getValue();
-   ret=LedValues.at(n);
-return ret;
-
-}
 
    QString TargetThread::getLedName(int i){
-	return tr(Leds[i].name);
+	return tr(Leds[i]->getName());
 }
 
 
@@ -1073,8 +1027,8 @@ void TargetThread::startALogThreads()//QRL_LedWindow** LedWindows)
 		Alog_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup(getPreferences().Target_ALog_Mbx_ID);
-		thr_args.alog_name = strdup(ALogs[n].name);
-		printf("%s alog name\n", ALogs[n].name);
+		thr_args.alog_name = strdup(ALogs[n]->getName());
+		printf("%s alog name\n", ALogs[n]->getName());
 		thr_args.targetThread=(void*)this;
 		thr_args.hardRealTime=hardRealTimeALog;
 		pthread_create(&Get_ALog_Data_Thread[n], NULL, rt_get_alog_data, &thr_args);
@@ -1128,40 +1082,3 @@ void TargetThread::stopLogThreads()
 }
 
 
-
-int  TargetThread::start_saving_log(int index) {return Logs[index].isSaving ;}
-
-void  TargetThread::startSavingLog(int index,FILE* Save_File_Pointer,double Save_Time){ 
-	Logs[index].Save_File_Pointer=Save_File_Pointer;
-	Logs[index].Save_Time=Save_Time;
-	Logs[index].isSaving=1;
-}
-FILE*  TargetThread::save_file_log(int index) {
-
-	return Logs[index].Save_File_Pointer;
-
-}
-     void  TargetThread::stop_saving_log(int index){
-	Logs[index].isSaving=0;
-	fclose(Logs[index].Save_File_Pointer);
-	Logs[index].Save_File_Pointer=NULL;
-	//emit stopSaving(index);
-
-}
-
-      int  TargetThread::n_points_to_save_log(int index){
-	int n_points;
-
-	n_points = (int)(Logs[index].Save_Time/Logs[index].dt);
-	if (n_points < 0) return 0;
-	return n_points;
-
-}
-
-
-
-  void  TargetThread::set_points_counter_log(int index,int cnt){
-
-  Logs[index].Saved_Points=cnt;
-
-}
