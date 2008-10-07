@@ -38,7 +38,7 @@
 #include "qrtailab_core.h"
 #include "targets_manager.h"
 #include <locale.h>
-#include "parameters.h"
+
 
 /**
  * @brief Main QThread 
@@ -125,7 +125,7 @@ private:
     QMdiArea *mdiArea;
     int Verbose;
     QRtaiLabCore	*qTargetInterface;
-      QRL_Parameters *Parameters;
+//       QRL_Parameters *Parameters;
     QProcess *target;
     //QSettings *settings;
 };

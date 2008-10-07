@@ -37,7 +37,7 @@
 #include <QtGui> 
 #include "qrtailab.h"
 #include "target_thread.h"
-
+#include "parameters.h"
 
 // static RT_TASK *Target_Interface_Task;
 // static RT_TASK *RLG_Main_Task;
@@ -62,8 +62,6 @@ public:
     int startTarget();
     int connectToTarget();
     int disconnectFromTarget();
-    void uploadParameters();
-    void batchParameterDownload();
     void closeTargetThread();
 
     void setPreferences(Preferences_T p){targetthread->setPreferences(p);}
@@ -71,46 +69,49 @@ public:
 
     unsigned int getIsTargetConnected(){return targetthread->getIsTargetConnected();}
     int getIsTargetRunning(){return targetthread->getIsTargetRunning();}
-    int getScopeNumber();
-    int getMeterNumber();
-    int getLedNumber();
-    int getLogNumber();
-    int getALogNumber();
-    QRL_ScopeData** getScopes(){return targetthread->getScopes();}
-    QRL_MeterData** getMeters(){return targetthread->getMeters();}
-    QRL_LedData** getLeds(){return targetthread->getLeds();}
-    QRL_ALogData** getALogs(){return targetthread->getALogs();}
-    QRL_LogData** getLogs(){return targetthread->getLogs();}
-    int getParameterNumber(){return targetthread->getParameterNumber();}
-    int getBlockNumber(){return targetthread->getBlockNumber();}
     int getEndApp(){return targetthread->getEndApp();}
     int getVerbose(){return targetthread->getVerbose();}
     void setHardRealTime(int hrScope,int hrLog,int hrAlog){targetthread->setHardRealTime( hrScope, hrLog, hrAlog);}
     const char* getTargetName(){return targetthread->getTargetName();}
 
+//     void uploadParameters();
+//     void batchParameterDownload();
+    QRL_Parameters* getParameters(){return Parameters;}
+    int getParameterNumber(){return targetthread->getParameterNumber();}
+    int getBlockNumber(){return targetthread->getBlockNumber();}
    QString getParameterName(int blk,int prm);
    QString getBlockName(int blk);
-   void resetBatchMode(){targetthread->resetBatchMode();}
-    int getNumberOfParameters(int blk);
-   unsigned int getParameterCols(int blk,int prm);
-   unsigned int getParameterRows(int blk,int prm);
-    double getParameterValue(int blk,int prm, int nr,int nc);
-    void updateParameterValue(int blk,int prm, int nr,int nc,double value);
-    void addToBatch(int blk,int prm, int nr,int nc, double value);
+//    void resetBatchMode(){targetthread->resetBatchMode();}
+//     int getNumberOfParameters(int blk);
+//    unsigned int getParameterCols(int blk,int prm);
+//    unsigned int getParameterRows(int blk,int prm);
+//     double getParameterValue(int blk,int prm, int nr,int nc);
+//     void updateParameterValue(int blk,int prm, int nr,int nc,double value);
+//     void addToBatch(int blk,int prm, int nr,int nc, double value);
 
+  QRL_ScopeData** getScopes(){return targetthread->getScopes();}
+     int getScopeNumber();
    QString getScopeName(int);
     int	    getScopeDt(int);
     int     getNumberOfTraces(int);
 
+    QRL_MeterData** getMeters(){return targetthread->getMeters();}
+      int getMeterNumber();
     QString getMeterName(int);
     int	    getMeterDt(int);
 
-
+  QRL_LedData** getLeds(){return targetthread->getLeds();}
+    int getLedNumber();
     QString getLedName(int);
     int	    getLedDt(int);
     int     getNumberOfLeds(int);
 
+  QRL_LogData** getLogs(){return targetthread->getLogs();}
+int getLogNumber();
     QString getLogName(int);
+
+  QRL_ALogData** getALogs(){return targetthread->getALogs();}
+ int getALogNumber();
      QString getALogName(int);
 
 public slots:
@@ -119,11 +120,11 @@ public slots:
    void statusBarMessage(const QString &);
 	
 private:
-	TargetThread* targetthread;
-	Preferences_T Preferences;
-	  QTimer *timer;
- RT_TASK *Target_Interface_Task;
- RT_TASK *RLG_Main_Task;
+  QRL_Parameters *Parameters;
+  TargetThread* targetthread;
+  Preferences_T Preferences;
+  RT_TASK *Target_Interface_Task;
+  RT_TASK *RLG_Main_Task;
 
 };
 

@@ -28,7 +28,7 @@
 #define _PARAMETERS_H 1
 
 #include <QtCore>
-#include "qrtailab_core.h"
+#include "target_thread.h"
 /**
  * @brief Parameter Manager
  * @todo mark batched parameters
@@ -84,7 +84,7 @@ class QRL_Parameters
 {
 public:
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
-   QRL_Parameters( QRtaiLabCore	*qtargetinterface=NULL);
+   QRL_Parameters( TargetThread	*t=NULL);
    ~QRL_Parameters();
     void  uploadParameters();
     QString getBlockName(int block){return ParameterBlocks[block]->getName();}
@@ -95,20 +95,28 @@ public:
     int getParameterCols(int block, int param) {return ParameterBlocks[block]->getParameterCols(param);}
     int getParameterRows(int block, int param) {return ParameterBlocks[block]->getParameterRows(param);}
     double getParameterValue(int block, int param, int n_rows, int n_cols){return ParameterBlocks[block]->getParameterValue(param,n_rows,n_cols);}
-    void resetBatchMode() {qTargetInterface->resetBatchMode();}
-    void batchParameterDownload()  {qTargetInterface->batchParameterDownload();}
-    void updateParameterValue(int blk,int prm, int nr,int nc,double value){
-    qTargetInterface->updateParameterValue(blk,prm,nr,nc,value);}
-    void addToBatch(int blk,int prm, int nr,int nc, double value){
-    qTargetInterface->addToBatch(blk,prm,nr,nc,value);}
+
+    void resetBatchMode() {targetthread->resetBatchMode();}
+    void batchParameterDownload();
+    void updateParameterValue(int blk,int prm, int nr,int nc,double value);
+    void addToBatch(int blk,int prm, int nr,int nc, double value);
+
     void reload();
+
+   QString getParameterName2(int blk,int prm);
+   QString getBlockName2(int blk);
+ int getNumberOfParameters2(int blk);
+   unsigned int getParameterCols2(int blk,int prm);
+   unsigned int getParameterRows2(int blk,int prm);
+  double getParameterValue2(int blk,int prm, int nr,int nc);
 
 private:
    //  double get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx);
   QRL_ParameterBlock ** ParameterBlocks;
   int Num_Tunable_Parameters;
   int Num_Tunable_Blocks;
-   QRtaiLabCore	*qTargetInterface;
+//    QRtaiLabCore	*qTargetInterface;
+  TargetThread* targetthread;
   int batchModus;
 };
 
