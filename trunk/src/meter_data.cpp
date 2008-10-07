@@ -18,54 +18,73 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
 /*
- file:		leds_manager.h
+ file:		parameters.h
  describtion:
-   file for the classes GetLedDataThread and  QRL_LedManager*/
-
-#ifndef _LEDS_MANAGER_H
-#define _LEDS_MANAGER_H 1
-
-
-#include "ui_qrl_leds_manager.h"
-#include "qrtailab_core.h"
-#include "led_window.h"
+   file for the classes QRL_ParametersManager
+*/
 
 
 
+#include "meter_data.h"
 
-
-/**
- * @brief Managed all Led windows
- */
-
-class QRL_LedsManager : public QDialog, private Ui::QRL_LedsManager
+QRL_MeterData::QRL_MeterData()
 {
-   Q_OBJECT
-public:
-   QRL_LedsManager(QWidget *parent = 0,  QRtaiLabCore* qtargetinterface=NULL);
-   ~QRL_LedsManager();
-    QRL_LedWindow** getLedWindows(){return LedWindows;}
- void refreshView();
-public slots:
-  void  showLed(int);
-  void showLedOptions( QListWidgetItem * item );
-  void changeLedColor(int);
-   void refresh();
-private:
-  int Num_Leds;
-  QRL_LedData **Leds;
-  unsigned int currentLed;
-  QRtaiLabCore* qTargetInterface;
-  QRL_LedWindow** LedWindows;
-  QTimer *timer;
-    double RefreshRate;
+		visible = false;
+		meterRefreshRate=20.;
+		MeterValues=0;
+}
 
-friend QDataStream& operator<<(QDataStream &out, const QRL_LedsManager &d);
-friend QDataStream& operator>>(QDataStream &in, QRL_LedsManager(&d));
-};
-	QDataStream& operator<<(QDataStream &out, const QRL_LedsManager &d);
-	QDataStream& operator>>(QDataStream &in, QRL_LedsManager(&d));
+int QRL_MeterData::setMeterRefreshRate(double rr)
+{
+int ret=-1;
+if (rr>0. && rr<50.){
 
-#endif
+	ret=1;
+	meterRefreshRate=rr;
+
+}
+ //ret= Get_Meter_Data_Thread[n].setRefreshRate(rr);
+return ret;
+}
+
+double QRL_MeterData::getMeterRefreshRate()
+{
+	double ret=-1;
+
+		ret=meterRefreshRate;
+	
+	return ret;
+}
+
+
+void QRL_MeterData::setMeterValue(float v){
+
+	//MeterValues[n].append(v);
+
+// 	if (MeterValues[n].size()>0)
+// 		MeterValues[n][0]=(v);
+// 	else
+// 		MeterValues[n].append(v);
+	MeterValues=v;
+
+
+
+}
+
+float QRL_MeterData::getMeterValue(){
+
+float ret=-1;
+
+ //ret= Get_Led_Data_Thread[n].getValue();
+//    if (MeterValues[n].size()>1)
+//      ret=MeterValues[n].takeAt(0);
+//    else
+//      ret=MeterValues[n].at(0);
+	ret = MeterValues;
+
+return ret;
+
+
+
+}

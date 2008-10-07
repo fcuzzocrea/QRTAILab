@@ -280,14 +280,14 @@ return Num_Meters;
 QString QRtaiLabCore::getMeterName(int n){
   QString str;
   if (n<targetthread->getMeterNumber())
-	str=tr(targetthread->getMeters()[n].name);
+	str=tr(targetthread->getMeters()[n]->getName());
   return str;
 
 }
 int	    QRtaiLabCore::getMeterDt(int n){
 	int dt=-1;
      if (n<targetthread->getMeterNumber())
-	dt=targetthread->getMeters()[n].dt;
+	dt=targetthread->getMeters()[n]->getDt();
       return dt;
 
 }
@@ -297,7 +297,7 @@ int QRtaiLabCore::getLedNumber()
 	 int Num_Leds= targetthread->getLedNumber();
 	for (int i=0; i<Num_Leds;i++) {
 // good idea? should be changed
-	if (targetthread->getLeds()[i].n_leds==0)
+	if (targetthread->getLeds()[i]->n_leds==0)
 		Num_Leds--;
    }
 return Num_Leds;
@@ -307,21 +307,21 @@ return Num_Leds;
 QString QRtaiLabCore::getLedName(int n){
   QString str;
   if (n<targetthread->getLedNumber())
-	str=tr(targetthread->getLeds()[n].name);
+	str=tr(targetthread->getLeds()[n]->getName());
   return str;
 
 }
 int	    QRtaiLabCore::getLedDt(int n){
 	int dt=-1;
      if (n<targetthread->getLedNumber())
-	dt=targetthread->getLeds()[n].dt;
+	dt=targetthread->getLeds()[n]->getDt();
       return dt;
 
 }
     int    QRtaiLabCore::getNumberOfLeds(int n){
 	int n_leds;
  if (n<targetthread->getLedNumber())
-	n_leds=targetthread->getLeds()[n].n_leds;
+	n_leds=targetthread->getLeds()[n]->n_leds;
       return n_leds;
 
 }
@@ -342,7 +342,7 @@ return Num_Logs;
 QString QRtaiLabCore::getLogName(int n){
   QString str;
   if (n<targetthread->getLogNumber())
-	str=tr(targetthread->getLogs()[n].name);
+	str=tr(targetthread->getLogs()[n]->getName());
   return str;
 
 }
@@ -361,7 +361,7 @@ return Num_Logs;
 QString QRtaiLabCore::getALogName(int n){
   QString str;
   if (n<targetthread->getALogNumber())
-	str=tr(targetthread->getALogs()[n].name);
+	str=tr(targetthread->getALogs()[n]->getName());
   return str;
 
 }

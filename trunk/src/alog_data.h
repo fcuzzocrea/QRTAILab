@@ -27,13 +27,19 @@
 #ifndef _ALOG_DATA_H
 #define _ALOG_DATA_H 1
 
+#include <QtGui> 
 
+#include "qrtailab.h"
 
 class QRL_ALogData
 {
 public:
+  QRL_ALogData();
+	int getNRow(){return nrow;}
+	int getNCol(){return ncol;}
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
-
+    const char* getName(){return name;}
+  float getDt(){return dt;} 
 	char name[MAX_NAMES_SIZE];
 	int nrow;
 	int ncol;

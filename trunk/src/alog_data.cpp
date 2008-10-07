@@ -18,54 +18,18 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-
 /*
- file:		leds_manager.h
+ file:		parameters.h
  describtion:
-   file for the classes GetLedDataThread and  QRL_LedManager*/
-
-#ifndef _LEDS_MANAGER_H
-#define _LEDS_MANAGER_H 1
-
-
-#include "ui_qrl_leds_manager.h"
-#include "qrtailab_core.h"
-#include "led_window.h"
+   file for the classes QRL_ParametersManager
+*/
 
 
 
+#include "alog_data.h"
 
-
-/**
- * @brief Managed all Led windows
- */
-
-class QRL_LedsManager : public QDialog, private Ui::QRL_LedsManager
+QRL_ALogData::QRL_ALogData()
 {
-   Q_OBJECT
-public:
-   QRL_LedsManager(QWidget *parent = 0,  QRtaiLabCore* qtargetinterface=NULL);
-   ~QRL_LedsManager();
-    QRL_LedWindow** getLedWindows(){return LedWindows;}
- void refreshView();
-public slots:
-  void  showLed(int);
-  void showLedOptions( QListWidgetItem * item );
-  void changeLedColor(int);
-   void refresh();
-private:
-  int Num_Leds;
-  QRL_LedData **Leds;
-  unsigned int currentLed;
-  QRtaiLabCore* qTargetInterface;
-  QRL_LedWindow** LedWindows;
-  QTimer *timer;
-    double RefreshRate;
 
-friend QDataStream& operator<<(QDataStream &out, const QRL_LedsManager &d);
-friend QDataStream& operator>>(QDataStream &in, QRL_LedsManager(&d));
-};
-	QDataStream& operator<<(QDataStream &out, const QRL_LedsManager &d);
-	QDataStream& operator>>(QDataStream &in, QRL_LedsManager(&d));
+}
 
-#endif

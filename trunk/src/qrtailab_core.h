@@ -57,7 +57,7 @@ class QRtaiLabCore :  public QObject {
 public:
     QRtaiLabCore(QObject *parent=0,int Verbose = 0);
     ~QRtaiLabCore();
-    TargetThread* getTargetThread(){return targetthread;}
+//     TargetThread* getTargetThread(){return targetthread;}
     int stopTarget();
     int startTarget();
     int connectToTarget();
@@ -76,6 +76,11 @@ public:
     int getLedNumber();
     int getLogNumber();
     int getALogNumber();
+    QRL_ScopeData** getScopes(){return targetthread->getScopes();}
+    QRL_MeterData** getMeters(){return targetthread->getMeters();}
+    QRL_LedData** getLeds(){return targetthread->getLeds();}
+    QRL_ALogData** getALogs(){return targetthread->getALogs();}
+    QRL_LogData** getLogs(){return targetthread->getLogs();}
     int getParameterNumber(){return targetthread->getParameterNumber();}
     int getBlockNumber(){return targetthread->getBlockNumber();}
     int getEndApp(){return targetthread->getEndApp();}

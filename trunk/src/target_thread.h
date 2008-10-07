@@ -82,26 +82,24 @@ class TargetThread : public QThread
     int getVerbose(){return Verbose;}
     // should  be removed
     QRL_ScopeData** getScopes(){return Scopes;}
-    QRL_MeterData* getMeters(){return Meters;}
-    QRL_LedData* getLeds(){return Leds;}
-    QRL_ALogData* getALogs(){return ALogs;}
-    QRL_LogData* getLogs(){return Logs;}
+    QRL_MeterData** getMeters(){return Meters;}
+    QRL_LedData** getLeds(){return Leds;}
+    QRL_ALogData** getALogs(){return ALogs;}
+    QRL_LogData** getLogs(){return Logs;}
     Target_Parameters_T* getParameters(){return Tunable_Parameters;}
     Target_Blocks_T* getBlocks(){return Tunable_Blocks;}
    // Batch_Parameters_T* getBatchParameters(){return Batch_Parameters;}
     void setHardRealTime(int hrScope,int hrLog,int hrAlog){hardRealTimeScope=hrScope;hardRealTimeLog=hrLog;hardRealTimeALog=hrAlog;}
    //prameter down- and upload
 
- int addToBatch(int map_offset,int ind,double value);
+    int addToBatch(int map_offset,int ind,double value);
     double get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx);
-
     int update_parameter(int idx, int mat_idx, double val);
     int get_map_offset(int blk, int prm);
     int get_parameter_ind(int blk, int prm, int prm_row,int prm_col);
-
     void resetBatchMode();
-
    int getBatchCounter(){return batchCounter;}
+
 
     void setVerbose(int v){Verbose=v;}
     Preferences_T getPreferences(){return Preferences;}
@@ -116,16 +114,12 @@ class TargetThread : public QThread
 
    void startMeterThreads();//QRL_MeterWindow** MeterWindows);
     void stopMeterThreads();
-    int setMeterRefreshRate(double rr,int n);
-    double getMeterRefreshRate(int n);
-    void setMeterValue(float v, int n);
-    float getMeterValue(int n);
+
     QString getMeterName(int);
 
     void startLedThreads();//QRL_LedWindow** LedWindows);
     void stopLedThreads();
-    void setLedValue(unsigned int v, int n);
-    unsigned int getLedValue(int n);
+  
     QString getLedName(int);
 
     void startALogThreads();
@@ -133,12 +127,7 @@ class TargetThread : public QThread
     void startLogThreads();
     void stopLogThreads();
 
-    int start_saving_log(int index);
-    void startSavingLog(int index,FILE* Save_File_Pointer,double Save_Time);
-     FILE* save_file_log(int index);
-     void stop_saving_log(int index);
-      int n_points_to_save_log(int index);
-      void set_points_counter_log(int index,int cnt);
+
 
     const char* getTargetName(){return RLG_Target_Name;}
     long getTargetPort(){return Target_Port;}
@@ -177,13 +166,13 @@ class TargetThread : public QThread
   Target_Parameters_T *Tunable_Parameters;
   Target_Blocks_T *Tunable_Blocks;
   QRL_ScopeData **Scopes;
-  QRL_LogData *Logs;
-  QRL_ALogData *ALogs;
-  QRL_LedData *Leds;
-  QRL_MeterData *Meters;
+  QRL_LogData **Logs;
+  QRL_ALogData **ALogs;
+  QRL_LedData **Leds;
+  QRL_MeterData **Meters;
   Target_Synchs_T *Synchs;
   Batch_Parameters_T Batch_Parameters[MAX_BATCH_PARAMS];
-  Profile_T *Profile;
+//   Profile_T *Profile;
   long Target_Port;
   const char *RLG_Target_Name;
   Preferences_T Preferences;
@@ -198,10 +187,8 @@ class TargetThread : public QThread
   //GetMeterDataThread* Get_Meter_Data_Thread;
   //GetLedDataThread* Get_Led_Data_Thread;
  
-  QVector<unsigned int> LedValues; 
-  QVector< float > MeterValues;
 
-  QVector<double> meterRefreshRate;
+
 
 
  pthread_t *Get_Led_Data_Thread;

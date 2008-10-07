@@ -22,5 +22,5 @@ FORMS += qrl_scopes_manager.ui qrl_parameters_manager.ui qrl_targets_manager.ui 
 SOURCES +=  meter_window.cpp meters_manager.cpp led_window.cpp leds_manager.cpp scope_window.cpp
 SOURCES += scopes_manager.cpp main_window.cpp parameters_manager.cpp main.cpp
 SOURCES +=   qrtailab_core.cpp qrtailab_listener.cpp targets_manager.cpp logs_manager.cpp 
-SOURCES += parameters.cpp scope_trace.cpp target_thread.cpp scope_data.cpp
+SOURCES += parameters.cpp scope_trace.cpp target_thread.cpp scope_data.cpp meter_data.cpp led_data.cpp log_data.cpp alog_data.cpp
 RESOURCES += qrtailab.qrc

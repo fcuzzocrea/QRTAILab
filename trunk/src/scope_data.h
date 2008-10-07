@@ -44,7 +44,7 @@ public:
   void setDt(float d){dt=d;}
   int getIsSaving(){return isSaving;}
   int getSavedPoints(){return Saved_Points;}
-  char* getName(){return name;}
+  const char* getName(){return name;}
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
   int setScopeDt(double);
     double getScopeDt();
