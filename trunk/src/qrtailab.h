@@ -140,11 +140,11 @@ namespace qrl_types {
 
 typedef struct Target_Parameters_Struct Target_Parameters_T;
 typedef struct Target_Blocks_Struct Target_Blocks_T;
-typedef struct Target_Scopes_Struct Target_Scopes_T;
-typedef struct Target_Logs_Struct Target_Logs_T;
-typedef struct Target_ALogs_Struct Target_ALogs_T;
-typedef struct Target_Leds_Struct Target_Leds_T;
-typedef struct Target_Meters_Struct Target_Meters_T;
+// typedef struct Target_Scopes_Struct Target_Scopes_T;
+// typedef struct Target_Logs_Struct Target_Logs_T;
+// typedef struct Target_ALogs_Struct Target_ALogs_T;
+// typedef struct Target_Leds_Struct Target_Leds_T;
+// typedef struct Target_Meters_Struct Target_Meters_T;
 typedef struct Target_Synchs_Struct Target_Synchs_T;
 typedef struct Batch_Parameters_Struct Batch_Parameters_T;
 
@@ -156,16 +156,16 @@ typedef struct Profile_Struct Profile_T;
 typedef struct Args_Struct Args_T;
 typedef struct Args_Struct_ALog Alog_T;             //aggiunta 5/5 per nomi alog
 
-typedef struct s_idx_T {
-	int scope_idx;
-	int trace_idx;
-};
-
-typedef struct p_idx_T {
-	int block_idx;
-	int param_idx;
-	int val_idx;
-};
+// typedef struct s_idx_T {
+// 	int scope_idx;
+// 	int trace_idx;
+// };
+// 
+// typedef struct p_idx_T {
+// 	int block_idx;
+// 	int param_idx;
+// 	int val_idx;
+// };
 
 
 struct Args_Struct

@@ -64,13 +64,14 @@ QRtaiLabCore::QRtaiLabCore(QObject *parent, int Verbose)
    rt_receive(0, &msg);
    Target_Interface_Task=targetthread->getTask();
    //statusBarMessage(tr("Ready..."));
-
+Parameters = new QRL_Parameters(targetthread);
 }
 
 QRtaiLabCore::~QRtaiLabCore(){
 	closeTargetThread();
  	targetthread->wait();
 	delete targetthread;
+delete Parameters;
 	rt_task_delete(RLG_Main_Task);
 }
 
@@ -147,10 +148,10 @@ void QRtaiLabCore::closeTargetThread()
 
 }
 
-void QRtaiLabCore::uploadParameters()
-{
-	qrl::RT_RPC(Target_Interface_Task, TargetThread::GET_PARAMS, 0);
-}
+// void QRtaiLabCore::uploadParameters()
+// {
+// 	qrl::RT_RPC(Target_Interface_Task, TargetThread::GET_PARAMS, 0);
+// }
 
 
 
@@ -163,7 +164,7 @@ QString QRtaiLabCore::getBlockName(int blk){
 	return tr(targetthread->getBlocks()[blk].name);
 }
 
-
+/*
 void QRtaiLabCore::batchParameterDownload()
 {
 
@@ -198,13 +199,7 @@ return jend;
 
 
 
-/**
- * @brief Gets the Parameter value for a given entry. 
- * @param blk parameter block number
- * @param prm parameter number
- * @param nr parameter row
- * @param nc parameter column
- */
+
 double QRtaiLabCore::getParameterValue(int blk,int prm, int nr,int nc)
 {
 	int val_idx;
@@ -231,7 +226,7 @@ void QRtaiLabCore::addToBatch(int blk,int prm, int nr,int nc,double value)
 			printf("Could not add to Batch");
 	}
 
-}
+}*/
 
 
 

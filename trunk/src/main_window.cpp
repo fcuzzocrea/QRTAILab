@@ -85,7 +85,7 @@ QRL_MainWindow::QRL_MainWindow(int v)
 
 	setlocale( LC_ALL, "C");
     qTargetInterface = new QRtaiLabCore(this,Verbose);
-    Parameters = new QRL_Parameters(qTargetInterface);
+//     Parameters = new QRL_Parameters(qTargetInterface);
     target = new QProcess(this);
    connect( qTargetInterface, SIGNAL( statusBarMessage(const QString &) ), this, SLOT( setStatusBarMessage(const QString &) ) ); 
 
@@ -289,10 +289,10 @@ qTargetInterface->setPreferences(p);
 				//targetthread->setScopesManager(ScopesManager);
 			}
 			if (qTargetInterface->getParameterNumber()>0){
-				Parameters->reload();
+				qTargetInterface->getParameters()->reload();
 				enableActionShowParameter(true);
 				if (! ParametersManager){
-					ParametersManager = new QRL_ParametersManager(this,Parameters);
+					ParametersManager = new QRL_ParametersManager(this,qTargetInterface->getParameters());
 					//connect( ParametersManager, SIGNAL( uploadParameter(int,int) ), this, SLOT( uploadParameter(int,int) ) );
 				}
 				if (ParametersManager) {
