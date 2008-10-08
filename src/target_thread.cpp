@@ -1095,4 +1095,35 @@ void TargetThread::stopLogThreads()
 	  delete[] Get_Log_Data_Thread;
 }
 
+QString TargetThread::getParameterName(int blk,int prm){
 
+	return QObject::tr(Tunable_Parameters[Tunable_Blocks[blk].offset+prm].param_name);
+}
+QString TargetThread::getBlockName(int blk){
+	return QObject::tr(Tunable_Blocks[blk].name);
+}
+
+int TargetThread::getNumberOfParameters(int blk){
+int jend;
+	if (blk == Num_Tunable_Blocks - 1) 
+		jend=Num_Tunable_Parameters - Tunable_Blocks[blk].offset;
+	else
+		jend=Tunable_Blocks[blk+1].offset-Tunable_Blocks[blk].offset;
+
+return jend;
+}
+
+ unsigned   int TargetThread::getParameterCols(int blk,int prm){
+	return Tunable_Parameters[Tunable_Blocks[blk].offset+prm].n_cols;
+}
+   unsigned int TargetThread:: getParameterRows(int blk,int prm){
+	return Tunable_Parameters[Tunable_Blocks[blk].offset+prm].n_rows;
+}
+
+double TargetThread::getParameterValue(int blk,int prm, int nr,int nc)
+{
+	int val_idx;
+	
+	return this->get_parameter(Tunable_Parameters[Tunable_Blocks[blk].offset+prm], nr, nc, &val_idx);
+					
+}

@@ -449,8 +449,10 @@ void QRL_MainWindow::loadProfile() {
 		ScopesManager->setFileVersion(version);
  		in >> *ScopesManager;
 	}
-	if (ParametersManager)
+	if (ParametersManager){
+		ParametersManager->setFileVersion(version);
  		in >> *ParametersManager;
+	}
    
 	file.close();
 statusMessage->setText(tr("Profile loaded!"));

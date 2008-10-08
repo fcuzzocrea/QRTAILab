@@ -45,6 +45,7 @@ public:
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
    QRL_ParametersManager(QWidget *parent = 0,    QRL_Parameters	*parameters=NULL);
    ~QRL_ParametersManager();
+     void setFileVersion(qint32 v);
 public slots:
   void batchMode(int);
   void showAllBlocks( bool  );
@@ -55,9 +56,12 @@ public slots:
   void  changeTunableParameter( QTableWidgetItem * item );
   void  uploadParameters();
   void downloadBatchParameters();
+protected slots:
+    void loadParameter();
+    void saveParameter();
 private:
    //  double get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx);
-  
+  qint32 fileVersion;
   int update_parameter(int idx, int mat_idx, double val);
   int Num_Tunable_Parameters;
   int Num_Tunable_Blocks;

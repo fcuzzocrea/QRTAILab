@@ -46,6 +46,8 @@ QRL_ParametersManager::QRL_ParametersManager(QWidget *parent, QRL_Parameters	*pa
 	connect( hideRadioButton, SIGNAL( toggled( bool  ) ), this, SLOT( showBlocks( bool  ) ) );
 	connect( showRadioButton, SIGNAL( toggled( bool  ) ), this, SLOT( hideBlocks( bool  ) ) );
 	connect( paramLineEdit, SIGNAL( textEdited( const QString&  ) ), this, SLOT( changeSearchText( const QString&  ) ) );
+	connect( savePushButton, SIGNAL( pressed() ), this, SLOT( saveParameter() ) );
+	connect( loadPushButton, SIGNAL( pressed() ), this, SLOT( loadParameter() ) );
 	BlockIcon =QIcon(QString::fromUtf8(":/icons/block_icon.xpm"));
 
 	for (int i=0; i<Num_Tunable_Blocks; ++i){
@@ -62,6 +64,11 @@ QRL_ParametersManager::~QRL_ParametersManager()
 {
 	blockListWidget->clear();
 	parameterTableWidget->clear();
+}
+
+void QRL_ParametersManager::setFileVersion(qint32 v){
+      fileVersion=v;
+
 }
 
 /**
@@ -262,16 +269,91 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 	parameterTableWidget->blockSignals(false);
 }
 
+
+    void QRL_ParametersManager::loadParameter(){
+QString filename = QFileDialog::getOpenFileName(this,tr("Load Parameter"), NULL, tr("Parameter(*.qpf);; All Files (*.*)")); 
+	QFile file(filename);
+	if (!file.open(QIODevice::ReadOnly)) return;
+    QTextStream in(&file);
+	qint32 mm,version;
+	in >> mm >> version;
+	in.readLine();in.readLine();
+	if (mm!=DATA_STREAM_MAGIC_NUMBER) {
+		file.close();
+		QMessageBox::warning(NULL,"Error","Wrong file format! Could not load file!", QMessageBox::Ok );
+		return;
+	} else 	if (version<101) {
+		file.close();
+		QMessageBox::warning(NULL,"Error","Wrong version number! Could not load file!", QMessageBox::Ok );
+		return;
+	}
+	file.close();
+
+}
+    void QRL_ParametersManager::saveParameter(){
+
+
+QString filename = QFileDialog::getSaveFileName(this,tr("Save Parameter"), NULL, tr("parameter (*.qpf);; All Files (*.*)")); 
+	QFile file(filename);
+   QString str;
+   if (!file.open(QIODevice::WriteOnly)) return;
+   QTextStream out(&file);
+   //ts << tr("#");
+    // Write a header with a "magic number" and a version
+ out << (quint32)DATA_STREAM_MAGIC_NUMBER<<endl; 
+ out << (qint32)DATA_STREAM_VERSION<<endl;
+ out << "Target: " << Parameters->getTargetName()<<endl;
+ out << "Date: " << QDate::currentDate().toString("dd.MM.yyyy");
+ out << " "<<QTime::currentTime().toString("hh:mm")<<endl;
+ out << "Number of Blocks: "<< Parameters->getBlockNumber()<<endl;
+ for (int blk=0;blk<Parameters->getBlockNumber();blk++){
+  out << "["<<blk<<"] "<<Parameters->getBlockName(blk) << endl;
+    for (int prm=0;prm<Parameters->getNumberOfParameters(blk);prm++){
+      out << "  ["<<prm<<"] "<< Parameters->getParameterName(blk,prm);
+	if (Parameters->getParameterRows(blk,prm)==1 && Parameters->getParameterCols(blk,prm)==1){
+	  out << " = " << Parameters->getParameterValue(blk,prm,0,0) << endl;
+
+	} else {
+	out << endl;
+	for (int nr=0;nr<Parameters->getParameterRows(blk,prm);nr++){
+	   for (int nc=0;nc<Parameters->getParameterCols(blk,prm);nc++){
+		out << "    ("<<nr<<","<<nc<<")  = "<<Parameters->getParameterValue(blk,prm,nr,nc)<< " ";
+	   }
+	  out <<endl;
+	}
+      }
+    }
+  }
+
+
+
+
+
+
+   file.close();
+}
+
 QDataStream& operator<<(QDataStream &out, const QRL_ParametersManager &d){
 	out << d.size()  << d.pos() << d.isVisible();
+	out << d.paramLineEdit->text();
+	out << d.showRadioButton->isChecked();
+	out << d.hideRadioButton->isChecked();
+	out << d.fineRadioButton->isChecked();
 	return out;
 }
 
 
 QDataStream& operator>>(QDataStream &in, QRL_ParametersManager(&d)){
-	QSize s;QPoint p;bool b; int i;
+	QSize s;QPoint p;bool b; int i;QString str;
 	in >> s;d.resize(s);
 	in >> p; d.move(p);
 	in >> b; d.setVisible(b);
+	if (d.fileVersion > 103){
+	  in >> str; d.paramLineEdit->setText(str);
+	  in >> b; d.showRadioButton->setChecked(b);
+	  in >> b; d.hideRadioButton->setChecked(b);
+	  in >> b; d.fineRadioButton->setChecked(b);
+
+	}
 	return in;
 }
