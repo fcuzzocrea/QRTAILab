@@ -65,6 +65,8 @@ public:
   unsigned int getParameterRows(int param){return ParameterMatrix[param]->getRows();}
   unsigned int getParameterCols(int param){return ParameterMatrix[param]->getCols();}
   QString getName()  {return name;}
+  bool isVisible() {return visible;}
+  void setVisible(bool v){visible=v;}
 void setParameterName(int param,QString name);
   QString getParameterName(int param){return ParameterMatrix[param]->getName();}
   void setParameterDim(int param, unsigned int n_rows, unsigned int n_cols);
@@ -76,6 +78,7 @@ private:
   QRL_ParameterMatrix **ParameterMatrix;
   QString name;
   int Num_Parameters;
+  bool visible;
 };
 
 
@@ -89,6 +92,8 @@ public:
     void  uploadParameters();
     QString getBlockName(int block){return ParameterBlocks[block]->getName();}
     QString getParameterName(int block, int param){return ParameterBlocks[block]->getParameterName(param);}
+    bool isBlockVisible(int param){return ParameterBlocks[param]->isVisible();}
+    void setBlockVisible(int param, bool v){ParameterBlocks[param]->setVisible(v);}
     int getParameterNumber(){return Num_Tunable_Parameters;}
     int getBlockNumber(){return Num_Tunable_Blocks;}
     int getNumberOfParameters(int block){return ParameterBlocks[block]->getNumberOfParameters();}
@@ -103,14 +108,15 @@ public:
 
     void reload();
 
+
+
+private:
    QString getParameterName2(int blk,int prm);
    QString getBlockName2(int blk);
  int getNumberOfParameters2(int blk);
    unsigned int getParameterCols2(int blk,int prm);
    unsigned int getParameterRows2(int blk,int prm);
   double getParameterValue2(int blk,int prm, int nr,int nc);
-
-private:
    //  double get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx);
   QRL_ParameterBlock ** ParameterBlocks;
   int Num_Tunable_Parameters;

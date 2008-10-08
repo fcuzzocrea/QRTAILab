@@ -31,9 +31,9 @@
 
 #include "qrtailab.h"
 
-class QRL_ScopeData : public QThread
+class QRL_ScopeData //: public QThread
 {
-  Q_OBJECT
+ // Q_OBJECT
 public:
   QRL_ScopeData();
   ~QRL_ScopeData();
@@ -63,8 +63,8 @@ public:
 
     char name[MAX_NAMES_SIZE];
 // 	int ntraces;
-protected:
-   void run();
+// protected:
+//    void run();
 private:
     int ntraces;
     float dt;

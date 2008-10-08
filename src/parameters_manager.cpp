@@ -42,8 +42,11 @@ QRL_ParametersManager::QRL_ParametersManager(QWidget *parent, QRL_Parameters	*pa
 	connect( batchCheckBox, SIGNAL( stateChanged( int  ) ), this, SLOT( batchMode( int  ) ) );
 	connect( uploadPushButton, SIGNAL( pressed() ), this, SLOT( uploadParameters() ) );
 	connect( downloadPushButton, SIGNAL( pressed() ), this, SLOT( downloadBatchParameters() ) );
-	const QIcon BlockIcon =QIcon(QString::fromUtf8(":/icons/block_icon.xpm"));
+	connect( hideCheckBox, SIGNAL( stateChanged( int  ) ), this, SLOT( hideUnnamedBlocks( int  ) ) );
+	BlockIcon =QIcon(QString::fromUtf8(":/icons/block_icon.xpm"));
+
 	for (int i=0; i<Num_Tunable_Blocks; ++i){
+	   
 		new QListWidgetItem(BlockIcon,Parameters->getBlockName(i), blockListWidget);
 	}
 	batchModus=0;
@@ -70,6 +73,26 @@ void QRL_ParametersManager::batchMode(int state){
 		downloadPushButton->setEnabled(false);
 		batchModus=0;
 		uploadParameters();
+	}
+}
+
+void QRL_ParametersManager::hideUnnamedBlocks( int  state ){
+ blockListWidget->clear();
+	if(state==Qt::Checked){
+	  QString str;
+	  for (int i=0; i<Num_Tunable_Blocks; ++i){
+	    str=Parameters->getBlockName(i);
+	    if (str.contains(tr("PARAM"), Qt::CaseInsensitive)){
+	      Parameters->setBlockVisible(i,false);
+	    } else {
+	      new QListWidgetItem(BlockIcon,Parameters->getBlockName(i), blockListWidget);
+	    }
+	}
+	}else{
+	  for (int i=0; i<Num_Tunable_Blocks; ++i){
+	     Parameters->setBlockVisible(i,true);
+	      new QListWidgetItem(BlockIcon,Parameters->getBlockName(i), blockListWidget);
+	  }
 	}
 }
 /**
@@ -147,7 +170,16 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item ) 
 {
 	parameterTableWidget->blockSignals(true);
-	int i = blockListWidget->row(item);
+	int i =0;
+	int blockCounter=-1;
+	for (int j=0; j<Num_Tunable_Blocks; ++j){
+	    if (Parameters->isBlockVisible(i))
+		blockCounter++;
+	    if ((blockCounter==blockListWidget->row(item)) && i==0){
+	      i=j; 
+	    }
+	      
+	}
 	parameterTableWidget->clear();
 	int jend,val_idx;
 	double data_value;

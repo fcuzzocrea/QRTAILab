@@ -292,7 +292,7 @@ int QRtaiLabCore::getLedNumber()
 	 int Num_Leds= targetthread->getLedNumber();
 	for (int i=0; i<Num_Leds;i++) {
 // good idea? should be changed
-	if (targetthread->getLeds()[i]->n_leds==0)
+	if (targetthread->getLeds()[i]->getNLeds()==0)
 		Num_Leds--;
    }
 return Num_Leds;
@@ -316,7 +316,7 @@ int	    QRtaiLabCore::getLedDt(int n){
     int    QRtaiLabCore::getNumberOfLeds(int n){
 	int n_leds;
  if (n<targetthread->getLedNumber())
-	n_leds=targetthread->getLeds()[n]->n_leds;
+	n_leds=targetthread->getLeds()[n]->getNLeds();
       return n_leds;
 
 }

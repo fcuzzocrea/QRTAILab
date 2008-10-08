@@ -306,12 +306,18 @@ int TargetThread::get_log_blocks_info(long port, RT_TASK *task, const char *mbx_
 		char log_name[MAX_NAMES_SIZE];
 // 		Logs[n].isSaving=0;
 // 		Logs[n].Save_File_Pointer=NULL;
+		int nrow;
+		int ncol;
+		float dt;
 		Logs[n] = new QRL_LogData();
-		RT_rpcx(Target_Node, port, task, &n, &Logs[n]->nrow, sizeof(int), sizeof(int));
-		RT_rpcx(Target_Node, port, task, &n, &Logs[n]->ncol, sizeof(int), sizeof(int));
+		RT_rpcx(Target_Node, port, task, &n, &nrow, sizeof(int), sizeof(int));
+		RT_rpcx(Target_Node, port, task, &n, &ncol, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &log_name, sizeof(int), sizeof(log_name));
 		strncpy(Logs[n]->name, log_name, MAX_NAMES_SIZE);
-		RT_rpcx(Target_Node, port, task, &n, &Logs[n]->dt, sizeof(int), sizeof(float));
+		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
+		Logs[n]->setNRow(nrow);
+		Logs[n]->setNCol(ncol);
+		Logs[n]->setDt(dt);
 	}
 	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 
@@ -340,12 +346,18 @@ int TargetThread::get_alog_blocks_info(long port, RT_TASK *task, const char *mbx
 	}
 	for (int n = 0; n < n_alogs; n++) {
 		char alog_name[MAX_NAMES_SIZE];
+		int nrow;
+		int ncol;
+		float dt;
 		ALogs[n] = new QRL_ALogData();
-		RT_rpcx(Target_Node, port, task, &n, &ALogs[n]->nrow, sizeof(int), sizeof(int));
-		RT_rpcx(Target_Node, port, task, &n, &ALogs[n]->ncol, sizeof(int), sizeof(int));
+		RT_rpcx(Target_Node, port, task, &n, &nrow, sizeof(int), sizeof(int));
+		RT_rpcx(Target_Node, port, task, &n, &ncol, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &alog_name, sizeof(int), sizeof(alog_name));
 		strncpy(ALogs[n]->name, alog_name, MAX_NAMES_SIZE);
-		RT_rpcx(Target_Node, port, task, &n, &ALogs[n]->dt, sizeof(int), sizeof(float));
+		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
+		ALogs[n]->setNRow(nrow);
+		ALogs[n]->setNCol(ncol);
+		ALogs[n]->setDt(dt);
 	}
 	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 
@@ -376,13 +388,15 @@ int TargetThread::get_led_blocks_info(long port, RT_TASK *task, const char *mbx_
 	for (int n = 0; n < n_leds; n++) {
 		char led_name[MAX_NAMES_SIZE];
 		float dt;
+		int n_leds;
 		//Leds[n].visible = false;
 		Leds[n] = new QRL_LedData();
-		RT_rpcx(Target_Node, port, task, &n, &Leds[n]->n_leds, sizeof(int), sizeof(int));
+		RT_rpcx(Target_Node, port, task, &n, &n_leds, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &led_name, sizeof(int), sizeof(led_name));
 		strncpy(Leds[n]->name, led_name, MAX_NAMES_SIZE);
 		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
 		Leds[n]->setDt(dt);
+		Leds[n]->setNLeds(n_leds);
 	}
 	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 

@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>479</width>
+    <width>487</width>
     <height>355</height>
    </rect>
   </property>
@@ -13,7 +13,8 @@
    <string>Parameters Manager</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="qrtailab.qrc" >:/icons/parameters_icon.xpm</iconset>
+   <iconset resource="qrtailab.qrc" >
+    <normaloff>:/icons/parameters_icon.xpm</normaloff>:/icons/parameters_icon.xpm</iconset>
   </property>
   <layout class="QGridLayout" >
    <item rowspan="3" row="0" column="0" >
@@ -70,14 +71,14 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="3" >
+   <item rowspan="2" row="2" column="1" colspan="3" >
     <layout class="QHBoxLayout" >
      <item>
       <spacer>
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>40</width>
          <height>20</height>
@@ -97,7 +98,7 @@
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>16</width>
          <height>20</height>
@@ -117,7 +118,7 @@
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>16</width>
          <height>20</height>
@@ -127,7 +128,25 @@
      </item>
     </layout>
    </item>
+   <item row="3" column="0" >
+    <widget class="QCheckBox" name="hideCheckBox" >
+     <property name="text" >
+      <string>Hide unnamed Blocks</string>
+     </property>
+    </widget>
+   </item>
   </layout>
+  <zorder>blockListWidget</zorder>
+  <zorder>tabWidget</zorder>
+  <zorder>batchCheckBox</zorder>
+  <zorder>downloadPushButton</zorder>
+  <zorder>uploadPushButton</zorder>
+  <zorder>hideCheckBox</zorder>
+  <zorder></zorder>
+  <zorder></zorder>
+  <zorder>helpButton</zorder>
+  <zorder></zorder>
+  <zorder>closeButton</zorder>
  </widget>
  <resources>
   <include location="qrtailab.qrc" />
