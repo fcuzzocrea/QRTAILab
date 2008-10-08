@@ -90,6 +90,7 @@ public:
    QRL_Parameters( TargetThread	*t=NULL);
    ~QRL_Parameters();
     void  uploadParameters();
+    QString getTargetName(){return TargetName;}
     QString getBlockName(int block){return ParameterBlocks[block]->getName();}
     QString getParameterName(int block, int param){return ParameterBlocks[block]->getParameterName(param);}
     bool isBlockVisible(int param){return ParameterBlocks[param]->isVisible();}
@@ -101,7 +102,7 @@ public:
     int getParameterRows(int block, int param) {return ParameterBlocks[block]->getParameterRows(param);}
     double getParameterValue(int block, int param, int n_rows, int n_cols){return ParameterBlocks[block]->getParameterValue(param,n_rows,n_cols);}
 
-    void resetBatchMode() {targetthread->resetBatchMode();}
+     void resetBatchMode() {targetthread->resetBatchMode();}
     void batchParameterDownload();
     void updateParameterValue(int blk,int prm, int nr,int nc,double value);
     void addToBatch(int blk,int prm, int nr,int nc, double value);
@@ -111,19 +112,20 @@ public:
 
 
 private:
-   QString getParameterName2(int blk,int prm);
-   QString getBlockName2(int blk);
- int getNumberOfParameters2(int blk);
-   unsigned int getParameterCols2(int blk,int prm);
-   unsigned int getParameterRows2(int blk,int prm);
-  double getParameterValue2(int blk,int prm, int nr,int nc);
+//    QString getParameterName2(int blk,int prm);
+//    QString getBlockName2(int blk);
+//  int getNumberOfParameters2(int blk);
+//    unsigned int getParameterCols2(int blk,int prm);
+//    unsigned int getParameterRows2(int blk,int prm);
+//   double getParameterValue2(int blk,int prm, int nr,int nc);
    //  double get_parameter(Target_Parameters_T p, int nr, int nc, int *val_idx);
   QRL_ParameterBlock ** ParameterBlocks;
   int Num_Tunable_Parameters;
   int Num_Tunable_Blocks;
+  QString TargetName;
 //    QRtaiLabCore	*qTargetInterface;
   TargetThread* targetthread;
-  int batchModus;
+//   int batchModus;
 };
 
 

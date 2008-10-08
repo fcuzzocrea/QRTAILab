@@ -99,7 +99,12 @@ class TargetThread : public QThread
     int get_parameter_ind(int blk, int prm, int prm_row,int prm_col);
     void resetBatchMode();
    int getBatchCounter(){return batchCounter;}
-
+   QString getParameterName(int blk,int prm);
+    QString getBlockName(int blk);
+ int getNumberOfParameters(int blk);
+   unsigned int getParameterCols(int blk,int prm);
+   unsigned int getParameterRows(int blk,int prm);
+  double getParameterValue(int blk,int prm, int nr,int nc);
 
     void setVerbose(int v){Verbose=v;}
     Preferences_T getPreferences(){return Preferences;}
