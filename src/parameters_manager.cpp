@@ -42,7 +42,10 @@ QRL_ParametersManager::QRL_ParametersManager(QWidget *parent, QRL_Parameters	*pa
 	connect( batchCheckBox, SIGNAL( stateChanged( int  ) ), this, SLOT( batchMode( int  ) ) );
 	connect( uploadPushButton, SIGNAL( pressed() ), this, SLOT( uploadParameters() ) );
 	connect( downloadPushButton, SIGNAL( pressed() ), this, SLOT( downloadBatchParameters() ) );
-	connect( hideCheckBox, SIGNAL( stateChanged( int  ) ), this, SLOT( hideUnnamedBlocks( int  ) ) );
+	connect( fineRadioButton, SIGNAL( toggled( bool  ) ), this, SLOT( showAllBlocks( bool  ) ) );
+	connect( hideRadioButton, SIGNAL( toggled( bool  ) ), this, SLOT( showBlocks( bool  ) ) );
+	connect( showRadioButton, SIGNAL( toggled( bool  ) ), this, SLOT( hideBlocks( bool  ) ) );
+	connect( paramLineEdit, SIGNAL( textEdited( const QString&  ) ), this, SLOT( changeSearchText( const QString&  ) ) );
 	BlockIcon =QIcon(QString::fromUtf8(":/icons/block_icon.xpm"));
 
 	for (int i=0; i<Num_Tunable_Blocks; ++i){
@@ -76,18 +79,32 @@ void QRL_ParametersManager::batchMode(int state){
 	}
 }
 
-void QRL_ParametersManager::hideUnnamedBlocks( int  state ){
+void QRL_ParametersManager::showAllBlocks( bool  state){
  blockListWidget->clear();
-	if(state==Qt::Checked){
-	  QString str;
-	  for (int i=0; i<Num_Tunable_Blocks; ++i){
-	    str=Parameters->getBlockName(i);
-	    if (str.contains(tr("PARAM"), Qt::CaseInsensitive)){
-	      Parameters->setBlockVisible(i,false);
-	    } else {
-	      new QListWidgetItem(BlockIcon,Parameters->getBlockName(i), blockListWidget);
+	if(state==false){
+	  QString str=paramLineEdit->text();
+	  QString tmp;
+	  if (hideRadioButton->isChecked()){
+	    for (int i=0; i<Num_Tunable_Blocks; ++i){
+	      tmp=Parameters->getBlockName(i);
+	      if (tmp.contains(str, Qt::CaseInsensitive)){
+		Parameters->setBlockVisible(i,false);
+	      } else {
+		Parameters->setBlockVisible(i,true);
+		new QListWidgetItem(BlockIcon,Parameters->getBlockName(i), blockListWidget);
+	      }
 	    }
-	}
+	  } else {
+	     for (int i=0; i<Num_Tunable_Blocks; ++i){
+	      tmp=Parameters->getBlockName(i);
+	      if (tmp.contains(str, Qt::CaseInsensitive)){
+		Parameters->setBlockVisible(i,true);
+		new QListWidgetItem(BlockIcon,Parameters->getBlockName(i), blockListWidget);
+	      } else {
+		Parameters->setBlockVisible(i,false);
+	      }
+	    }
+	  }
 	}else{
 	  for (int i=0; i<Num_Tunable_Blocks; ++i){
 	     Parameters->setBlockVisible(i,true);
@@ -95,6 +112,20 @@ void QRL_ParametersManager::hideUnnamedBlocks( int  state ){
 	  }
 	}
 }
+
+void QRL_ParametersManager::showBlocks( bool  state){
+  showAllBlocks(fineRadioButton->isChecked());
+}
+
+void QRL_ParametersManager::hideBlocks( bool  state){
+   showAllBlocks(fineRadioButton->isChecked());
+}
+
+void QRL_ParametersManager::changeSearchText( const QString&  t){
+if (!fineRadioButton->isChecked())
+  showAllBlocks(fineRadioButton->isChecked());
+}
+
 /**
  * @brief Upload all parameters from the program, and updates the parameter in the widget
  */
@@ -119,7 +150,20 @@ void QRL_ParametersManager::downloadBatchParameters()
  */
 void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item ) 
 {
-	int blk =blockListWidget->currentRow() ;
+	int blk =0;
+	int blockCounter=-1;
+	for (int j=0; j<Num_Tunable_Blocks; ++j){
+	    if (Parameters->isBlockVisible(j))
+		blockCounter++;
+	    if ((blockCounter==blockListWidget->currentRow() ) && blk==0){
+	      blk=j; 
+	    }
+	      
+	}
+
+
+
+
 	int ind=0;
         int prm_row=item->row();
 	int prm_col=item->column()-1; //first column is paramter name
@@ -173,9 +217,9 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 	int i =0;
 	int blockCounter=-1;
 	for (int j=0; j<Num_Tunable_Blocks; ++j){
-	    if (Parameters->isBlockVisible(i))
+	    if (Parameters->isBlockVisible(j))
 		blockCounter++;
-	    if ((blockCounter==blockListWidget->row(item)) && i==0){
+	    if ((blockCounter==blockListWidget->currentRow()) && i==0){
 	      i=j; 
 	    }
 	      

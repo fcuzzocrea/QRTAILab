@@ -47,7 +47,10 @@ public:
    ~QRL_ParametersManager();
 public slots:
   void batchMode(int);
-  void hideUnnamedBlocks( int  );
+  void showAllBlocks( bool  );
+  void showBlocks( bool  );
+  void  hideBlocks( bool  );
+  void changeSearchText( const QString &t  );
   void  showTunableParameter( QListWidgetItem * item );
   void  changeTunableParameter( QTableWidgetItem * item );
   void  uploadParameters();

@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>487</width>
+    <width>508</width>
     <height>355</height>
    </rect>
   </property>
@@ -17,31 +17,20 @@
     <normaloff>:/icons/parameters_icon.xpm</normaloff>:/icons/parameters_icon.xpm</iconset>
   </property>
   <layout class="QGridLayout" >
-   <item rowspan="3" row="0" column="0" >
+   <item rowspan="4" row="0" column="0" >
     <widget class="QListWidget" name="blockListWidget" >
+     <property name="minimumSize" >
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="baseSize" >
       <size>
        <width>100</width>
        <height>0</height>
       </size>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="1" colspan="3" >
-    <widget class="QTabWidget" name="tabWidget" >
-     <property name="currentIndex" >
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="tab" >
-      <attribute name="title" >
-       <string>Block Parameters</string>
-      </attribute>
-      <layout class="QGridLayout" >
-       <item row="0" column="0" >
-        <widget class="QTableWidget" name="parameterTableWidget" />
-       </item>
-      </layout>
-     </widget>
     </widget>
    </item>
    <item row="1" column="1" >
@@ -128,25 +117,77 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0" >
-    <widget class="QCheckBox" name="hideCheckBox" >
-     <property name="text" >
-      <string>Hide unnamed Blocks</string>
+   <item row="0" column="1" colspan="3" >
+    <widget class="QTabWidget" name="tabWidget" >
+     <property name="currentIndex" >
+      <number>0</number>
      </property>
+     <widget class="QWidget" name="tab" >
+      <attribute name="title" >
+       <string>Block Parameters</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QTableWidget" name="parameterTableWidget" />
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="Options" >
+      <attribute name="title" >
+       <string>Options</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2" >
+       <item row="0" column="0" >
+        <widget class="QGroupBox" name="groupBox" >
+         <property name="title" >
+          <string>Blocks containing</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout" >
+          <item row="0" column="0" >
+           <widget class="QLineEdit" name="paramLineEdit" >
+            <property name="text" >
+             <string>PARAM</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QRadioButton" name="hideRadioButton" >
+            <property name="text" >
+             <string>should hide</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QRadioButton" name="showRadioButton" >
+            <property name="text" >
+             <string>should only visible</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" >
+           <widget class="QRadioButton" name="fineRadioButton" >
+            <property name="text" >
+             <string>are fine</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
   <zorder>blockListWidget</zorder>
-  <zorder>tabWidget</zorder>
   <zorder>batchCheckBox</zorder>
   <zorder>downloadPushButton</zorder>
   <zorder>uploadPushButton</zorder>
-  <zorder>hideCheckBox</zorder>
   <zorder></zorder>
-  <zorder></zorder>
-  <zorder>helpButton</zorder>
-  <zorder></zorder>
-  <zorder>closeButton</zorder>
+  <zorder>tabWidget</zorder>
  </widget>
  <resources>
   <include location="qrtailab.qrc" />
