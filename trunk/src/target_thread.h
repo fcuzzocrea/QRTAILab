@@ -107,23 +107,21 @@ class TargetThread : public QThread
 
     void startScopeThreads(); //QRL_ScopeWindow** ScopeWindows);
     void stopScopeThreads();
-  
-    QString getScopeName(int);
+      QString getScopeName(int);
 
     
 
    void startMeterThreads();//QRL_MeterWindow** MeterWindows);
     void stopMeterThreads();
-
     QString getMeterName(int);
 
     void startLedThreads();//QRL_LedWindow** LedWindows);
     void stopLedThreads();
-  
-    QString getLedName(int);
+      QString getLedName(int);
 
     void startALogThreads();
     void stopALogThreads();
+
     void startLogThreads();
     void stopLogThreads();
 

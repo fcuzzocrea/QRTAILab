@@ -44,11 +44,12 @@ QRL_MeterData();
     void setMeterValue(float v);
     float getMeterValue();
 	char name[MAX_NAMES_SIZE];
-	int visible;
-	float dt;
+
 private:
   float  MeterValues;
   double meterRefreshRate;
+	int visible;
+	float dt;
 };
 
 

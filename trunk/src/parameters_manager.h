@@ -47,6 +47,7 @@ public:
    ~QRL_ParametersManager();
 public slots:
   void batchMode(int);
+  void hideUnnamedBlocks( int  );
   void  showTunableParameter( QListWidgetItem * item );
   void  changeTunableParameter( QTableWidgetItem * item );
   void  uploadParameters();
@@ -59,6 +60,7 @@ private:
   int Num_Tunable_Blocks;
   QRL_Parameters *Parameters;
   int batchModus;
+   QIcon BlockIcon;
 friend QDataStream& operator<<(QDataStream &out, const QRL_ParametersManager &d);
 friend QDataStream& operator>>(QDataStream &in, QRL_ParametersManager(&d));
 };

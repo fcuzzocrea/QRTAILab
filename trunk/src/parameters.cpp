@@ -55,6 +55,7 @@ void QRL_ParameterMatrix::setName(QString n){
 QRL_ParameterBlock::QRL_ParameterBlock(QString n, int num_parameters)
 	:name(n),Num_Parameters(num_parameters)
 {
+	visible=true;
 	ParameterMatrix = new QRL_ParameterMatrix* [Num_Parameters]; 
 	for (int i=0; i<Num_Parameters; ++i){
 		ParameterMatrix[i]=new QRL_ParameterMatrix();
@@ -199,8 +200,6 @@ Num_Tunable_Parameters=targetthread->getParameterNumber();
 		}
 	}
 	uploadParameters();
-
-
 
 
 }

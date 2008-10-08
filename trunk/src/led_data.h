@@ -39,15 +39,17 @@ public:
     const char* getName(){return name;}
   float getDt(){return dt;} 
   int getNLeds(){return n_leds;}
+  void setNLeds(int nl){n_leds=nl;}
   void setDt(float d){dt=d;}
   void setLedValue(unsigned int v);
     unsigned int getLedValue();
 	char name[MAX_NAMES_SIZE];
+
+private:
+    unsigned int LedValues; 
 	int n_leds;
 	int visible;
 	float dt;
-private:
-    unsigned int LedValues; 
 };
 
 

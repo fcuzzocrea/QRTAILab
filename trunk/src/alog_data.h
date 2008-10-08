@@ -40,7 +40,11 @@ public:
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
     const char* getName(){return name;}
   float getDt(){return dt;} 
+	void setDt(float d){dt=d;} 
+	void setNRow(int r){nrow=r;}
+	void setNCol(int c){ncol=c;}
 	char name[MAX_NAMES_SIZE];
+private:
 	int nrow;
 	int ncol;
 	float dt;

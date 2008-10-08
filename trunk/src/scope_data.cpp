@@ -42,10 +42,10 @@ QRL_ScopeData::QRL_ScopeData()
       //wait();
  }
 
-void QRL_ScopeData::run(){
-//exec();
-
-}
+// void QRL_ScopeData::run(){
+// //exec();
+// 
+// }
 
 void QRL_ScopeData::initializeDataVectors(){
 

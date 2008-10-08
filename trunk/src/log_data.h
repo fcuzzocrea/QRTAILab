@@ -40,6 +40,9 @@ public:
 	float getDt(){return dt;} 
 	int getNRow(){return nrow;}
 	int getNCol(){return ncol;}
+	void setDt(float d){dt=d;} 
+	void setNRow(int r){nrow=r;}
+	void setNCol(int c){ncol=c;}
     int get_points_counter(){return Saved_Points;}
     int getIsSaving(){return isSaving;}
     int start_saving();
@@ -49,6 +52,7 @@ public:
       int n_points_to_save();
       void set_points_counter(int cnt);
 	char name[MAX_NAMES_SIZE];
+private:
 	int nrow;
 	int ncol;
 	float dt;

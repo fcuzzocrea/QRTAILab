@@ -521,9 +521,9 @@ static void *rt_get_alog_data(void *arg)
 		exit(1);
 	}
 	 //munlockall();
-	DataBytes = (alog->nrow*alog->ncol)*sizeof(float)+sizeof(float);
+	DataBytes = (alog->getNRow()*alog->getNCol())*sizeof(float)+sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
-	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./alog->dt)))/DataBytes)*DataBytes;
+	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./alog->getDt())))/DataBytes)*DataBytes;
 	if (MsgLen < DataBytes) MsgLen = DataBytes;
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/DataBytes;
@@ -545,13 +545,13 @@ static void *rt_get_alog_data(void *arg)
 			for (n = 0; n < MsgData; n++) {
 				size_counter=ftell(saving);    			//get file dimension in bytes
 				//printf("Size counter: %d\n", size_counter);
-				if(((int)MsgBuf[(((n+1)*alog->nrow*alog->ncol + (n+1))-1)]) &&
+				if(((int)MsgBuf[(((n+1)*alog->getNRow()*alog->getNCol() + (n+1))-1)]) &&
 				size_counter<=1000000){
-					for (i = 0; i < alog->nrow; i++) {
-						j = n*alog->nrow*alog->ncol + i;
-						for (k = 0; k < alog->ncol; k++) {
+					for (i = 0; i < alog->getNRow(); i++) {
+						j = n*alog->getNRow()*alog->getNCol() + i;
+						for (k = 0; k < alog->getNCol(); k++) {
 							fprintf(saving,"%1.5f ",MsgBuf[j]); 
-							j += alog->nrow;
+							j += alog->getNRow();
 						}
 						fprintf(saving, "\n");
 						j++;
