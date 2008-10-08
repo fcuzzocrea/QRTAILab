@@ -104,8 +104,12 @@ QRL_Parameters::QRL_Parameters(TargetThread	*t)
 		  ParameterBlocks[i]->setParameterDim(k,getParameterRows2(i,k),getParameterCols2(i,k));
 		}
 	}
-	uploadParameters();
-	
+// 	uploadParameters();
+	  for (int i=0; i<Num_Tunable_Blocks; ++i)
+    for (int k=0; k<ParameterBlocks[i]->getNumberOfParameters();k++)
+     	 for(int r=0; r<ParameterBlocks[i]->getParameterRows(k); r++)
+	   for(int c=0; c<ParameterBlocks[i]->getParameterCols(k); c++)
+	    ParameterBlocks[i]->setParameterValue(k,r,c,getParameterValue2(i,k, r, c));
 }
 
 /**
@@ -161,6 +165,7 @@ void QRL_Parameters::batchParameterDownload()
 		qrl::RT_RPC(targetthread->getTask(), TargetThread::BATCH_DOWNLOAD, 0);
 		resetBatchMode();
 	}
+// 	uploadParameters();
 }
 void QRL_Parameters::updateParameterValue(int blk,int prm, int nr,int nc, double value)
 {
@@ -169,6 +174,7 @@ void QRL_Parameters::updateParameterValue(int blk,int prm, int nr,int nc, double
 	if (targetthread->update_parameter(map_offset, ind, value)) {
 		qrl::RT_RPC(targetthread->getTask(), (ind << 20) | (map_offset << 4) | TargetThread::UPDATE_PARAM, 0);
 	}
+	ParameterBlocks[blk]->setParameterValue(prm,nr,nc,getParameterValue2(blk,prm, nr, nc));
 }
 
 void QRL_Parameters::addToBatch(int blk,int prm, int nr,int nc,double value)
@@ -179,7 +185,7 @@ void QRL_Parameters::addToBatch(int blk,int prm, int nr,int nc,double value)
 		if (targetthread->addToBatch(map_offset,ind,value)==-1)
 			printf("Could not add to Batch");
 	}
-
+	ParameterBlocks[blk]->setParameterValue(prm,nr,nc,value);
 }
 
 void QRL_Parameters::reload(){
@@ -199,21 +205,36 @@ Num_Tunable_Parameters=targetthread->getParameterNumber();
 		  ParameterBlocks[i]->setParameterDim(k,getParameterRows2(i,k),getParameterCols2(i,k));
 		}
 	}
-	uploadParameters();
-
-
-}
-
-void  QRL_Parameters::uploadParameters()
-{
-  //qTargetInterface->uploadParameters();
-  //qTargetInterface->resetBatchMode();
-
+	
   for (int i=0; i<Num_Tunable_Blocks; ++i)
     for (int k=0; k<ParameterBlocks[i]->getNumberOfParameters();k++)
      	 for(int r=0; r<ParameterBlocks[i]->getParameterRows(k); r++)
 	   for(int c=0; c<ParameterBlocks[i]->getParameterCols(k); c++)
-	    ParameterBlocks[i]->setParameterValue(k,c,r,getParameterValue2(i,k, r, c));
-  
+	    ParameterBlocks[i]->setParameterValue(k,r,c,getParameterValue2(i,k, r, c));
 
 }
+
+ void QRL_Parameters::uploadParameters()
+ {
+ 	qrl::RT_RPC(targetthread->getTask(), TargetThread::GET_PARAMS, 0);
+  for (int i=0; i<Num_Tunable_Blocks; ++i)
+    for (int k=0; k<ParameterBlocks[i]->getNumberOfParameters();k++)
+     	 for(int r=0; r<ParameterBlocks[i]->getParameterRows(k); r++)
+	   for(int c=0; c<ParameterBlocks[i]->getParameterCols(k); c++)
+	    ParameterBlocks[i]->setParameterValue(k,r,c,getParameterValue2(i,k, r, c));
+ }
+
+
+// void  QRL_Parameters::uploadParameters()
+// {
+  //qTargetInterface->uploadParameters();
+  //qTargetInterface->resetBatchMode();
+
+//   for (int i=0; i<Num_Tunable_Blocks; ++i)
+//     for (int k=0; k<ParameterBlocks[i]->getNumberOfParameters();k++)
+//      	 for(int r=0; r<ParameterBlocks[i]->getParameterRows(k); r++)
+// 	   for(int c=0; c<ParameterBlocks[i]->getParameterCols(k); c++)
+// 	    ParameterBlocks[i]->setParameterValue(k,r,c,getParameterValue2(i,k, r, c));
+//   
+// 
+// }
