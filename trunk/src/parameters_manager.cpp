@@ -327,6 +327,7 @@ QString filename = QFileDialog::getSaveFileName(this,tr("Save Parameter"), NULL,
  out << " "<<QTime::currentTime().toString("hh:mm")<<endl;
  out << "Number of Blocks: "<< Parameters->getBlockNumber()<<endl;
  for (int blk=0;blk<Parameters->getBlockNumber();blk++){
+  if (Parameters->isBlockVisible(blk)) {
   if (blk<10)
     out << "[ "<<blk<<"] ";
   else
@@ -351,6 +352,7 @@ QString filename = QFileDialog::getSaveFileName(this,tr("Save Parameter"), NULL,
 	  out <<endl;
 	}
       }
+    }
     }
   }
 
