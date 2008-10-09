@@ -219,9 +219,9 @@ TargetName=QObject::tr(targetthread->getTargetName());
  {
  	qrl::RT_RPC(targetthread->getTask(), TargetThread::GET_PARAMS, 0);
   for (int i=0; i<Num_Tunable_Blocks; ++i)
-    for (int k=0; k<ParameterBlocks[i]->getNumberOfParameters();k++)
-     	 for(int r=0; r<ParameterBlocks[i]->getParameterRows(k); r++)
-	   for(int c=0; c<ParameterBlocks[i]->getParameterCols(k); c++)
+    for (int k=0; k<getNumberOfParameters(i);k++)
+     	 for(int r=0; r<getParameterRows(i,k); r++)
+	   for(int c=0; c<getParameterCols(i,k); c++)
 	    ParameterBlocks[i]->setParameterValue(k,r,c,targetthread->getParameterValue(i,k, r, c));
  }
 
