@@ -335,37 +335,34 @@ qTargetInterface->setPreferences(p);
 
 
  void QRL_MainWindow::disconnectDialog() 
-{
-	
-
+{ 
+	disconnectFromTarget();
 	if (ScopesManager) {
 		ScopesManager->hide();
 		delete ScopesManager;
 		ScopesManager=NULL;
 	}
-
 	//if (ALogs_Manager) ALogs_Manager->hide();
 	if (LedsManager) {
 		LedsManager->hide();
 		delete LedsManager;
 		LedsManager=NULL;
-	}
+	}  
 	if (LogsManager) {
 		LogsManager->hide();
 		delete LogsManager;
 		LogsManager=NULL;
-	}
+	}  
 	if (MetersManager) {
 		MetersManager->hide();
 		delete MetersManager;
 		MetersManager=NULL;
-	}
+	}  
 	if (ParametersManager) {
 		ParametersManager->hide();
 		delete ParametersManager;
 		ParametersManager=NULL;
 	}
-disconnectFromTarget();
 	//qTargetInterface->disconnectFromTarget();
 	
 	//if (MetersManager) {
