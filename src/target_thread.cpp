@@ -927,7 +927,8 @@ void TargetThread::stopScopeThreads()
 		pthread_join(Get_Scope_Data_Thread[n], NULL);
 		//Get_Scope_Data_Thread[n].wait();
 	}
-	delete[] Get_Scope_Data_Thread;
+	if (Num_Scopes>0)
+	  delete[] Get_Scope_Data_Thread;
 
 }
 
