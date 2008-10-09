@@ -24,6 +24,7 @@
    file for the classes QRL_ParametersManager
 */
 #include "parameters_manager.h"
+#include <iostream>
 
 /**
  * @brief Initialize Parameters Manager
@@ -275,9 +276,9 @@ QString filename = QFileDialog::getOpenFileName(this,tr("Load Parameter"), NULL,
 	QFile file(filename);
 	if (!file.open(QIODevice::ReadOnly)) return;
     QTextStream in(&file);
-	qint32 mm,version;
+	qint32 mm,version;QString line;
 	in >> mm >> version;
-	in.readLine();in.readLine();
+	
 	if (mm!=DATA_STREAM_MAGIC_NUMBER) {
 		file.close();
 		QMessageBox::warning(NULL,"Error","Wrong file format! Could not load file!", QMessageBox::Ok );
@@ -287,6 +288,24 @@ QString filename = QFileDialog::getOpenFileName(this,tr("Load Parameter"), NULL,
 		QMessageBox::warning(NULL,"Error","Wrong version number! Could not load file!", QMessageBox::Ok );
 		return;
 	}
+	in.readLine();
+	QString target=in.readLine().mid(8);
+// 	std::cout << line.toStdString();
+	QString date = in.readLine();
+	int blocknr=in.readLine().mid(18).toInt();
+// 	std::cout << line.toStdString();
+	if (QMessageBox::question(NULL,"Load Parameter",tr("Should I load the parameter file for the target ")+target+tr("?\n ")+date, QMessageBox::Yes | QMessageBox::No )==QMessageBox::No)
+	  return;
+	int paramnr;
+	for (int blk=0;blk<blocknr;blk++){
+	  line=in.readLine().mid(4);
+	  std::cout << line.toStdString()<<std::endl;
+	   paramnr=in.readLine().mid(22).toInt();
+	  for (int prm=0;prm<paramnr;prm++){
+	    line=in.readLine().mid(6);
+	    std::cout << line.toStdString()<<std::endl;
+	  }
+	}
 	file.close();
 
 }
@@ -295,6 +314,7 @@ QString filename = QFileDialog::getOpenFileName(this,tr("Load Parameter"), NULL,
 
 QString filename = QFileDialog::getSaveFileName(this,tr("Save Parameter"), NULL, tr("parameter (*.qpf);; All Files (*.*)")); 
 	QFile file(filename);
+  Parameters->uploadParameters();
    QString str;
    if (!file.open(QIODevice::WriteOnly)) return;
    QTextStream out(&file);
@@ -307,9 +327,18 @@ QString filename = QFileDialog::getSaveFileName(this,tr("Save Parameter"), NULL,
  out << " "<<QTime::currentTime().toString("hh:mm")<<endl;
  out << "Number of Blocks: "<< Parameters->getBlockNumber()<<endl;
  for (int blk=0;blk<Parameters->getBlockNumber();blk++){
-  out << "["<<blk<<"] "<<Parameters->getBlockName(blk) << endl;
+  if (blk<10)
+    out << "[ "<<blk<<"] ";
+  else
+     out << "["<<blk<<"] ";
+    out<<Parameters->getBlockName(blk) << endl;
+     out << "Number of Parameters: "<< Parameters->getNumberOfParameters(blk)<<endl;
     for (int prm=0;prm<Parameters->getNumberOfParameters(blk);prm++){
-      out << "  ["<<prm<<"] "<< Parameters->getParameterName(blk,prm);
+        if (prm<10)
+    out << "  [ "<<prm<<"] ";
+  else
+     out << "  ["<<prm<<"] ";
+      out << Parameters->getParameterName(blk,prm);
 	if (Parameters->getParameterRows(blk,prm)==1 && Parameters->getParameterCols(blk,prm)==1){
 	  out << " = " << Parameters->getParameterValue(blk,prm,0,0) << endl;
 
