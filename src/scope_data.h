@@ -51,6 +51,8 @@ public:
     int setScopeRefreshRate(double rr);
     double getScopeRefreshRate();
     void setScopeValue(float v, int t);	 
+    void setScopeTime(float v);	 
+     QVector<float> getScopeTime();
     QVector<float> getScopeValue(int t);	 
     QVector< QVector<float> > getScopeValue();
 
@@ -62,10 +64,13 @@ public:
     void set_points_counter_scope(int cnt);
 
     char name[MAX_NAMES_SIZE];
+    void setSaveScopeTime(bool b){saveScopeTime=b;}
+    bool isSaveScopeTime(){return saveScopeTime;}
 // 	int ntraces;
 // protected:
 //    void run();
 private:
+    bool saveScopeTime;
     int ntraces;
     float dt;
     int isSaving;
@@ -76,6 +81,7 @@ private:
     double scopeRefreshRate;
     QVector <int>  ScopeIndex;
     QVector< QVector <float> >  ScopeValues;
+    QVector <float> ScopeTime;
     QVector <int>  ScopeIndexOut;
     QVector< QVector <float> >  ScopeValuesOut;
     double scopeDt;

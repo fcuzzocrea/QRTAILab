@@ -149,8 +149,11 @@ void QRL_ScopesManager::refresh()
 // 			ScopeWindows[n]->setValue(t,v.at(t).at(k));
 // 	}
      
-	if (Scopes[n]->getNTraces()>0)
-	ScopeWindows[n]->setValue( Scopes[n]->getScopeValue());
+	if (Scopes[n]->getNTraces()>0) {
+	  if (Scopes[n]->isSaveScopeTime())
+	     ScopeWindows[n]->setTime( Scopes[n]->getScopeTime());
+	  ScopeWindows[n]->setValue( Scopes[n]->getScopeValue());
+	 }
 	//}
    }
 // } catch (...){

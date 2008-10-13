@@ -38,13 +38,12 @@ QRL_LedsManager::QRL_LedsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
 {
 	setupUi(this);
 	Num_Leds=qTargetInterface->getLedNumber();
-	Leds=qTargetInterface->getLeds();
 	//Leds=targetThread->getLeds();
 	const QIcon LedIcon =QIcon(QString::fromUtf8(":/icons/led_icon.xpm"));
 	LedWindows = new QRL_LedWindow* [Num_Leds]; 
 	for (int i=0; i<Num_Leds; ++i){
 		new QListWidgetItem(LedIcon,qTargetInterface->getLedName(i), ledListWidget);
-		LedWindows[i]=new QRL_LedWindow(parent,qTargetInterface->getNumberOfLeds(i),qTargetInterface->getLedName(i));
+		LedWindows[i]=new QRL_LedWindow(parent,qTargetInterface->getLed(i));
 	}
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showLed(int) ) );
 	connect( ledColorComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeLedColor(int) ) );
@@ -74,7 +73,7 @@ void QRL_LedsManager::refresh()
 {
 for (int i=0; i<Num_Leds; ++i){
 	//if (LedWindows[i]->isVisible()){
-		LedWindows[i]->setValue(Leds[i]->getLedValue());
+		LedWindows[i]->refresh();
 	//}
 }
 }

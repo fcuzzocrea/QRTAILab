@@ -36,7 +36,7 @@
 #include <qwt_dial_needle.h>
 //#include "qmeter.h"
  #include <QMdiSubWindow>
-
+#include "meter_data.h"
 /**
  * @brief Display Meter 
  * @todo calculate lineargradient for horizontal layout
@@ -47,11 +47,11 @@ class QRL_MeterWindow : public QMdiSubWindow
    Q_ENUMS( Meter_Type )
 public:
    enum Meter_Type {THERMO,	DIAL,	LCD};
-   QRL_MeterWindow(QWidget *parent = 0,QString name="");
+   QRL_MeterWindow(QWidget *parent = 0,QRL_MeterData *meter=0);
    ~QRL_MeterWindow();
    double getRefreshRate(){return RefreshRate;}
    void changeRefreshRate(double);
-   void setValue(double);
+   void refresh();
    void setMin(double);
    double getMin(){return Min;}
    void setMax(double);
@@ -90,7 +90,8 @@ protected slots:
 private:
   qint32 fileVersion;
   // void setDistance(const QwtThermo* const);
-  float Value;
+ // float Value;
+   QRL_MeterData* Meter;
   QwtThermo *Thermo;
   QwtDial *Dial;
  // QMeter *Dial;

@@ -77,7 +77,7 @@ public slots:
 private:
     qint32 fileVersion;
    int Num_Meters;
-    QRL_MeterData **Meters;
+//     QRL_MeterData **Meters;
   //Target_Meters_T *Meters;
   unsigned int currentMeter;
    QRL_MeterWindow** MeterWindows;
