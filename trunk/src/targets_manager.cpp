@@ -283,7 +283,7 @@ if (connected){
 			newItem = new QTableWidgetItem(tr("Sampling time"));
 			newItem->setFlags(!Qt::ItemIsEditable|!Qt::ItemIsSelectable);
 			targetTableWidget->setItem(j,2,newItem);
-			newItem = new QTableWidgetItem(tr("%1").arg(qTargetInterface->getLeds()[k]->getDt()));
+			newItem = new QTableWidgetItem(tr("%1").arg(qTargetInterface->getLed(k)->getDt()));
 			newItem->setFlags(!Qt::ItemIsEditable|!Qt::ItemIsSelectable);
 			targetTableWidget->setItem(j,3,newItem);
 
@@ -312,7 +312,7 @@ if (connected){
 			newItem = new QTableWidgetItem(tr("Sampling time"));
 			newItem->setFlags(!Qt::ItemIsEditable|!Qt::ItemIsSelectable);
 			targetTableWidget->setItem(j,2,newItem);
-			newItem = new QTableWidgetItem(tr("%1").arg(qTargetInterface->getMeters()[k]->getDt()));
+			newItem = new QTableWidgetItem(tr("%1").arg(qTargetInterface->getMeter(k)->getDt()));
 			newItem->setFlags(!Qt::ItemIsEditable|!Qt::ItemIsSelectable);
 			targetTableWidget->setItem(j,3,newItem);
 

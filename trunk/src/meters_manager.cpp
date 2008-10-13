@@ -35,12 +35,12 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent, QRtaiLabCore* qtargetinter
 {
 	setupUi(this);
 	Num_Meters=qTargetInterface->getMeterNumber();
-	Meters=qTargetInterface->getMeters();
+// 	Meters=qTargetInterface->getMeters();
 	const QIcon MeterIcon =QIcon(QString::fromUtf8(":/icons/meter_icon.xpm"));
 	MeterWindows = new QRL_MeterWindow* [Num_Meters]; 
 	for (int i=0; i<Num_Meters; ++i){
 		new QListWidgetItem(MeterIcon,qTargetInterface->getMeterName(i), meterListWidget);
-		MeterWindows[i]=new QRL_MeterWindow(parent,qTargetInterface->getMeterName(i));
+		MeterWindows[i]=new QRL_MeterWindow(parent,qTargetInterface->getMeter(i));
 	}
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showMeter(int) ) );
 	connect( rrCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeRefreshRate(double) ) );
@@ -118,7 +118,7 @@ void QRL_MetersManager::refresh()
 {
 for (int i=0; i<Num_Meters; ++i){
 	//if (MeterWindows[i]->isVisible()){
-		MeterWindows[i]->setValue(Meters[i]->getMeterValue());
+		MeterWindows[i]->refresh();
 	//}
 }
 }
@@ -142,7 +142,7 @@ void QRL_MetersManager::refreshView()
 	//double rr=text.toDouble();
 	//ScopeWindows[currentScope]->changeRefreshRate(rr);
 	rrCounter->setValue(rr);
-	Meters[currentMeter]->setMeterRefreshRate(rr);
+	qTargetInterface->getMeter(currentMeter)->setMeterRefreshRate(rr);
 	MeterWindows[currentMeter]->changeRefreshRate(rr);
 }
 /**

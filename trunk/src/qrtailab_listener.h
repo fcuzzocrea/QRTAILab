@@ -151,11 +151,17 @@ static void *rt_get_scope_data(void *arg)
 			n=n-MsgData;
 		else {
                   
-		   js = (n-1)*(ntraces+1)+1;
+		   js = (n-1)*(ntraces+1);
 		   if (n==1)
-			js=1;
+			js=0;
 		   while(n<=MsgData){
-			for (nn = 0; nn < ntraces; nn++) {
+			if (scope->isSaveScopeTime()){
+// 			    printf("Time %f\n",MsgBuf[js]);
+			    scope->setScopeTime(MsgBuf[js++]);
+			    
+			}else
+			    js++;
+			for (nn = 0; nn < ntraces ; nn++) {
 			
 			// if (ScopeWindow)
 			  //  ScopeWindow->setValue(nn,MsgBuf[js++]);
@@ -166,7 +172,7 @@ static void *rt_get_scope_data(void *arg)
 			    //ScopeWindow->getThread()->setValue(nn,MsgBuf[js++]);
 			}
 			time++;
-			js=js+(Ndistance-1)*(ntraces+1)+1;
+			js=js+(Ndistance-1)*(ntraces+1);
 			n=n+Ndistance;
 		   }
 		   n=n-MsgData;

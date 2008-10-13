@@ -55,7 +55,6 @@ public slots:
    void refresh();
 private:
   int Num_Leds;
-  QRL_LedData **Leds;
   unsigned int currentLed;
   QRtaiLabCore* qTargetInterface;
   QRL_LedWindow** LedWindows;

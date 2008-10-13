@@ -33,7 +33,7 @@ QRL_ScopeData::QRL_ScopeData()
 		visible = false;
 		isSaving=0;
 		Save_File_Pointer=NULL;
-
+		saveScopeTime=true;
 }
 
 
@@ -52,6 +52,7 @@ void QRL_ScopeData::initializeDataVectors(){
 		scopeRefreshRate=30.;
 		ScopeValues.resize(ntraces);
 		ScopeIndex.resize(ntraces);
+		ScopeTime.resize(MAX_SCOPE_DATA);
 		for (int t=0; t<ntraces; t++){
 			ScopeValues[t].resize(MAX_SCOPE_DATA);
 			ScopeIndex[t]=0;
@@ -99,6 +100,30 @@ double QRL_ScopeData::getScopeRefreshRate()
 	
 	return ret;
 }
+
+void QRL_ScopeData::setScopeTime(float v){
+      if (ScopeIndex[0]<MAX_SCOPE_DATA){
+	ScopeTime[ScopeIndex[0]]=v;
+      }
+}
+
+ QVector<float> QRL_ScopeData::getScopeTime(){
+	
+// QVector<float> ret;
+// mutex.lock();
+// ret.resize(ScopeValues.size());
+ //ret= Get_Led_Data_Thread[n].getValue();
+
+// 	for (int i=0;i<ScopeIndex[n][t];i++)
+//   	 	ret[t].append(ScopeValues.at(n).at(t).at(i));
+	 return ScopeTime.mid(0,ScopeIndex[0]);
+  	// ScopeValues[n][t].clear();
+	// ScopeIndex[n][0]=0;
+   
+// mutex.unlock();
+	//return ret;
+}
+
 
  void QRL_ScopeData::setScopeValue(float v, int t){
 
@@ -177,9 +202,9 @@ ScopeIndex[0]=0;
 
 int  QRL_ScopeData::start_saving_scope() {return isSaving ;}
 
-void  QRL_ScopeData::startSaving(FILE* Save_File_Pointer,double Save_Time){ 
-	Save_File_Pointer=Save_File_Pointer;
-	Save_Time=Save_Time;
+void  QRL_ScopeData::startSaving(FILE* save_file_pointer,double save_time){ 
+	Save_File_Pointer=save_file_pointer;
+	Save_Time=save_time;
 	isSaving=1;
 }
 FILE*  QRL_ScopeData::save_file() {

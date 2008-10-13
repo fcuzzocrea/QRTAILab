@@ -24,15 +24,14 @@
    file for the classes QRL_ParametersManager
 */
 
-#ifndef _LEDS_DATA_H
+#ifndef _LED_DATA_H
 #define _LED_DATA_H 1
 
 #include <QtGui> 
 
 #include "qrtailab.h"
 
-class QRL_LedData
-{
+class QRL_LedData{
 public:
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
   QRL_LedData();

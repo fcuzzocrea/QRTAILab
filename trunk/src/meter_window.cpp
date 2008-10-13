@@ -30,8 +30,8 @@
 #include <stdlib.h>
 
 
-QRL_MeterWindow::QRL_MeterWindow(QWidget *parent,QString name)
-	:QMdiSubWindow(parent)
+QRL_MeterWindow::QRL_MeterWindow(QWidget *parent,QRL_MeterData *meter)
+	:QMdiSubWindow(parent),Meter(meter)
 {
 if (this->objectName().isEmpty())
         this->setObjectName(QString::fromUtf8("QRL_MeterWindow"));
@@ -134,7 +134,7 @@ Thermo->setFillBrush(QBrush(gradient));
       
   
 
-    this->setWindowTitle(name);
+    this->setWindowTitle(Meter->getName());
 
 }
 
@@ -191,8 +191,9 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 * @brief setting the actual value of the meter
 * @param v meter value
 */
-void QRL_MeterWindow::setValue(double v)
+void QRL_MeterWindow::refresh()
 {
+	double v=Meter->getMeterValue();
 	QString str;
 	QLocale loc;
 	switch (MeterType){

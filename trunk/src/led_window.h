@@ -29,6 +29,7 @@
 #define _LED_WINDOW_H 1
 
 #include <QtGui>
+#include "led_data.h"
 
 class QColor;
 
@@ -64,20 +65,21 @@ class QRL_LedWindow : public QMdiSubWindow
 {
    Q_OBJECT
 public:
-   QRL_LedWindow(QWidget *parent = 0,int num=0,QString name="");
+   QRL_LedWindow(QWidget *parent = 0,QRL_LedData* led=0);
    ~QRL_LedWindow();
-   void setValue(unsigned int);
+   void refresh();
    void setLedColor(QColor);
    QColor getLedColor(){return Leds[0]->color();}
 protected slots:
   void closeEvent ( QCloseEvent * event );
 private:
-  float Value;
+//   float Value;
+    QRL_LedData* Led;
   QLed **Leds;
   QFrame * frame;
   int num_leds;
   QLabel **ledLabels;
-  
+
 
 friend QDataStream& operator<<(QDataStream &out, const QRL_LedWindow &d);
 friend QDataStream& operator>>(QDataStream &in, QRL_LedWindow(&d));

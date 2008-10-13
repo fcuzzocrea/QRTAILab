@@ -38,7 +38,6 @@
 #include "qrtailab.h"
 #include "target_thread.h"
 #include "parameters.h"
-
 // static RT_TASK *Target_Interface_Task;
 // static RT_TASK *RLG_Main_Task;
 using namespace qrl_types;
@@ -95,12 +94,14 @@ public:
     int	    getScopeDt(int);
     int     getNumberOfTraces(int);
 
-    QRL_MeterData** getMeters(){return targetthread->getMeters();}
+//     QRL_MeterData** getMeters(){return targetthread->getMeters();}
+        QRL_MeterData* getMeter(int i){return targetthread->getMeters()[i];}
       int getMeterNumber();
     QString getMeterName(int);
     int	    getMeterDt(int);
 
-  QRL_LedData** getLeds(){return targetthread->getLeds();}
+//   QRL_LedData** getLeds(){return targetthread->getLeds();}
+    QRL_LedData* getLed(int i){return targetthread->getLeds()[i];}
     int getLedNumber();
     QString getLedName(int);
     int	    getLedDt(int);

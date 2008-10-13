@@ -150,6 +150,7 @@ public:
    bool getZeroAxis(int trace){return Traces[trace]->zeroAxis.isVisible();}
    //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
     void setValue(const QVector< QVector<float> > &v);
+    void setTime(const QVector<float> &t);
    void setTraceName(int trace, const QString &text);
    QString getTraceName(int trace){return Traces[trace]->getName();}
     void setVerbose(int v){Verbose=v;}
@@ -163,6 +164,7 @@ private:
   qint32 fileVersion;
   int Verbose;
   float Value;
+  float lastTime;
  QRL_ScopeData *Scope;
   unsigned int NDataMax,Ncurve,NDataSoll, MaxDataPoints,Divider;
   int time,time2;

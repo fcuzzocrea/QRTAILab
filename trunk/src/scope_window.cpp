@@ -174,7 +174,10 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QRL_ScopeData *scope,int ind)
 	//qwtPlot->axisScaleDiv(QwtPlot::xBottom)=new QwtScaleDiv(1,0);
        // qwtPlot->setAxisTitle(QwtPlot::yLeft, "Values");
        qwtPlot->setAxisScale(QwtPlot::yLeft, ymin, ymax,yStep);
-       qwtPlot->enableAxis(QwtPlot::xBottom,false);
+       if (Scope->isSaveScopeTime())
+	   qwtPlot->enableAxis(QwtPlot::xBottom,true);
+       else
+	  qwtPlot->enableAxis(QwtPlot::xBottom,false);
        qwtPlot->enableAxis(QwtPlot::yLeft,false);
 //     QwtPlotMarker *mY = new QwtPlotMarker();
 //     mY->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
@@ -882,7 +885,15 @@ void QRL_ScopeWindow::setTraceName(int trace, const QString &text){
 }
 
 
-
+void QRL_ScopeWindow::setTime(const  QVector<float>  &t){
+  if (t.size()>0){
+    float meandt=t[0]-lastTime;
+    for (int i=1;i<t.size();i++)
+      meandt=meandt/2+(t[i]-t[i-1])/2;
+//    printf("dt %f\n",meandt);
+   lastTime=t[t.size()-1];
+   }
+}
 
 void QRL_ScopeWindow::setValue(const QVector< QVector<float> > &v)
 {
