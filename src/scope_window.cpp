@@ -907,32 +907,31 @@ if (v.at(0).size()>NDataSoll){  //roll mode is to cpu expensive and not necassar
 	if (PM==roll)
 		PM=overwrite;
 } 
+//   for (int nn=0; nn<v.size();++nn){
+//     Traces[nn]->setValue(v.at(nn));
+//     }
+
 switch(PM){
 case roll:
 
   for (int nn=0; nn<v.size();++nn){
-double *d_y=Traces[nn]->getPointerd_y(); //FIXME
+//double *d_y=Traces[nn]->getPointerd_y(); //FIXME
      time=v.at(nn).size()-1;
 	//printf("time %d, NDataSoll %d\n",time,NDataSoll);
 		if (time>-1){
 		if (Qt::LeftToRight==direction){ 
-		for (unsigned int i = NDataSoll - 1; i > time; i-- ){
-        		d_y[i] = d_y[i-1-time];
-		}
+		  Traces[nn]->moveDataToRight(time);
 		
 		for ( unsigned int i = 0; i<=time; i++){
 		   if ((time-i)<v.at(nn).size())
-			d_y[i]=((double)v.at(nn).at(time-i))/Traces[nn]->getDy()+Traces[nn]->getOffset();
+			Traces[nn]->setValue(i,((double)v.at(nn).at(time-i)));
 			//d_y[i]=(double)temp[nn][time-i];
 		}
 		} else { //right to left
-		for (unsigned int i = 0; i < NDataSoll-time-1; i++ ){
-		if ((i+time+1)<NDataSoll)
-			d_y[i] = d_y[i+time+1];
-		}
+		   Traces[nn]->moveDataToLeft(time);
 		for ( int i =  0; i<=time; i++){
 		     if ((i)<v.at(nn).size()) 
-			d_y[NDataSoll+i-time-1]=((double)v.at(nn).at(i))/Traces[nn]->getDy()+Traces[nn]->getOffset();
+			Traces[nn]->setValue((NDataSoll+i-time-1),((double)v.at(nn).at(i)));
 			//d_y[i]=(double)temp[nn][time-i];
 		}
 
@@ -949,9 +948,9 @@ case overwrite:
    for (int k=start; k<v.at(0).size(); ++k){
       for (int nn=0; nn<v.size();++nn){
 	time=Traces[nn]->getTime();
-	double *d_y=Traces[nn]->getPointerd_y();
+// 	double *d_y=Traces[nn]->getPointerd_y();
 
-	d_y[time]=((double)v.at(nn).at(k))/Traces[nn]->getDy()+Traces[nn]->getOffset();
+	Traces[nn]->setValue(time,((double)v.at(nn).at(k)));
 	if (Qt::LeftToRight==direction)
 		time++;
 	else
@@ -985,7 +984,7 @@ case overwrite:
 case trigger:
      for (int k=start; k<v.at(0).size(); ++k){
  for (int nn=0; nn<v.size();++nn){
-double *d_y=Traces[nn]->getPointerd_y();
+// double *d_y=Traces[nn]->getPointerd_y();
 	if (triggerSearch){ //search for next trigger event
 	  if (nn==triggerChannel) {
 		double y= (double)v.at(nn).at(k);
@@ -1016,7 +1015,7 @@ double *d_y=Traces[nn]->getPointerd_y();
 	  } else { // plot last data for the other traces
 		time=Traces[nn]->getTime();
 		if (time>0 && time <NDataSoll-1){
-			d_y[time]=((double)v.at(nn).at(k))/Traces[nn]->getDy()+Traces[nn]->getOffset();
+			Traces[nn]->setValue(time,((double)v.at(nn).at(k)));
 			if (Qt::LeftToRight==direction)
 				time++;
 			else
@@ -1027,7 +1026,7 @@ double *d_y=Traces[nn]->getPointerd_y();
 	  }
 	} else {
 	time=Traces[nn]->getTime();
-	d_y[time]=((double)v.at(nn).at(k))/Traces[nn]->getDy()+Traces[nn]->getOffset();
+	Traces[nn]->setValue(time,((double)v.at(nn).at(k)));
 	if (Qt::LeftToRight==direction)
 		time++;
 	else
