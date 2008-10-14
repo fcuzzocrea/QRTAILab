@@ -30,6 +30,7 @@
 #include <QtGui> 
 
 #include "qrtailab.h"
+// #include "scope_trace.h"
 
 class QRL_ScopeData //: public QThread
 {
@@ -79,6 +80,7 @@ private:
     double Save_Time;
     int Saved_Points;
     double scopeRefreshRate;
+//     QRL_ScopeTrace **Traces;
     QVector <int>  ScopeIndex;
     QVector< QVector <float> >  ScopeValues;
     QVector <float> ScopeTime;

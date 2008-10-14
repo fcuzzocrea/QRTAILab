@@ -33,7 +33,8 @@ QRL_ScopeData::QRL_ScopeData()
 		visible = false;
 		isSaving=0;
 		Save_File_Pointer=NULL;
-		saveScopeTime=true;
+		saveScopeTime=false;
+		
 }
 
 
@@ -49,6 +50,8 @@ QRL_ScopeData::QRL_ScopeData()
 
 void QRL_ScopeData::initializeDataVectors(){
 
+// 		Traces = new QRL_ScopeTrace*[ntraces];
+		
 		scopeRefreshRate=30.;
 		ScopeValues.resize(ntraces);
 		ScopeIndex.resize(ntraces);

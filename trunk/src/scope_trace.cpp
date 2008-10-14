@@ -577,7 +577,30 @@ void QRL_ScopeTrace::setName(const QString &text){
 }
 
 
+   void QRL_ScopeTrace::setValue(int index, double v){
+   
+   
+   d_y[index]=(v)/getDy()+getOffset();
+  
+   
+   }
 
+   void QRL_ScopeTrace::moveDataToRight(int time){
+   
+   
+   		for (unsigned int i = NDataSoll - 1; i > time; i-- ){
+        		d_y[i] = d_y[i-1-time];
+		}
+   
+   
+   }
+   void QRL_ScopeTrace::moveDataToLeft(int time){
+   
+   		for (unsigned int i = 0; i < NDataSoll-time-1; i++ ){
+		if ((i+time+1)<NDataSoll)
+			d_y[i] = d_y[i+time+1];
+		}
+   }
 
 QDataStream& operator<<(QDataStream &out, const QRL_ScopeTrace *d){
         qint32 a;

@@ -64,7 +64,7 @@ void setLabelsXValue(double x);
     void resetTime(){time=0;}	
    void setTime(int t){time=t;}
   int getTime() {return time;}
-  double* getPointerd_y(){return d_y;}
+//   double* getPointerd_y(){return d_y;}
    void setGridColor(const QColor& c){gridColor=c;}
    QColor getColor(){return  brush.color();}
    void setColor(const QColor&);
@@ -88,6 +88,9 @@ void setLabelsXValue(double x);
 void setZeroAxis();
    void setName(const QString &text);
    QString getName(){return traceName;}
+   void setValue(int index, double v);
+   void moveDataToLeft(int s);
+   void moveDataToRight(int s);
 
 private:
 	QwtPlot *qwtPlot;
