@@ -175,6 +175,7 @@ void QRL_Parameters::updateParameterValue(int blk,int prm, int nr,int nc, double
 	if (targetthread->update_parameter(map_offset, ind, value)) {
 		qrl::RT_RPC(targetthread->getTask(), (ind << 20) | (map_offset << 4) | TargetThread::UPDATE_PARAM, 0);
 	}
+	//printf("prm %d, nr %d nc %d\n",prm, nr, nc);
 	ParameterBlocks[blk]->setParameterValue(prm,nr,nc,targetthread->getParameterValue(blk,prm, nr, nc));
 }
 

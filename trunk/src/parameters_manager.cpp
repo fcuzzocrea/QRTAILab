@@ -169,7 +169,7 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 	      
 	}
 
-
+	
 
 
 	int ind=0;
@@ -180,6 +180,8 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 	int jend;
 	int prm=prm_row;
 	int table_row=0;
+	int nrow,ncol;
+	
 	// get old value
 	jend=Parameters->getNumberOfParameters(blk);
 	for (int j = 0; j <  jend; j++) {
@@ -188,7 +190,8 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 		for (unsigned int nr = 0; nr < nrows; nr++) {
 			for (unsigned int nc = 0; nc < ncols; nc++) {
 				if ((prm_row==table_row) && (prm_col==nc)){
-					data_value=Parameters->getParameterValue(blk,j,nr, nc);
+					
+					nrow=nr;ncol=nc;
 					prm=j;
 				}
 			}
@@ -196,7 +199,9 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 		}
 		
 	}
-
+	data_value=Parameters->getParameterValue(blk,prm,nrow, ncol);
+// 	printf("blk %d, parm %d, nr %d, nc %d, value %f,\n",blk,prm,nrow,ncol,data_value);
+	
 	QDoubleValidator *DoubleTest= new QDoubleValidator(NULL);
 	QString s=item->text();
 	int pos;
@@ -205,12 +210,12 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 	else { // set to new value
 		if (batchModus==0){
 			double value=(item->text()).toDouble();
-			//printf("Item changed to %f (%d,%d)\n",value,blk,prm);
-			Parameters->updateParameterValue(blk,prm,prm_row,prm_col,value);
+// 			printf("Item changed to %f (%d,%d,(%d,%d))\n",value,blk,prm,nrow,ncol);
+			Parameters->updateParameterValue(blk,prm,nrow,ncol,value);
 		} else {
 			double value=(item->text()).toDouble();
 			//printf("Item changed to %f (%d,%d)\n",value,blk,prm);
-			Parameters->addToBatch(blk,prm,prm_row,prm_col,value);
+			Parameters->addToBatch(blk,prm,nrow,ncol,value);
 		}
 	}
 
