@@ -163,7 +163,7 @@ void QRL_Parameters::batchParameterDownload()
 	//	n += Parameters_Manager->update_parameter(Batch_Parameters[i].index, Batch_Parameters[i].mat_index, Batch_Parameters[i].value);
 	//}
 	if (targetthread->getBatchCounter() > 0) {
-		qrl::RT_RPC(targetthread->getTask(), TargetThread::BATCH_DOWNLOAD, 0);
+ 		qrl::RT_RPC(targetthread->getTask(), TargetThread::BATCH_DOWNLOAD, 0);
 		resetBatchMode();
 	}
 //  	uploadParameters();
@@ -185,7 +185,7 @@ void QRL_Parameters::addToBatch(int blk,int prm, int nr,int nc,double value)
 	int ind = targetthread->get_parameter_ind(blk,prm,nr,nc);
 	if (targetthread->update_parameter(map_offset, ind, value)) {
 		if (targetthread->addToBatch(map_offset,ind,value)==-1)
-			printf("Could not add to Batch");
+			printf("Could not add to Batch\n");
 	}
 	ParameterBlocks[blk]->setParameterValue(prm,nr,nc,value);
 }

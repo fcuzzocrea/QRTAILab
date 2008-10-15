@@ -56,6 +56,8 @@ QRL_ParametersManager::QRL_ParametersManager(QWidget *parent, QRL_Parameters	*pa
 		new QListWidgetItem(BlockIcon,Parameters->getBlockName(i), blockListWidget);
 	}
 	batchModus=0;
+	Parameters->uploadParameters();
+	Parameters->resetBatchMode();
 }
 
 /**
@@ -84,6 +86,7 @@ void QRL_ParametersManager::batchMode(int state){
 		downloadPushButton->setEnabled(false);
 		batchModus=0;
 		uploadParameters();
+		Parameters->resetBatchMode();
 	}
 }
 
