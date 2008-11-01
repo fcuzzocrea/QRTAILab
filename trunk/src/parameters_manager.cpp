@@ -93,29 +93,40 @@ void QRL_ParametersManager::batchMode(int state){
 void QRL_ParametersManager::showAllBlocks( bool  state){
  blockListWidget->clear();
 	if(state==false){
-	  QString str=paramLineEdit->text();
+	  //QString str=(paramLineEdit->text()).remove(QChar(' '), Qt::CaseInsensitive);
+	  QString str=(paramLineEdit->text());
+	  QStringList strList = str.split(" ", QString::SkipEmptyParts);
 	  QString tmp;
-	  if (hideRadioButton->isChecked()){
-	    for (int i=0; i<Num_Tunable_Blocks; ++i){
-	      tmp=Parameters->getBlockName(i);
-	      if (tmp.contains(str, Qt::CaseInsensitive)){
-		Parameters->setBlockVisible(i,false);
-	      } else {
+	    if (hideRadioButton->isChecked()){
+	      for (int i=0; i<Num_Tunable_Blocks; ++i)
 		Parameters->setBlockVisible(i,true);
-		new QListWidgetItem(BlockIcon,Parameters->getBlockName(i), blockListWidget);
+	      for (int i=0; i<Num_Tunable_Blocks; ++i){
+	       for (int s=0; s<strList.size();s++){
+		tmp=Parameters->getBlockName(i);
+		if (tmp.contains(strList.at(s), Qt::CaseInsensitive)){
+		  Parameters->setBlockVisible(i,false);
+		} 
 	      }
-	    }
-	  } else {
-	     for (int i=0; i<Num_Tunable_Blocks; ++i){
-	      tmp=Parameters->getBlockName(i);
-	      if (tmp.contains(str, Qt::CaseInsensitive)){
-		Parameters->setBlockVisible(i,true);
+	     }
+	     for (int i=0; i<Num_Tunable_Blocks; ++i)
+	       if ( Parameters->isBlockVisible(i))
 		new QListWidgetItem(BlockIcon,Parameters->getBlockName(i), blockListWidget);
-	      } else {
+	    } else {
+	      for (int i=0; i<Num_Tunable_Blocks; ++i)
 		Parameters->setBlockVisible(i,false);
+	      for (int i=0; i<Num_Tunable_Blocks; ++i){
+	       for (int s=0; s<strList.size();s++){
+		tmp=Parameters->getBlockName(i);
+		if (tmp.contains(strList.at(s), Qt::CaseInsensitive)){
+		  Parameters->setBlockVisible(i,true);
+		} 
 	      }
+	     }
+	     for (int i=0; i<Num_Tunable_Blocks; ++i)
+	       if ( Parameters->isBlockVisible(i))
+		new QListWidgetItem(BlockIcon,Parameters->getBlockName(i), blockListWidget);
 	    }
-	  }
+	  
 	}else{
 	  for (int i=0; i<Num_Tunable_Blocks; ++i){
 	     Parameters->setBlockVisible(i,true);

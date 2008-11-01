@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>607</width>
-    <height>355</height>
+    <height>367</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -143,28 +143,31 @@
           <string>Blocks containing</string>
          </property>
          <layout class="QGridLayout" name="gridLayout" >
-          <item row="0" column="0" >
+          <item row="1" column="0" >
            <widget class="QLineEdit" name="paramLineEdit" >
+            <property name="toolTip" >
+             <string/>
+            </property>
             <property name="text" >
-             <string>PARAM</string>
+             <string>IPARAM RPARAM</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
+          <item row="2" column="0" >
            <widget class="QRadioButton" name="hideRadioButton" >
             <property name="text" >
              <string>should hide</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" >
+          <item row="3" column="0" >
            <widget class="QRadioButton" name="showRadioButton" >
             <property name="text" >
              <string>should only visible</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0" >
+          <item row="4" column="0" >
            <widget class="QRadioButton" name="fineRadioButton" >
             <property name="text" >
              <string>are fine (Show all Parameter)</string>
@@ -174,20 +177,27 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" >
+          <item row="5" column="0" >
            <widget class="QPushButton" name="savePushButton" >
             <property name="text" >
              <string>Save Parameter</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="0" >
+          <item row="6" column="0" >
            <widget class="QPushButton" name="loadPushButton" >
             <property name="enabled" >
              <bool>false</bool>
             </property>
             <property name="text" >
              <string>Load Parameter</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" >
+           <widget class="QLabel" name="label" >
+            <property name="text" >
+             <string>(seperate different string with space)</string>
             </property>
            </widget>
           </item>
