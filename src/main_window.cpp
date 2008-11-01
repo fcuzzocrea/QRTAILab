@@ -434,8 +434,10 @@ void QRL_MainWindow::loadProfile() {
 	if (qTargetInterface->getIsTargetConnected()==0) {
 		connectToTarget(TargetsManager->getPreferences());
 	}
-	if (LogsManager)
+	if (LogsManager){
+		LogsManager->setFileVersion(version);
  		in >> *LogsManager;
+	}
 	if (LedsManager)
  		in >> *LedsManager;
 	if (MetersManager){
@@ -691,47 +693,49 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 
 void QRL_MainWindow::showScopesManager()
 {
-if (ScopesManager)
+  if (ScopesManager) {
 	if (ScopesManager->isVisible())
 		ScopesManager->hide();
 	else
  		ScopesManager->show();
+  }
 }
-
 
 void QRL_MainWindow::showMetersManager()
 {
-if (MetersManager)
+  if (MetersManager){
 	if (MetersManager->isVisible())
 		MetersManager->hide();
 	else
  		MetersManager->show();
+  }
 }
-
 void QRL_MainWindow::showLedsManager()
 {
-if (LedsManager)
+  if (LedsManager){
 	if (LedsManager->isVisible())
 		LedsManager->hide();
 	else
  		LedsManager->show();
+  }
 }
-
 void QRL_MainWindow::showLogsManager()
 {
-if (LogsManager)
+  if (LogsManager){
 	if (LogsManager->isVisible())
 		LogsManager->hide();
 	else
  		LogsManager->show();
+  }
 }
 void QRL_MainWindow::showParametersManager()
 {
-if (ParametersManager)
+  if (ParametersManager){
 	if (ParametersManager->isVisible())
 		ParametersManager->hide();
 	else
  		ParametersManager->show();
+  }
 }
 void QRL_MainWindow::showTargetsManager()
 {

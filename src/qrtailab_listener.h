@@ -166,7 +166,10 @@ static void *rt_get_scope_data(void *arg)
 			// if (ScopeWindow)
 			  //  ScopeWindow->setValue(nn,MsgBuf[js++]);
 				//data[nn]=MsgBuf[js++];
+			      if (scope->isPlotting())
 				scope->setScopeValue(MsgBuf[js++],nn);
+			      else
+				js++;
 			    //emit value(nn,MsgBuf[js++]);
 				//temp1[nn][time-1]=MsgBuf[js++];
 			    //ScopeWindow->getThread()->setValue(nn,MsgBuf[js++]);

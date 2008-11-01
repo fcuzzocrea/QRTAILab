@@ -134,7 +134,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>162</width>
+            <width>156</width>
             <height>225</height>
            </rect>
           </property>
@@ -142,17 +142,14 @@
            <string>Saving</string>
           </attribute>
           <layout class="QGridLayout" >
-           <item row="0" column="1" >
+           <item row="3" column="1" >
             <widget class="QLabel" name="label_2" >
              <property name="text" >
               <string>Filename</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1" colspan="4" >
-            <widget class="QLineEdit" name="fileLineEdit" />
-           </item>
-           <item row="8" column="1" colspan="2" >
+           <item row="10" column="1" colspan="2" >
             <widget class="QProgressBar" name="saveProgressBar" >
              <property name="enabled" >
               <bool>false</bool>
@@ -168,28 +165,71 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="1" >
-            <spacer name="verticalSpacer" >
-             <property name="orientation" >
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0" >
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="3" column="1" >
+           <item row="5" column="1" >
             <widget class="QLabel" name="label" >
              <property name="text" >
               <string>Time [s]:</string>
              </property>
             </widget>
            </item>
-           <item row="7" column="1" >
+           <item row="11" column="1" >
+            <widget class="QPushButton" name="savePushButton" >
+             <property name="toolTip" >
+              <string>start saving</string>
+             </property>
+             <property name="text" >
+              <string>Save</string>
+             </property>
+             <property name="checkable" >
+              <bool>true</bool>
+             </property>
+             <property name="autoDefault" >
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="2" >
+            <widget class="QPushButton" name="stopPushButton" >
+             <property name="enabled" >
+              <bool>false</bool>
+             </property>
+             <property name="toolTip" >
+              <string>stop saving</string>
+             </property>
+             <property name="text" >
+              <string>stop</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" >
+            <widget class="QLabel" name="label_3" >
+             <property name="text" >
+              <string>Directory</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" colspan="2" >
+            <widget class="QLineEdit" name="dirLineEdit" >
+             <property name="toolTip" >
+              <string>Directory in which the file will be saved</string>
+             </property>
+             <property name="text" >
+              <string>./</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2" >
+            <widget class="QLineEdit" name="fileLineEdit" >
+             <property name="toolTip" >
+              <string>Filename</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="2" >
             <widget class="QwtCounter" name="timeCounter" >
+             <property name="toolTip" >
+              <string>Time duration of the next saving</string>
+             </property>
              <property name="numButtons" >
               <number>0</number>
              </property>
@@ -204,39 +244,13 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="2" colspan="3" >
-            <spacer>
-             <property name="orientation" >
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0" >
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="9" column="1" >
-            <widget class="QPushButton" name="savePushButton" >
-             <property name="text" >
-              <string>Save</string>
-             </property>
-             <property name="checkable" >
-              <bool>true</bool>
-             </property>
-             <property name="autoDefault" >
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="2" >
-            <widget class="QPushButton" name="stopPushButton" >
-             <property name="enabled" >
-              <bool>false</bool>
+           <item row="0" column="2" >
+            <widget class="QPushButton" name="dirPushButton" >
+             <property name="toolTip" >
+              <string>set directory for saving</string>
              </property>
              <property name="text" >
-              <string>stop</string>
+              <string>Set Dir</string>
              </property>
             </widget>
            </item>

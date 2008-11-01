@@ -46,6 +46,7 @@ class QRL_LogsManager : public QDialog, private Ui::QRL_LogsManager
 public:
   QRL_LogsManager(QWidget *parent = 0, QRtaiLabCore* qtargetinterface=NULL);
   ~QRL_LogsManager();
+      void setFileVersion(qint32 v);
 public slots:
   void showLogOptions( QListWidgetItem * item  );
   void showLogOptions( int );
@@ -54,7 +55,9 @@ public slots:
   void changeSaveTime(double);
   void changeFileName(const QString&);
    void refresh();
+       void setFileDirectory();
 private:
+  qint32 fileVersion;
   int Num_Logs;
   QRL_LogData **Logs;
   unsigned int currentLog;

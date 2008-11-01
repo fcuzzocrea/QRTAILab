@@ -35,6 +35,63 @@
     <normaloff>:/icons/scope_icon.xpm</normaloff>:/icons/scope_icon.xpm</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2" >
+   <item row="1" column="0" colspan="2" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="helpButton" >
+       <property name="text" >
+        <string>Help</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>16</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeButton" >
+       <property name="text" >
+        <string>Close Manager</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>16</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
    <item row="0" column="0" >
     <widget class="QListWidget" name="scopeListWidget" >
      <property name="sizePolicy" >
@@ -66,7 +123,7 @@
       <attribute name="title" >
        <string>Scope</string>
       </attribute>
-      <layout class="QGridLayout" >
+      <layout class="QGridLayout" name="gridLayout_5" >
        <item row="0" column="0" >
         <widget class="QCheckBox" name="showCheckBox" >
          <property name="text" >
@@ -74,7 +131,17 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" >
+       <item row="0" column="1" >
+        <widget class="QCheckBox" name="holdCheckBox" >
+         <property name="toolTip" >
+          <string>stop plotting will reduce cpu load. Saving is still possible!</string>
+         </property>
+         <property name="text" >
+          <string>hold Plot</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2" >
         <widget class="QToolBox" name="toolBox" >
          <property name="currentIndex" >
           <number>0</number>
@@ -84,8 +151,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>201</width>
-            <height>251</height>
+            <width>189</width>
+            <height>256</height>
            </rect>
           </property>
           <attribute name="label" >
@@ -103,6 +170,9 @@
             <widget class="QwtCounter" name="dividerCounter" >
              <property name="enabled" >
               <bool>true</bool>
+             </property>
+             <property name="toolTip" >
+              <string>Reduces the Number of plotted points. Can be used to reduce cpu load.</string>
              </property>
              <property name="numButtons" >
               <number>1</number>
@@ -145,6 +215,9 @@
              <property name="enabled" >
               <bool>true</bool>
              </property>
+             <property name="toolTip" >
+              <string>Number of shown data points in the plot window.</string>
+             </property>
              <property name="numButtons" >
               <number>0</number>
              </property>
@@ -183,6 +256,9 @@
            </item>
            <item row="2" column="1" colspan="2" >
             <widget class="QwtCounter" name="rrCounter" >
+             <property name="toolTip" >
+              <string>frames per seconds</string>
+             </property>
              <property name="numButtons" >
               <number>1</number>
              </property>
@@ -212,6 +288,9 @@
            </item>
            <item row="3" column="1" colspan="2" >
             <widget class="QComboBox" name="dxComboBox" >
+             <property name="toolTip" >
+              <string>set the seconds per devision to scale the x-axis of the plot.</string>
+             </property>
              <property name="editable" >
               <bool>true</bool>
              </property>
@@ -260,6 +339,9 @@
            </item>
            <item row="4" column="0" colspan="3" >
             <widget class="QComboBox" name="displayComboBox" >
+             <property name="toolTip" >
+              <string>Plotting mode</string>
+             </property>
              <item>
               <property name="text" >
                <string>Continuous Roling</string>
@@ -280,15 +362,13 @@
                <string>Trigger -to+</string>
               </property>
              </item>
-             <item>
-              <property name="text" >
-               <string>hold</string>
-              </property>
-             </item>
             </widget>
            </item>
            <item row="5" column="0" colspan="3" >
             <widget class="QComboBox" name="directionComboBox" >
+             <property name="toolTip" >
+              <string>Plotting direction</string>
+             </property>
              <item>
               <property name="text" >
                <string>right to left</string>
@@ -327,8 +407,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>194</width>
-            <height>132</height>
+            <width>189</width>
+            <height>256</height>
            </rect>
           </property>
           <attribute name="label" >
@@ -337,6 +417,9 @@
           <layout class="QGridLayout" >
            <item row="0" column="0" >
             <widget class="QCheckBox" name="oneShotCheckBox" >
+             <property name="toolTip" >
+              <string>Enable one shot triggering. Press the start button to restart triggering. </string>
+             </property>
              <property name="text" >
               <string>One Shot</string>
              </property>
@@ -371,6 +454,9 @@
            </item>
            <item row="2" column="0" >
             <widget class="QwtCounter" name="triggerCounter" >
+             <property name="toolTip" >
+              <string>trigger barrier</string>
+             </property>
              <property name="numButtons" >
               <number>0</number>
              </property>
@@ -387,6 +473,9 @@
            </item>
            <item row="2" column="1" >
             <widget class="QComboBox" name="traceComboBox" >
+             <property name="toolTip" >
+              <string>trigger source</string>
+             </property>
              <item>
               <property name="text" >
                <string>Trace 1</string>
@@ -396,6 +485,9 @@
            </item>
            <item row="3" column="0" colspan="2" >
             <widget class="QPushButton" name="triggerPushButton" >
+             <property name="toolTip" >
+              <string>Releases a trigger event.</string>
+             </property>
              <property name="text" >
               <string>Manual Trigger</string>
              </property>
@@ -419,10 +511,10 @@
          <widget class="QWidget" name="page_2" >
           <property name="geometry" >
            <rect>
-            <x>0</x>
+            <x>-3</x>
             <y>0</y>
-            <width>201</width>
-            <height>251</height>
+            <width>192</width>
+            <height>237</height>
            </rect>
           </property>
           <attribute name="label" >
@@ -432,22 +524,25 @@
            <item row="0" column="0" >
             <widget class="QLabel" name="label_2" >
              <property name="text" >
-              <string>Filename</string>
+              <string>Directory</string>
              </property>
             </widget>
            </item>
            <item row="1" column="0" colspan="2" >
-            <widget class="QLineEdit" name="fileLineEdit" />
-           </item>
-           <item row="2" column="0" >
-            <widget class="QLabel" name="label" >
+            <widget class="QLineEdit" name="dirLineEdit" >
+             <property name="toolTip" >
+              <string>File directory</string>
+             </property>
              <property name="text" >
-              <string>Time [s]</string>
+              <string>./</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="0" colspan="2" >
+           <item row="7" column="0" colspan="2" >
             <widget class="QwtCounter" name="timeCounter" >
+             <property name="toolTip" >
+              <string>Time duration of the next saving</string>
+             </property>
              <property name="layoutDirection" >
               <enum>Qt::RightToLeft</enum>
              </property>
@@ -465,7 +560,7 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="0" colspan="2" >
+           <item row="8" column="0" colspan="2" >
             <widget class="QProgressBar" name="saveProgressBar" >
              <property name="enabled" >
               <bool>false</bool>
@@ -475,8 +570,11 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="0" >
+           <item row="11" column="0" >
             <widget class="QPushButton" name="savePushButton" >
+             <property name="toolTip" >
+              <string>start saving</string>
+             </property>
              <property name="text" >
               <string>Save</string>
              </property>
@@ -488,21 +586,66 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="1" >
+           <item row="11" column="1" >
             <widget class="QPushButton" name="stopPushButton" >
              <property name="enabled" >
               <bool>false</bool>
+             </property>
+             <property name="toolTip" >
+              <string>stop saving</string>
              </property>
              <property name="text" >
               <string>stop</string>
              </property>
             </widget>
            </item>
+           <item row="0" column="1" >
+            <widget class="QPushButton" name="dirPushButton" >
+             <property name="text" >
+              <string>Set Directory</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" >
+            <widget class="QLabel" name="label_5" >
+             <property name="text" >
+              <string>FileName</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1" >
+            <widget class="QLineEdit" name="fileLineEdit" >
+             <property name="toolTip" >
+              <string>file name</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0" >
+            <widget class="QLabel" name="label" >
+             <property name="text" >
+              <string>Time [s]</string>
+             </property>
+            </widget>
+           </item>
           </layout>
+          <zorder>label_2</zorder>
+          <zorder>dirLineEdit</zorder>
+          <zorder>timeCounter</zorder>
+          <zorder>saveProgressBar</zorder>
+          <zorder>savePushButton</zorder>
+          <zorder>stopPushButton</zorder>
+          <zorder>dirPushButton</zorder>
+          <zorder>label_5</zorder>
+          <zorder>label_5</zorder>
+          <zorder>fileLineEdit</zorder>
+          <zorder>label</zorder>
          </widget>
         </widget>
        </item>
       </layout>
+      <zorder>showCheckBox</zorder>
+      <zorder>holdCheckBox</zorder>
+      <zorder>toolBox</zorder>
      </widget>
      <widget class="QWidget" name="Trace" >
       <attribute name="title" >
@@ -519,7 +662,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="traceNameLineEdit" />
+          <widget class="QLineEdit" name="traceNameLineEdit" >
+           <property name="toolTip" >
+            <string>set a  new trace name</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -550,6 +697,9 @@
        </item>
        <item row="1" column="1" >
         <widget class="QCheckBox" name="showTraceCheckBox" >
+         <property name="toolTip" >
+          <string/>
+         </property>
          <property name="text" >
           <string>Show/Hide</string>
          </property>
@@ -585,7 +735,7 @@
            </widget>
           </item>
           <item row="0" column="1" >
-           <widget class="QLabel" name="label_5" >
+           <widget class="QLabel" name="offsetLabel" >
             <property name="text" >
              <string>div</string>
             </property>
@@ -795,63 +945,6 @@
       </layout>
      </widget>
     </widget>
-   </item>
-   <item row="1" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0" >
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="helpButton" >
-       <property name="text" >
-        <string>Help</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0" >
-        <size>
-         <width>16</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="closeButton" >
-       <property name="text" >
-        <string>Close Manager</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0" >
-        <size>
-         <width>16</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>

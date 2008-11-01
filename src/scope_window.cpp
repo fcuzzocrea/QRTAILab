@@ -92,7 +92,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QRL_ScopeData *scope,int ind)
     //qwtPlot->canvas()->setAttribute(Qt::WA_PaintOnScreen, true);
     #endif
     #endif
-
+	plotting=true;
 	direction=Qt::RightToLeft;
 	triggerSearch=true;triggerUp=true;triggerChannel=0;triggerLevel=0;
 	singleMode=false;plottingMode=roll;
@@ -312,11 +312,26 @@ void QRL_ScopeWindow::refresh()
 	qwtPlot->replot();
 	
 
-for (int nn=0; nn<Ncurve;++nn){
-    Traces[nn]->refresh();
-}
+  for (int nn=0; nn<Ncurve;++nn){
+      Traces[nn]->refresh();
+  }
 }
 
+void QRL_ScopeWindow::setPlotting(bool b){
+    plotting=b;
+     QwtText bt;
+    bt.setColor(QColor(gridColor));
+    if (plotting){
+      Scope->setPlotting(true);
+      setPlottingMode(plottingMode);
+   } else {
+    	bt.setText(tr("x: %1 sec/dev  hold").arg(dx));
+	bottomText->setLabel(bt);
+	Scope->setPlotting(false);
+    }
+    
+  }
+  
 
  void QRL_ScopeWindow::setPlottingMode(PlottingMode p){
 	plottingMode=p;
@@ -324,6 +339,7 @@ for (int nn=0; nn<Ncurve;++nn){
     bt.setColor(QColor(gridColor));
 	for (int nn=0; nn<Ncurve;nn++)
 	  Traces[nn]->resetTime();
+  if (plotting){
 	switch(plottingMode){
 	case roll:
 		if (direction==Qt::LeftToRight)
@@ -346,13 +362,14 @@ for (int nn=0; nn<Ncurve;++nn){
 			bt.setText(tr("x: %1 sec/dev  trigger <-").arg(dx));
 		bottomText->setLabel(bt);
 		break;
-	case hold: //hold
-		bt.setText(tr("x: %1 sec/dev  hold").arg(dx));
-		bottomText->setLabel(bt);
-		break;
+// 	case hold: //hold
+// 		bt.setText(tr("x: %1 sec/dev  hold").arg(dx));
+// 		bottomText->setLabel(bt);
+// 		Scope->setPlotting(false);
+// 		break;
 
 	}
-
+   }
 }
 
  void QRL_ScopeWindow::setPlottingDirection(Qt::LayoutDirection d){
@@ -361,6 +378,7 @@ for (int nn=0; nn<Ncurve;++nn){
 	  Traces[nn]->resetTime();
  QwtText bt;
     bt.setColor(QColor(gridColor));
+    if (plotting){
 	switch(plottingMode){
 	case roll:
 		if (direction==Qt::LeftToRight)
@@ -383,13 +401,13 @@ for (int nn=0; nn<Ncurve;++nn){
 			bt.setText(tr("x: %1 sec/dev  trigger <-").arg(dx));
 		bottomText->setLabel(bt);
 		break;
-	case hold: //hold
-		bt.setText(tr("x: %1 sec/dev  hold").arg(dx));
-		bottomText->setLabel(bt);
-		break;
+// 	case hold: //hold
+// 		bt.setText(tr("x: %1 sec/dev  hold").arg(dx));
+// 		bottomText->setLabel(bt);
+// 		break;
 
 	}
-
+    }
 }
    void QRL_ScopeWindow::changeRefreshRate(double rr)
 {
@@ -524,6 +542,7 @@ for (int nn=0; nn<Ncurve;++nn){
 
 	 QwtText bt;
     bt.setColor(QColor(gridColor));
+    if (plotting){
 	switch(plottingMode){
 	case roll:
 		if (direction==Qt::LeftToRight)
@@ -546,13 +565,13 @@ for (int nn=0; nn<Ncurve;++nn){
 			bt.setText(tr("x: %1 sec/dev  trigger <-").arg(dx));
 		bottomText->setLabel(bt);
 		break;
-	case hold: //hold
-		bt.setText(tr("x: %1 sec/dev  hold").arg(dx));
-		bottomText->setLabel(bt);
-		break;
+// 	case hold: //hold
+// 		bt.setText(tr("x: %1 sec/dev  hold").arg(dx));
+// 		bottomText->setLabel(bt);
+// 		break;
 
 	}
-
+}
 
 	dt=(xmax-xmin)/NDataSoll;
 NDistance=(int)(dt*(1./Scope->getDt()));  //doesnt work
@@ -598,7 +617,7 @@ void QRL_ScopeWindow::setGridColor(QColor gridcolor){
 	zeroLine->setLinePen(QPen(QColor(gridColor),1,Qt::DotLine));
 	vertLine->setLinePen(QPen(QColor(gridColor),1,Qt::DotLine));
 	for (int nn=0; nn<Ncurve;nn++)
-	Traces[nn]->setGridColor(gridcolor);
+	  Traces[nn]->setGridColor(gridcolor);
 	
 }
 void QRL_ScopeWindow::setBgColor(QColor bgcolor){
@@ -910,7 +929,7 @@ if (v.at(0).size()>NDataSoll){  //roll mode is to cpu expensive and not necassar
 //   for (int nn=0; nn<v.size();++nn){
 //     Traces[nn]->setValue(v.at(nn));
 //     }
-
+if (plotting){
 switch(PM){
 case roll:
 
@@ -1050,9 +1069,9 @@ case trigger:
 }}
 	break;
 
-
+/*
 case hold:
-	break;
+	break;*/
 default:
 	break;
 }
@@ -1060,7 +1079,7 @@ default:
 //	time2++;
 //	time2=time2;
 
-
+}
 
 
 }
@@ -1226,7 +1245,7 @@ QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d){
 	out << d.saveTime;
 	out << d.fileName;
 	a=d.Divider;out << a;
-	
+	out <<d.plotting;
 	 for (int nn=0; nn<d.Ncurve;++nn){
 		
 		out << d.Traces[nn];
@@ -1254,7 +1273,13 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 	in >> dd; d.changeDX(dd);
 	in >> a; //d.changeDataPoints(a);
 	in >> a >> a2;
-	d.setPlottingMode((QRL_ScopeWindow::PlottingMode)a);
+	if ((QRL_ScopeWindow::PlottingMode)a==QRL_ScopeWindow::hold){
+	  d.setPlotting(false);
+	  d.setPlottingMode(QRL_ScopeWindow::roll);
+	}else{
+	  d.setPlottingMode((QRL_ScopeWindow::PlottingMode)a);
+	  d.setPlotting(true);
+	}
 	d.setPlottingDirection((Qt::LayoutDirection)a2);
 	in >> a; d.setTriggerChannel(a);
 	in >> dd; d.setTriggerLevel(dd);
@@ -1266,7 +1291,9 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 	if (d.fileVersion>101){
 	  in >> a; d.changeDivider(a);
 	}
-	
+	if (d.fileVersion>104){
+	  in >> b; d.setPlotting(b);
+	}
 	 for (int nn=0; nn<Ncurve;++nn){
 	   if (nn<d.Ncurve) {
 		//in >> d.Traces[nn];

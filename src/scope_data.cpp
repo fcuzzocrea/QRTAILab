@@ -32,6 +32,7 @@ QRL_ScopeData::QRL_ScopeData()
 {
 		visible = false;
 		isSaving=0;
+		plotting=true;
 		Save_File_Pointer=NULL;
 		saveScopeTime=false;
 		

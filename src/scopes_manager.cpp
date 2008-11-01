@@ -86,8 +86,11 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	connect( showTraceCheckBox , SIGNAL( stateChanged(int) ), this, SLOT( showTrace(int) ) );
          connect( timeCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeSaveTime(double) ) );
 	connect( fileLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeFileName(const QString&) ) );
+	connect( dirLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeFileDir(const QString&) ) );
 	connect( dividerCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDivider(double) ) );
 	connect( stopPushButton, SIGNAL( pressed() ), this, SLOT( stopSaving() ) );
+	connect( holdCheckBox , SIGNAL( stateChanged(int) ), this, SLOT( holdPlot(int) ) );
+	connect( dirPushButton, SIGNAL( pressed()), this, SLOT(setFileDirectory() ) );
 	currentScope=0;
 // 	for(int i=0; i<1; ++i){
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
@@ -262,13 +265,23 @@ void QRL_ScopesManager::setOptions(int index)
 	}
 }
 
+void QRL_ScopesManager::setFileDirectory(){
+
+ QString dir = QFileDialog::getExistingDirectory(this, tr("File Directory"),
+                                                 dirLineEdit->text(),
+                                                 QFileDialog::ShowDirsOnly);
+  dirLineEdit->setText(dir);
+
+
+}
+
 void QRL_ScopesManager::startSaving()
 {
 	 FILE* Save_File_Pointer;
 	double Save_Time=timeCounter->value();
 	if( Scopes[currentScope]->start_saving_scope()==0){
 
-		QString File_Name=fileLineEdit->text();
+		QString File_Name=dirLineEdit->text()+fileLineEdit->text();
 		if (QFile::exists(File_Name)) {
 			printf("File %s exists already.",File_Name.toLocal8Bit().data() );
 			QMessageBox::critical(this, tr("QMessageBox::critical()"),
@@ -414,7 +427,7 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 		savePushButton->setEnabled(true);
 	}
 	tabWidget->setTabText(0,tr(Scopes[currentScope]->getName()));
-	fileLineEdit->setText(tr(Scopes[currentScope]->getName()));
+	//fileLineEdit->setText(tr(Scopes[currentScope]->getName()));
 	if(ScopeWindows[currentScope]->isVisible())
 		showCheckBox->setCheckState(Qt::Checked);
 	else
@@ -440,8 +453,15 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 	triggerCounter->setValue(ScopeWindows[currentScope]->getTriggerLevel() );
 	oneShotCheckBox->setChecked( ScopeWindows[currentScope]->getSingleMode() );
 	timeCounter->setValue(ScopeWindows[currentScope]->getSaveTime() );
-	fileLineEdit->setText(ScopeWindows[currentScope]->getFileName() );
-
+	//fileLineEdit->setText(ScopeWindows[currentScope]->getFileName() );
+	if (!(ScopeWindows[currentScope]->getFileName()).contains(tr("/"))){
+	  fileLineEdit->setText((ScopeWindows[currentScope]->getFileName()));
+	  dirLineEdit->setText("./");
+	}else {
+	  dirLineEdit->setText((ScopeWindows[currentScope]->getFileName()).left((ScopeWindows[currentScope]->getFileName()).lastIndexOf(tr("/"))+1));
+	  fileLineEdit->setText( (ScopeWindows[currentScope]->getFileName()).mid((ScopeWindows[currentScope]->getFileName()).lastIndexOf(tr("/"))+1));
+	}
+	
 	disconnect( directionComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeDirection(int) ) );
 	disconnect( displayComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeDisplayModus(int) ) );
 
@@ -464,15 +484,21 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 			else
 				displayComboBox->setCurrentIndex(2);
 			break;
-		case 3:
-			displayComboBox->setCurrentIndex(4);
-			break;
+// 		case 3:
+// 			displayComboBox->setCurrentIndex(4);
+// 			break;
 		default:
 			displayComboBox->setCurrentIndex(0);
 			break;
 	}
+
 	connect( directionComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeDirection(int) ) );
         connect( displayComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeDisplayModus(int) ) );
+	
+	if(ScopeWindows[currentScope]->isPlotting())
+		holdCheckBox->setCheckState(Qt::Unchecked);
+	else
+		holdCheckBox->setCheckState(Qt::Checked);
 }
 
 void QRL_ScopesManager::showOptions(QListWidgetItem * item )
@@ -584,15 +610,25 @@ void QRL_ScopesManager::changeDisplayModus(int mode)
 		ScopeWindows[currentScope]->setTriggerUpDirection(true);
 		directionComboBox->setCurrentIndex(1);
 		break;
-	case 4: //hold
-		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::hold);
-		break;
+// 	case 4: //hold
+// 		ScopeWindows[currentScope]->setPlottingMode(QRL_ScopeWindow::hold);
+// 		break;
 	default:
 		break;
 	}
 
 }
 
+
+void QRL_ScopesManager::holdPlot(int state) {
+
+	if( state==Qt::Checked)	
+		ScopeWindows[currentScope]->setPlotting(false);
+	else
+		ScopeWindows[currentScope]->setPlotting(true);
+
+
+}
 
 void QRL_ScopesManager::changeTraceColor()
 {
@@ -622,8 +658,13 @@ void QRL_ScopesManager::changeSaveTime(double time)
 
 void QRL_ScopesManager::changeFileName(const QString& str)
 {
-	ScopeWindows[currentScope]->setFileName(str);
+	ScopeWindows[currentScope]->setFileName(dirLineEdit->text()+str);
 }
+void QRL_ScopesManager::changeFileDir(const QString& str)
+{
+	ScopeWindows[currentScope]->setFileName(str+fileLineEdit->text());
+}
+
 
 void QRL_ScopesManager::changeDy(const QString& text)
 {
