@@ -67,6 +67,9 @@ public:
     char name[MAX_NAMES_SIZE];
     void setSaveScopeTime(bool b){saveScopeTime=b;}
     bool isSaveScopeTime(){return saveScopeTime;}
+    
+    void setPlotting(bool b){plotting=b;}
+    bool isPlotting(){return plotting;}
 // 	int ntraces;
 // protected:
 //    void run();
@@ -75,6 +78,7 @@ private:
     int ntraces;
     float dt;
     int isSaving;
+    bool plotting;
     int visible;
     FILE* Save_File_Pointer;
     double Save_Time;

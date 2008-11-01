@@ -155,6 +155,8 @@ public:
    QString getTraceName(int trace){return Traces[trace]->getName();}
     void setVerbose(int v){Verbose=v;}
     void setFileVersion(qint32 v){fileVersion=v;}
+    void setPlotting(bool b);
+    bool isPlotting(){return plotting;}
 public slots:
    void refresh();
   //void setValue(int,float);
@@ -163,6 +165,7 @@ protected slots:
 private:
   qint32 fileVersion;
   int Verbose;
+  bool plotting;
   float Value;
   float lastTime;
  QRL_ScopeData *Scope;

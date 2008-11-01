@@ -221,6 +221,7 @@ QRL_ScopeTrace::~QRL_ScopeTrace(){
 void QRL_ScopeTrace::refresh()
 {
 
+
 if ( isLabelVisible(lt_average)){
 	average=0.;
 	for (int k=0;k<NDataSoll;k++)
@@ -334,6 +335,9 @@ void QRL_ScopeTrace::setColor(const QColor& c)
 		cData->setPen(pen);
 		zeroAxis.setLinePen(QPen(brush,2.,Qt::DashDotLine));
 		traceLabel.setLinePen(QPen(brush,2.,Qt::DashDotLine));
+		QwtText ttext(traceName);
+		ttext.setColor(QColor(c));
+		traceLabel.setLabel(ttext);
 }
 
 void QRL_ScopeTrace::setWidth(int traceWidth)

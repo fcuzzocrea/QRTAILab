@@ -48,6 +48,7 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
 	connect( savePushButton, SIGNAL( pressed() ), this, SLOT( startSaving() ) );
 	connect( stopPushButton, SIGNAL( pressed() ), this, SLOT( stopSaving() ) );
 	connect( fileLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeFileName(const QString&) ) );
+	connect( dirPushButton, SIGNAL( pressed()), this, SLOT(setFileDirectory() ) );
 
 	currentLog=0;
 // 	for(int i=0; i<1; ++i){
@@ -76,6 +77,11 @@ QRL_LogsManager::~QRL_LogsManager()
 	//	delete[] Get_Scope_Data_Thread;
 }
 
+void QRL_LogsManager::setFileVersion(qint32 v){
+      fileVersion=v;
+
+}
+
 void QRL_LogsManager::refresh()
 {
   if (Logs[currentLog]->getIsSaving()==0){
@@ -95,6 +101,15 @@ void QRL_LogsManager::refresh()
   }
 }
 
+void QRL_LogsManager::setFileDirectory(){
+
+ QString dir = QFileDialog::getExistingDirectory(this, tr("File Directory"),
+                                                 dirLineEdit->text(),
+                                                 QFileDialog::ShowDirsOnly);
+  dirLineEdit->setText(dir);
+
+
+}
 
 void QRL_LogsManager::startSaving()
 {
@@ -102,7 +117,7 @@ void QRL_LogsManager::startSaving()
 	double Save_Time=timeCounter->value();
 	if( Logs[currentLog]->start_saving()==0){
 
-		QString File_Name=fileLineEdit->text();
+		QString File_Name=dirLineEdit->text()+fileLineEdit->text();
 		if (QFile::exists(File_Name)) {
 			printf("File %s exists already.",File_Name.toLocal8Bit().data() );
 			QMessageBox::critical(this, tr("QMessageBox::critical()"),
@@ -188,7 +203,8 @@ void QRL_LogsManager::changeFileName(const QString& str)
 QDataStream& operator<<(QDataStream &out, const QRL_LogsManager &d){
 	out << d.size()  << d.pos() << d.isVisible();
 	out <<(qint32) d.Num_Logs;
-	out << d.fileLineEdit->text() << d.timeCounter->value();
+	out << d.dirLineEdit->text() << d.fileLineEdit->text() ;
+	out << d.timeCounter->value();
 	for (int i = 0; i < d.Num_Logs; ++i) {
 		//out << d.file_name.at(i) << d.save_time.at(i);
 	}
@@ -203,10 +219,15 @@ QDataStream& operator>>(QDataStream &in, QRL_LogsManager(&d)){
 	in >> b; d.setVisible(b);
 	qint32 a;
 	in >> a;
-	in >> str >> dd;
- 	d.timeCounter->setValue(dd);
+	if (d.fileVersion>104){
+	  in >> str;
+	  d.dirLineEdit->setText(str);
+	}
+	  
+	in >> str;
  	d.fileLineEdit->setText(str );
-
+	in >> dd;
+	d.timeCounter->setValue(dd);
 	for (int i = 0; i < (int)a; ++i) {
 // 		if (d.Num_Logs>i)
 // 			in>>d.file_name[i]>>d.save_time[i];

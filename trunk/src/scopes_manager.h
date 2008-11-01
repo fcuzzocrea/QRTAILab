@@ -77,6 +77,7 @@ public slots:
   void changeScopeList(int);
   void changeSaveTime(double);
   void changeFileName(const QString&);
+  void changeFileDir(const QString&);
   void changeTriggerLevel(double);
   void changeTriggerChannel(int);
   void manualTrigger();
@@ -91,6 +92,8 @@ public slots:
     void changeMaxLabel(int);
     void changePPLabel(int);
     void changeRMSLabel(int);
+    void holdPlot(int);
+    void setFileDirectory();
 private:
   qint32 fileVersion;
   int Num_Scopes;
