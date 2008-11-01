@@ -1,7 +1,13 @@
-Version 0.1.5
+Version 0.1.6
  - Color of TraceLabel is now correct
- - file directory for saving can entered
+ - file directory for saving can be entered
  - plotting can be stopped for reducing cpu load.
+ - some new hints 
+ - more then one string can be entered for parameter hiding
+
+Version 0.1.5
+ - Parameter bug fixed
+ - Parameter Batch bug fixed
 
 Version 0.1.4
  - Better structure of source code 
