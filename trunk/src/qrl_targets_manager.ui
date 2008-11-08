@@ -253,6 +253,9 @@
             <property name="enabled" >
              <bool>true</bool>
             </property>
+            <property name="toolTip" >
+             <string>Can only changed at startup.</string>
+            </property>
             <property name="title" >
              <string>hard real time mode</string>
             </property>
@@ -262,6 +265,12 @@
             <layout class="QGridLayout" name="gridLayout" >
              <item row="0" column="0" >
               <widget class="QCheckBox" name="scopesHRTCheckBox" >
+               <property name="toolTip" >
+                <string>Let the scope threads run in hard real time mode. 
+Can block the cpu, if to many data are transmitted.
+
+ Important for the saving process. Prevent saving from blocking and data loss.</string>
+               </property>
                <property name="text" >
                 <string>Scopes</string>
                </property>
@@ -272,6 +281,12 @@
              </item>
              <item row="1" column="0" >
               <widget class="QCheckBox" name="logsHRTCheckBox" >
+               <property name="toolTip" >
+                <string>Let the log threads run in hard real time mode. 
+Can block the cpu, if to many data are transmitted.
+
+ Important for the saving process. Prevent saving from blocking and data loss.</string>
+               </property>
                <property name="text" >
                 <string>Logs</string>
                </property>
@@ -282,6 +297,12 @@
              </item>
              <item row="2" column="0" >
               <widget class="QCheckBox" name="aLogsHRTCheckBox" >
+               <property name="toolTip" >
+                <string>Let the scope threads run in hard real time mode. 
+Can block the cpu, if to many data are transmitted.
+
+ Important for the saving process. Prevent saving from blocking and data loss.</string>
+               </property>
                <property name="text" >
                 <string>ALogs</string>
                </property>
@@ -566,6 +587,9 @@
             <property name="enabled" >
              <bool>true</bool>
             </property>
+            <property name="toolTip" >
+             <string>Connect to a target with the given task identifier at the given IP adress.</string>
+            </property>
             <property name="text" >
              <string>Connect</string>
             </property>
@@ -582,6 +606,9 @@
             <property name="enabled" >
              <bool>false</bool>
             </property>
+            <property name="toolTip" >
+             <string>If the target is waiting, then it can be started be clicking the button.</string>
+            </property>
             <property name="text" >
              <string>start</string>
             </property>
@@ -595,6 +622,9 @@
             <property name="enabled" >
              <bool>false</bool>
             </property>
+            <property name="toolTip" >
+             <string>Stops the target and disconnect.</string>
+            </property>
             <property name="text" >
              <string>stop</string>
             </property>
@@ -607,6 +637,9 @@
            <widget class="QPushButton" name="disconnectPushButton" >
             <property name="enabled" >
              <bool>false</bool>
+            </property>
+            <property name="toolTip" >
+             <string>Disconnect from the target, but the target is still running.</string>
             </property>
             <property name="text" >
              <string>Disconnect</string>
