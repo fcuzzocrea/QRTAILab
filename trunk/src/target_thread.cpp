@@ -573,6 +573,17 @@ end:
 						printf(" Sampling time...%f\n", Logs[n]->getDt());
 					}
 				}
+// 					for (int n = 0; n < Num_Logs; n++) {
+// 						if (Logs[n]->getDt() <= 0.) {
+// 						  printf("Fatal Error, Log %s samplig time is equal to %f,\n", Logs[n]->getName(), Logs[n]->getDt());
+// 						  printf("while Rtai-lab needs a finite, positive sampling time\n");
+// 						  printf("This error often occurs when the sampling time is inherited\n");
+// 						  printf("from so-called time-continous simulink blocks\n");
+// 
+// 						}
+// 
+// 					}
+				
 				Num_ALogs = get_alog_blocks_info(Target_Port, If_Task, Preferences.Target_ALog_Mbx_ID);
 				if (Verbose) {
 					printf("Number of target real time automatic logs: %d\n", Num_ALogs);

@@ -94,6 +94,7 @@ public slots:
     void changeRMSLabel(int);
     void holdPlot(int);
     void setFileDirectory();
+  void setOffsetToMean();
 private:
   qint32 fileVersion;
   int Num_Scopes;

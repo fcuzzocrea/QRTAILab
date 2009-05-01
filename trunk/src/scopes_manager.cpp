@@ -91,6 +91,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	connect( stopPushButton, SIGNAL( pressed() ), this, SLOT( stopSaving() ) );
 	connect( holdCheckBox , SIGNAL( stateChanged(int) ), this, SLOT( holdPlot(int) ) );
 	connect( dirPushButton, SIGNAL( pressed()), this, SLOT(setFileDirectory() ) );
+	connect( setMeanPushButton, SIGNAL( pressed()), this, SLOT(setOffsetToMean() ) );
 	currentScope=0;
 // 	for(int i=0; i<1; ++i){
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
@@ -650,6 +651,14 @@ void QRL_ScopesManager::changeOffset(double offset)
 	
 }
 
+void QRL_ScopesManager::setOffsetToMean()
+{
+	double offset = ScopeWindows[currentScope]->getTraceAverage(currentTrace);
+
+	offset=-(offset/ScopeWindows[currentScope]->getTraceDy(currentTrace));
+	changeOffset(offset);
+}
+
 void QRL_ScopesManager::changeSaveTime(double time)
 {
 	ScopeWindows[currentScope]->setSaveTime(time);
@@ -670,6 +679,9 @@ void QRL_ScopesManager::changeDy(const QString& text)
 {
 	if (!text.isEmpty() &&text.toDouble()!=0.0 ){
 		double dy=text.toDouble();
+		double offset = ScopeWindows[currentScope]->getTraceOffset(currentTrace);
+		offset=(offset*ScopeWindows[currentScope]->getTraceDy(currentTrace))/dy;
+		changeOffset(offset);
 		ScopeWindows[currentScope]->setTraceDy(dy,currentTrace);
 	}
 }
