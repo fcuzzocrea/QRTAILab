@@ -136,7 +136,6 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 		ScopesManager->hide();
 		delete ScopesManager;
 	}
-	//if (Logs_Manager) Logs_Manager->hide();
 	//if (ALogs_Manager) ALogs_Manager->hide();
 	if (LedsManager) {
 		LedsManager->hide();
