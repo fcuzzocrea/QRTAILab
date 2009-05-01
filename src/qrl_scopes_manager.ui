@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QRL_ScopesManager</class>
- <widget class="QDialog" name="QRL_ScopesManager" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QRL_ScopesManager">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,40 +10,40 @@
     <height>470</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="minimumSize" >
+  <property name="minimumSize">
    <size>
     <width>459</width>
     <height>470</height>
    </size>
   </property>
-  <property name="maximumSize" >
+  <property name="maximumSize">
    <size>
     <width>459</width>
     <height>470</height>
    </size>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Scopes Manager</string>
   </property>
-  <property name="windowIcon" >
-   <iconset resource="qrtailab.qrc" >
+  <property name="windowIcon">
+   <iconset resource="qrtailab.qrc">
     <normaloff>:/icons/scope_icon.xpm</normaloff>:/icons/scope_icon.xpm</iconset>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" >
-   <item row="1" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout">
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -51,18 +52,18 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="helpButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="helpButton">
+       <property name="text">
         <string>Help</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>16</width>
          <height>20</height>
@@ -71,18 +72,18 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="closeButton" >
-       <property name="text" >
+      <widget class="QPushButton" name="closeButton">
+       <property name="text">
         <string>Close Manager</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>16</width>
          <height>20</height>
@@ -92,21 +93,21 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="0" >
-    <widget class="QListWidget" name="scopeListWidget" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+   <item row="0" column="0">
+    <widget class="QListWidget" name="scopeListWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="maximumSize" >
+     <property name="maximumSize">
       <size>
        <width>16777215</width>
        <height>16777215</height>
       </size>
      </property>
-     <property name="baseSize" >
+     <property name="baseSize">
       <size>
        <width>100</width>
        <height>0</height>
@@ -114,287 +115,287 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" >
-    <widget class="QTabWidget" name="tabWidget" >
-     <property name="currentIndex" >
-      <number>0</number>
+   <item row="0" column="1">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="Scope" >
-      <attribute name="title" >
+     <widget class="QWidget" name="Scope">
+      <attribute name="title">
        <string>Scope</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_5" >
-       <item row="0" column="0" >
-        <widget class="QCheckBox" name="showCheckBox" >
-         <property name="text" >
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="showCheckBox">
+         <property name="text">
           <string>Show/Hide</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1" >
-        <widget class="QCheckBox" name="holdCheckBox" >
-         <property name="toolTip" >
+       <item row="0" column="1">
+        <widget class="QCheckBox" name="holdCheckBox">
+         <property name="toolTip">
           <string>stop plotting will reduce cpu load. Saving is still possible!</string>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>hold Plot</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0" colspan="2" >
-        <widget class="QToolBox" name="toolBox" >
-         <property name="currentIndex" >
-          <number>0</number>
+       <item row="1" column="0" colspan="2">
+        <widget class="QToolBox" name="toolBox">
+         <property name="currentIndex">
+          <number>1</number>
          </property>
-         <widget class="QWidget" name="Seite" >
-          <property name="geometry" >
+         <widget class="QWidget" name="Seite">
+          <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
             <width>189</width>
-            <height>256</height>
+            <height>261</height>
            </rect>
           </property>
-          <attribute name="label" >
+          <attribute name="label">
            <string>Display</string>
           </attribute>
-          <layout class="QGridLayout" name="gridLayout_4" >
-           <item row="0" column="0" colspan="2" >
-            <widget class="QLabel" name="maxLabel_4" >
-             <property name="text" >
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0" colspan="2">
+            <widget class="QLabel" name="maxLabel_4">
+             <property name="text">
               <string>Divider</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="2" >
-            <widget class="QwtCounter" name="dividerCounter" >
-             <property name="enabled" >
+           <item row="0" column="2">
+            <widget class="QwtCounter" name="dividerCounter">
+             <property name="enabled">
               <bool>true</bool>
              </property>
-             <property name="toolTip" >
+             <property name="toolTip">
               <string>Reduces the Number of plotted points. Can be used to reduce cpu load.</string>
              </property>
-             <property name="numButtons" >
+             <property name="numButtons">
               <number>1</number>
              </property>
-             <property name="basicstep" stdset="0" >
+             <property name="basicstep" stdset="0">
               <double>1.000000000000000</double>
              </property>
-             <property name="minValue" >
+             <property name="minValue">
               <double>1.000000000000000</double>
              </property>
-             <property name="maxValue" >
+             <property name="maxValue">
               <double>100000.000000000000000</double>
              </property>
-             <property name="stepButton1" >
+             <property name="stepButton1">
               <number>1</number>
              </property>
-             <property name="stepButton2" >
+             <property name="stepButton2">
               <number>10</number>
              </property>
-             <property name="stepButton3" >
+             <property name="stepButton3">
               <number>100</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <double>1.000000000000000</double>
              </property>
-             <property name="editable" >
+             <property name="editable">
               <bool>true</bool>
              </property>
             </widget>
            </item>
-           <item row="1" column="0" >
-            <widget class="QLabel" name="dataPointLabel" >
-             <property name="text" >
+           <item row="1" column="0">
+            <widget class="QLabel" name="dataPointLabel">
+             <property name="text">
               <string>Data points</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1" colspan="2" >
-            <widget class="QwtCounter" name="dataCounter" >
-             <property name="enabled" >
+           <item row="1" column="1" colspan="2">
+            <widget class="QwtCounter" name="dataCounter">
+             <property name="enabled">
               <bool>true</bool>
              </property>
-             <property name="toolTip" >
+             <property name="toolTip">
               <string>Number of shown data points in the plot window.</string>
              </property>
-             <property name="numButtons" >
+             <property name="numButtons">
               <number>0</number>
              </property>
-             <property name="basicstep" stdset="0" >
+             <property name="basicstep" stdset="0">
               <double>1.000000000000000</double>
              </property>
-             <property name="minValue" >
+             <property name="minValue">
               <double>5.000000000000000</double>
              </property>
-             <property name="maxValue" >
+             <property name="maxValue">
               <double>100000.000000000000000</double>
              </property>
-             <property name="stepButton1" >
+             <property name="stepButton1">
               <number>100</number>
              </property>
-             <property name="stepButton2" >
+             <property name="stepButton2">
               <number>1000</number>
              </property>
-             <property name="stepButton3" >
+             <property name="stepButton3">
               <number>5000</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <double>100.000000000000000</double>
              </property>
-             <property name="editable" >
+             <property name="editable">
               <bool>false</bool>
              </property>
             </widget>
            </item>
-           <item row="2" column="0" >
-            <widget class="QLabel" name="maxLabel_3" >
-             <property name="text" >
+           <item row="2" column="0">
+            <widget class="QLabel" name="maxLabel_3">
+             <property name="text">
               <string>Frames</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="1" colspan="2" >
-            <widget class="QwtCounter" name="rrCounter" >
-             <property name="toolTip" >
+           <item row="2" column="1" colspan="2">
+            <widget class="QwtCounter" name="rrCounter">
+             <property name="toolTip">
               <string>frames per seconds</string>
              </property>
-             <property name="numButtons" >
+             <property name="numButtons">
               <number>1</number>
              </property>
-             <property name="basicstep" stdset="0" >
+             <property name="basicstep" stdset="0">
               <double>1.000000000000000</double>
              </property>
-             <property name="minValue" >
+             <property name="minValue">
               <double>0.010000000000000</double>
              </property>
-             <property name="maxValue" >
+             <property name="maxValue">
               <double>100.000000000000000</double>
              </property>
-             <property name="stepButton1" >
+             <property name="stepButton1">
               <number>1</number>
              </property>
-             <property name="value" >
+             <property name="value">
               <double>20.000000000000000</double>
              </property>
             </widget>
            </item>
-           <item row="3" column="0" >
-            <widget class="QLabel" name="maxLabel_2" >
-             <property name="text" >
+           <item row="3" column="0">
+            <widget class="QLabel" name="maxLabel_2">
+             <property name="text">
               <string>sec/div</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="1" colspan="2" >
-            <widget class="QComboBox" name="dxComboBox" >
-             <property name="toolTip" >
+           <item row="3" column="1" colspan="2">
+            <widget class="QComboBox" name="dxComboBox">
+             <property name="toolTip">
               <string>set the seconds per devision to scale the x-axis of the plot.</string>
              </property>
-             <property name="editable" >
+             <property name="editable">
               <bool>true</bool>
              </property>
-             <property name="currentIndex" >
+             <property name="currentIndex">
               <number>4</number>
              </property>
-             <property name="minimumContentsLength" >
+             <property name="minimumContentsLength">
               <number>1</number>
              </property>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>0.001</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>0.005</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>0.01</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>0.05</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>0.1</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>0.5</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>1</string>
               </property>
              </item>
             </widget>
            </item>
-           <item row="4" column="0" colspan="3" >
-            <widget class="QComboBox" name="displayComboBox" >
-             <property name="toolTip" >
+           <item row="4" column="0" colspan="3">
+            <widget class="QComboBox" name="displayComboBox">
+             <property name="toolTip">
               <string>Plotting mode</string>
              </property>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>Continuous Roling</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>Overwrite</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>Trigger +to-</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>Trigger -to+</string>
               </property>
              </item>
             </widget>
            </item>
-           <item row="5" column="0" colspan="3" >
-            <widget class="QComboBox" name="directionComboBox" >
-             <property name="toolTip" >
+           <item row="5" column="0" colspan="3">
+            <widget class="QComboBox" name="directionComboBox">
+             <property name="toolTip">
               <string>Plotting direction</string>
              </property>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>right to left</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>left to right</string>
               </property>
              </item>
             </widget>
            </item>
-           <item row="6" column="0" colspan="3" >
-            <widget class="QComboBox" name="optionComboBox" >
+           <item row="6" column="0" colspan="3">
+            <widget class="QComboBox" name="optionComboBox">
              <item>
-              <property name="text" >
+              <property name="text">
                <string>Show Grid</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>set BG Color</string>
               </property>
              </item>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>set Grid Color</string>
               </property>
              </item>
@@ -402,49 +403,49 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page" >
-          <property name="geometry" >
+         <widget class="QWidget" name="page">
+          <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>189</width>
-            <height>256</height>
+            <width>213</width>
+            <height>261</height>
            </rect>
           </property>
-          <attribute name="label" >
+          <attribute name="label">
            <string>Trigger</string>
           </attribute>
-          <layout class="QGridLayout" >
-           <item row="0" column="0" >
-            <widget class="QCheckBox" name="oneShotCheckBox" >
-             <property name="toolTip" >
+          <layout class="QGridLayout">
+           <item row="0" column="0">
+            <widget class="QCheckBox" name="oneShotCheckBox">
+             <property name="toolTip">
               <string>Enable one shot triggering. Press the start button to restart triggering. </string>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>One Shot</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1" >
-            <widget class="QPushButton" name="startTriggerPushButton" >
-             <property name="text" >
+           <item row="0" column="1">
+            <widget class="QPushButton" name="startTriggerPushButton">
+             <property name="text">
               <string>Start</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0" >
-            <widget class="QLabel" name="label_3" >
-             <property name="text" >
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
               <string>Trigger offset</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1" >
+           <item row="1" column="1">
             <spacer>
-             <property name="orientation" >
+             <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" stdset="0" >
+             <property name="sizeHint" stdset="0">
               <size>
                <width>40</width>
                <height>20</height>
@@ -452,53 +453,53 @@
              </property>
             </spacer>
            </item>
-           <item row="2" column="0" >
-            <widget class="QwtCounter" name="triggerCounter" >
-             <property name="toolTip" >
+           <item row="2" column="0">
+            <widget class="QwtCounter" name="triggerCounter">
+             <property name="toolTip">
               <string>trigger barrier</string>
              </property>
-             <property name="numButtons" >
+             <property name="numButtons">
               <number>0</number>
              </property>
-             <property name="basicstep" stdset="0" >
+             <property name="basicstep" stdset="0">
               <double>0.100000000000000</double>
              </property>
-             <property name="minValue" >
+             <property name="minValue">
               <double>-1000000.000000000000000</double>
              </property>
-             <property name="maxValue" >
+             <property name="maxValue">
               <double>1000000.000000000000000</double>
              </property>
             </widget>
            </item>
-           <item row="2" column="1" >
-            <widget class="QComboBox" name="traceComboBox" >
-             <property name="toolTip" >
+           <item row="2" column="1">
+            <widget class="QComboBox" name="traceComboBox">
+             <property name="toolTip">
               <string>trigger source</string>
              </property>
              <item>
-              <property name="text" >
+              <property name="text">
                <string>Trace 1</string>
               </property>
              </item>
             </widget>
            </item>
-           <item row="3" column="0" colspan="2" >
-            <widget class="QPushButton" name="triggerPushButton" >
-             <property name="toolTip" >
+           <item row="3" column="0" colspan="2">
+            <widget class="QPushButton" name="triggerPushButton">
+             <property name="toolTip">
               <string>Releases a trigger event.</string>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>Manual Trigger</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="0" >
+           <item row="4" column="0">
             <spacer>
-             <property name="orientation" >
+             <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
-             <property name="sizeHint" stdset="0" >
+             <property name="sizeHint" stdset="0">
               <size>
                <width>20</width>
                <height>40</height>
@@ -508,186 +509,172 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page_2" >
-          <property name="geometry" >
+         <widget class="QWidget" name="page_2">
+          <property name="geometry">
            <rect>
-            <x>-3</x>
+            <x>0</x>
             <y>0</y>
             <width>192</width>
-            <height>237</height>
+            <height>246</height>
            </rect>
           </property>
-          <attribute name="label" >
+          <attribute name="label">
            <string>Saving</string>
           </attribute>
-          <layout class="QGridLayout" >
-           <item row="0" column="0" >
-            <widget class="QLabel" name="label_2" >
-             <property name="text" >
+          <layout class="QGridLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="text">
               <string>Directory</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0" colspan="2" >
-            <widget class="QLineEdit" name="dirLineEdit" >
-             <property name="toolTip" >
+           <item row="1" column="0" colspan="2">
+            <widget class="QLineEdit" name="dirLineEdit">
+             <property name="toolTip">
               <string>File directory</string>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>./</string>
              </property>
             </widget>
            </item>
-           <item row="7" column="0" colspan="2" >
-            <widget class="QwtCounter" name="timeCounter" >
-             <property name="toolTip" >
+           <item row="7" column="0" colspan="2">
+            <widget class="QwtCounter" name="timeCounter">
+             <property name="toolTip">
               <string>Time duration of the next saving</string>
              </property>
-             <property name="layoutDirection" >
+             <property name="layoutDirection">
               <enum>Qt::RightToLeft</enum>
              </property>
-             <property name="numButtons" >
+             <property name="numButtons">
               <number>0</number>
              </property>
-             <property name="minValue" >
+             <property name="minValue">
               <double>0.000000000000000</double>
              </property>
-             <property name="maxValue" >
+             <property name="maxValue">
               <double>1000000.000000000000000</double>
              </property>
-             <property name="value" >
+             <property name="value">
               <double>1.000000000000000</double>
              </property>
             </widget>
            </item>
-           <item row="8" column="0" colspan="2" >
-            <widget class="QProgressBar" name="saveProgressBar" >
-             <property name="enabled" >
+           <item row="8" column="0" colspan="2">
+            <widget class="QProgressBar" name="saveProgressBar">
+             <property name="enabled">
               <bool>false</bool>
              </property>
-             <property name="value" >
+             <property name="value">
               <number>100</number>
              </property>
             </widget>
            </item>
-           <item row="11" column="0" >
-            <widget class="QPushButton" name="savePushButton" >
-             <property name="toolTip" >
+           <item row="11" column="0">
+            <widget class="QPushButton" name="savePushButton">
+             <property name="toolTip">
               <string>start saving</string>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>Save</string>
              </property>
-             <property name="checkable" >
+             <property name="checkable">
               <bool>true</bool>
              </property>
-             <property name="autoDefault" >
+             <property name="autoDefault">
               <bool>false</bool>
              </property>
             </widget>
            </item>
-           <item row="11" column="1" >
-            <widget class="QPushButton" name="stopPushButton" >
-             <property name="enabled" >
+           <item row="11" column="1">
+            <widget class="QPushButton" name="stopPushButton">
+             <property name="enabled">
               <bool>false</bool>
              </property>
-             <property name="toolTip" >
+             <property name="toolTip">
               <string>stop saving</string>
              </property>
-             <property name="text" >
+             <property name="text">
               <string>stop</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1" >
-            <widget class="QPushButton" name="dirPushButton" >
-             <property name="text" >
+           <item row="0" column="1">
+            <widget class="QPushButton" name="dirPushButton">
+             <property name="text">
               <string>Set Directory</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="0" >
-            <widget class="QLabel" name="label_5" >
-             <property name="text" >
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
               <string>FileName</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="1" >
-            <widget class="QLineEdit" name="fileLineEdit" >
-             <property name="toolTip" >
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="fileLineEdit">
+             <property name="toolTip">
               <string>file name</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="0" >
-            <widget class="QLabel" name="label" >
-             <property name="text" >
+           <item row="6" column="0">
+            <widget class="QLabel" name="label">
+             <property name="text">
               <string>Time [s]</string>
              </property>
             </widget>
            </item>
           </layout>
-          <zorder>label_2</zorder>
-          <zorder>dirLineEdit</zorder>
-          <zorder>timeCounter</zorder>
-          <zorder>saveProgressBar</zorder>
-          <zorder>savePushButton</zorder>
-          <zorder>stopPushButton</zorder>
-          <zorder>dirPushButton</zorder>
-          <zorder>label_5</zorder>
-          <zorder>label_5</zorder>
-          <zorder>fileLineEdit</zorder>
-          <zorder>label</zorder>
          </widget>
         </widget>
        </item>
       </layout>
-      <zorder>showCheckBox</zorder>
-      <zorder>holdCheckBox</zorder>
-      <zorder>toolBox</zorder>
      </widget>
-     <widget class="QWidget" name="Trace" >
-      <attribute name="title" >
+     <widget class="QWidget" name="Trace">
+      <attribute name="title">
        <string>Trace options</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_3" >
-       <item row="0" column="0" colspan="2" >
-        <layout class="QHBoxLayout" >
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0" colspan="2">
+        <layout class="QHBoxLayout">
          <item>
-          <widget class="QLabel" name="label_4" >
-           <property name="text" >
+          <widget class="QLabel" name="label_4">
+           <property name="text">
             <string>name</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="traceNameLineEdit" >
-           <property name="toolTip" >
+          <widget class="QLineEdit" name="traceNameLineEdit">
+           <property name="toolTip">
             <string>set a  new trace name</string>
            </property>
           </widget>
          </item>
         </layout>
        </item>
-       <item rowspan="2" row="1" column="0" >
-        <widget class="QGroupBox" name="groupBox_2" >
-         <property name="title" >
+       <item row="1" column="0" rowspan="2">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
           <string>Line Width</string>
          </property>
-         <layout class="QGridLayout" >
-          <item row="0" column="0" >
-           <widget class="QwtCounter" name="lineWidthCounter" >
-            <property name="numButtons" >
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QwtCounter" name="lineWidthCounter">
+            <property name="numButtons">
              <number>0</number>
             </property>
-            <property name="basicstep" stdset="0" >
+            <property name="basicstep" stdset="0">
              <double>1.000000000000000</double>
             </property>
-            <property name="minValue" >
+            <property name="minValue">
              <double>1.000000000000000</double>
             </property>
-            <property name="maxValue" >
+            <property name="maxValue">
              <double>50.000000000000000</double>
             </property>
            </widget>
@@ -695,159 +682,166 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="1" >
-        <widget class="QCheckBox" name="showTraceCheckBox" >
-         <property name="toolTip" >
+       <item row="1" column="1">
+        <widget class="QCheckBox" name="showTraceCheckBox">
+         <property name="toolTip">
           <string/>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>Show/Hide</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1" >
-        <widget class="QPushButton" name="traceColorPushButton" >
-         <property name="text" >
+       <item row="2" column="1">
+        <widget class="QPushButton" name="traceColorPushButton">
+         <property name="text">
           <string>Line Color</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="0" >
-        <widget class="QGroupBox" name="groupBox_3" >
-         <property name="title" >
+       <item row="3" column="0">
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
           <string>offset</string>
          </property>
-         <layout class="QGridLayout" >
-          <item row="0" column="0" >
-           <widget class="QwtCounter" name="offsetCounter" >
-            <property name="numButtons" >
+         <layout class="QGridLayout">
+          <item row="1" column="0">
+           <widget class="QwtCounter" name="offsetCounter">
+            <property name="numButtons">
              <number>0</number>
             </property>
-            <property name="basicstep" stdset="0" >
+            <property name="basicstep" stdset="0">
              <double>0.100000000000000</double>
             </property>
-            <property name="minValue" >
+            <property name="minValue">
              <double>-1000000.000000000000000</double>
             </property>
-            <property name="maxValue" >
+            <property name="maxValue">
              <double>1000000.000000000000000</double>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QLabel" name="offsetLabel" >
-            <property name="text" >
+          <item row="1" column="1">
+           <widget class="QLabel" name="offsetLabel">
+            <property name="text">
              <string>div</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QwtWheel" name="offsetWheel" />
+          <item row="2" column="0">
+           <widget class="QwtWheel" name="offsetWheel"/>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QPushButton" name="setMeanPushButton">
+            <property name="text">
+             <string>set to mean</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="3" column="1" >
-        <widget class="QGroupBox" name="groupBox_4" >
-         <property name="title" >
+       <item row="3" column="1">
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
           <string>dy</string>
          </property>
-         <layout class="QGridLayout" >
-          <item row="0" column="0" >
-           <widget class="QLabel" name="label_6" >
-            <property name="text" >
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
              <string>Units/div:</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QComboBox" name="dyComboBox" >
-            <property name="editable" >
+          <item row="1" column="0">
+           <widget class="QComboBox" name="dyComboBox">
+            <property name="editable">
              <bool>true</bool>
             </property>
-            <property name="currentIndex" >
+            <property name="currentIndex">
              <number>10</number>
             </property>
-            <property name="maxVisibleItems" >
+            <property name="maxVisibleItems">
              <number>20</number>
             </property>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>0.001</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>0.002</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>0.005</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>0.01</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>0.02</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>0.05</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>0.1</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>0.2</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>0.5</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>1</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>2</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>5</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>10</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>50</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>100</string>
              </property>
             </item>
             <item>
-             <property name="text" >
+             <property name="text">
               <string>1000</string>
              </property>
             </item>
@@ -856,85 +850,85 @@
          </layout>
         </widget>
        </item>
-       <item row="4" column="0" colspan="2" >
-        <widget class="QGroupBox" name="groupBox" >
-         <property name="title" >
+       <item row="4" column="0" colspan="2">
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
           <string>show</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout" >
-          <item row="0" column="0" >
-           <widget class="QCheckBox" name="zeroAxisCheckBox" >
-            <property name="text" >
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="zeroAxisCheckBox">
+            <property name="text">
              <string>Zero Axis</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
-           <widget class="QCheckBox" name="minCheckBox" >
-            <property name="enabled" >
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="minCheckBox">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Min</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="1" >
-           <widget class="QCheckBox" name="averageCheckBox" >
-            <property name="enabled" >
+          <item row="3" column="1">
+           <widget class="QCheckBox" name="averageCheckBox">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Average</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" >
-           <widget class="QCheckBox" name="labelCheckBox" >
-            <property name="enabled" >
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="labelCheckBox">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Label</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1" >
-           <widget class="QCheckBox" name="maxCheckBox" >
-            <property name="enabled" >
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="maxCheckBox">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Max</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0" >
-           <widget class="QCheckBox" name="unitCheckBox" >
-            <property name="enabled" >
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="unitCheckBox">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>Units/div</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="0" >
-           <widget class="QCheckBox" name="ppCheckBox" >
-            <property name="enabled" >
+          <item row="4" column="0">
+           <widget class="QCheckBox" name="ppCheckBox">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>PP</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="1" >
-           <widget class="QCheckBox" name="rmsCheckBox" >
-            <property name="enabled" >
+          <item row="4" column="1">
+           <widget class="QCheckBox" name="rmsCheckBox">
+            <property name="enabled">
              <bool>true</bool>
             </property>
-            <property name="text" >
+            <property name="text">
              <string>RMS</string>
             </property>
            </widget>
@@ -961,7 +955,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="qrtailab.qrc" />
+  <include location="qrtailab.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -970,11 +964,11 @@
    <receiver>QRL_ScopesManager</receiver>
    <slot>hide()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>304</x>
      <y>339</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>394</x>
      <y>334</y>
     </hint>

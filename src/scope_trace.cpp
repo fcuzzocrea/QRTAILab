@@ -373,6 +373,17 @@ double  QRL_ScopeTrace::getOffset()
 {
 		return offset;
 }
+
+double QRL_ScopeTrace::getAverage()
+{
+average=0.;
+	for (int k=0;k<NDataSoll;k++)
+		average+=(d_y[k]-offset)*dy/((double)NDataSoll);
+
+return average;
+
+
+}
    void QRL_ScopeTrace::setDy(double d){
 
    		 for (unsigned int i = 0; i< NDataSoll; i++)

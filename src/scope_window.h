@@ -110,6 +110,7 @@ public:
    int getTraceWidth(int);
    void setTraceOffset(double,int);
    double getTraceOffset(int);
+    double getTraceAverage(int);
    void setTraceDy(double,int);
    double getTraceDy(int);
    void setSaveTime(double t) {saveTime=t;}

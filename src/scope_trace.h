@@ -72,6 +72,7 @@ void setLabelsXValue(double x);
    int getWidth();
    void setOffset(double);
    double getOffset();
+   double getAverage();
    void setDy(double);
    double getDy();
    void show(bool);

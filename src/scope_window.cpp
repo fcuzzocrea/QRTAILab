@@ -673,6 +673,19 @@ double  QRL_ScopeWindow::getTraceOffset(int trace)
 	}
 	return 0.;
 }
+
+double  QRL_ScopeWindow::getTraceAverage(int trace)
+{
+	if (trace<Scope->getNTraces()){
+		return Traces[trace]->getAverage();
+	}
+	return 0.;
+}
+
+
+
+
+
    void QRL_ScopeWindow::setTraceDy(double d, int trace){
 
 	if (trace<Scope->getNTraces()){
