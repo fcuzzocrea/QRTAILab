@@ -31,7 +31,7 @@
 
 #include "ui_qrl_logs_manager.h"
 #include "qrtailab_core.h"
-
+#include "log_window.h"
 
 
 
@@ -47,6 +47,7 @@ public:
   QRL_LogsManager(QWidget *parent = 0, QRtaiLabCore* qtargetinterface=NULL);
   ~QRL_LogsManager();
       void setFileVersion(qint32 v);
+  QRL_LogWindow** getLogWindows(){return LogWindows;}
 public slots:
   void showLogOptions( QListWidgetItem * item  );
   void showLogOptions( int );
@@ -55,12 +56,15 @@ public slots:
   void changeSaveTime(double);
   void changeFileName(const QString&);
    void refresh();
-       void setFileDirectory();
+   void setFileDirectory();
+  void  showLog(int);
+   void holdPlot(int);
 private:
   qint32 fileVersion;
   int Num_Logs;
   QRL_LogData **Logs;
   unsigned int currentLog;
+  QRL_LogWindow** LogWindows;
  // GetScopeDataThread* Get_Scope_Data_Thread;
   QRtaiLabCore* qTargetInterface;
   QTimer *timer;
