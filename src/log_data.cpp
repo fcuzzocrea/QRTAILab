@@ -30,8 +30,10 @@
 
 QRL_LogData::QRL_LogData()
 {
+	    visible = false;
 	    isSaving=0;
   Save_File_Pointer=NULL;
+	    plotting=false;
 }
 
 

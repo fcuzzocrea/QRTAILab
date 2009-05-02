@@ -38,8 +38,10 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
 	Num_Logs=qTargetInterface->getLogNumber();
 	Logs=qTargetInterface->getLogs();
 	const QIcon LogIcon =QIcon(QString::fromUtf8(":/icons/log_icon.xpm"));
+	LogWindows = new QRL_LogWindow* [Num_Logs]; 
 	for (int i=0; i<Num_Logs; ++i){
 		logItems << new QListWidgetItem(LogIcon,qTargetInterface->getLogName(i), logListWidget);
+		LogWindows[i]=new QRL_LogWindow(parent,Logs[i]);
 	}
 	//connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showScope(int) ) );
 	connect( logListWidget, SIGNAL( itemActivated( QListWidgetItem * ) ), this, SLOT( showLogOptions( QListWidgetItem *  ) ) );
@@ -50,7 +52,13 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
 	connect( fileLineEdit, SIGNAL( textEdited(const QString &) ), this, SLOT( changeFileName(const QString&) ) );
 	connect( dirPushButton, SIGNAL( pressed()), this, SLOT(setFileDirectory() ) );
 
+	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showLog(int) ) );
+	connect( holdCheckBox , SIGNAL( stateChanged(int) ), this, SLOT( holdPlot(int) ) );
+
 	currentLog=0;
+	holdCheckBox->setCheckState(Qt::Checked);
+	LogWindows[currentLog]->setPlotting(false);
+	
 // 	for(int i=0; i<1; ++i){
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
 // 		traceComboBox->addItem(tr("Trace ")+tr("%1").arg(i+1));
@@ -99,6 +107,27 @@ void QRL_LogsManager::refresh()
     saveProgressBar->setMaximum(Logs[currentLog]->n_points_to_save());
      saveProgressBar->setValue(Logs[currentLog]->get_points_counter());
   }
+}
+
+void QRL_LogsManager::showLog(int state) 
+{
+	if(state==Qt::Checked){
+		LogWindows[currentLog]->show();
+	} else {
+		LogWindows[currentLog]->hide();
+	}
+
+}
+
+
+void QRL_LogsManager::holdPlot(int state) {
+
+	if( state==Qt::Checked)	
+		LogWindows[currentLog]->setPlotting(false);
+	else
+		LogWindows[currentLog]->setPlotting(true);
+
+
 }
 
 void QRL_LogsManager::setFileDirectory(){

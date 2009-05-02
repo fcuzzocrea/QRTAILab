@@ -250,8 +250,11 @@ qTargetInterface->setPreferences(p);
 			}			
 			if (qTargetInterface->getLogNumber()>0){
 			enableActionShowLog(true);
-			if (! LogsManager){
-				LogsManager = new QRL_LogsManager(this,qTargetInterface);
+				if (! LogsManager){
+					LogsManager = new 		QRL_LogsManager(this,qTargetInterface);
+					for (int i=0; i<qTargetInterface->getLogNumber(); ++i){
+						 mdiArea->addSubWindow(LogsManager->getLogWindows()[i]);
+					}
 			}
 			if (LogsManager) {
 				//targetthread->startLedThreads();//LedsManager->getLedWindows());
