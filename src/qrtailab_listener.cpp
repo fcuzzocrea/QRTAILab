@@ -219,22 +219,22 @@ void GetScopeDataThread::run()
 		//	Scope_Win->Plot->redraw();
 		//}
 
-/*		if (ScopeWindow->start_saving()) {
-			jl = 0;
-			printf("%d from %d saved\n",save_idx,ScopeWindow->n_points_to_save());
-			for (n = 0; n < MsgData; n++) {
-				for (nn = 0; nn < ntraces + 1; nn++) {
-					fprintf(ScopeWindow->save_file(), "%1.10f ", MsgBuf[jl++]);
-				}
-				fprintf(ScopeWindow->save_file(), "\n");
-				save_idx++;
-				if (save_idx == ScopeWindow->n_points_to_save()) {
-					ScopeWindow->stop_saving();
-					save_idx = 0;
-					break;
-				}
-			}
-		}*/
+
+//			jl = 0;
+//			printf("%d from %d saved\n",save_idx,ScopeWindow->n_points_to_save());
+//			for (n = 0; n < MsgData; n++) {
+//				for (nn = 0; nn < ntraces + 1; nn++) {
+//					fprintf(ScopeWindow->save_file(), "%1.10f ", MsgBuf[jl++]);
+//				}
+//				fprintf(ScopeWindow->save_file(), "\n");
+//				save_idx++;
+//				if (save_idx == ScopeWindow->n_points_to_save()) {
+//					ScopeWindow->stop_saving();
+//					save_idx = 0;
+//					break;
+//				}
+//			}
+//		}
 
 /*
 	}
