@@ -645,7 +645,7 @@ static void *rt_get_log_data(void *arg)
                                 for (i = 0; i < log->getNRow(); i++) {
                                         j = n*log->getNRow()*log->getNCol() + i;
                                         for (k = 0; k < log->getNCol(); k++) {
-//                                            log->setLogValue(MsgBuf[j],i,k);
+                                            log->setLogValue(MsgBuf[j],i,k);
                                                 j += log->getNRow();
                                         }
                                 }

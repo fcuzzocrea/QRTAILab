@@ -48,6 +48,34 @@ QRL_LogWindow::QRL_LogWindow(QWidget *parent,QRL_LogData *log)
     this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/log_icon.xpm")));
     this->setWindowFlags(windowFlags() ^ Qt::WindowMaximizeButtonHint );
    RefreshRate=20.;
+
+
+       matrixPlot = new QTableWidget(Log->getNRow(),Log->getNCol(),this);
+
+     for (int i=0;i<Log->getNRow();i++)
+           for (int j=0;j<Log->getNCol();j++){
+             QTableWidgetItem *newItem = new QTableWidgetItem(tr("0"));
+             matrixPlot->setItem(i, j, newItem);
+            }\
+    //qwtPlot=this;
+    matrixPlot->setObjectName(QString::fromUtf8("qwtPlot"));
+
+    this->setWidget(matrixPlot);
+    this->setWindowTitle(QApplication::translate("QRL_LogWindow", Log->name, 0, QApplication::UnicodeUTF8));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
         timer->start((int)(1./RefreshRate*1000.));
@@ -85,6 +113,17 @@ void QRL_LogWindow::setPlotting(bool b){
 	timer->start((int)(1./RefreshRate*1000.));
 	
 	//Plotting_Scope_Data_Thread->changeRefreshRate(RefreshRate);
+
+}
+void QRL_LogWindow::setValue(const QVector< QVector<float> > &v){
+for (int i=0;i<v.size();i++){
+        for (int j=0;j<v.at(i).size();j++){
+//             printf(" %f ",v.at(i).at(j));
+             (matrixPlot->item(i,j))->setText(tr("%1").arg(v.at(i).at(j)));
+         }
+//         printf("\n");
+}
+//  printf("\n");
 
 }
 

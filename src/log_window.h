@@ -4,7 +4,7 @@
  *                                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License           *
+ *   it under the terms of the GNU General Public License                  *
  *   as published by  the Free Software Foundation; either version 2       *
  *   of the License, or  (at your option) any later version.               *
  *                                                                         *
@@ -50,6 +50,7 @@ public:
     void setFileVersion(qint32 v){fileVersion=v;}
     void setPlotting(bool b);
     bool isPlotting(){return plotting;}
+    void setValue(const QVector< QVector<float> > &v);
 public slots:
    void refresh();
   //void setValue(int,float);
@@ -65,6 +66,8 @@ private:
  QRL_LogData *Log;
   double saveTime;
   QString fileName;
+
+  QTableWidget *matrixPlot;
   friend QDataStream& operator<<(QDataStream &out, const QRL_LogWindow &d);
   friend QDataStream& operator>>(QDataStream &in, QRL_LogWindow(&d));
 };

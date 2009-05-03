@@ -36,6 +36,8 @@ class QRL_LogData
 public:
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
 	QRL_LogData();
+        ~QRL_LogData();
+          void initializeDataVectors();
 	const char* getName(){return name;}
 	float getDt(){return dt;} 
 	int getNRow(){return nrow;}
@@ -55,9 +57,14 @@ public:
 
     void setPlotting(bool b){plotting=b;}
     bool isPlotting(){return plotting;}
+
+        void setLogValue(float v, int row, int col);
+        QVector< QVector<float> > getLogValue();
 private:
 	int nrow;
 	int ncol;
+        double logRefreshRate;
+        QVector< QVector <float> >  LogValues;
 	float dt;
 	int isSaving;
    	FILE* Save_File_Pointer;
