@@ -1084,6 +1084,7 @@ void TargetThread::startLogThreads()
 {
 	for (int n = 0; n < Num_Logs; n++) {
 		unsigned int msg;
+                Logs[n]->initializeDataVectors();
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup(getPreferences().Target_Log_Mbx_ID);

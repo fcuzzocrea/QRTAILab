@@ -36,6 +36,32 @@ QRL_LogData::QRL_LogData()
 	    plotting=false;
 }
 
+QRL_LogData::~QRL_LogData()
+{
+
+}
+
+void QRL_LogData::initializeDataVectors(){
+
+
+                logRefreshRate=30.;
+                LogValues.resize(this->getNRow());
+
+                for (int t=0; t<this->getNRow(); t++){
+                        LogValues[t].resize(this->getNCol());
+                }
+}
+
+ void QRL_LogData::setLogValue(float v, int row, int col){
+
+        LogValues[row][col]=v;
+ }
+
+
+  QVector< QVector<float> > QRL_LogData::getLogValue(){
+
+        return LogValues;
+}
 
 int  QRL_LogData::start_saving() {return isSaving ;}
 

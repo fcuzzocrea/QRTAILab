@@ -53,6 +53,7 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
    <value key="QtVersionId" type="int" >2</value>
+   <value key="addQDumper" type="" ></value>
    <value key="buildDirectory" type="QString" >/home/nahrstaedt/svn/qrtailab/trunk</value>
    <value key="useShadowBuild" type="bool" >true</value>
   </valuemap>
@@ -62,6 +63,7 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
    <value key="QtVersionId" type="int" >2</value>
+   <value key="addQDumper" type="" ></value>
    <value key="buildDirectory" type="QString" >/home/nahrstaedt/svn/qrtailab/trunk</value>
    <value key="useShadowBuild" type="bool" >true</value>
   </valuemap>
@@ -109,12 +111,12 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-L8PB5PqhAh,guid=4c01a9d09e2c405cd991d41f49fd5561</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-JOYEDG7rjI,guid=6d5be3ada779f145413dc5b949fdf06d</value>
     <value type="QString" >DESKTOP_SESSION=kde</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
     <value type="QString" >DM_CONTROL=/var/run/xdmctl</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/gpg-LGxvpH/S.gpg-agent:3605:1</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/gpg-XiQWbd/S.gpg-agent:3633:1</value>
     <value type="QString" >GS_LIB=/home/nahrstaedt/.fonts</value>
     <value type="QString" >GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/nahrstaedt/.gtkrc-2.0:/home/nahrstaedt/.gtkrc-2.0-kde4:/home/nahrstaedt/.kde/share/config/gtkrc-2.0</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/nahrstaedt/.gtkrc::/home/nahrstaedt/.kde/share/config/gtkrc</value>
@@ -134,16 +136,16 @@
     <value type="QString" >PWD=/home/nahrstaedt</value>
     <value type="QString" >QTDIR=/usr</value>
     <value type="QString" >QT_PLUGIN_PATH=/home/nahrstaedt/.kde/lib/kde4/plugins/:/usr/lib/kde4/plugins/</value>
-    <value type="QString" >SESSION_MANAGER=local/tamora:/tmp/.ICE-unix/3701</value>
+    <value type="QString" >SESSION_MANAGER=local/tamora:/tmp/.ICE-unix/3736</value>
     <value type="QString" >SHELL=/bin/bash</value>
     <value type="QString" >SHLVL=0</value>
-    <value type="QString" >SSH_AGENT_PID=3604</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/ssh-teyMxI3552/agent.3552</value>
+    <value type="QString" >SSH_AGENT_PID=3632</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/ssh-StyGHp3580/agent.3580</value>
     <value type="QString" >USER=nahrstaedt</value>
     <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XCURSOR_THEME=oxy-white</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/share:/usr/share:/usr/local/share</value>
-    <value type="QString" >XDG_SESSION_COOKIE=75e2ada172213f0927404400475a01d9-1241339230.992248-201969822</value>
+    <value type="QString" >XDG_SESSION_COOKIE=75e2ada172213f0927404400475a01d9-1241378922.768795-1622430778</value>
     <value type="QString" >XDM_MANAGED=method=classic</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
@@ -163,12 +165,12 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-L8PB5PqhAh,guid=4c01a9d09e2c405cd991d41f49fd5561</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-JOYEDG7rjI,guid=6d5be3ada779f145413dc5b949fdf06d</value>
     <value type="QString" >DESKTOP_SESSION=kde</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
     <value type="QString" >DM_CONTROL=/var/run/xdmctl</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/gpg-LGxvpH/S.gpg-agent:3605:1</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/gpg-XiQWbd/S.gpg-agent:3633:1</value>
     <value type="QString" >GS_LIB=/home/nahrstaedt/.fonts</value>
     <value type="QString" >GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/nahrstaedt/.gtkrc-2.0:/home/nahrstaedt/.gtkrc-2.0-kde4:/home/nahrstaedt/.kde/share/config/gtkrc-2.0</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/nahrstaedt/.gtkrc::/home/nahrstaedt/.kde/share/config/gtkrc</value>
@@ -188,16 +190,16 @@
     <value type="QString" >PWD=/home/nahrstaedt</value>
     <value type="QString" >QTDIR=/usr</value>
     <value type="QString" >QT_PLUGIN_PATH=/home/nahrstaedt/.kde/lib/kde4/plugins/:/usr/lib/kde4/plugins/</value>
-    <value type="QString" >SESSION_MANAGER=local/tamora:/tmp/.ICE-unix/3701</value>
+    <value type="QString" >SESSION_MANAGER=local/tamora:/tmp/.ICE-unix/3736</value>
     <value type="QString" >SHELL=/bin/bash</value>
     <value type="QString" >SHLVL=0</value>
-    <value type="QString" >SSH_AGENT_PID=3604</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/ssh-teyMxI3552/agent.3552</value>
+    <value type="QString" >SSH_AGENT_PID=3632</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/ssh-StyGHp3580/agent.3580</value>
     <value type="QString" >USER=nahrstaedt</value>
     <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XCURSOR_THEME=oxy-white</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/share:/usr/share:/usr/local/share</value>
-    <value type="QString" >XDG_SESSION_COOKIE=75e2ada172213f0927404400475a01d9-1241339230.992248-201969822</value>
+    <value type="QString" >XDG_SESSION_COOKIE=75e2ada172213f0927404400475a01d9-1241378922.768795-1622430778</value>
     <value type="QString" >XDM_MANAGED=method=classic</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >

@@ -107,6 +107,11 @@ void QRL_LogsManager::refresh()
     saveProgressBar->setMaximum(Logs[currentLog]->n_points_to_save());
      saveProgressBar->setValue(Logs[currentLog]->get_points_counter());
   }
+
+  for (int n=0; n<Num_Logs; ++n){
+      if (Logs[n]->isPlotting())
+         LogWindows[n]->setValue( Logs[n]->getLogValue());
+  }
 }
 
 void QRL_LogsManager::showLog(int state) 
