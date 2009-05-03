@@ -116,7 +116,7 @@ static void *rt_get_scope_data(void *arg)
 	rt_send(Target_Interface_Task, 0);
 	
 	n=(int)Ndistance;
-	RTIME t0,t,told; int time=0; double time10=0.;double t10;int n10=0;
+        RTIME t0,t,told; int time=0; double time10=0.;double t10=0;int n10=0;
 	t0 = rt_get_cpu_time_ns();
 	mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (hardRealTime==1)
@@ -640,7 +640,17 @@ static void *rt_get_log_data(void *arg)
 			if (targetThread->getEndApp() || !targetThread->getIsTargetConnected()) goto end;
 			msleep(10);
 		}
-
+                if (log->isPlotting()) {
+                        for (n = 0; n < MsgData; n++) {
+                                for (i = 0; i < log->getNRow(); i++) {
+                                        j = n*log->getNRow()*log->getNCol() + i;
+                                        for (k = 0; k < log->getNCol(); k++) {
+//                                            log->setLogValue(MsgBuf[j],i,k);
+                                                j += log->getNRow();
+                                        }
+                                }
+                        }
+                }
 
 
 		if (log->start_saving()) {

@@ -21,8 +21,28 @@
   <value type="QString" >Qt4ProjectManager.Qt4RunConfiguration</value>
  </data>
  <data>
+  <variable>RunConfiguration1-Arguments</variable>
+  <valuelist type="QVariantList" />
+ </data>
+ <data>
+  <variable>RunConfiguration1-Executable</variable>
+  <value type="QString" >/home/nahrstaedt/svn/qrtailab/trunk/qrtailab</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-RunConfiguration.name</variable>
+  <value type="QString" >Run /home/nahrstaedt/svn/qrtailab/trunk/qrtailab</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-WorkingDirectory</variable>
+  <value type="QString" >$BUILDDIR</value>
+ </data>
+ <data>
+  <variable>RunConfiguration1-type</variable>
+  <value type="QString" >ProjectExplorer.CustomExecutableRunConfiguration</value>
+ </data>
+ <data>
   <variable>activeRunConfiguration</variable>
-  <value type="int" >0</value>
+  <value type="int" >1</value>
  </data>
  <data>
   <variable>activebuildconfiguration</variable>
@@ -32,15 +52,18 @@
   <variable>buildConfiguration-Debug</variable>
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
-   <value key="QtVersionId" type="int" >0</value>
-   <value key="buildDirectory" type="QString" >/home/nahrstaedt/svn/qrtailab/trunk/QRtaiLab</value>
+   <value key="QtVersionId" type="int" >2</value>
+   <value key="buildDirectory" type="QString" >/home/nahrstaedt/svn/qrtailab/trunk</value>
+   <value key="useShadowBuild" type="bool" >true</value>
   </valuemap>
  </data>
  <data>
   <variable>buildConfiguration-Release</variable>
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
-   <value key="QtVersionId" type="int" >0</value>
+   <value key="QtVersionId" type="int" >2</value>
+   <value key="buildDirectory" type="QString" >/home/nahrstaedt/svn/qrtailab/trunk</value>
+   <value key="useShadowBuild" type="bool" >true</value>
   </valuemap>
  </data>
  <data>
@@ -53,16 +76,14 @@
   <variable>buildconfiguration-Debug-buildstep1</variable>
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
-   <value key="buildConfiguration" type="int" >10</value>
+   <value key="buildConfiguration" type="int" >0</value>
   </valuemap>
  </data>
  <data>
   <variable>buildconfiguration-Debug-buildstep2</variable>
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Debug</value>
-   <valuelist key="makeargs" type="QVariantList" >
-    <value type="QString" >debug</value>
-   </valuelist>
+   <valuelist key="makeargs" type="QVariantList" />
   </valuemap>
  </data>
  <data>
@@ -87,16 +108,105 @@
   <variable>buildconfiguration-Release-buildstep1</variable>
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
-   <value key="buildConfiguration" type="int" >8</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList" >
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-L8PB5PqhAh,guid=4c01a9d09e2c405cd991d41f49fd5561</value>
+    <value type="QString" >DESKTOP_SESSION=kde</value>
+    <value type="QString" >DESKTOP_STARTUP_ID=</value>
+    <value type="QString" >DISPLAY=:0.0</value>
+    <value type="QString" >DM_CONTROL=/var/run/xdmctl</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/gpg-LGxvpH/S.gpg-agent:3605:1</value>
+    <value type="QString" >GS_LIB=/home/nahrstaedt/.fonts</value>
+    <value type="QString" >GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/nahrstaedt/.gtkrc-2.0:/home/nahrstaedt/.gtkrc-2.0-kde4:/home/nahrstaedt/.kde/share/config/gtkrc-2.0</value>
+    <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/nahrstaedt/.gtkrc::/home/nahrstaedt/.kde/share/config/gtkrc</value>
+    <value type="QString" >HOME=/home/nahrstaedt</value>
+    <value type="QString" >INTEL_BATCH=1" </value>
+    <value type="QString" >JAVA_HOME=/usr/lib/jvm/java-6-sun</value>
+    <value type="QString" >KDE_FULL_SESSION=true</value>
+    <value type="QString" >KDE_MULTIHEAD=false</value>
+    <value type="QString" >KDE_SESSION_UID=</value>
+    <value type="QString" >KDE_SESSION_VERSION=4</value>
+    <value type="QString" >LANG=de_DE.UTF-8</value>
+    <value type="QString" >LANGUAGE=</value>
+    <value type="QString" >LOGNAME=nahrstaedt</value>
+    <value type="QString" >OPENMODELICAHOME=/usr/local/src/OpenModelica/build</value>
+    <value type="QString" >OPENMODELICALIBRARY=/usr/local/src/OpenModelica/build/ModelicaLibrary</value>
+    <value type="QString" >PATH=/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/qwt-5.0.2/include:/usr/realtime/bin:/usr/local/msp430/bin:./</value>
+    <value type="QString" >PWD=/home/nahrstaedt</value>
+    <value type="QString" >QTDIR=/usr</value>
+    <value type="QString" >QT_PLUGIN_PATH=/home/nahrstaedt/.kde/lib/kde4/plugins/:/usr/lib/kde4/plugins/</value>
+    <value type="QString" >SESSION_MANAGER=local/tamora:/tmp/.ICE-unix/3701</value>
+    <value type="QString" >SHELL=/bin/bash</value>
+    <value type="QString" >SHLVL=0</value>
+    <value type="QString" >SSH_AGENT_PID=3604</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/ssh-teyMxI3552/agent.3552</value>
+    <value type="QString" >USER=nahrstaedt</value>
+    <value type="QString" >WINDOWPATH=7</value>
+    <value type="QString" >XCURSOR_THEME=oxy-white</value>
+    <value type="QString" >XDG_DATA_DIRS=/usr/share:/usr/share:/usr/local/share</value>
+    <value type="QString" >XDG_SESSION_COOKIE=75e2ada172213f0927404400475a01d9-1241339230.992248-201969822</value>
+    <value type="QString" >XDM_MANAGED=method=classic</value>
+   </valuelist>
+   <valuelist key="abstractProcess.arguments" type="QVariantList" >
+    <value type="QString" >/home/nahrstaedt/svn/qrtailab/trunk/QRtaiLab/QRtaiLab.pro</value>
+    <value type="QString" >-spec</value>
+    <value type="QString" >/usr/share/qt4/mkspecs/linux-g++</value>
+    <value type="QString" >-r</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString" >/usr/bin/qmake-qt4</value>
+   <value key="abstractProcess.enabled" type="bool" >false</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >/home/nahrstaedt/svn/qrtailab/trunk</value>
+   <value key="buildConfiguration" type="int" >0</value>
   </valuemap>
  </data>
  <data>
   <variable>buildconfiguration-Release-buildstep2</variable>
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
-   <valuelist key="makeargs" type="QVariantList" >
-    <value type="QString" >release</value>
+   <valuelist key="abstractProcess.Environment" type="QVariantList" >
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-L8PB5PqhAh,guid=4c01a9d09e2c405cd991d41f49fd5561</value>
+    <value type="QString" >DESKTOP_SESSION=kde</value>
+    <value type="QString" >DESKTOP_STARTUP_ID=</value>
+    <value type="QString" >DISPLAY=:0.0</value>
+    <value type="QString" >DM_CONTROL=/var/run/xdmctl</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/gpg-LGxvpH/S.gpg-agent:3605:1</value>
+    <value type="QString" >GS_LIB=/home/nahrstaedt/.fonts</value>
+    <value type="QString" >GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/nahrstaedt/.gtkrc-2.0:/home/nahrstaedt/.gtkrc-2.0-kde4:/home/nahrstaedt/.kde/share/config/gtkrc-2.0</value>
+    <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/nahrstaedt/.gtkrc::/home/nahrstaedt/.kde/share/config/gtkrc</value>
+    <value type="QString" >HOME=/home/nahrstaedt</value>
+    <value type="QString" >INTEL_BATCH=1" </value>
+    <value type="QString" >JAVA_HOME=/usr/lib/jvm/java-6-sun</value>
+    <value type="QString" >KDE_FULL_SESSION=true</value>
+    <value type="QString" >KDE_MULTIHEAD=false</value>
+    <value type="QString" >KDE_SESSION_UID=</value>
+    <value type="QString" >KDE_SESSION_VERSION=4</value>
+    <value type="QString" >LANG=de_DE.UTF-8</value>
+    <value type="QString" >LANGUAGE=</value>
+    <value type="QString" >LOGNAME=nahrstaedt</value>
+    <value type="QString" >OPENMODELICAHOME=/usr/local/src/OpenModelica/build</value>
+    <value type="QString" >OPENMODELICALIBRARY=/usr/local/src/OpenModelica/build/ModelicaLibrary</value>
+    <value type="QString" >PATH=/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/qwt-5.0.2/include:/usr/realtime/bin:/usr/local/msp430/bin:./</value>
+    <value type="QString" >PWD=/home/nahrstaedt</value>
+    <value type="QString" >QTDIR=/usr</value>
+    <value type="QString" >QT_PLUGIN_PATH=/home/nahrstaedt/.kde/lib/kde4/plugins/:/usr/lib/kde4/plugins/</value>
+    <value type="QString" >SESSION_MANAGER=local/tamora:/tmp/.ICE-unix/3701</value>
+    <value type="QString" >SHELL=/bin/bash</value>
+    <value type="QString" >SHLVL=0</value>
+    <value type="QString" >SSH_AGENT_PID=3604</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/ssh-teyMxI3552/agent.3552</value>
+    <value type="QString" >USER=nahrstaedt</value>
+    <value type="QString" >WINDOWPATH=7</value>
+    <value type="QString" >XCURSOR_THEME=oxy-white</value>
+    <value type="QString" >XDG_DATA_DIRS=/usr/share:/usr/share:/usr/local/share</value>
+    <value type="QString" >XDG_SESSION_COOKIE=75e2ada172213f0927404400475a01d9-1241339230.992248-201969822</value>
+    <value type="QString" >XDM_MANAGED=method=classic</value>
    </valuelist>
+   <valuelist key="abstractProcess.arguments" type="QVariantList" >
+    <value type="QString" >-w</value>
+   </valuelist>
+   <value key="abstractProcess.command" type="QString" >/usr/bin/make</value>
+   <value key="abstractProcess.enabled" type="bool" >true</value>
+   <value key="abstractProcess.workingDirectory" type="QString" >/home/nahrstaedt/svn/qrtailab/trunk</value>
+   <valuelist key="makeargs" type="QVariantList" />
   </valuemap>
  </data>
  <data>
