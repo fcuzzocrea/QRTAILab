@@ -82,24 +82,24 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
      legendTableView->setItemDelegate(colorView);
 
 
-      v.resize(8);
+      v.resize(9);
 
-      for (int t=0; t<8; t++){
+      for (int t=0; t<9; t++){
                       v[t].resize(1);
         }
-      for (int t=0; t<8; t++){
-         v[t][0]=(float)t/8.*(LogWindows[currentLog]->getMaxScale()-LogWindows[currentLog]->getMinScale())+LogWindows[currentLog]->getMinScale();
+      for (int t=0; t<9; t++){
+         v[8-t][0]=(float)t/8.*(LogWindows[currentLog]->getMaxScale()-LogWindows[currentLog]->getMinScale())+LogWindows[currentLog]->getMinScale();
      }
          colorView->setMinScale(LogWindows[currentLog]->getMinScale());
          colorView->setMaxScale(LogWindows[currentLog]->getMaxScale());
-         colorView->setPixelSize(22);
+         colorView->setPixelSize(20);
          colorView->setShowValue(true);
          pixelView->setMinScale(LogWindows[currentLog]->getMinScale());
          pixelView->setMaxScale(LogWindows[currentLog]->getMaxScale());
-         pixelView->setPixelSize(22);
+         pixelView->setPixelSize(20);
                  pixelView->setShowValue(true);
          blackwhiteView->setMinScale(LogWindows[currentLog]->getMinScale());
-         blackwhiteView->setPixelSize(22);
+         blackwhiteView->setPixelSize(20);
                  blackwhiteView->setShowValue(true);
          model->setData(v);
     legendTableView->resizeColumnsToContents();
@@ -175,8 +175,8 @@ void QRL_LogsManager::setMinScale(double min) {
              colorView->setMinScale(min);
          pixelView->setMinScale(min);
          blackwhiteView->setMinScale(min);
-       for (int t=0; t<8; t++)
-         v[t][0]=(float)t/8.*(LogWindows[currentLog]->getMaxScale()-LogWindows[currentLog]->getMinScale())+LogWindows[currentLog]->getMinScale();
+       for (int t=0; t<9; t++)
+         v[8-t][0]=(float)t/8.*(LogWindows[currentLog]->getMaxScale()-LogWindows[currentLog]->getMinScale())+LogWindows[currentLog]->getMinScale();
 
          model->setData(v);
      }else
@@ -190,8 +190,8 @@ void QRL_LogsManager::setMaxScale(double max) {
         LogWindows[currentLog]->setMaxScale(max);
                  colorView->setMaxScale(max);
          pixelView->setMaxScale(max);
-      for (int t=0; t<8; t++)
-         v[t][0]=(float)t/8.*(LogWindows[currentLog]->getMaxScale()-LogWindows[currentLog]->getMinScale())+LogWindows[currentLog]->getMinScale();
+      for (int t=0; t<9; t++)
+         v[8-t][0]=(float)t/8.*(LogWindows[currentLog]->getMaxScale()-LogWindows[currentLog]->getMinScale())+LogWindows[currentLog]->getMinScale();
 
          model->setData(v);
      } else
@@ -307,20 +307,12 @@ void QRL_LogsManager::stopSaving()
 
 
 
+void QRL_LogsManager::showLogOptions(QListWidgetItem * item )
+{
+        int index=logListWidget->row(item);
+        showLogOptions(index);
 
 
-/**
-* @brief update manager dialog for the choosen led
-* @param item led number
-*/
-void QRL_LogsManager::showLogOptions( QListWidgetItem * item ){
-
-	currentLog= logListWidget->row(item);
-	tabWidget->setTabText(0,qTargetInterface->getLogName(currentLog));
-        rowDimLineEdit->setText(tr("%1").arg(Logs[currentLog]->getNRow()));
-        colDimLineEdit->setText(tr("%1").arg(Logs[currentLog]->getNCol()));
-//  	timeCounter->setValue(saveTime[currentLog] );
-//  	fileLineEdit->setText(fileName[currentLog] );
 }
 
 void QRL_LogsManager::showLogOptions( int index ){
@@ -330,6 +322,27 @@ void QRL_LogsManager::showLogOptions( int index ){
 		savePushButton->setEnabled(true);
 	}
 	tabWidget->setTabText(0,tr(Logs[currentLog]->getName()));
+        rowDimLineEdit->setText(tr("%1").arg(Logs[currentLog]->getNRow()));
+        colDimLineEdit->setText(tr("%1").arg(Logs[currentLog]->getNCol()));
+        showCheckBox->setChecked(LogWindows[currentLog]->isVisible());
+        holdCheckBox->setChecked(!LogWindows[currentLog]->isPlotting());
+        minScaleCounter->setValue(LogWindows[currentLog]->getMinScale());
+         maxScaleCounter->setValue(LogWindows[currentLog]->getMaxScale());
+
+         switch(LogWindows[currentLog]->getDelegate()){
+             case QRL_LogWindow::pixel:
+                    delegateComboBox->setCurrentIndex(2);
+                    break;
+             case QRL_LogWindow::blackwhite:
+                    delegateComboBox->setCurrentIndex(1);
+                    break;
+             case QRL_LogWindow::colorbar:
+                    delegateComboBox->setCurrentIndex(0);
+                    break;
+
+         }
+         pixelSizeSpinBox->setValue(LogWindows[currentLog]->getPixelSize());
+         viewNumberCheckBox->setChecked(LogWindows[currentLog]->getShowItemNumber());
 //  	timeCounter->setValue(saveTime[currentLog] );
 //  	fileLineEdit->setText(fileName[currentLog] );
 

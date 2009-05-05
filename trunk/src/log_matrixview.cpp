@@ -4,7 +4,7 @@
 PixelDelegate::PixelDelegate(QObject *parent)
      : QAbstractItemDelegate(parent)
  {
-     pixelSize = 12;
+     pixelSize = 24;
      minScale=0;
      maxScale=1;
      showItemNumber=false;
@@ -24,11 +24,20 @@ PixelDelegate::PixelDelegate(QObject *parent)
                normData=0;
      if (normData>1)
             normData=1;
+     normData=1-normData;
      double radius = (size/2.0) - (normData * size/2.0);
 
      painter->save();
      painter->setRenderHint(QPainter::Antialiasing, true);
-     painter->setPen(Qt::NoPen);
+
+     painter->setPen(Qt::gray);
+     painter->setBrush(QBrush(Qt::white));
+         radius = (size/2.0);
+      painter->drawRect(QRectF(option.rect.x() + option.rect.width()/2 - radius,
+                                 option.rect.y() + option.rect.height()/2 - radius,
+                                 2*radius, 2*radius));
+      radius = (size/2.0) - (normData * size/2.0);
+       painter->setPen(Qt::NoPen);
      if (option.state & QStyle::State_Selected)
          painter->setBrush(option.palette.highlightedText());
      else
@@ -39,6 +48,7 @@ PixelDelegate::PixelDelegate(QObject *parent)
                                  option.rect.y() + option.rect.height()/2 - radius,
                                  2*radius, 2*radius));
  }
+
           int number=0;
           radius = (size/2.0);
      if (showItemNumber) {
@@ -86,7 +96,7 @@ PixelDelegate::PixelDelegate(QObject *parent)
 BlackWhiteDelegate::BlackWhiteDelegate(QObject *parent)
      : QAbstractItemDelegate(parent)
  {
-     pixelSize = 12;
+     pixelSize = 24;
      minScale=0;
      showItemNumber=false;
           showValue=false;
@@ -160,7 +170,7 @@ BlackWhiteDelegate::BlackWhiteDelegate(QObject *parent)
   ColorBarDelegate::ColorBarDelegate(QObject *parent)
      : QAbstractItemDelegate(parent)
  {
-     pixelSize = 12;
+     pixelSize = 24;
      minScale=0;
      maxScale=1;
      showItemNumber=false;
@@ -190,6 +200,7 @@ BlackWhiteDelegate::BlackWhiteDelegate(QObject *parent)
                normData=0;
        if (normData>1)
             normData=1;
+       normData=1-normData;
         QColor color;
         color.setHsv(normData*240,240,240);
      if (option.state & QStyle::State_Selected)

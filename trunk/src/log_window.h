@@ -59,8 +59,11 @@ public:
      double getMinScale(){return minScale;}
      double getMaxScale(){return maxScale;}
      void setDelegate(matrixDelegate d);
+     matrixDelegate getDelegate(){return actualDelegate;}
      void setPixelSize(int psize);
+     int  getPixelSize(){return pixelSize;}
      void  setShowItemNumber(bool n);
+     bool  getShowItemNumber(){return showItemNumber;}
 public slots:
    void refresh();
   //void setValue(int,float);
