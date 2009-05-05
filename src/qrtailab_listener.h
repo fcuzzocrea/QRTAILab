@@ -599,6 +599,7 @@ static void *rt_get_log_data(void *arg)
 	long GetLogDataPort;
 	int MsgData = 0, MsgLen, MaxMsgLen, DataBytes;
 	float MsgBuf[MAX_MSG_LEN/sizeof(float)];
+
 	int n, i, j, k, DataCnt = 0;
 	int index = ((Args_T *)arg)->index;
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
@@ -606,6 +607,7 @@ static void *rt_get_log_data(void *arg)
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	QRL_LogData* log = targetThread->getLogs()[index];
 	 long Target_Node = targetThread->getTargetNode();
+	//float MsgBuf[log->getNCol()*log->getNRow()];
 	RT_TASK *Target_Interface_Task = targetThread->getTask();
 	rt_allow_nonroot_hrt();
 	//mlockall(MCL_CURRENT | MCL_FUTURE);

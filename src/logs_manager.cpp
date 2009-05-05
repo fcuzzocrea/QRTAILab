@@ -55,10 +55,56 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showLog(int) ) );
 	connect( holdCheckBox , SIGNAL( stateChanged(int) ), this, SLOT( holdPlot(int) ) );
 
+        connect(minScaleCounter, SIGNAL(valueChanged(double)), this, SLOT(setMinScale(double)));
+        connect(maxScaleCounter, SIGNAL(valueChanged(double)), this, SLOT(setMaxScale(double)));
+        connect( delegateComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeDelegate(int) ) );
+        connect( pixelSizeSpinBox, SIGNAL( valueChanged(int) ), this, SLOT( setPixelSize(int) ) );
+
+        connect( viewNumberCheckBox , SIGNAL( stateChanged(int) ), this, SLOT( setShowItemNumber(int) ) );
+
+
 	currentLog=0;
 	holdCheckBox->setCheckState(Qt::Checked);
 	LogWindows[currentLog]->setPlotting(false);
-	
+        rowDimLineEdit->setText(tr("%1").arg(Logs[currentLog]->getNRow()));
+        colDimLineEdit->setText(tr("%1").arg(Logs[currentLog]->getNCol()));
+
+             model = new MatrixModel(this);
+     legendTableView->setShowGrid(false);
+     legendTableView->horizontalHeader()->hide();
+     legendTableView->verticalHeader()->hide();
+     legendTableView->horizontalHeader()->setMinimumSectionSize(1);
+     legendTableView->verticalHeader()->setMinimumSectionSize(1);
+     legendTableView->setModel(model);
+     pixelView = new PixelDelegate(this);
+     blackwhiteView = new BlackWhiteDelegate(this);
+     colorView= new ColorBarDelegate(this);
+     legendTableView->setItemDelegate(colorView);
+
+
+      v.resize(8);
+
+      for (int t=0; t<8; t++){
+                      v[t].resize(1);
+        }
+      for (int t=0; t<8; t++){
+         v[t][0]=(float)t/8.*(LogWindows[currentLog]->getMaxScale()-LogWindows[currentLog]->getMinScale())+LogWindows[currentLog]->getMinScale();
+     }
+         colorView->setMinScale(LogWindows[currentLog]->getMinScale());
+         colorView->setMaxScale(LogWindows[currentLog]->getMaxScale());
+         colorView->setPixelSize(22);
+         colorView->setShowValue(true);
+         pixelView->setMinScale(LogWindows[currentLog]->getMinScale());
+         pixelView->setMaxScale(LogWindows[currentLog]->getMaxScale());
+         pixelView->setPixelSize(22);
+                 pixelView->setShowValue(true);
+         blackwhiteView->setMinScale(LogWindows[currentLog]->getMinScale());
+         blackwhiteView->setPixelSize(22);
+                 blackwhiteView->setShowValue(true);
+         model->setData(v);
+    legendTableView->resizeColumnsToContents();
+    legendTableView->resizeRowsToContents();
+
 // 	for(int i=0; i<1; ++i){
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
 // 		traceComboBox->addItem(tr("Trace ")+tr("%1").arg(i+1));
@@ -123,7 +169,77 @@ void QRL_LogsManager::showLog(int state)
 	}
 
 }
+void QRL_LogsManager::setMinScale(double min) {
+    if (min<=LogWindows[currentLog]->getMaxScale()){
+        LogWindows[currentLog]->setMinScale(min);
+             colorView->setMinScale(min);
+         pixelView->setMinScale(min);
+         blackwhiteView->setMinScale(min);
+       for (int t=0; t<8; t++)
+         v[t][0]=(float)t/8.*(LogWindows[currentLog]->getMaxScale()-LogWindows[currentLog]->getMinScale())+LogWindows[currentLog]->getMinScale();
 
+         model->setData(v);
+     }else
+        minScaleCounter->setValue(LogWindows[currentLog]->getMinScale());
+
+
+}
+void QRL_LogsManager::setMaxScale(double max) {
+
+    if (max>=LogWindows[currentLog]->getMinScale()){
+        LogWindows[currentLog]->setMaxScale(max);
+                 colorView->setMaxScale(max);
+         pixelView->setMaxScale(max);
+      for (int t=0; t<8; t++)
+         v[t][0]=(float)t/8.*(LogWindows[currentLog]->getMaxScale()-LogWindows[currentLog]->getMinScale())+LogWindows[currentLog]->getMinScale();
+
+         model->setData(v);
+     } else
+        maxScaleCounter->setValue(LogWindows[currentLog]->getMaxScale());
+
+
+
+}
+void QRL_LogsManager::setPixelSize(int psize) {
+
+
+     LogWindows[currentLog]->setPixelSize(psize);
+
+}
+void QRL_LogsManager::changeDelegate(int d)
+{
+        switch(d)
+        {
+        case 0:
+                LogWindows[currentLog]->setDelegate(QRL_LogWindow::colorbar);
+                 legendTableView->setItemDelegate(colorView);
+                break;
+        case 1:
+                LogWindows[currentLog]->setDelegate(QRL_LogWindow::blackwhite);
+                 legendTableView->setItemDelegate(blackwhiteView);
+                break;
+         case 2:
+                LogWindows[currentLog]->setDelegate(QRL_LogWindow::pixel);
+                 legendTableView->setItemDelegate(pixelView);
+                break;
+         case 3:
+                LogWindows[currentLog]->setDelegate(QRL_LogWindow::text);
+                break;
+        default:
+                break;
+        }
+                 model->setData(v);
+
+}
+void QRL_LogsManager::setShowItemNumber(int state)
+{
+        if(state==Qt::Checked){
+                LogWindows[currentLog]->setShowItemNumber(true);
+        } else {
+                LogWindows[currentLog]->setShowItemNumber(false);
+        }
+
+}
 
 void QRL_LogsManager::holdPlot(int state) {
 
@@ -201,6 +317,8 @@ void QRL_LogsManager::showLogOptions( QListWidgetItem * item ){
 
 	currentLog= logListWidget->row(item);
 	tabWidget->setTabText(0,qTargetInterface->getLogName(currentLog));
+        rowDimLineEdit->setText(tr("%1").arg(Logs[currentLog]->getNRow()));
+        colDimLineEdit->setText(tr("%1").arg(Logs[currentLog]->getNCol()));
 //  	timeCounter->setValue(saveTime[currentLog] );
 //  	fileLineEdit->setText(fileName[currentLog] );
 }

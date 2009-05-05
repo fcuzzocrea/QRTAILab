@@ -152,7 +152,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>180</width>
+            <width>280</width>
             <height>201</height>
            </rect>
           </property>
@@ -274,6 +274,148 @@
            </item>
           </layout>
          </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="matrixView">
+      <attribute name="title">
+       <string>Matrix View Options</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="1" colspan="3">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Matrix Dimension</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLineEdit" name="rowDimLineEdit">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>21</width>
+           <height>25</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="colDimLineEdit">
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QComboBox" name="delegateComboBox">
+         <item>
+          <property name="text">
+           <string>Colorbar</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Black/White</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Pixel</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Text</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QCheckBox" name="viewNumberCheckBox">
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>View Cell Number</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Fullscale at:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" rowspan="5" colspan="3">
+        <widget class="QTableView" name="legendTableView"/>
+       </item>
+       <item row="3" column="3">
+        <widget class="QwtCounter" name="minScaleCounter">
+         <property name="numButtons">
+          <number>0</number>
+         </property>
+         <property name="basicstep" stdset="0">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="minValue">
+          <double>-10000000.000000000000000</double>
+         </property>
+         <property name="maxValue">
+          <double>10000000.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="3">
+        <widget class="QwtCounter" name="maxScaleCounter">
+         <property name="numButtons">
+          <number>0</number>
+         </property>
+         <property name="basicstep" stdset="0">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="minValue">
+          <double>-10000000.000000000000000</double>
+         </property>
+         <property name="maxValue">
+          <double>10000000.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>1.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="3">
+        <widget class="QSpinBox" name="pixelSizeSpinBox">
+         <property name="maximum">
+          <number>500</number>
+         </property>
+         <property name="value">
+          <number>12</number>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="3">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Pixelsize:</string>
+         </property>
         </widget>
        </item>
       </layout>

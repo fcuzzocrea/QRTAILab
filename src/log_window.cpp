@@ -48,34 +48,35 @@ QRL_LogWindow::QRL_LogWindow(QWidget *parent,QRL_LogData *log)
     this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/log_icon.xpm")));
     this->setWindowFlags(windowFlags() ^ Qt::WindowMaximizeButtonHint );
    RefreshRate=20.;
+     model = new MatrixModel(this);
+     matrixPlot = new QTableView;
+     matrixPlot->setShowGrid(false);
+     matrixPlot->horizontalHeader()->hide();
+     matrixPlot->verticalHeader()->hide();
+     matrixPlot->horizontalHeader()->setMinimumSectionSize(1);
+     matrixPlot->verticalHeader()->setMinimumSectionSize(1);
+     matrixPlot->setModel(model);
+     pixelView = new PixelDelegate(this);
+     blackwhiteView = new BlackWhiteDelegate(this);
+     colorView= new ColorBarDelegate(this);
+     matrixPlot->setItemDelegate(colorView);
+//       matrixPlot = new QTableWidget(Log->getNRow(),Log->getNCol(),this);
 
-
-       matrixPlot = new QTableWidget(Log->getNRow(),Log->getNCol(),this);
-
-     for (int i=0;i<Log->getNRow();i++)
-           for (int j=0;j<Log->getNCol();j++){
-             QTableWidgetItem *newItem = new QTableWidgetItem(tr("0"));
-             matrixPlot->setItem(i, j, newItem);
-            }\
+//     for (int i=0;i<Log->getNRow();i++)
+//           for (int j=0;j<Log->getNCol();j++){
+//             QTableWidgetItem *newItem = new QTableWidgetItem(tr("0"));
+//             matrixPlot->setItem(i, j, newItem);
+//            }
     //qwtPlot=this;
-    matrixPlot->setObjectName(QString::fromUtf8("qwtPlot"));
+//    matrixPlot->setObjectName(QString::fromUtf8("qwtPlot"));
 
     this->setWidget(matrixPlot);
     this->setWindowTitle(QApplication::translate("QRL_LogWindow", Log->name, 0, QApplication::UnicodeUTF8));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+     minScale=0;
+     maxScale=1;
+       pixelSize=12;
+actualDelegate=colorbar;
+showItemNumber=false;
 	timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
         timer->start((int)(1./RefreshRate*1000.));
@@ -84,7 +85,8 @@ QRL_LogWindow::QRL_LogWindow(QWidget *parent,QRL_LogData *log)
 }
 
 QRL_LogWindow::~QRL_LogWindow(){
-
+    delete model;
+    delete matrixPlot;
 
 }
 
@@ -92,6 +94,110 @@ QRL_LogWindow::~QRL_LogWindow(){
 void QRL_LogWindow::refresh()
 {
 	
+}
+
+void QRL_LogWindow::setDelegate(matrixDelegate d){
+    actualDelegate=d;
+     switch(d)
+        {
+        case pixel:
+         matrixPlot->setItemDelegate(pixelView);
+         pixelView->setMinScale(minScale);
+         pixelView->setMaxScale(maxScale);
+          pixelView->setPixelSize(pixelSize);
+           pixelView->setShowItemNumber(showItemNumber);
+         break;
+        case blackwhite:
+          matrixPlot->setItemDelegate(blackwhiteView);
+           blackwhiteView->setMinScale(minScale);
+            blackwhiteView->setPixelSize(pixelSize);
+             blackwhiteView->setShowItemNumber(showItemNumber);
+          break;
+         case colorbar:
+           matrixPlot->setItemDelegate(colorView);
+           colorView->setMinScale(minScale);
+             colorView->setMaxScale(maxScale);
+              colorView->setPixelSize(pixelSize);
+             colorView->setShowItemNumber(showItemNumber);
+          break;
+        default:
+                break;
+    }
+}
+
+  void QRL_LogWindow::setMinScale(double min)
+ {
+            minScale=min;
+     switch(actualDelegate)
+     {
+        case pixel:
+         pixelView->setMinScale(minScale);
+         break;
+        case blackwhite:
+           blackwhiteView->setMinScale(minScale);
+          break;
+         case colorbar:
+           colorView->setMinScale(minScale);
+        default:
+                break;
+    }
+
+ }
+
+   void QRL_LogWindow::setMaxScale(double max)
+ {
+       maxScale=max;
+     switch(actualDelegate)
+     {
+        case pixel:
+         pixelView->setMaxScale(maxScale);
+         break;
+        case blackwhite:
+
+          break;
+         case colorbar:
+           colorView->setMaxScale(maxScale);
+        default:
+                break;
+    }
+ }
+
+      void QRL_LogWindow::setPixelSize(int psize){
+          pixelSize=psize;
+         switch(actualDelegate)
+     {
+        case pixel:
+         pixelView->setPixelSize(pixelSize);
+         break;
+        case blackwhite:
+           blackwhiteView->setPixelSize(pixelSize);
+          break;
+         case colorbar:
+           colorView->setPixelSize(pixelSize);
+        default:
+                break;
+    }
+
+
+      }
+void  QRL_LogWindow::setShowItemNumber(bool n){
+
+              showItemNumber=n;
+         switch(actualDelegate)
+     {
+        case pixel:
+         pixelView->setShowItemNumber(showItemNumber);
+         break;
+        case blackwhite:
+           blackwhiteView->setShowItemNumber(showItemNumber);
+          break;
+         case colorbar:
+         colorView->setShowItemNumber(showItemNumber);
+        default:
+                break;
+    }
+
+
 }
 
 void QRL_LogWindow::setPlotting(bool b){
@@ -116,15 +222,18 @@ void QRL_LogWindow::setPlotting(bool b){
 
 }
 void QRL_LogWindow::setValue(const QVector< QVector<float> > &v){
-for (int i=0;i<v.size();i++){
-        for (int j=0;j<v.at(i).size();j++){
-//             printf(" %f ",v.at(i).at(j));
-             (matrixPlot->item(i,j))->setText(tr("%1").arg(v.at(i).at(j)));
-         }
-//         printf("\n");
-}
+//for (int i=0;i<v.size();i++){
+//        for (int j=0;j<v.at(i).size();j++){
+////             printf(" %f ",v.at(i).at(j));
+//             (matrixPlot->item(i,j))->setText(tr("%1").arg(v.at(i).at(j)));
+//         }
+////         printf("\n");
+//}
 //  printf("\n");
 
+    model->setData(v);
+    matrixPlot->resizeColumnsToContents();
+    matrixPlot->resizeRowsToContents();
 }
 
 
