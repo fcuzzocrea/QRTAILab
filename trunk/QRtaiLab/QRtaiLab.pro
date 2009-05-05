@@ -31,7 +31,8 @@ SOURCES += ../src/main.cpp \
     ../src/led_window.cpp \
     ../src/leds_manager.cpp \
     ../src/led_data.cpp \
-    ../src/alog_data.cpp
+    ../src/alog_data.cpp \
+    ../src/log_matrixview.cpp
 HEADERS += ../src/targets_manager.h \
     ../src/target_thread.h \
     ../src/scope_window.h \
@@ -53,7 +54,8 @@ HEADERS += ../src/targets_manager.h \
     ../src/led_window.h \
     ../src/leds_manager.h \
     ../src/led_data.h \
-    ../src/alog_data.h
+    ../src/alog_data.h \
+    ../src/log_matrixview.h
 FORMS += ../src/qrl_leds_manager.ui \
     ../src/qrl_targets_manager.ui \
     ../src/qrl_scopes_manager.ui \

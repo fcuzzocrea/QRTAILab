@@ -31,6 +31,8 @@
 
 #include "qrtailab.h"
 #include "log_data.h"
+#include "log_matrixview.h"
+
 
 
 class QRL_LogWindow : public QMdiSubWindow
@@ -38,6 +40,7 @@ class QRL_LogWindow : public QMdiSubWindow
    Q_OBJECT
  //friend class PlottingScopeDataThread;
 public:
+    enum matrixDelegate {pixel,blackwhite,colorbar,text};
    QRL_LogWindow(QWidget *parent = 0,QRL_LogData *log=0);
    ~QRL_LogWindow();
    void changeRefreshRate(double);
@@ -51,9 +54,17 @@ public:
     void setPlotting(bool b);
     bool isPlotting(){return plotting;}
     void setValue(const QVector< QVector<float> > &v);
+     void setMinScale(double min);
+     void setMaxScale(double max);
+     double getMinScale(){return minScale;}
+     double getMaxScale(){return maxScale;}
+     void setDelegate(matrixDelegate d);
+     void setPixelSize(int psize);
+     void  setShowItemNumber(bool n);
 public slots:
    void refresh();
   //void setValue(int,float);
+
 protected slots:
   void closeEvent ( QCloseEvent * event ){event->ignore(); this->hide(); }
 private:
@@ -62,12 +73,20 @@ private:
   bool plotting;
   float Value;
   double RefreshRate;
+       double minScale;
+     double maxScale;
+      int pixelSize;
+     bool showItemNumber;
   QTimer *timer;
  QRL_LogData *Log;
   double saveTime;
   QString fileName;
-
-  QTableWidget *matrixPlot;
+     MatrixModel *model;
+      PixelDelegate *pixelView;
+       BlackWhiteDelegate *blackwhiteView;
+       ColorBarDelegate *colorView;
+       matrixDelegate actualDelegate;
+      QTableView *matrixPlot;
   friend QDataStream& operator<<(QDataStream &out, const QRL_LogWindow &d);
   friend QDataStream& operator>>(QDataStream &in, QRL_LogWindow(&d));
 };

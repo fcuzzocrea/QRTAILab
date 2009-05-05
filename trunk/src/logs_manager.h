@@ -32,7 +32,7 @@
 #include "ui_qrl_logs_manager.h"
 #include "qrtailab_core.h"
 #include "log_window.h"
-
+#include "log_matrixview.h"
 
 
 
@@ -59,6 +59,11 @@ public slots:
    void setFileDirectory();
   void  showLog(int);
    void holdPlot(int);
+   void setMinScale(double);
+   void setMaxScale(double);
+   void changeDelegate(int d);
+   void setPixelSize(int);
+   void setShowItemNumber(int);
 private:
   qint32 fileVersion;
   int Num_Logs;
@@ -68,6 +73,11 @@ private:
  // GetScopeDataThread* Get_Scope_Data_Thread;
   QRtaiLabCore* qTargetInterface;
   QTimer *timer;
+       MatrixModel *model;
+      PixelDelegate *pixelView;
+       BlackWhiteDelegate *blackwhiteView;
+       ColorBarDelegate *colorView;
+     QVector< QVector< float> > v;
   //TargetThread* targetThread;
   QList<QListWidgetItem *> logItems;
 friend QDataStream& operator<<(QDataStream &out, const QRL_LogsManager &d);
