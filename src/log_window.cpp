@@ -74,7 +74,8 @@ QRL_LogWindow::QRL_LogWindow(QWidget *parent,QRL_LogData *log)
     this->setWindowTitle(QApplication::translate("QRL_LogWindow", Log->name, 0, QApplication::UnicodeUTF8));
      minScale=0;
      maxScale=1;
-       pixelSize=12;
+       pixelSize=24;
+       plotting=false;
 actualDelegate=colorbar;
 showItemNumber=false;
 	timer = new QTimer(this);
