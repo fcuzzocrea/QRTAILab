@@ -54,7 +54,8 @@ public:
       int n_points_to_save();
       void set_points_counter(int cnt);
 	char name[MAX_NAMES_SIZE];
-
+    int setLogRefreshRate(double rr);
+    double getLogRefreshRate();
     void setPlotting(bool b){plotting=b;}
     bool isPlotting(){return plotting;}
 
@@ -70,6 +71,7 @@ private:
    	FILE* Save_File_Pointer;
    	double Save_Time;
 	int Saved_Points;
+    double scopeRefreshRate;
    bool plotting;
     int visible;
 };

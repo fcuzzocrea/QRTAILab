@@ -326,10 +326,10 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0" rowspan="7" colspan="3">
+       <item row="2" column="0" rowspan="8" colspan="3">
         <widget class="QTableView" name="legendTableView"/>
        </item>
-       <item row="8" column="3">
+       <item row="9" column="3">
         <widget class="QSpinBox" name="pixelSizeSpinBox">
          <property name="maximum">
           <number>500</number>
@@ -339,7 +339,7 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="3">
+       <item row="8" column="3">
         <widget class="QLabel" name="label_6">
          <property name="text">
           <string>Cell size (px):</string>
@@ -417,6 +417,32 @@
          </property>
          <property name="text">
           <string>View Cell Number</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="3">
+        <widget class="QwtCounter" name="rrCounter">
+         <property name="numButtons">
+          <number>1</number>
+         </property>
+         <property name="basicstep" stdset="0">
+          <double>0.100000000000000</double>
+         </property>
+         <property name="maxValue">
+          <double>100.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>20.000000000000000</double>
+         </property>
+         <property name="editable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="3">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>Refresh rate:</string>
          </property>
         </widget>
        </item>

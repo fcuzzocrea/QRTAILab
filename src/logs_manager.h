@@ -56,6 +56,7 @@ public slots:
   void changeSaveTime(double);
   void changeFileName(const QString&);
    void refresh();
+     void changeRefreshRate(double);
    void setFileDirectory();
   void  showLog(int);
    void holdPlot(int);

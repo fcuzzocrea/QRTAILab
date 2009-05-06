@@ -142,7 +142,8 @@ void QRL_MetersManager::refreshView()
 	//double rr=text.toDouble();
 	//ScopeWindows[currentScope]->changeRefreshRate(rr);
 	rrCounter->setValue(rr);
-	qTargetInterface->getMeter(currentMeter)->setMeterRefreshRate(rr);
+        qTargetInterface->getMeter(currentMeter)->setMeterRefreshRate(rr);
+//         Meters[currentMeter]->setMeterRefreshRate(rr);
 	MeterWindows[currentMeter]->changeRefreshRate(rr);
 }
 /**
