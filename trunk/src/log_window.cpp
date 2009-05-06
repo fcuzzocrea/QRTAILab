@@ -78,9 +78,9 @@ QRL_LogWindow::QRL_LogWindow(QWidget *parent,QRL_LogData *log)
        plotting=false;
 actualDelegate=colorbar;
 showItemNumber=false;
-	timer = new QTimer(this);
-        connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
-        timer->start((int)(1./RefreshRate*1000.));
+//	timer = new QTimer(this);
+//        connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
+//        timer->start((int)(1./RefreshRate*1000.));
 
 
 }
@@ -216,8 +216,8 @@ void QRL_LogWindow::setPlotting(bool b){
 	RefreshRate=rr;
 	if (	RefreshRate<0.)
 		RefreshRate=20.;
-	timer->stop();
-	timer->start((int)(1./RefreshRate*1000.));
+//	timer->stop();
+//	timer->start((int)(1./RefreshRate*1000.));
 	
 	//Plotting_Scope_Data_Thread->changeRefreshRate(RefreshRate);
 

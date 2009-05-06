@@ -61,6 +61,7 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
         connect( pixelSizeSpinBox, SIGNAL( valueChanged(int) ), this, SLOT( setPixelSize(int) ) );
 
         connect( viewNumberCheckBox , SIGNAL( stateChanged(int) ), this, SLOT( setShowItemNumber(int) ) );
+        connect(rrCounter, SIGNAL(valueChanged(double)), this, SLOT(changeRefreshRate(double)));
 
 
 	currentLog=0;
@@ -251,6 +252,13 @@ void QRL_LogsManager::holdPlot(int state) {
 
 }
 
+void QRL_LogsManager::changeRefreshRate(double rr)
+{
+        //double rr=text.toDouble();
+        LogWindows[currentLog]->changeRefreshRate(rr);
+        Logs[currentLog]->setLogRefreshRate(rr);
+}
+
 void QRL_LogsManager::setFileDirectory(){
 
  QString dir = QFileDialog::getExistingDirectory(this, tr("File Directory"),
@@ -328,7 +336,7 @@ void QRL_LogsManager::showLogOptions( int index ){
         holdCheckBox->setChecked(!LogWindows[currentLog]->isPlotting());
         minScaleCounter->setValue(LogWindows[currentLog]->getMinScale());
          maxScaleCounter->setValue(LogWindows[currentLog]->getMaxScale());
-
+         rrCounter->setValue(LogWindows[currentLog]->getRefreshRate());
          switch(LogWindows[currentLog]->getDelegate()){
              case QRL_LogWindow::pixel:
                     delegateComboBox->setCurrentIndex(2);
@@ -368,38 +376,54 @@ void QRL_LogsManager::changeFileName(const QString& str)
 QDataStream& operator<<(QDataStream &out, const QRL_LogsManager &d){
 	out << d.size()  << d.pos() << d.isVisible();
 	out <<(qint32) d.Num_Logs;
-	out << d.dirLineEdit->text() << d.fileLineEdit->text() ;
-	out << d.timeCounter->value();
-	for (int i = 0; i < d.Num_Logs; ++i) {
-		//out << d.file_name.at(i) << d.save_time.at(i);
-	}
+        for (int i = 0; i < d.Num_Logs; ++i) {
+                out<<*(d.LogWindows[i]);
+        }
+//	out << d.dirLineEdit->text() << d.fileLineEdit->text() ;
+//	out << d.timeCounter->value();
+//	for (int i = 0; i < d.Num_Logs; ++i) {
+//		//out << d.file_name.at(i) << d.save_time.at(i);
+//	}
 	return out;
 }
 
 
 QDataStream& operator>>(QDataStream &in, QRL_LogsManager(&d)){
-	QSize s;QPoint p;bool b; int i;QString str;double dd;
-	in >> s;d.resize(s);
-	in >> p; d.move(p);
-	in >> b; d.setVisible(b);
-	qint32 a;
-	in >> a;
-	if (d.fileVersion>104){
-	  in >> str;
-	  d.dirLineEdit->setText(str);
-	}
-	  
-	in >> str;
- 	d.fileLineEdit->setText(str );
-	in >> dd;
-	d.timeCounter->setValue(dd);
-	for (int i = 0; i < (int)a; ++i) {
-// 		if (d.Num_Logs>i)
-// 			in>>d.file_name[i]>>d.save_time[i];
-// 		else 
-// 			in>>str>>dd;
-	}
-	d.showLogOptions(d.currentLog);
+        QSize s;QPoint p;bool b; int i;QString str;double dd;qint32 a;
+        in >> s;d.resize(s);
+        in >> p; d.move(p);
+        in >> b; d.setVisible(b);
+        in >> a;
+        if (d.fileVersion<107) {
+            if (d.fileVersion>104){
+              in >> str;
+              d.dirLineEdit->setText(str);
+            }
+            in >> str;
+            d.fileLineEdit->setText(str );
+            in >> dd;
+            d.timeCounter->setValue(dd);
+            for (int i = 0; i < (int)a; ++i) {
+    // 		if (d.Num_Logs>i)
+    // 			in>>d.file_name[i]>>d.save_time[i];
+    // 		else
+    // 			in>>str>>dd;
+            }
+            d.showLogOptions(d.currentLog);
+        } else{
+
+            for (int i = 0; i < (int)a; ++i) {
+                if (d.Num_Logs>i){
+                        d.LogWindows[i]->setFileVersion(d.fileVersion);
+                        in>>*(d.LogWindows[i]);
+                }
+                else {
+                        d.LogWindows[d.Num_Logs-1]->setFileVersion(d.fileVersion);
+                        in>>*(d.LogWindows[d.Num_Logs-1]);
+                }
+            }
+            d.showLogOptions(d.currentLog);
+        }
 	return in;
 }
 

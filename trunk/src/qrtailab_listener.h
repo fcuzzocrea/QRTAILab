@@ -351,7 +351,7 @@ static void *rt_get_meter_data(void *arg)
 		if (MsgLen < DataBytes) MsgLen = DataBytes;
 		if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 		MsgData = MsgLen/DataBytes;
-		Ndistance=(long int)(1./RefreshRate/meter->getDt());
+                Ndistance=(long int)(1./RefreshRate/meter->getDt());
 		if (Ndistance<1)
 			Ndistance=1;
 		
@@ -599,13 +599,14 @@ static void *rt_get_log_data(void *arg)
 	long GetLogDataPort;
 	int MsgData = 0, MsgLen, MaxMsgLen, DataBytes;
 	float MsgBuf[MAX_MSG_LEN/sizeof(float)];
-
-	int n, i, j, k, DataCnt = 0;
+        long int Ndistance;
+        int n, i, j, k, m, DataCnt = 0;
 	int index = ((Args_T *)arg)->index;
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	QRL_LogData* log = targetThread->getLogs()[index];
+         double RefreshRate=log->getLogRefreshRate();
 	 long Target_Node = targetThread->getTargetNode();
 	//float MsgBuf[log->getNCol()*log->getNRow()];
 	RT_TASK *Target_Interface_Task = targetThread->getTask();
@@ -627,7 +628,11 @@ static void *rt_get_log_data(void *arg)
 	//munlockall();
 	DataBytes = (log->getNRow()*log->getNCol())*sizeof(float);
 	MaxMsgLen = (MAX_MSG_LEN/DataBytes)*DataBytes;
-	MsgLen = (((int)(DataBytes*REFRESH_RATE*(1./log->getDt())))/DataBytes)*DataBytes;
+        MsgLen = (((int)(DataBytes/RefreshRate*(1./log->getDt())))/DataBytes)*DataBytes;
+        Ndistance=(long int)(1./RefreshRate/log->getDt());
+        if (Ndistance<1)
+                Ndistance=1;
+        n=Ndistance;
 	if (MsgLen < DataBytes) MsgLen = DataBytes;
 	if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
 	MsgData = MsgLen/DataBytes;
@@ -643,15 +648,45 @@ static void *rt_get_log_data(void *arg)
 			msleep(10);
 		}
                 if (log->isPlotting()) {
-                        for (n = 0; n < MsgData; n++) {
-                                for (i = 0; i < log->getNRow(); i++) {
-                                        j = n*log->getNRow()*log->getNCol() + i;
+                    if (n>MsgData)
+                        n=n-MsgData;
+                    else {
+
+                      int k;
+                        for (m=(int)n-1; m < MsgData; m=m+(int)Ndistance){
+                         n=MsgData-m-1;
+                         for (i = 0; i < log->getNRow(); i++) {
+                                        j = m*log->getNRow()*log->getNCol() + i;
                                         for (k = 0; k < log->getNCol(); k++) {
                                             log->setLogValue(MsgBuf[j],i,k);
                                                 j += log->getNRow();
                                         }
                                 }
                         }
+                        n=Ndistance-(n);
+                    }
+//                        for (n = 0; n < MsgData; n++) {
+//                                for (i = 0; i < log->getNRow(); i++) {
+//                                        j = n*log->getNRow()*log->getNCol() + i;
+//                                        for (k = 0; k < log->getNCol(); k++) {
+//                                            log->setLogValue(MsgBuf[j],i,k);
+//                                                j += log->getNRow();
+//                                        }
+//                                }
+//                                printf("n: %d,more then one matrix,ndist %d\n",n,Ndistance);
+//                        }
+                    if (RefreshRate!=log->getLogRefreshRate()){
+
+                        RefreshRate=log->getLogRefreshRate();
+                        MsgLen = (((int)(DataBytes/RefreshRate*(1./log->getDt())))/DataBytes)*DataBytes;
+                        if (MsgLen < DataBytes) MsgLen = DataBytes;
+                        if (MsgLen > MaxMsgLen) MsgLen = MaxMsgLen;
+                        MsgData = MsgLen/DataBytes;
+                        Ndistance=(long int)(1./RefreshRate/log->getDt());
+                        if (Ndistance<1)
+                                Ndistance=1;
+
+                    }
                 }
 
 

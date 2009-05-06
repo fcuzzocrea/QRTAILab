@@ -1,6 +1,7 @@
 Version 0.1.7
  - offset in a scope  can now  be set to the average
  - offset will be recalculated during changes of dy
+ - Log blocks can be used for matrix plots
 
 Version 0.1.6
  - Color of TraceLabel is now correct

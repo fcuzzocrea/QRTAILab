@@ -63,6 +63,26 @@ void QRL_LogData::initializeDataVectors(){
         return LogValues;
 }
 
+  int QRL_LogData::setLogRefreshRate(double rr)
+{
+int ret=-1;
+if (rr>0. && rr<50.){
+
+        scopeRefreshRate=rr;
+
+}
+ //ret= Get_Meter_Data_Thread[n].setRefreshRate(rr);
+return ret;
+}
+
+double QRL_LogData::getLogRefreshRate()
+{
+        double ret=-1;
+
+                ret=scopeRefreshRate;
+
+        return ret;
+}
 int  QRL_LogData::start_saving() {return isSaving ;}
 
 void  QRL_LogData::startSaving(FILE* fp,double save_time){ 
