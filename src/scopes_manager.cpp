@@ -92,6 +92,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	connect( holdCheckBox , SIGNAL( stateChanged(int) ), this, SLOT( holdPlot(int) ) );
 	connect( dirPushButton, SIGNAL( pressed()), this, SLOT(setFileDirectory() ) );
 	connect( setMeanPushButton, SIGNAL( pressed()), this, SLOT(setOffsetToMean() ) );
+        connect( fitDyPushButton, SIGNAL( pressed()), this, SLOT(fitDytoPP() ) );
 	currentScope=0;
 // 	for(int i=0; i<1; ++i){
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
@@ -657,6 +658,15 @@ void QRL_ScopesManager::setOffsetToMean()
 
 	offset=-(offset/ScopeWindows[currentScope]->getTraceDy(currentTrace));
 	changeOffset(offset);
+}
+
+
+void QRL_ScopesManager::fitDytoPP()
+{
+        double pp = ScopeWindows[currentScope]->getTracePP(currentTrace);
+
+        double dy =pp/10;
+        dyComboBox->setEditText(tr("%1").arg(dy));
 }
 
 void QRL_ScopesManager::changeSaveTime(double time)

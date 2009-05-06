@@ -384,6 +384,24 @@ return average;
 
 
 }
+
+double QRL_ScopeTrace::getPP()
+{
+    min=(d_y[0]-offset)*dy;
+        max=(d_y[0]-offset)*dy;
+        for (int k=0;k<NDataSoll;k++){
+                if (max<(d_y[k]-offset)*dy)
+                        max=(d_y[k]-offset)*dy;
+                if (min>(d_y[k]-offset)*dy)
+                        min=(d_y[k]-offset)*dy;
+        }
+        PP=max-min;
+
+
+return PP;
+
+
+}
    void QRL_ScopeTrace::setDy(double d){
 
    		 for (unsigned int i = 0; i< NDataSoll; i++)

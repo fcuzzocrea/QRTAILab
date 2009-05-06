@@ -1,6 +1,7 @@
 Version 0.1.7
  - offset in a scope  can now  be set to the average
  - offset will be recalculated during changes of dy
+ - autoscaling in a scpoe is now possible
  - Log blocks can be used for matrix plots
 
 Version 0.1.6

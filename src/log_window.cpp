@@ -245,22 +245,33 @@ QDataStream& operator<<(QDataStream &out, const QRL_LogWindow &d){
 	out  << d.size()  << d.pos() << d.isVisible();
 	out <<d.plotting;
 	out << d.RefreshRate;
+        out << d.minScale;
+        out << d.maxScale;
+        a=d.pixelSize; out << a;
+        out << d.showItemNumber;
 	out << d.saveTime;
-	out << d.fileName;
+        out << d.fileName;
+        a= (qint32)d.actualDelegate; out << a;
+
 	return out;
 }
 
 
 QDataStream& operator>>(QDataStream &in, QRL_LogWindow(&d)){
-	QSize s;QPoint p;bool b; QColor c; qint32 a,a2;QFont f; double dd;
-	QString str; int Ncurve;
+        QSize s;QPoint p;bool b; QColor c; qint32 a;QFont f; double dd;
+        QString str;
 	in >> s;d.resize(s);
 	in >> p; d.move(p);
 	in >> b; d.setVisible(b);
 	in >> b; d.setPlotting(b);
 	in >> dd; d.changeRefreshRate(dd);
+        in >> dd; d.setMinScale(dd);
+        in >> dd; d.setMaxScale(dd);
+        in >> a; d.setPixelSize(a);
+        in >> b; d.setShowItemNumber(b);
 	in >> dd; d.setSaveTime(dd);
         in >> str; d.setFileName(str);
+        in >> a;   d.setDelegate((QRL_LogWindow::matrixDelegate)a);
 		  
 	return in;
 }

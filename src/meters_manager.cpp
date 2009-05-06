@@ -35,7 +35,7 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent, QRtaiLabCore* qtargetinter
 {
 	setupUi(this);
 	Num_Meters=qTargetInterface->getMeterNumber();
-// 	Meters=qTargetInterface->getMeters();
+        Meters=qTargetInterface->getMeters();
 	const QIcon MeterIcon =QIcon(QString::fromUtf8(":/icons/meter_icon.xpm"));
 	MeterWindows = new QRL_MeterWindow* [Num_Meters]; 
 	for (int i=0; i<Num_Meters; ++i){
@@ -49,9 +49,7 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent, QRtaiLabCore* qtargetinter
 	connect( meterListWidget, SIGNAL( itemActivated( QListWidgetItem * ) ), this, SLOT( showMeterOptions( QListWidgetItem *  ) ) );
 	connect( meterListWidget, SIGNAL( itemClicked( QListWidgetItem * ) ), this, SLOT( showMeterOptions( QListWidgetItem *  ) ) );
 	connect( meterComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeMeter(int) ) );
-	
-	if (Num_Meters > 0)
-	showMeterOptions(meterListWidget->item(0));
+
 	ThermoOptions = tabWidget->widget(1);
 	DialOptions = tabWidget->widget(2);
 	LcdOptions = tabWidget->widget(3);
@@ -69,6 +67,9 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent, QRtaiLabCore* qtargetinter
     connect( precisionCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeLcdPrecision(double) ) );
     connect( formatComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeLcdFormat(int) ) );
 	currentMeter=0;
+
+       if (Num_Meters > 0)            showMeterOptions(currentMeter);
+
 	switch(MeterWindows[currentMeter]->getMeterType())
 	{
 		case QRL_MeterWindow::THERMO:
@@ -127,7 +128,7 @@ void QRL_MetersManager::refreshView()
 {
 
 
-	showMeterOptions(meterListWidget->item(currentMeter));
+        showMeterOptions(currentMeter);
 
 
 }
@@ -142,7 +143,7 @@ void QRL_MetersManager::refreshView()
 	//double rr=text.toDouble();
 	//ScopeWindows[currentScope]->changeRefreshRate(rr);
 	rrCounter->setValue(rr);
-        qTargetInterface->getMeter(currentMeter)->setMeterRefreshRate(rr);
+        Meters[currentMeter]->setMeterRefreshRate(rr);
 //         Meters[currentMeter]->setMeterRefreshRate(rr);
 	MeterWindows[currentMeter]->changeRefreshRate(rr);
 }
@@ -274,14 +275,27 @@ void QRL_MetersManager::changeThermoDirection(int d)
 * @brief update manager dialog for the choosen meter
 * @param item meter number
 */
-void QRL_MetersManager::showMeterOptions( QListWidgetItem * item ){
 
-	currentMeter= meterListWidget->row(item);
+void QRL_MetersManager::showMeterOptions(QListWidgetItem * item )
+{
+        int index=meterListWidget->row(item);
+        showMeterOptions(index);
+
+
+}
+
+void QRL_MetersManager::showMeterOptions( int index ){
+
+        currentMeter= index;
 	tabWidget->setTabText(0,qTargetInterface->getMeterName(currentMeter));
 	if(MeterWindows[currentMeter]->isVisible())
 		showCheckBox->setCheckState(Qt::Checked);
 	else
 		showCheckBox->setCheckState(Qt::Unchecked);
+
+        rrCounter->setValue(MeterWindows[currentMeter]->getRefreshRate());
+        minCounter->setValue(MeterWindows[currentMeter]->getMin());
+        maxCounter->setValue(MeterWindows[currentMeter]->getMax());
 
 //disconnect( meterComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeMeter(int) ) );
 	meterComboBox->setCurrentIndex((int)MeterWindows[currentMeter]->getMeterType());
