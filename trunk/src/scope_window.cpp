@@ -682,7 +682,13 @@ double  QRL_ScopeWindow::getTraceAverage(int trace)
 	return 0.;
 }
 
-
+double  QRL_ScopeWindow::getTracePP(int trace)
+{
+        if (trace<Scope->getNTraces()){
+                return Traces[trace]->getPP();
+        }
+        return 0.;
+}
 
 
 

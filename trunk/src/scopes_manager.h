@@ -95,6 +95,7 @@ public slots:
     void holdPlot(int);
     void setFileDirectory();
   void setOffsetToMean();
+    void fitDytoPP();
 private:
   qint32 fileVersion;
   int Num_Scopes;

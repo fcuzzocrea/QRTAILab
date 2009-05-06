@@ -73,6 +73,7 @@ void setLabelsXValue(double x);
    void setOffset(double);
    double getOffset();
    double getAverage();
+   double getPP();
    void setDy(double);
    double getDy();
    void show(bool);

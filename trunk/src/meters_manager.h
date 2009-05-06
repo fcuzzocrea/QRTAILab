@@ -57,6 +57,7 @@ public slots:
    void refresh();
   void  showMeter(int);
    void showMeterOptions( QListWidgetItem * item );
+   void showMeterOptions( int );
   void changeRefreshRate(double);
   void changeMin(double);
   void changeMax(double);
@@ -77,7 +78,7 @@ public slots:
 private:
     qint32 fileVersion;
    int Num_Meters;
-//     QRL_MeterData **Meters;
+     QRL_MeterData **Meters;
   //Target_Meters_T *Meters;
   unsigned int currentMeter;
    QRL_MeterWindow** MeterWindows;

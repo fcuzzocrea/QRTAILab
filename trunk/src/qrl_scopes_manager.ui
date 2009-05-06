@@ -118,7 +118,7 @@
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="Scope">
       <attribute name="title">
@@ -152,8 +152,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>189</width>
-            <height>261</height>
+            <width>150</width>
+            <height>220</height>
            </rect>
           </property>
           <attribute name="label">
@@ -408,7 +408,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>213</width>
+            <width>217</width>
             <height>261</height>
            </rect>
           </property>
@@ -515,7 +515,7 @@
             <x>0</x>
             <y>0</y>
             <width>192</width>
-            <height>246</height>
+            <height>214</height>
            </rect>
           </property>
           <attribute name="label">
@@ -747,14 +747,14 @@
           <string>dy</string>
          </property>
          <layout class="QGridLayout">
-          <item row="0" column="0">
+          <item row="1" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>Units/div:</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QComboBox" name="dyComboBox">
             <property name="editable">
              <bool>true</bool>
@@ -845,6 +845,13 @@
               <string>1000</string>
              </property>
             </item>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QPushButton" name="fitDyPushButton">
+            <property name="text">
+             <string>fit to PP</string>
+            </property>
            </widget>
           </item>
          </layout>

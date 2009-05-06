@@ -47,7 +47,7 @@ if (this->objectName().isEmpty())
 
   //  this->setOption(RubberBandMove,true);
     this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/meter_icon.xpm")));
-
+RefreshRate=20;
 //dockingwindow
 //this->setAllowedAreas(Qt::NoDockWidgetArea);
 //this->setFloating(true);
@@ -109,7 +109,7 @@ Thermo->setFillBrush(QBrush(gradient));
 	Dial->setFrameShadow(QwtDial::Sunken);
 	Dial->scaleDraw()->setPenWidth(2);
         //Dial->setLineWidth(1);
-	Dial->hide();
+//	Dial->hide();
 
 /*	Dial = new QMeter(this);
 	Dial->setStartAngle(230);
@@ -130,7 +130,7 @@ Thermo->setFillBrush(QBrush(gradient));
 	 QFont font("Helvetica", 15, QFont::DemiBold);
  	Lcd->setFont(font);
 	Lcd->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
-	Lcd->hide();
+//	Lcd->hide();
       
   
 
@@ -156,10 +156,10 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 	MeterType=metertype;
 	switch (MeterType){
 	case DIAL:
-		Thermo->hide();
-		Lcd->hide();
+//		Thermo->hide();
+//		Lcd->hide();
 		 this->setWidget(Dial);
-		Dial->show();
+
 		// delete Thermo;
 		break;
 	case THERMO:
@@ -168,19 +168,19 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
     		//Thermo->setGeometry(QRect(50, 20, 52, 261));
 		//Thermo->setScale(Min,Max);
 		//Thermo->setFillColor(thermoColor);
-		Dial->hide();
-		Lcd->hide();
+//		Dial->hide();
+//		Lcd->hide();
 		this->setWidget(Thermo);
-		Thermo->show();
+
 		//pipeDistance=Thermo->pos().x();
 		pipeDistance=Thermo->minimumSizeHint().width()-Thermo->pipeWidth()-Thermo->borderWidth()*2;
 		//delete Dial;
 		break;
 	case LCD:
-		Dial->hide();
-		Thermo->hide();
+//		Dial->hide();
+//		Thermo->hide();
 		this->setWidget(Lcd);
-		Lcd->show();
+
 		break;
 	default:
 		break;

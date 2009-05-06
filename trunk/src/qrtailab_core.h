@@ -94,7 +94,7 @@ public:
     int	    getScopeDt(int);
     int     getNumberOfTraces(int);
 
-//     QRL_MeterData** getMeters(){return targetthread->getMeters();}
+     QRL_MeterData** getMeters(){return targetthread->getMeters();}
         QRL_MeterData* getMeter(int i){return targetthread->getMeters()[i];}
       int getMeterNumber();
     QString getMeterName(int);
