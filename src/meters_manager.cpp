@@ -196,6 +196,7 @@ void QRL_MetersManager::changeMeter(int type)
 		default:break;
 	}
 	//}
+        showMeterOptions(currentMeter);
 }
 
 void QRL_MetersManager::changeThermoColor1()
@@ -313,7 +314,27 @@ if (MeterWindows[currentMeter]->getMeterType()==QRL_MeterWindow::THERMO) {
 		colorComboBox->setCurrentIndex(0);
 	else
 		colorComboBox->setCurrentIndex(1);
-}
+    } else {
+    if (MeterWindows[currentMeter]->getMeterType()==QRL_MeterWindow::DIAL)
+           MeterWindows[currentMeter]->setNeedleColor(MeterWindows[currentMeter]->getNeedleColor());
+        else { //LCD
+                 switch(MeterWindows[currentMeter]->getLcdFormat()){
+                        case 'e':
+                                formatComboBox->setCurrentIndex(0);
+                                break;
+                        case 'f':
+                                 formatComboBox->setCurrentIndex(1);
+                                break;
+                        case 'g':
+                              formatComboBox->setCurrentIndex(2);
+                                break;
+                        default:
+                                break;
+                  }
+                  precisionCounter->setValue(MeterWindows[currentMeter]->getLcdPrecision());
+        }
+  }
+
 
 }
 

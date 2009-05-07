@@ -84,7 +84,7 @@ Thermo->setFillBrush(QBrush(gradient));
      		alarmGradient.setSpread(QGradient::ReflectSpread);
 		Thermo->setAlarmBrush(QBrush(alarmGradient));
 	alarmLevel=1.;
-	this->setWidget(Thermo);
+
 	setPipeWith(pipeWidth);
 	gradientEnabled=true;
 
@@ -109,7 +109,7 @@ Thermo->setFillBrush(QBrush(gradient));
 	Dial->setFrameShadow(QwtDial::Sunken);
 	Dial->scaleDraw()->setPenWidth(2);
         //Dial->setLineWidth(1);
-//	Dial->hide();
+        Dial->setVisible(false);
 
 /*	Dial = new QMeter(this);
 	Dial->setStartAngle(230);
@@ -131,8 +131,9 @@ Thermo->setFillBrush(QBrush(gradient));
  	Lcd->setFont(font);
 	Lcd->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 //	Lcd->hide();
-      
-  
+
+        this->setWidget(Thermo);
+
 
     this->setWindowTitle(Meter->getName());
 
@@ -156,8 +157,10 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 	MeterType=metertype;
 	switch (MeterType){
 	case DIAL:
-//		Thermo->hide();
-//		Lcd->hide();
+//                Thermo->setVisible(false);
+//                Lcd->setVisible(false);
+                 if (!Dial->isVisible()) Dial->setVisible(true);
+
 		 this->setWidget(Dial);
 
 		// delete Thermo;
@@ -168,8 +171,10 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
     		//Thermo->setGeometry(QRect(50, 20, 52, 261));
 		//Thermo->setScale(Min,Max);
 		//Thermo->setFillColor(thermoColor);
-//		Dial->hide();
-//		Lcd->hide();
+
+//                Thermo->setVisible(true);
+//                Lcd->setVisible(false);
+//                 Dial->setVisible(false);
 		this->setWidget(Thermo);
 
 		//pipeDistance=Thermo->pos().x();
@@ -177,8 +182,9 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 		//delete Dial;
 		break;
 	case LCD:
-//		Dial->hide();
-//		Thermo->hide();
+//                Thermo->setVisible(false);
+//                Lcd->setVisible(true);
+//                 Dial->setVisible(false);
 		this->setWidget(Lcd);
 
 		break;
