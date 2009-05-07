@@ -111,12 +111,12 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-GwPL5nHCpi,guid=1edc4cdf5450c6a5e942a6844a016699</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-KSufc8I5yK,guid=45aeaaa08b9192a838ddeac24a020ca7</value>
     <value type="QString" >DESKTOP_SESSION=kde</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
     <value type="QString" >DM_CONTROL=/var/run/xdmctl</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/gpg-uXp7Pj/S.gpg-agent:3874:1</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/gpg-gooX72/S.gpg-agent:3640:1</value>
     <value type="QString" >GS_LIB=/home/nahrstaedt/.fonts</value>
     <value type="QString" >GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/nahrstaedt/.gtkrc-2.0:/home/nahrstaedt/.gtkrc-2.0-kde4:/home/nahrstaedt/.kde/share/config/gtkrc-2.0</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/nahrstaedt/.gtkrc::/home/nahrstaedt/.kde/share/config/gtkrc</value>
@@ -136,16 +136,16 @@
     <value type="QString" >PWD=/home/nahrstaedt</value>
     <value type="QString" >QTDIR=/usr</value>
     <value type="QString" >QT_PLUGIN_PATH=/home/nahrstaedt/.kde/lib/kde4/plugins/:/usr/lib/kde4/plugins/</value>
-    <value type="QString" >SESSION_MANAGER=local/tamora:/tmp/.ICE-unix/3977</value>
+    <value type="QString" >SESSION_MANAGER=local/tamora:/tmp/.ICE-unix/3742</value>
     <value type="QString" >SHELL=/bin/bash</value>
     <value type="QString" >SHLVL=0</value>
-    <value type="QString" >SSH_AGENT_PID=3873</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/ssh-TnlcKt3821/agent.3821</value>
+    <value type="QString" >SSH_AGENT_PID=3639</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/ssh-npAuCx3587/agent.3587</value>
     <value type="QString" >USER=nahrstaedt</value>
     <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XCURSOR_THEME=oxy-white</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/share:/usr/share:/usr/local/share</value>
-    <value type="QString" >XDG_SESSION_COOKIE=75e2ada172213f0927404400475a01d9-1241605782.408428-698045231</value>
+    <value type="QString" >XDG_SESSION_COOKIE=75e2ada172213f0927404400475a01d9-1241648292.822633-757631778</value>
     <value type="QString" >XDM_MANAGED=method=classic</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >
@@ -165,12 +165,12 @@
   <valuemap type="QVariantMap" >
    <value key="ProjectExplorer.BuildConfiguration.DisplayName" type="QString" >Release</value>
    <valuelist key="abstractProcess.Environment" type="QVariantList" >
-    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-GwPL5nHCpi,guid=1edc4cdf5450c6a5e942a6844a016699</value>
+    <value type="QString" >DBUS_SESSION_BUS_ADDRESS=unix:abstract=/tmp/dbus-KSufc8I5yK,guid=45aeaaa08b9192a838ddeac24a020ca7</value>
     <value type="QString" >DESKTOP_SESSION=kde</value>
     <value type="QString" >DESKTOP_STARTUP_ID=</value>
     <value type="QString" >DISPLAY=:0.0</value>
     <value type="QString" >DM_CONTROL=/var/run/xdmctl</value>
-    <value type="QString" >GPG_AGENT_INFO=/tmp/gpg-uXp7Pj/S.gpg-agent:3874:1</value>
+    <value type="QString" >GPG_AGENT_INFO=/tmp/gpg-gooX72/S.gpg-agent:3640:1</value>
     <value type="QString" >GS_LIB=/home/nahrstaedt/.fonts</value>
     <value type="QString" >GTK2_RC_FILES=/etc/gtk-2.0/gtkrc:/home/nahrstaedt/.gtkrc-2.0:/home/nahrstaedt/.gtkrc-2.0-kde4:/home/nahrstaedt/.kde/share/config/gtkrc-2.0</value>
     <value type="QString" >GTK_RC_FILES=/etc/gtk/gtkrc:/home/nahrstaedt/.gtkrc::/home/nahrstaedt/.kde/share/config/gtkrc</value>
@@ -190,16 +190,16 @@
     <value type="QString" >PWD=/home/nahrstaedt</value>
     <value type="QString" >QTDIR=/usr</value>
     <value type="QString" >QT_PLUGIN_PATH=/home/nahrstaedt/.kde/lib/kde4/plugins/:/usr/lib/kde4/plugins/</value>
-    <value type="QString" >SESSION_MANAGER=local/tamora:/tmp/.ICE-unix/3977</value>
+    <value type="QString" >SESSION_MANAGER=local/tamora:/tmp/.ICE-unix/3742</value>
     <value type="QString" >SHELL=/bin/bash</value>
     <value type="QString" >SHLVL=0</value>
-    <value type="QString" >SSH_AGENT_PID=3873</value>
-    <value type="QString" >SSH_AUTH_SOCK=/tmp/ssh-TnlcKt3821/agent.3821</value>
+    <value type="QString" >SSH_AGENT_PID=3639</value>
+    <value type="QString" >SSH_AUTH_SOCK=/tmp/ssh-npAuCx3587/agent.3587</value>
     <value type="QString" >USER=nahrstaedt</value>
     <value type="QString" >WINDOWPATH=7</value>
     <value type="QString" >XCURSOR_THEME=oxy-white</value>
     <value type="QString" >XDG_DATA_DIRS=/usr/share:/usr/share:/usr/local/share</value>
-    <value type="QString" >XDG_SESSION_COOKIE=75e2ada172213f0927404400475a01d9-1241605782.408428-698045231</value>
+    <value type="QString" >XDG_SESSION_COOKIE=75e2ada172213f0927404400475a01d9-1241648292.822633-757631778</value>
     <value type="QString" >XDM_MANAGED=method=classic</value>
    </valuelist>
    <valuelist key="abstractProcess.arguments" type="QVariantList" >

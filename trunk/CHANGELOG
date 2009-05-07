@@ -2,7 +2,10 @@ Version 0.1.7
  - offset in a scope  can now  be set to the average
  - offset will be recalculated during changes of dy
  - autoscaling in a scpoe is now possible
- - Log blocks can be used for matrix plots
+ - Log blocks can be used for matrix plots (the size is very restricted!!! around 100-200 elements are possible)
+ - 3 different matrix plots 
+ - Meter options are displaying now to the actual meter options
+
 
 Version 0.1.6
  - Color of TraceLabel is now correct

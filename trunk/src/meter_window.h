@@ -81,7 +81,7 @@ public:
   void setLcdFormat(char c) ;
   char getLcdFormat() {return format;}
   void setLcdPrecision(int p);
-  int getLcdPrecision(){return precision;}
+   int getLcdPrecision(){return precision;}
    void setNeedleColor(const QColor&);
    QColor getNeedleColor(){return needle->palette().button().color();}
    void setFileVersion(qint32 v){fileVersion=v;}
