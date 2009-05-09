@@ -153,6 +153,7 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 		ParametersManager->hide();
 		delete ParametersManager;
 	}
+        delete TargetsManager;
 	//if (Synchs_Manager) Synchs_Manager->hide();
 	//rt_send(Target_Interface_Task, CLOSE);
 	//pthread_join(Target_Interface_Thread, NULL);
@@ -165,6 +166,7 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 		printf("stop target!\n");
 
 	}
+        delete target;
 	delete qTargetInterface;
 // 	rt_task_delete(RLG_Main_Task);
 	if (Verbose)

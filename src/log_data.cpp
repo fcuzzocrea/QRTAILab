@@ -28,12 +28,21 @@
 
 #include "log_data.h"
 
-QRL_LogData::QRL_LogData()
+QRL_LogData::QRL_LogData(int r,int c,float d,char* c_name)
+        :nrow(r),ncol(c),dt(d)
 {
 	    visible = false;
 	    isSaving=0;
   Save_File_Pointer=NULL;
 	    plotting=false;
+
+                logRefreshRate=30.;
+                 LogValues.resize(this->getNRow());
+
+                for (int t=0; t<this->getNRow(); t++){
+                        LogValues[t].resize(this->getNCol());
+                }
+                name=std::string(c_name);
 }
 
 QRL_LogData::~QRL_LogData()
@@ -41,16 +50,6 @@ QRL_LogData::~QRL_LogData()
 
 }
 
-void QRL_LogData::initializeDataVectors(){
-
-
-                logRefreshRate=30.;
-                LogValues.resize(this->getNRow());
-
-                for (int t=0; t<this->getNRow(); t++){
-                        LogValues[t].resize(this->getNCol());
-                }
-}
 
  void QRL_LogData::setLogValue(float v, int row, int col){
 

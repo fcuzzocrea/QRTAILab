@@ -28,11 +28,13 @@
 
 #include "meter_data.h"
 
-QRL_MeterData::QRL_MeterData()
+QRL_MeterData::QRL_MeterData(float d,char* c_name)
+        :dt(d)
 {
 		visible = false;
 		meterRefreshRate=20.;
 		MeterValues=0;
+                name=std::string(c_name);
 }
 
 int QRL_MeterData::setMeterRefreshRate(double rr)
@@ -50,7 +52,7 @@ return ret;
 
 double QRL_MeterData::getMeterRefreshRate()
 {
-	double ret=-1;
+        double ret=-1;
 
 		ret=meterRefreshRate;
 	

@@ -34,21 +34,19 @@
 class QRL_LedData{
 public:
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
-  QRL_LedData();
-    const char* getName(){return name;}
+  QRL_LedData(int,float,char*);
+  const char* getName(){return name.c_str();}
   float getDt(){return dt;} 
   int getNLeds(){return n_leds;}
-  void setNLeds(int nl){n_leds=nl;}
-  void setDt(float d){dt=d;}
   void setLedValue(unsigned int v);
     unsigned int getLedValue();
-	char name[MAX_NAMES_SIZE];
 
 private:
     unsigned int LedValues; 
-	int n_leds;
+const	int n_leds;
 	int visible;
-	float dt;
+const	float dt;
+    std::string name;
 };
 
 

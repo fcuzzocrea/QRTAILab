@@ -34,20 +34,18 @@
 class QRL_ALogData
 {
 public:
-  QRL_ALogData();
-	int getNRow(){return nrow;}
-	int getNCol(){return ncol;}
+  QRL_ALogData(int,int,float,char*);
+  int getNRow(){return nrow;}
+  int getNCol(){return ncol;}
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
-    const char* getName(){return name;}
+  const char* getName(){return name.c_str();}
   float getDt(){return dt;} 
-	void setDt(float d){dt=d;} 
-	void setNRow(int r){nrow=r;}
-	void setNCol(int c){ncol=c;}
-	char name[MAX_NAMES_SIZE];
+
 private:
-	int nrow;
-	int ncol;
-	float dt;
+        const int nrow;
+        const int ncol;
+        const float dt;
+        std::string name;
 };
 
 

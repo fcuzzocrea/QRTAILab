@@ -36,16 +36,15 @@ class QRL_ScopeData //: public QThread
 {
  // Q_OBJECT
 public:
-  QRL_ScopeData();
+  QRL_ScopeData(int ntraces, float dt,char*);
   ~QRL_ScopeData();
-  void initializeDataVectors();
   int getNTraces(){return ntraces;}
-  void setNTraces(int t){ntraces=t;}
+//  void setNTraces(int t){ntraces=t;}
   float getDt(){return dt;} 
-  void setDt(float d){dt=d;}
+//  void setDt(float d){dt=d;}
   int getIsSaving(){return isSaving;}
   int getSavedPoints(){return Saved_Points;}
-  const char* getName(){return name;}
+  const char* getName(){return name.c_str();}
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
   int setScopeDt(double);
     double getScopeDt();
@@ -64,7 +63,8 @@ public:
       int n_points_to_save();
     void set_points_counter_scope(int cnt);
 
-    char name[MAX_NAMES_SIZE];
+    //char name[MAX_NAMES_SIZE];
+
     void setSaveScopeTime(bool b){saveScopeTime=b;}
     bool isSaveScopeTime(){return saveScopeTime;}
     
@@ -75,8 +75,9 @@ public:
 //    void run();
 private:
     bool saveScopeTime;
-    int ntraces;
-    float dt;
+    const int ntraces;
+    const  float dt;
+    std::string name;
     int isSaving;
     bool plotting;
     int visible;

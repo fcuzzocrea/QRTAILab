@@ -271,10 +271,10 @@ void TargetThread::upload_parameters_info(long port, RT_TASK *task)
 		RT_rpcx(Target_Node, port, task, &n, &ntraces, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &scope_name, sizeof(int), sizeof(scope_name));
 		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
-		Scopes[n] = new QRL_ScopeData();
-		Scopes[n]->setDt(dt);
-		Scopes[n]->setNTraces(ntraces);
-		strncpy(Scopes[n]->name, scope_name, MAX_NAMES_SIZE);
+                Scopes[n] = new QRL_ScopeData(ntraces,dt,scope_name);
+                //Scopes[n]->setDt(dt);
+                //Scopes[n]->setNTraces(ntraces);
+                //strncpy(Scopes[n]->name, scope_name, MAX_NAMES_SIZE);
 	}
 	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 
@@ -309,15 +309,13 @@ int TargetThread::get_log_blocks_info(long port, RT_TASK *task, const char *mbx_
 		int nrow;
 		int ncol;
 		float dt;
-		Logs[n] = new QRL_LogData();
+
 		RT_rpcx(Target_Node, port, task, &n, &nrow, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &ncol, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &log_name, sizeof(int), sizeof(log_name));
-		strncpy(Logs[n]->name, log_name, MAX_NAMES_SIZE);
+                //strncpy(Logs[n]->name, log_name, MAX_NAMES_SIZE);
 		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
-		Logs[n]->setNRow(nrow);
-		Logs[n]->setNCol(ncol);
-		Logs[n]->setDt(dt);
+                Logs[n] = new QRL_LogData(nrow,ncol,dt,log_name);
 	}
 	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 
@@ -349,15 +347,13 @@ int TargetThread::get_alog_blocks_info(long port, RT_TASK *task, const char *mbx
 		int nrow;
 		int ncol;
 		float dt;
-		ALogs[n] = new QRL_ALogData();
+
 		RT_rpcx(Target_Node, port, task, &n, &nrow, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &ncol, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &alog_name, sizeof(int), sizeof(alog_name));
-		strncpy(ALogs[n]->name, alog_name, MAX_NAMES_SIZE);
+                //strncpy(ALogs[n]->name, alog_name, MAX_NAMES_SIZE);
 		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
-		ALogs[n]->setNRow(nrow);
-		ALogs[n]->setNCol(ncol);
-		ALogs[n]->setDt(dt);
+                ALogs[n] = new QRL_ALogData(nrow,ncol,dt,alog_name);
 	}
 	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 
@@ -390,13 +386,12 @@ int TargetThread::get_led_blocks_info(long port, RT_TASK *task, const char *mbx_
 		float dt;
 		int n_leds;
 		//Leds[n].visible = false;
-		Leds[n] = new QRL_LedData();
+
 		RT_rpcx(Target_Node, port, task, &n, &n_leds, sizeof(int), sizeof(int));
 		RT_rpcx(Target_Node, port, task, &n, &led_name, sizeof(int), sizeof(led_name));
-		strncpy(Leds[n]->name, led_name, MAX_NAMES_SIZE);
+                //strncpy(Leds[n]->name, led_name, MAX_NAMES_SIZE);
 		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
-		Leds[n]->setDt(dt);
-		Leds[n]->setNLeds(n_leds);
+                Leds[n] = new QRL_LedData(n_leds,dt,led_name);
 	}
 	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 
@@ -431,9 +426,8 @@ int TargetThread::get_meter_blocks_info(long port, RT_TASK *task, const char *mb
 		RT_rpcx(Target_Node, port, task, &n, &meter_name, sizeof(int), sizeof(meter_name));
 		
 		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
-		Meters[n] = new QRL_MeterData();
-		Meters[n]->setDt(dt);
-		strncpy(Meters[n]->name, meter_name, MAX_NAMES_SIZE);
+                Meters[n] = new QRL_MeterData(dt,meter_name);
+                //strncpy(Meters[n]->name, meter_name, MAX_NAMES_SIZE);
 	}
 	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 
@@ -910,7 +904,6 @@ void TargetThread::startScopeThreads(  )//QRL_ScopeWindow** ScopeWindows)
 
 	for (int n = 0; n < Num_Scopes; n++) {
 		unsigned int msg;
-		Scopes[n]->initializeDataVectors();
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup((getPreferences()).Target_Scope_Mbx_ID);
@@ -1084,7 +1077,6 @@ void TargetThread::startLogThreads()
 {
 	for (int n = 0; n < Num_Logs; n++) {
 		unsigned int msg;
-                Logs[n]->initializeDataVectors();
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup(getPreferences().Target_Log_Mbx_ID);
