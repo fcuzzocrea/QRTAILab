@@ -35,16 +35,12 @@ class QRL_LogData
 {
 public:
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
-	QRL_LogData();
+        QRL_LogData(int, int, float,char*);
         ~QRL_LogData();
-          void initializeDataVectors();
-	const char* getName(){return name;}
+        const char* getName(){return name.c_str();}
 	float getDt(){return dt;} 
 	int getNRow(){return nrow;}
 	int getNCol(){return ncol;}
-	void setDt(float d){dt=d;} 
-	void setNRow(int r){nrow=r;}
-	void setNCol(int c){ncol=c;}
     int get_points_counter(){return Saved_Points;}
     int getIsSaving(){return isSaving;}
     int start_saving();
@@ -53,7 +49,6 @@ public:
      void stop_saving();
       int n_points_to_save();
       void set_points_counter(int cnt);
-	char name[MAX_NAMES_SIZE];
     int setLogRefreshRate(double rr);
     double getLogRefreshRate();
     void setPlotting(bool b){plotting=b;}
@@ -62,11 +57,13 @@ public:
         void setLogValue(float v, int row, int col);
         QVector< QVector<float> > getLogValue();
 private:
-	int nrow;
-	int ncol;
+        const int nrow;
+        const int ncol;
+        const float dt;
+            std::string name;
         double logRefreshRate;
         QVector< QVector <float> >  LogValues;
-	float dt;
+
 	int isSaving;
    	FILE* Save_File_Pointer;
    	double Save_Time;

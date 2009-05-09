@@ -34,22 +34,22 @@
 class QRL_MeterData
 {
 public:
-QRL_MeterData();
+QRL_MeterData(float,char*);
   float getDt(){return dt;} 
-  void setDt(float d){dt=d;}
-  const char* getName(){return name;}
+  const char* getName(){return name.c_str();}
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
     int setMeterRefreshRate(double rr);
     double getMeterRefreshRate();
     void setMeterValue(float v);
     float getMeterValue();
-	char name[MAX_NAMES_SIZE];
+
 
 private:
   float  MeterValues;
   double meterRefreshRate;
 	int visible;
-	float dt;
+const	float dt;
+    std::string name;
 };
 
 

@@ -28,9 +28,12 @@
 
 #include "led_data.h"
 
-QRL_LedData::QRL_LedData()
+QRL_LedData::QRL_LedData(int n,float d,char* c_name)
+        :n_leds(n),dt(d)
 {
 		visible = false;
+                LedValues=0;
+                name=std::string(c_name);
 
 }
 

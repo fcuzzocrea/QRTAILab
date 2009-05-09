@@ -28,8 +28,9 @@
 
 #include "alog_data.h"
 
-QRL_ALogData::QRL_ALogData()
+QRL_ALogData::QRL_ALogData(int r,int c, float d,char* c_name)
+        :nrow(r),ncol(c),dt(d)
 {
-
+                name=std::string(c_name);
 }
 

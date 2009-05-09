@@ -76,7 +76,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QRL_ScopeData *scope,int ind)
     qwtPlot->setObjectName(QString::fromUtf8("qwtPlot"));
 
     this->setWidget(qwtPlot);
-    this->setWindowTitle(QApplication::translate("QRL_ScopeWindow", Scope->name, 0, QApplication::UnicodeUTF8));
+    this->setWindowTitle(QApplication::translate("QRL_ScopeWindow", Scope->getName(), 0, QApplication::UnicodeUTF8));
     // Disable polygon clipping
    // QwtPainter::setDeviceClipping(false);
     // We don't need the cache here

@@ -28,14 +28,24 @@
 
 #include "scope_data.h"
 
-QRL_ScopeData::QRL_ScopeData()
+QRL_ScopeData::QRL_ScopeData(int ntr, float d,char *c_name)
+        :ntraces(ntr),dt(d)
 {
 		visible = false;
 		isSaving=0;
 		plotting=true;
 		Save_File_Pointer=NULL;
-		saveScopeTime=false;
-		
+                saveScopeTime=false;
+                scopeRefreshRate=30.;
+                ScopeValues.resize(ntraces);
+                ScopeIndex.resize(ntraces);
+                ScopeTime.resize(MAX_SCOPE_DATA);
+                for (int t=0; t<ntraces; t++){
+                        ScopeValues[t].resize(MAX_SCOPE_DATA);
+                        ScopeIndex[t]=0;
+                }
+                scopeDt=1./100.;
+                name=std::string(c_name);
 }
 
 
@@ -49,20 +59,7 @@ QRL_ScopeData::QRL_ScopeData()
 // 
 // }
 
-void QRL_ScopeData::initializeDataVectors(){
 
-// 		Traces = new QRL_ScopeTrace*[ntraces];
-		
-		scopeRefreshRate=30.;
-		ScopeValues.resize(ntraces);
-		ScopeIndex.resize(ntraces);
-		ScopeTime.resize(MAX_SCOPE_DATA);
-		for (int t=0; t<ntraces; t++){
-			ScopeValues[t].resize(MAX_SCOPE_DATA);
-			ScopeIndex[t]=0;
-		}
-		scopeDt=1./100.;
-}
 
     int QRL_ScopeData::setScopeDt(double d)
 {

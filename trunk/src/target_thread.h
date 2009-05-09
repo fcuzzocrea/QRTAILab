@@ -190,10 +190,6 @@ class TargetThread : public QThread
   //GetMeterDataThread* Get_Meter_Data_Thread;
   //GetLedDataThread* Get_Led_Data_Thread;
  
-
-
-
-
  pthread_t *Get_Led_Data_Thread;
  pthread_t *Get_Meter_Data_Thread;
  pthread_t *Get_Scope_Data_Thread;

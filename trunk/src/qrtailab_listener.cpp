@@ -219,7 +219,7 @@ void GetScopeDataThread::run()
 		//	Scope_Win->Plot->redraw();
 		//}
 
-
+//   if (ScopeWindow->start_saving()) {
 //			jl = 0;
 //			printf("%d from %d saved\n",save_idx,ScopeWindow->n_points_to_save());
 //			for (n = 0; n < MsgData; n++) {

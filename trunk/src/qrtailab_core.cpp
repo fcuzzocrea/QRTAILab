@@ -71,7 +71,7 @@ QRtaiLabCore::~QRtaiLabCore(){
 	closeTargetThread();
  	targetthread->wait();
 	delete targetthread;
-delete Parameters;
+        delete Parameters;
 	rt_task_delete(RLG_Main_Task);
 }
 

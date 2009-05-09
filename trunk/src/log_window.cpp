@@ -71,7 +71,7 @@ QRL_LogWindow::QRL_LogWindow(QWidget *parent,QRL_LogData *log)
 //    matrixPlot->setObjectName(QString::fromUtf8("qwtPlot"));
 
     this->setWidget(matrixPlot);
-    this->setWindowTitle(QApplication::translate("QRL_LogWindow", Log->name, 0, QApplication::UnicodeUTF8));
+    this->setWindowTitle(QApplication::translate("QRL_LogWindow", Log->getName(), 0, QApplication::UnicodeUTF8));
      minScale=0;
      maxScale=1;
        pixelSize=24;
