@@ -52,6 +52,12 @@ TargetThread::TargetThread(){
 	hardRealTimeLog=1;
 	hardRealTimeALog=1;
 
+        Scopes=NULL;
+        Meters=NULL;
+        ALogs=NULL;
+        Logs=NULL;
+
+
 }
 
 
@@ -157,74 +163,6 @@ int TargetThread::update_parameter(int idx, int mat_idx, double val)
 
 
 
-long TargetThread::try_to_connect(const char *IP)
-{
-	int counter = 0;
-	int counter_max = 5;
-	char buf[100];
-	long port;
-	struct sockaddr_in addr;
-
-	sprintf(buf, "Trying to connect to %s", IP);
-	//statusBarMessage(tr(buf));
-	if (Verbose) {
-		printf("%s...", buf);
-		fflush(stdout);
-	}
-	inet_aton(IP, &addr.sin_addr);
-	Target_Node = addr.sin_addr.s_addr;
-	while ((port = rt_request_port(Target_Node)) <= 0 && counter++ <= counter_max) {
-		msleep(100);
-	}
-	return port;
-}
-
-
-int TargetThread::get_parameters_info(long port, RT_TASK *task)
-{
-	unsigned int req = 'c';
-	char c_req = 'i';
-	int blk_index = 0;
-	int n_params = 0;
-
-	RT_rpc(Target_Node, port, task, req, &Is_Target_Running);
-	n_params = Is_Target_Running & 0xffff;
-	Is_Target_Running >>= 16;
-	if (n_params > 0) Tunable_Parameters = new Target_Parameters_T [n_params];
-	else               Tunable_Parameters = new Target_Parameters_T [1];
-
-	RT_rpcx(Target_Node, port, task, &c_req, &Tunable_Parameters[0], sizeof(char), sizeof(Target_Parameters_T));
-        RLG_Target_Name = strdup(Tunable_Parameters[0].model_name);
-
-	for (int n = 0; n < n_params; n++) {
-		RT_rpcx(Target_Node, port, task, &c_req, &Tunable_Parameters[n], sizeof(char), sizeof(Target_Parameters_T));
-		if (n > 0) {
-			if (strcmp(Tunable_Parameters[n-1].block_name, Tunable_Parameters[n].block_name)) {
-				Num_Tunable_Blocks++;
-			}
-		} else {
-			Num_Tunable_Blocks = 1;
-		}
-	}
-	if (Num_Tunable_Blocks > 0) Tunable_Blocks = new Target_Blocks_T [Num_Tunable_Blocks];
-	blk_index = 0;
-	for (int n = 0; n < n_params; n++) {
-		if (n > 0) {
-			if (strcmp(Tunable_Parameters[n-1].block_name, Tunable_Parameters[n].block_name)) {
-				blk_index++;
-				strncpy(Tunable_Blocks[blk_index].name, Tunable_Parameters[n].block_name + strlen(Tunable_Parameters[0].model_name) + 1, MAX_NAMES_SIZE);
-				Tunable_Blocks[blk_index].offset = n;
-			}
-		} else {
-			strncpy(Tunable_Blocks[0].name, Tunable_Parameters[0].block_name + strlen(Tunable_Parameters[0].model_name) + 1, MAX_NAMES_SIZE);
-			Tunable_Blocks[0].offset = 0;
-		}
-	}
-
-	return n_params;
-
-}
-
 void TargetThread::upload_parameters_info(long port, RT_TASK *task)
 {
 	unsigned int req = 'g';
@@ -240,228 +178,77 @@ void TargetThread::upload_parameters_info(long port, RT_TASK *task)
 	}
 }
 
- int TargetThread::get_scope_blocks_info(long port, RT_TASK *task, const char *mbx_id)
-{
-	int n_scopes = 0;
-	int req = -1, msg;
 
-	for (int n = 0; n < MAX_RTAI_SCOPES; n++) {
-		char mbx_name[7];
-		sprintf(mbx_name, "%s%d", mbx_id, n);
-		if (!RT_get_adr(Target_Node, port, mbx_name)) {
-			n_scopes = n;
-			break;
-		}
-	}
-	if (n_scopes > 0) {
-	  if (Num_Scopes>0){
-	      for (int i=0; i<Num_Scopes;i++)
-		delete Scopes[i];
-	      delete[] Scopes;
-	  }
-	  Scopes = new QRL_ScopeData* [n_scopes];
-	}
-	for (int n = 0; n < n_scopes; n++) {
-		char scope_name[MAX_NAMES_SIZE];
-		int ntraces;
-		float dt;
-// 		Scopes[n].visible = false;
-// 		Scopes[n].isSaving=0;
-// 		Scopes[n].Save_File_Pointer=NULL;
-		RT_rpcx(Target_Node, port, task, &n, &ntraces, sizeof(int), sizeof(int));
-		RT_rpcx(Target_Node, port, task, &n, &scope_name, sizeof(int), sizeof(scope_name));
-		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
-                Scopes[n] = new QRL_ScopeData(ntraces,dt,scope_name);
-                //Scopes[n]->setDt(dt);
-                //Scopes[n]->setNTraces(ntraces);
-                //strncpy(Scopes[n]->name, scope_name, MAX_NAMES_SIZE);
-	}
-	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
 
-	return n_scopes;
+
+void TargetThread::printBlocksInfo(){
+
+                                printf("Target is running...%s\n", Is_Target_Running ? "yes" : "no");
+                                        printf("Number of target tunable parameters...%d\n", Num_Tunable_Parameters);
+                                        for (int n = 0; n < Num_Tunable_Parameters; n++) {
+                                                printf("Block: %s\n", Tunable_Parameters[n].block_name);
+                                                printf(" Parameter: %s\n", Tunable_Parameters[n].param_name);
+                                                printf(" Number of rows: %d\n", Tunable_Parameters[n].n_rows);
+                                                printf(" Number of cols: %d\n", Tunable_Parameters[n].n_cols);
+                                                for (unsigned int nr = 0; nr < Tunable_Parameters[n].n_rows; nr++) {
+                                                        for (unsigned int nc = 0; nc < Tunable_Parameters[n].n_cols; nc++) {
+                                                                printf(" Value    : %f\n", Tunable_Parameters[n].data_value[nr*Tunable_Parameters[n].n_cols+nc]);
+                                                        }
+                                                }
+                                        }
+
+
+
+                                printf("Number of target real time scopes: %d\n", Num_Scopes);
+                                        for (int n = 0; n < Num_Scopes; n++) {
+                                                printf("Scope: %s\n", Scopes[n]->getName());
+                                                printf(" Number of traces...%d\n", Scopes[n]->getNTraces());
+                                                printf(" Sampling time...%f\n", Scopes[n]->getDt());
+                                        }
+
+
+                                printf("Number of target real time logs: %d\n", Num_Logs);
+                                        for (int n = 0; n < Num_Logs; n++) {
+                                                printf("Log: %s\n", Logs[n]->getName());
+                                                printf(" Number of rows...%d\n", Logs[n]->getNRow());
+                                                printf(" Number of cols...%d\n", Logs[n]->getNCol());
+                                                printf(" Sampling time...%f\n", Logs[n]->getDt());
+                                        }
+    // 					for (int n = 0; n < Num_Logs; n++) {
+// 						if (Logs[n]->getDt() <= 0.) {
+// 						  printf("Fatal Error, Log %s samplig time is equal to %f,\n", Logs[n]->getName(), Logs[n]->getDt());
+// 						  printf("while Rtai-lab needs a finite, positive sampling time\n");
+// 						  printf("This error often occurs when the sampling time is inherited\n");
+// 						  printf("from so-called time-continous simulink blocks\n");
+//
+// 						}
+//
+// 					}
+                                printf("Number of target real time automatic logs: %d\n", Num_ALogs);
+                                        for (int n = 0; n < Num_ALogs; n++) {
+                                                printf("Log: %s\n", ALogs[n]->getName());
+                                                printf(" Number of rows...%d\n", ALogs[n]->getNRow());
+                                                printf(" Number of cols...%d\n", ALogs[n]->getNCol());
+                                                printf(" Sampling time...%f\n", ALogs[n]->getDt());
+                                        }
+                                printf("Number of target real time leds: %d\n", Num_Leds);
+                                        for (int n = 0; n < Num_Leds; n++) {
+                                                printf("Led: %s\n", Leds[n]->getName());
+                                                printf(" Number of leds...%d\n", Leds[n]->getNLeds());
+                                                printf(" Sampling time...%f\n", Leds[n]->getDt());
+                                        }
+                                  printf("Number of target real time meters: %d\n", Num_Meters);
+                                        for (int n = 0; n < Num_Meters; n++) {
+                                                printf("Meter: %s\n", Meters[n]->getName());
+                                                printf(" Sampling time...%f\n", Meters[n]->getDt());
+                                        }
+
+                                                                        printf("Number of target real time synchronoscopes: %d\n", Num_Synchs);
+                                        for (int n = 0; n < Num_Synchs; n++) {
+                                                printf("Synchronoscope: %s\n", Synchs[n].name);
+                                                printf(" Sampling time...%f\n", Synchs[n].dt);
+                                        }
 }
-
-int TargetThread::get_log_blocks_info(long port, RT_TASK *task, const char *mbx_id)
-{
-	int n_logs = 0;
-	int req = -1, msg;
-
-	for (int n = 0; n < MAX_RTAI_LOGS; n++) {
-		char mbx_name[7];
-		sprintf(mbx_name, "%s%d", mbx_id, n);
-		if (!RT_get_adr(Target_Node, port, mbx_name)) {
-			n_logs = n;
-			break;
-		}
-	}	
-	if (n_logs > 0) {
-	  if (Num_Logs>0){
-	      for (int i=0; i<Num_Logs;i++)
-		delete Logs[i];
-	      delete[] Logs;
-	  }
-	  Logs = new QRL_LogData* [n_logs];
-	}
-	for (int n = 0; n < n_logs; n++) {
-		char log_name[MAX_NAMES_SIZE];
-// 		Logs[n].isSaving=0;
-// 		Logs[n].Save_File_Pointer=NULL;
-		int nrow;
-		int ncol;
-		float dt;
-
-		RT_rpcx(Target_Node, port, task, &n, &nrow, sizeof(int), sizeof(int));
-		RT_rpcx(Target_Node, port, task, &n, &ncol, sizeof(int), sizeof(int));
-		RT_rpcx(Target_Node, port, task, &n, &log_name, sizeof(int), sizeof(log_name));
-                //strncpy(Logs[n]->name, log_name, MAX_NAMES_SIZE);
-		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
-                Logs[n] = new QRL_LogData(nrow,ncol,dt,log_name);
-	}
-	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
-
-	return n_logs;
-}
-
-int TargetThread::get_alog_blocks_info(long port, RT_TASK *task, const char *mbx_id)            //added il 4/5/2005
-{
-	int n_alogs = 0;
-	int req = -1, msg;
-	for (int n = 0; n < MAX_RTAI_LOGS; n++) {
-		char mbx_name[7];
-		sprintf(mbx_name, "%s%d", mbx_id, n);
-		if (!RT_get_adr(Target_Node, port, mbx_name)) {
-			n_alogs = n;
-			break;
-		}
-	}	
-	if (n_alogs > 0) {
-	  if (Num_ALogs>0){
-	      for (int i=0; i<Num_ALogs;i++)
-		delete ALogs[i];
-	      delete[] ALogs;
-	  }
-	 ALogs = new QRL_ALogData* [n_alogs];
-	}
-	for (int n = 0; n < n_alogs; n++) {
-		char alog_name[MAX_NAMES_SIZE];
-		int nrow;
-		int ncol;
-		float dt;
-
-		RT_rpcx(Target_Node, port, task, &n, &nrow, sizeof(int), sizeof(int));
-		RT_rpcx(Target_Node, port, task, &n, &ncol, sizeof(int), sizeof(int));
-		RT_rpcx(Target_Node, port, task, &n, &alog_name, sizeof(int), sizeof(alog_name));
-                //strncpy(ALogs[n]->name, alog_name, MAX_NAMES_SIZE);
-		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
-                ALogs[n] = new QRL_ALogData(nrow,ncol,dt,alog_name);
-	}
-	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
-
-	return n_alogs;
-}
-
-int TargetThread::get_led_blocks_info(long port, RT_TASK *task, const char *mbx_id)
-{
-	int n_leds = 0;
-	int req = -1, msg;
-
-	for (int n = 0; n < MAX_RTAI_LEDS; n++) {
-		char mbx_name[7];
-		sprintf(mbx_name, "%s%d", mbx_id, n);
-		if (!RT_get_adr(Target_Node, port, mbx_name)) {
-			n_leds = n;
-			break;
-		}
-	}
-	if (n_leds > 0) {
-	  if (Num_Leds>0){
-	      for (int i=0; i<Num_Leds;i++)
-		delete Leds[i];
-	      delete[] Leds;
-	  }
-	  Leds = new QRL_LedData* [n_leds];
-	}
-	for (int n = 0; n < n_leds; n++) {
-		char led_name[MAX_NAMES_SIZE];
-		float dt;
-		int n_leds;
-		//Leds[n].visible = false;
-
-		RT_rpcx(Target_Node, port, task, &n, &n_leds, sizeof(int), sizeof(int));
-		RT_rpcx(Target_Node, port, task, &n, &led_name, sizeof(int), sizeof(led_name));
-                //strncpy(Leds[n]->name, led_name, MAX_NAMES_SIZE);
-		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
-                Leds[n] = new QRL_LedData(n_leds,dt,led_name);
-	}
-	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
-
-	return n_leds;
-}
-
-int TargetThread::get_meter_blocks_info(long port, RT_TASK *task, const char *mbx_id)
-{
-	int n_meters = 0;
-	int req = -1, msg;
-
-	for (int n = 0; n < MAX_RTAI_METERS; n++) {
-		char mbx_name[7];
-		sprintf(mbx_name, "%s%d", mbx_id, n);
-		if (!RT_get_adr(Target_Node, port, mbx_name)) {
-			n_meters = n;
-			break;
-		}
-	}
-	if (n_meters > 0){ 	  
-	     if (Num_Meters>0){
-	      for (int i=0; i<Num_Meters;i++)
-		delete Meters[i];
-	      delete[] Meters;
-	  }
-	  Meters = new QRL_MeterData* [n_meters];
-	}
-	for (int n = 0; n < n_meters; n++) {
-		char meter_name[MAX_NAMES_SIZE];
-		float dt;
-// 		Meters[n].visible = false;
-		RT_rpcx(Target_Node, port, task, &n, &meter_name, sizeof(int), sizeof(meter_name));
-		
-		RT_rpcx(Target_Node, port, task, &n, &dt, sizeof(int), sizeof(float));
-                Meters[n] = new QRL_MeterData(dt,meter_name);
-                //strncpy(Meters[n]->name, meter_name, MAX_NAMES_SIZE);
-	}
-	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
-
-	return n_meters;
-}
-
-int TargetThread::get_synch_blocks_info(long port, RT_TASK *task, const char *mbx_id)
-{
-	int n_synchs = 0;
-	int req = -1, msg;
-
-	for (int n = 0; n < MAX_RTAI_SYNCHS; n++) {
-		char mbx_name[7];
-		sprintf(mbx_name, "%s%d", mbx_id, n);
-		if (!RT_get_adr(Target_Node, port, mbx_name)) {
-			n_synchs = n;
-			break;
-		}
-	}
-	if (n_synchs > 0) Synchs = new Target_Synchs_T [n_synchs];
-	for (int n = 0; n < n_synchs; n++) {
-		char synch_name[MAX_NAMES_SIZE];
-		Synchs[n].visible = false;
-		RT_rpcx(Target_Node, port, task, &n, &synch_name, sizeof(int), sizeof(synch_name));
-		strncpy(Synchs[n].name, synch_name, MAX_NAMES_SIZE);
-		RT_rpcx(Target_Node, port, task, &n, &Synchs[n].dt, sizeof(int), sizeof(float));
-	}
-	RT_rpcx(Target_Node, port, task, &req, &msg, sizeof(int), sizeof(int));
-
-	return n_synchs;
-}
-
-
-
 
 void TargetThread::start()
 {
@@ -480,13 +267,19 @@ void TargetThread::run()
 	Target_Port = 0;
 	RT_TASK *If_Task = NULL, *task;
 
+         int req,msg;
+         unsigned int p_req = 'c';
+        char c_req = 'i';
+        int blk_index = 0;
+
 	rt_allow_nonroot_hrt();
-	//mlockall(MCL_CURRENT | MCL_FUTURE);
+        mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(Target_Interface_Task = rt_task_init_schmod(qrl::get_an_id("HTI"), 97, 0, 0, SCHED_FIFO, 0xFF))) {
 		printf("Cannot init Target_Interface_Task\n");
+                munlockall();
 		exit(1);
 	}
-	//munlockall();
+        munlockall();
 	rt_send(RLG_Main_Task, 0);
 	
 	while (!End_App) {
@@ -509,7 +302,24 @@ end:
 				if (!strcmp(Preferences.Target_IP, "0")) {
 					Target_Node = 0;
 				} else {
-					Target_Port = try_to_connect(Preferences.Target_IP);
+
+                                                int counter = 0;
+                                                int counter_max = 5;
+                                                char buf[100];
+                                                struct sockaddr_in addr;
+
+                                                sprintf(buf, "Trying to connect to %s", Preferences.Target_IP);
+                                                //statusBarMessage(tr(buf));
+                                                if (Verbose) {
+                                                        printf("%s...", buf);
+                                                        fflush(stdout);
+                                                }
+                                                inet_aton(Preferences.Target_IP, &addr.sin_addr);
+                                                Target_Node = addr.sin_addr.s_addr;
+                                                while ((Target_Port = rt_request_port(Target_Node)) <= 0 && counter++ <= counter_max) {
+                                                        msleep(100);
+                                                }
+
 					//RLG_Connect_Button->activate();
 					if (Target_Port <= 0) {
 						//statusBarMessage(tr("Sorry, no route to target"));
@@ -524,7 +334,7 @@ end:
 					}
 				}
 
-			if (!(If_Task = (RT_TASK *)RT_get_adr(Target_Node, Target_Port, Preferences.Target_Interface_Task_Name))) {
+                                if (!(If_Task = (RT_TASK *)RT_get_adr(Target_Node, Target_Port, Preferences.Target_Interface_Task_Name))) {
 					//statusBarMessage(tr("No target or bad interface task identifier"));
 					if (Verbose) {
 						printf("No target or bad interface task identifier\n");
@@ -532,86 +342,222 @@ end:
 					qrl::RT_RETURN(task, CONNECT_TO_TARGET);
 					break;
 				}
-				Num_Tunable_Parameters = get_parameters_info(Target_Port, If_Task);
+
+
+                                          //get parameters info
+                                        p_req = 'c';
+                                        c_req = 'i';
+                                        blk_index = 0;
+
+                                        RT_rpc(Target_Node, Target_Port, If_Task, p_req, &Is_Target_Running);
+                                        Num_Tunable_Parameters = Is_Target_Running & 0xffff;
+                                        Is_Target_Running >>= 16;
+                                        if (Num_Tunable_Parameters > 0) Tunable_Parameters = new Target_Parameters_T [Num_Tunable_Parameters];
+                                        else               Tunable_Parameters = new Target_Parameters_T [1];
+
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &c_req, &Tunable_Parameters[0], sizeof(char), sizeof(Target_Parameters_T));
+                                        RLG_Target_Name = strdup(Tunable_Parameters[0].model_name);
+
+                                        for (int n = 0; n < Num_Tunable_Parameters; n++) {
+                                                RT_rpcx(Target_Node, Target_Port, If_Task, &c_req, &Tunable_Parameters[n], sizeof(char), sizeof(Target_Parameters_T));
+                                                if (n > 0) {
+                                                        if (strcmp(Tunable_Parameters[n-1].block_name, Tunable_Parameters[n].block_name)) {
+                                                                Num_Tunable_Blocks++;
+                                                        }
+                                                } else {
+                                                        Num_Tunable_Blocks = 1;
+                                                }
+                                        }
+                                        if (Num_Tunable_Blocks > 0) Tunable_Blocks = new Target_Blocks_T [Num_Tunable_Blocks];
+                                        blk_index = 0;
+                                        for (int n = 0; n < Num_Tunable_Parameters; n++) {
+                                                if (n > 0) {
+                                                        if (strcmp(Tunable_Parameters[n-1].block_name, Tunable_Parameters[n].block_name)) {
+                                                                blk_index++;
+                                                                strncpy(Tunable_Blocks[blk_index].name, Tunable_Parameters[n].block_name + strlen(Tunable_Parameters[0].model_name) + 1, MAX_NAMES_SIZE);
+                                                                Tunable_Blocks[blk_index].offset = n;
+                                                        }
+                                                } else {
+                                                        strncpy(Tunable_Blocks[0].name, Tunable_Parameters[0].block_name + strlen(Tunable_Parameters[0].model_name) + 1, MAX_NAMES_SIZE);
+                                                        Tunable_Blocks[0].offset = 0;
+                                                }
+                                        }
+
+
+                                //get scope blocks info
+
+                                req = -1;
+
+                                for (int n = 0; n < MAX_RTAI_SCOPES; n++) {
+                                        char mbx_name[7];
+                                        sprintf(mbx_name, "%s%d", Preferences.Target_Scope_Mbx_ID, n);
+                                        if (!RT_get_adr(Target_Node, Target_Port, mbx_name)) {
+                                                Num_Scopes = n;
+                                                break;
+                                        }
+                                }
+                                if (Num_Scopes > 0) {
+
+                                  Scopes = new QRL_ScopeData* [Num_Scopes];
+                                }
+                                for (int n = 0; n < Num_Scopes; n++) {
+                                        char scope_name[MAX_NAMES_SIZE];
+                                        int ntraces;
+                                        float dt;
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &ntraces, sizeof(int), sizeof(int));
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &scope_name, sizeof(int), sizeof(scope_name));
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &dt, sizeof(int), sizeof(float));
+                                        Scopes[n] = new QRL_ScopeData(ntraces,dt,scope_name);
+                                }
+                                RT_rpcx(Target_Node, Target_Port, If_Task, &req, &msg, sizeof(int), sizeof(int));
+
+                                //get log blocks info
+
+                                req = -1;
+
+                                for (int n = 0; n < MAX_RTAI_LOGS; n++) {
+                                        char mbx_name[7];
+                                        sprintf(mbx_name, "%s%d", Preferences.Target_Log_Mbx_ID, n);
+                                        if (!RT_get_adr(Target_Node, Target_Port, mbx_name)) {
+                                                Num_Logs = n;
+                                                break;
+                                        }
+                                }
+                                if (Num_Logs > 0) {
+
+                                  Logs = new QRL_LogData* [Num_Logs];
+                                }
+                                for (int n = 0; n < Num_Logs; n++) {
+                                        char log_name[MAX_NAMES_SIZE];
+                                        int nrow;
+                                        int ncol;
+                                        float dt;
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &nrow, sizeof(int), sizeof(int));
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &ncol, sizeof(int), sizeof(int));
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &log_name, sizeof(int), sizeof(log_name));
+                                        //strncpy(Logs[n]->name, log_name, MAX_NAMES_SIZE);
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &dt, sizeof(int), sizeof(float));
+                                        Logs[n] = new QRL_LogData(nrow,ncol,dt,log_name);
+                                }
+                                RT_rpcx(Target_Node, Target_Port, If_Task, &req, &msg, sizeof(int), sizeof(int));
+
+
+
+                               // get alog blocks info
+
+                                req = -1;
+                                for (int n = 0; n < MAX_RTAI_LOGS; n++) {
+                                        char mbx_name[7];
+                                        sprintf(mbx_name, "%s%d", Preferences.Target_ALog_Mbx_ID, n);
+                                        if (!RT_get_adr(Target_Node, Target_Port, mbx_name)) {
+                                                Num_ALogs = n;
+                                                break;
+                                        }
+                                }
+                                if (Num_ALogs > 0) {
+
+                                 ALogs = new QRL_ALogData* [Num_ALogs];
+                                }
+                                for (int n = 0; n < Num_ALogs; n++) {
+                                        char alog_name[MAX_NAMES_SIZE];
+                                        int nrow;
+                                        int ncol;
+                                        float dt;
+
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &nrow, sizeof(int), sizeof(int));
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &ncol, sizeof(int), sizeof(int));
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &alog_name, sizeof(int), sizeof(alog_name));
+                                        //strncpy(ALogs[n]->name, alog_name, MAX_NAMES_SIZE);
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &dt, sizeof(int), sizeof(float));
+                                        ALogs[n] = new QRL_ALogData(nrow,ncol,dt,alog_name);
+                                }
+                                RT_rpcx(Target_Node, Target_Port, If_Task, &req, &msg, sizeof(int), sizeof(int));
+
+
+                                //get led blocks info
+                                req = -1;
+
+                                for (int n = 0; n < MAX_RTAI_LEDS; n++) {
+                                        char mbx_name[7];
+                                        sprintf(mbx_name, "%s%d", Preferences.Target_Led_Mbx_ID, n);
+                                        if (!RT_get_adr(Target_Node, Target_Port, mbx_name)) {
+                                                Num_Leds = n;
+                                                break;
+                                        }
+                                }
+                                if (Num_Leds > 0) {
+                                  Leds = new QRL_LedData* [Num_Leds];
+                                }
+                                for (int n = 0; n < Num_Leds; n++) {
+                                        char led_name[MAX_NAMES_SIZE];
+                                        float dt;
+                                        int n_leds;
+                                        //Leds[n].visible = false;
+
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &n_leds, sizeof(int), sizeof(int));
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &led_name, sizeof(int), sizeof(led_name));
+                                        //strncpy(Leds[n]->name, led_name, MAX_NAMES_SIZE);
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &dt, sizeof(int), sizeof(float));
+                                        Leds[n] = new QRL_LedData(Num_Leds,dt,led_name);
+                                }
+                                RT_rpcx(Target_Node, Target_Port, If_Task, &req, &msg, sizeof(int), sizeof(int));
+
+
+
+                                //get meter blocks info
+
+                                req = -1;
+
+                                for (int n = 0; n < MAX_RTAI_METERS; n++) {
+                                        char mbx_name[7];
+                                        sprintf(mbx_name, "%s%d", Preferences.Target_Meter_Mbx_ID, n);
+                                        if (!RT_get_adr(Target_Node, Target_Port, mbx_name)) {
+                                                Num_Meters = n;
+                                                break;
+                                        }
+                                }
+                                if (Num_Meters > 0){
+                                  Meters = new QRL_MeterData* [Num_Meters];
+                                }
+                                for (int n = 0; n < Num_Meters; n++) {
+                                        char meter_name[MAX_NAMES_SIZE];
+                                        float dt;
+                        // 		Meters[n].visible = false;
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &meter_name, sizeof(int), sizeof(meter_name));
+
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &dt, sizeof(int), sizeof(float));
+                                        Meters[n] = new QRL_MeterData(dt,meter_name);
+                                        //strncpy(Meters[n]->name, meter_name, MAX_NAMES_SIZE);
+                                }
+                                RT_rpcx(Target_Node, Target_Port, If_Task, &req, &msg, sizeof(int), sizeof(int));
+
+                                //get synch blocks info
+
+
+                                req = -1;
+
+                                for (int n = 0; n < MAX_RTAI_SYNCHS; n++) {
+                                        char mbx_name[7];
+                                        sprintf(mbx_name, "%s%d", Preferences.Target_Synch_Mbx_ID, n);
+                                        if (!RT_get_adr(Target_Node, Target_Port, mbx_name)) {
+                                                Num_Synchs = n;
+                                                break;
+                                        }
+                                }
+                                if (Num_Synchs > 0) Synchs = new Target_Synchs_T [Num_Synchs];
+                                for (int n = 0; n < Num_Synchs; n++) {
+                                        char synch_name[MAX_NAMES_SIZE];
+                                        Synchs[n].visible = false;
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &synch_name, sizeof(int), sizeof(synch_name));
+                                        strncpy(Synchs[n].name, synch_name, MAX_NAMES_SIZE);
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &Synchs[n].dt, sizeof(int), sizeof(float));
+                                }
+                                RT_rpcx(Target_Node, Target_Port, If_Task, &req, &msg, sizeof(int), sizeof(int));
+
+
+
 				if (Verbose) {
-					printf("Target is running...%s\n", Is_Target_Running ? "yes" : "no");
-					printf("Number of target tunable parameters...%d\n", Num_Tunable_Parameters);
-					for (int n = 0; n < Num_Tunable_Parameters; n++) {
-						printf("Block: %s\n", Tunable_Parameters[n].block_name);
-						printf(" Parameter: %s\n", Tunable_Parameters[n].param_name);
-						printf(" Number of rows: %d\n", Tunable_Parameters[n].n_rows);
-						printf(" Number of cols: %d\n", Tunable_Parameters[n].n_cols);
-						for (unsigned int nr = 0; nr < Tunable_Parameters[n].n_rows; nr++) {
-							for (unsigned int nc = 0; nc < Tunable_Parameters[n].n_cols; nc++) {
-								printf(" Value    : %f\n", Tunable_Parameters[n].data_value[nr*Tunable_Parameters[n].n_cols+nc]);
-							}
-						}
-					}
-				}
-				Num_Scopes = get_scope_blocks_info(Target_Port, If_Task, Preferences.Target_Scope_Mbx_ID);
-				if (Verbose) {
-					printf("Number of target real time scopes: %d\n", Num_Scopes);
-					for (int n = 0; n < Num_Scopes; n++) {
-						printf("Scope: %s\n", Scopes[n]->getName());
-						printf(" Number of traces...%d\n", Scopes[n]->getNTraces());
-						printf(" Sampling time...%f\n", Scopes[n]->getDt());
-					}
-				}
-				Num_Logs = get_log_blocks_info(Target_Port, If_Task, Preferences.Target_Log_Mbx_ID);
-				if (Verbose) {
-					printf("Number of target real time logs: %d\n", Num_Logs);
-					for (int n = 0; n < Num_Logs; n++) {
-						printf("Log: %s\n", Logs[n]->getName());
-						printf(" Number of rows...%d\n", Logs[n]->getNRow());
-						printf(" Number of cols...%d\n", Logs[n]->getNCol());
-						printf(" Sampling time...%f\n", Logs[n]->getDt());
-					}
-				}
-// 					for (int n = 0; n < Num_Logs; n++) {
-// 						if (Logs[n]->getDt() <= 0.) {
-// 						  printf("Fatal Error, Log %s samplig time is equal to %f,\n", Logs[n]->getName(), Logs[n]->getDt());
-// 						  printf("while Rtai-lab needs a finite, positive sampling time\n");
-// 						  printf("This error often occurs when the sampling time is inherited\n");
-// 						  printf("from so-called time-continous simulink blocks\n");
-// 
-// 						}
-// 
-// 					}
-				
-				Num_ALogs = get_alog_blocks_info(Target_Port, If_Task, Preferences.Target_ALog_Mbx_ID);
-				if (Verbose) {
-					printf("Number of target real time automatic logs: %d\n", Num_ALogs);
-					for (int n = 0; n < Num_ALogs; n++) {
-						printf("Log: %s\n", ALogs[n]->getName());
-						printf(" Number of rows...%d\n", ALogs[n]->getNRow());
-						printf(" Number of cols...%d\n", ALogs[n]->getNCol());
-						printf(" Sampling time...%f\n", ALogs[n]->getDt());
-					}
-				}
-				Num_Leds = get_led_blocks_info(Target_Port, If_Task, Preferences.Target_Led_Mbx_ID);
-				if (Verbose) {
-					printf("Number of target real time leds: %d\n", Num_Leds);
-					for (int n = 0; n < Num_Leds; n++) {
-						printf("Led: %s\n", Leds[n]->getName());
-						printf(" Number of leds...%d\n", Leds[n]->getNLeds());
-						printf(" Sampling time...%f\n", Leds[n]->getDt());
-					}
-				}
-				Num_Meters = get_meter_blocks_info(Target_Port, If_Task, Preferences.Target_Meter_Mbx_ID);
-				if (Verbose) {
-					printf("Number of target real time meters: %d\n", Num_Meters);
-					for (int n = 0; n < Num_Meters; n++) {
-						printf("Meter: %s\n", Meters[n]->getName());
-						printf(" Sampling time...%f\n", Meters[n]->getDt());
-					}
-				}
-				Num_Synchs = get_synch_blocks_info(Target_Port, If_Task, Preferences.Target_Synch_Mbx_ID);
-				if (Verbose) {
-					printf("Number of target real time synchronoscopes: %d\n", Num_Synchs);
-					for (int n = 0; n < Num_Synchs; n++) {
-						printf("Synchronoscope: %s\n", Synchs[n].name);
-						printf(" Sampling time...%f\n", Synchs[n].dt);
-					}
+                                        printBlocksInfo();
 				}
 				if (Num_Synchs>0)
 					printf("Synchronoscopes are not supported!!!\n");
@@ -631,59 +577,24 @@ end:
 					Get_Log_Data_Thread = new pthread_t [Num_Logs];
 					startLogThreads();
 				}
-				/*for (int n = 0; n < Num_Logs; n++) {
-					unsigned int msg;
-					Args_T thr_args;
-					thr_args.index = n;
-					thr_args.mbx_id = strdup(Preferences.Target_Log_Mbx_ID);
-					pthread_create(&Get_Log_Data_Thread[n], NULL, rt_get_log_data, &thr_args);
-					rt_receive(0, &msg);
-				}*/
+
 				if (Num_ALogs > 0) {
 					Get_ALog_Data_Thread = new pthread_t [Num_ALogs];
 					startALogThreads();
 				}
 				
-				/*for (int n = 0; n < Num_ALogs; n++) {
-					unsigned int msg;
-					Alog_T thr_args;
-					thr_args.index = n;
-					thr_args.mbx_id = strdup(Preferences.Target_ALog_Mbx_ID);
-					thr_args.alog_name = strdup(ALogs[n].name);
-					printf("%s alog name\n", ALogs[n].name);
-					pthread_create(&Get_ALog_Data_Thread[n], NULL, rt_get_alog_data, &thr_args);
-					rt_receive(0, &msg);
-				}*/
  				//if (Num_Leds > 0) Get_Led_Data_Thread = new GetLedDataThread [Num_Leds];
 				if (Num_Leds > 0) {
 					Get_Led_Data_Thread = new pthread_t [Num_Leds];
 					startLedThreads();
 				}
-// 				for (int n = 0; n < Num_Leds; n++) {
-// 					unsigned int msg;
-// 					Args_T thr_args;
-// 					thr_args.index = n;
-// 					thr_args.mbx_id = strdup(Preferences.Target_Led_Mbx_ID);
-// 					//pthread_create(&Get_Led_Data_Thread[n], NULL, rt_get_led_data, &thr_args);
-// 					Get_Led_Data_Thread[n].start(&thr_args,this);
-// 					rt_receive(0, &msg);
-// 				}
+
  			//	if (Num_Meters > 0) Get_Meter_Data_Thread = new GetMeterDataThread [Num_Meters];
 				if (Num_Meters > 0) {
  					Get_Meter_Data_Thread = new pthread_t [Num_Meters];
  					startMeterThreads();
 				}
-// 				for (int n = 0; n < Num_Meters; n++) {
-// 					unsigned int msg;
-// 					Args_T thr_args;
-// 					thr_args.index = n;
-// 					thr_args.mbx_id = strdup(Preferences.Target_Meter_Mbx_ID);
-// 					//pthread_create(&Get_Meter_Data_Thread[n], NULL, rt_get_meter_data, &thr_args);
-// 					Get_Meter_Data_Thread[n].start(&thr_args,this);
-// 					rt_receive(0, &msg);
-// 					
-// 
-// 				}
+
 				/*if (Num_Synchs > 0) Get_Synch_Data_Thread = new pthread_t [Num_Synchs];
 				for (int n = 0; n < Num_Synchs; n++) {
 					unsigned int msg;
@@ -715,6 +626,31 @@ end:
 				if (Num_Tunable_Blocks>0)
 					delete[] Tunable_Blocks;
 
+                                  if (Num_Meters>0){
+                                      for (int i=0; i<Num_Meters;i++)
+                                        delete Meters[i];
+                                      delete[] Meters;
+                                  }
+                                  if (Num_Leds>0){
+                                      for (int i=0; i<Num_Leds;i++)
+                                        delete Leds[i];
+                                      delete[] Leds;
+                                  }
+                                if (Num_ALogs>0){
+                                      for (int i=0; i<Num_ALogs;i++)
+                                        delete ALogs[i];
+                                      delete[] ALogs;
+                                  }
+                                  if (Num_Logs>0){
+                                      for (int i=0; i<Num_Logs;i++)
+                                        delete Logs[i];
+                                      delete[] Logs;
+                                  }
+                                   if (Num_Scopes>0){
+                                      for (int i=0; i<Num_Scopes;i++)
+                                        delete Scopes[i];
+                                      delete[] Scopes;
+                                  }
 /*				for (int n = 0; n < Num_Logs; n++) {
 					pthread_join(Get_Log_Data_Thread[n], NULL);
 				}
@@ -767,6 +703,31 @@ end:
 					stopALogThreads();
 					stopLogThreads();
 
+                                       if (Num_Meters>0){
+                                        for (int i=0; i<Num_Meters;i++)
+                                           delete Meters[i];
+                                        delete[] Meters;
+                                       }
+                                  if (Num_Leds>0){
+                                      for (int i=0; i<Num_Leds;i++)
+                                        delete Leds[i];
+                                      delete[] Leds;
+                                  }
+                                   if (Num_ALogs>0){
+                                      for (int i=0; i<Num_ALogs;i++)
+                                        delete ALogs[i];
+                                      delete[] ALogs;
+                                  }
+                                   if (Num_Logs>0){
+                                      for (int i=0; i<Num_Logs;i++)
+                                        delete Logs[i];
+                                      delete[] Logs;
+                                  }
+                                  if (Num_Scopes>0){
+                                      for (int i=0; i<Num_Scopes;i++)
+                                        delete Scopes[i];
+                                      delete[] Scopes;
+                                  }
 /*					for (int n = 0; n < Num_Logs; n++) {
 						pthread_join(Get_Log_Data_Thread[n], NULL);
 					}
