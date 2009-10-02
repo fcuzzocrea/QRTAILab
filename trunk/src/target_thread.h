@@ -130,8 +130,6 @@ class TargetThread : public QThread
     void startLogThreads();
     void stopLogThreads();
 
-
-
     const char* getTargetName(){return RLG_Target_Name;}
     long getTargetPort(){return Target_Port;}
     RT_TASK * getTask(){return Target_Interface_Task;}
@@ -143,17 +141,11 @@ class TargetThread : public QThread
  public slots:
     void start();
  private:
-
+   void printBlocksInfo();
     void setEndApp(int EndApp){End_App=EndApp;}
     void setLedValue(int,unsigned int);
-   int  get_synch_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int get_meter_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int get_led_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int  get_alog_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int  get_log_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int  get_scope_blocks_info(long port, RT_TASK *task, const char *mbx_id);
-   int  get_parameters_info(long port, RT_TASK *task);
-   long try_to_connect(const char *IP);
+
+
    void upload_parameters_info(long port, RT_TASK *task);
   int Num_Tunable_Parameters;
   int Num_Tunable_Blocks;
