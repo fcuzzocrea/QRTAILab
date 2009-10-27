@@ -246,11 +246,13 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 	for (int j=0; j<Num_Tunable_Blocks; ++j){
 	    if (Parameters->isBlockVisible(j))
 		blockCounter++;
-	    if ((blockCounter==blockListWidget->currentRow()) && i==0){
+            if ((blockCounter==blockListWidget->currentRow())){
 	      i=j; 
+              break;
 	    }
 	      
 	}
+        //std::cout << "i: "<<i << std::endl;
 	parameterTableWidget->clear();
 	int jend,val_idx;
 	double data_value;
@@ -311,22 +313,77 @@ QString filename = QFileDialog::getOpenFileName(this,tr("Load Parameter"), NULL,
 	QString target=in.readLine().mid(8);
 // 	std::cout << line.toStdString();
 	QString date = in.readLine();
-	int blocknr=in.readLine().mid(18).toInt();
+        //int blocknr=in.readLine().mid(18).toInt();
 // 	std::cout << line.toStdString();
 	if (QMessageBox::question(NULL,"Load Parameter",tr("Should I load the parameter file for the target ")+target+tr("?\n ")+date, QMessageBox::Yes | QMessageBox::No )==QMessageBox::No)
 	  return;
 	int paramnr;
-	for (int blk=0;blk<blocknr;blk++){
-	  line=in.readLine().mid(4);
-	  std::cout << line.toStdString()<<std::endl;
-	   paramnr=in.readLine().mid(22).toInt();
-	  for (int prm=0;prm<paramnr;prm++){
-	    line=in.readLine().mid(6);
-	    std::cout << line.toStdString()<<std::endl;
-	  }
-	}
-	file.close();
+        int blocknr;
+        int nr=0;
+        int nc=0;
+        double value;
+        bool matrixmode=false;
+        QString tmp;
+        do {
 
+            tmp=in.readLine();
+            if (!tmp.isNull() && tmp.left(1)=="[" ){
+                blocknr=tmp.mid(tmp.indexOf("[")+1,-1+tmp.indexOf("]")-tmp.indexOf("[")).toInt();
+                tmp=in.readLine();
+                matrixmode=false;
+                //std::cout << blocknr << std::endl;
+            }
+           if (!tmp.isNull()){
+               if (!matrixmode) {
+                paramnr=tmp.mid(tmp.indexOf("[")+1,-1+tmp.indexOf("]")-tmp.indexOf("[")).toInt();
+                if (tmp.indexOf("=")>-1) {
+                    value= tmp.mid(tmp.indexOf("=")+1).toDouble();
+                     //std::cout << blocknr << " "<< paramnr<<" "<<value<<std::endl;
+                       if (batchModus==0){
+                                Parameters->updateParameterValue(blocknr,paramnr,nr,nc,value);
+                        } else {
+                                Parameters->addToBatch(blocknr,paramnr,nr,nc,value);
+                        }
+
+                } else {
+                    //matrix case
+                    matrixmode=true;
+                }
+            } else { //matrixmode
+                 if (tmp.indexOf("(")>-1) {
+                      nr=tmp.mid(tmp.indexOf("(")+1,-1+tmp.indexOf(",")-tmp.indexOf("(")).toInt();
+                      nc=tmp.mid(tmp.indexOf(",")+1,-1+tmp.indexOf(")")-tmp.indexOf(",")).toInt();
+                      value= tmp.mid(tmp.indexOf("=")+1).toDouble();
+                      // std::cout << blocknr << " "<< paramnr<<" "<<nr<<" "<<nc<<" "<<value<<std::endl;
+                        if (batchModus==0){
+                                Parameters->updateParameterValue(blocknr,paramnr,nr,nc,value);
+                        } else {
+                                Parameters->addToBatch(blocknr,paramnr,nr,nc,value);
+                        }
+                 } else{
+                      matrixmode=false;
+                      paramnr=tmp.mid(tmp.indexOf("[")+1,-1+tmp.indexOf("]")-tmp.indexOf("[")).toInt();
+                      if (tmp.indexOf("=")>-1) {
+                    value= tmp.mid(tmp.indexOf("=")+1).toDouble();
+                     //std::cout << blocknr << " "<< paramnr<<" "<<value<<std::endl;
+                       if (batchModus==0){
+                                Parameters->updateParameterValue(blocknr,paramnr,nr,nc,value);
+                        } else {
+                                Parameters->addToBatch(blocknr,paramnr,nr,nc,value);
+                        }
+
+                        } else {
+                            //matrix case
+                            matrixmode=true;
+                        }
+                  }
+
+            }
+            }
+        }while(!tmp.isNull());
+        file.close();
+  if(batchModus)
+                Parameters->batchParameterDownload();
 }
     void QRL_ParametersManager::saveParameter(){
 
@@ -338,46 +395,47 @@ QString filename = QFileDialog::getSaveFileName(this,tr("Save Parameter"), NULL,
    if (!file.open(QIODevice::WriteOnly)) return;
    QTextStream out(&file);
    //ts << tr("#");
-    // Write a header with a "magic number" and a version
- out << (quint32)DATA_STREAM_MAGIC_NUMBER<<endl; 
+
+
+
+             // Write a header with a "magic number" and a version
+ out << (quint32)DATA_STREAM_MAGIC_NUMBER<<endl;
  out << (qint32)DATA_STREAM_VERSION<<endl;
  out << "Target: " << Parameters->getTargetName()<<endl;
  out << "Date: " << QDate::currentDate().toString("dd.MM.yyyy");
  out << " "<<QTime::currentTime().toString("hh:mm")<<endl;
- out << "Number of Blocks: "<< Parameters->getBlockNumber()<<endl;
+ //out << "Number of Blocks: "<< Parameters->getBlockNumber()<<endl;
  for (int blk=0;blk<Parameters->getBlockNumber();blk++){
   if (Parameters->isBlockVisible(blk)) {
-  if (blk<10)
-    out << "[ "<<blk<<"] ";
-  else
+//  if (blk<10)
+//    out << "[ "<<blk<<"] ";
+//  else
      out << "["<<blk<<"] ";
     out<<Parameters->getBlockName(blk) << endl;
-     out << "Number of Parameters: "<< Parameters->getNumberOfParameters(blk)<<endl;
+    // out << "Number of Parameters: "<< Parameters->getNumberOfParameters(blk)<<endl;
     for (int prm=0;prm<Parameters->getNumberOfParameters(blk);prm++){
-        if (prm<10)
-    out << "  [ "<<prm<<"] ";
-  else
+//        if (prm<10)
+//    out << "  [ "<<prm<<"] ";
+//  else
      out << "  ["<<prm<<"] ";
       out << Parameters->getParameterName(blk,prm);
-	if (Parameters->getParameterRows(blk,prm)==1 && Parameters->getParameterCols(blk,prm)==1){
-	  out << " = " << Parameters->getParameterValue(blk,prm,0,0) << endl;
+        if (Parameters->getParameterRows(blk,prm)==1 && Parameters->getParameterCols(blk,prm)==1){
+          out << " = " << Parameters->getParameterValue(blk,prm,0,0) << endl;
 
-	} else {
+        } else {
 	out << endl;
 	for (int nr=0;nr<Parameters->getParameterRows(blk,prm);nr++){
 	   for (int nc=0;nc<Parameters->getParameterCols(blk,prm);nc++){
-		out << "    ("<<nr<<","<<nc<<")  = "<<Parameters->getParameterValue(blk,prm,nr,nc)<< " ";
+                out << "  ("<<nr<<","<<nc<<")  = "<<Parameters->getParameterValue(blk,prm,nr,nc)<< " ";
 	   }
 	  out <<endl;
-	}
+        }
       }
     }
     }
-  }
 
 
-
-
+    }
 
 
    file.close();

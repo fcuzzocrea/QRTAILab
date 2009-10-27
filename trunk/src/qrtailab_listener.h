@@ -69,7 +69,6 @@ static void *rt_get_scope_data(void *arg)
 	int n, nn, js, jl;
 	int index = ((Args_T *)arg)->index;
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
-	int stop_draw = false;
 	int save_idx = 0;
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
