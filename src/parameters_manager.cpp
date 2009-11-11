@@ -177,14 +177,12 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 	for (int j=0; j<Num_Tunable_Blocks; ++j){
 	    if (Parameters->isBlockVisible(j))
 		blockCounter++;
-	    if ((blockCounter==blockListWidget->currentRow() ) && blk==0){
+            if ((blockCounter==blockListWidget->currentRow())){
 	      blk=j; 
+              break;
 	    }
 	      
 	}
-
-	
-
 
 	int ind=0;
         int prm_row=item->row();
@@ -249,8 +247,7 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
             if ((blockCounter==blockListWidget->currentRow())){
 	      i=j; 
               break;
-	    }
-	      
+	    }  
 	}
         //std::cout << "i: "<<i << std::endl;
 	parameterTableWidget->clear();

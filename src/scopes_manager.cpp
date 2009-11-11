@@ -93,6 +93,8 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	connect( dirPushButton, SIGNAL( pressed()), this, SLOT(setFileDirectory() ) );
 	connect( setMeanPushButton, SIGNAL( pressed()), this, SLOT(setOffsetToMean() ) );
         connect( fitDyPushButton, SIGNAL( pressed()), this, SLOT(fitDytoPP() ) );
+        connect( styleComboBox,SIGNAL( currentIndexChanged(int) ),this, SLOT(setTraceStyle(int) ) );
+
 	currentScope=0;
 // 	for(int i=0; i<1; ++i){
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
@@ -100,7 +102,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 // 	}
 	traceComboBox->clear();
 	for(int i=0; i<Scopes[currentScope]->getNTraces();i++){
-		traceComboBox->addItem(	ScopeWindows[currentScope]->getTraceName(i) );
+                traceComboBox->addItem(	ScopeWindows[currentScope]->trace(i)->getName() );
 	}
 	if (Num_Scopes > 0)  showScopeOptions(currentScope);
 	
@@ -118,7 +120,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	RefreshRate=30.;
 	timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
-        timer->start((int)(1./RefreshRate*1000.));
+        //timer->start((int)(1./RefreshRate*1000.));
 	
 	
 //	tabWidget->addTab(traceWidget,tr("trace %1").arg(Scopes[currentScope].getNTraces()));
@@ -153,14 +155,15 @@ void QRL_ScopesManager::refresh()
 // 			if (k<v.at(t).size())
 // 			ScopeWindows[n]->setValue(t,v.at(t).at(k));
 // 	}
-     
+     if (Scopes[n]->dataAvailable()) {
 	if (Scopes[n]->getNTraces()>0) {
 	  if (Scopes[n]->isSaveScopeTime())
 	     ScopeWindows[n]->setTime( Scopes[n]->getScopeTime());
 	  ScopeWindows[n]->setValue( Scopes[n]->getScopeValue());
 	 }
-	//}
-   }
+        //}
+        }
+    }
 // } catch (...){
 // 	qDebug()<<"error in ScopesManager::refresh";
 // 
@@ -283,7 +286,13 @@ void QRL_ScopesManager::startSaving()
 	double Save_Time=timeCounter->value();
 	if( Scopes[currentScope]->start_saving_scope()==0){
 
-		QString File_Name=dirLineEdit->text()+fileLineEdit->text();
+                    QString File_Name=dirLineEdit->text();
+                    if (File_Name.isEmpty())
+                        File_Name="./";
+                    else if (!File_Name.endsWith(QDir::separator()))
+                          File_Name+=QDir::separator();
+
+                               File_Name+=fileLineEdit->text();
 		if (QFile::exists(File_Name)) {
 			printf("File %s exists already.",File_Name.toLocal8Bit().data() );
 			QMessageBox::critical(this, tr("QMessageBox::critical()"),
@@ -353,13 +362,13 @@ void QRL_ScopesManager::changeScopeList(int index)
 void QRL_ScopesManager::showTraceOptions(int index)
 {
 	currentTrace=index-scopeItems.size();	
-	lineWidthCounter->setValue(ScopeWindows[currentScope]->getTraceWidth(currentTrace));
-	offsetCounter->setValue(ScopeWindows[currentScope]->getTraceOffset(currentTrace));
-	dyComboBox->setEditText(tr("%1").arg(ScopeWindows[currentScope]->getTraceDy(currentTrace)));
+        lineWidthCounter->setValue(ScopeWindows[currentScope]->trace(currentTrace)->getWidth());
+        offsetCounter->setValue(ScopeWindows[currentScope]->trace(currentTrace)->getOffset());
+        dyComboBox->setEditText(tr("%1").arg(ScopeWindows[currentScope]->trace(currentTrace)->getDy()));
 	if (currentTrace<traceItems.size())
 	traceNameLineEdit->setText(traceItems[currentTrace]->text());
 	//tabWidget->setTabText(1,traceItems[currentTrace]->text());
-	if (ScopeWindows[currentScope]->getZeroAxis(currentTrace))
+        if (ScopeWindows[currentScope]->trace(currentTrace)->getZeroAxis())
 		zeroAxisCheckBox->setCheckState(Qt::Checked);
 	else
 		zeroAxisCheckBox->setCheckState(Qt::Unchecked);
@@ -399,7 +408,7 @@ void QRL_ScopesManager::showTraceOptions(int index)
 	else
 		rmsCheckBox->setCheckState(Qt::Unchecked);
 
-	if (ScopeWindows[currentScope]->isTraceVisible(currentTrace))
+        if (ScopeWindows[currentScope]->trace(currentTrace)->isVisible())
 		showTraceCheckBox->setCheckState(Qt::Checked);
 	else
 		showTraceCheckBox->setCheckState(Qt::Unchecked);
@@ -409,7 +418,7 @@ void QRL_ScopesManager::changeTraceText(const QString & text ){
 	if (currentTrace<traceItems.size())
 	traceItems[currentTrace]->setText(text);
 	//tabWidget->setTabText(1,traceItems[currentTrace]->text());
-	 ScopeWindows[currentScope]->setTraceName(currentTrace, text);
+         ScopeWindows[currentScope]->trace(currentTrace)->setName(text);
 	traceComboBox->setItemText(currentTrace,text);
 	//traceComboBox->setCurrentIndex(	ScopeWindows[currentScope]->getTriggerChannel());
 }
@@ -444,11 +453,11 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 	traceItems.clear();
 	//traceComboBox->clear();
 	for(int i=0; i<Scopes[currentScope]->getNTraces();i++){
-		traceItems << new QListWidgetItem(QIcon(),ScopeWindows[currentScope]->getTraceName(i), scopeListWidget);
+                traceItems << new QListWidgetItem(QIcon(),ScopeWindows[currentScope]->trace(i)->getName(), scopeListWidget);
 		if (i<traceItems.size())
 			traceItems[i]->setHidden(true);
 		//traceComboBox->addItem(	ScopeWindows[currentScope]->getTraceName(i) );
-		traceComboBox->setItemText(i,ScopeWindows[currentScope]->getTraceName(i) );
+                traceComboBox->setItemText(i,ScopeWindows[currentScope]->trace(i)->getName() );
 	}
 	
 	traceComboBox->setCurrentIndex(	ScopeWindows[currentScope]->getTriggerChannel());
@@ -535,9 +544,9 @@ void QRL_ScopesManager::showScope(int state)
 void QRL_ScopesManager::showTrace(int state) 
 {
 	if(state==Qt::Checked){
-		ScopeWindows[currentScope]->showTrace(true,currentTrace);
+                ScopeWindows[currentScope]->trace(currentTrace)->show(true);
 	} else {
-		ScopeWindows[currentScope]->showTrace(false,currentTrace);
+                ScopeWindows[currentScope]->trace(currentTrace)->show(false);
 	}
 
 }
@@ -634,19 +643,19 @@ void QRL_ScopesManager::holdPlot(int state) {
 
 void QRL_ScopesManager::changeTraceColor()
 {
-	QColor color= QColorDialog::getColor(ScopeWindows[currentScope]->getTraceColor(currentTrace));
-	ScopeWindows[currentScope]->setTraceColor(color,currentTrace);
+        QColor color= QColorDialog::getColor(ScopeWindows[currentScope]->trace(currentTrace)->getColor());
+        ScopeWindows[currentScope]->trace(currentTrace)->setColor(color);
 }
 
 void QRL_ScopesManager::changeTraceWidth(double v)
 {
 	int traceWidth=(int)v;
-	ScopeWindows[currentScope]->setTraceWidth(traceWidth,currentTrace);
+        ScopeWindows[currentScope]->trace(currentTrace)->setWidth(traceWidth);
 }
 
 void QRL_ScopesManager::changeOffset(double offset)
 {
-	ScopeWindows[currentScope]->setTraceOffset(offset,currentTrace);
+        ScopeWindows[currentScope]->trace(currentTrace)->setOffset(offset);
 	offsetWheel->setValue(offset);
 	offsetCounter->setValue(offset);
 	
@@ -654,16 +663,16 @@ void QRL_ScopesManager::changeOffset(double offset)
 
 void QRL_ScopesManager::setOffsetToMean()
 {
-	double offset = ScopeWindows[currentScope]->getTraceAverage(currentTrace);
+	double offset = ScopeWindows[currentScope]->trace(currentTrace)->getAverage();
 
-	offset=-(offset/ScopeWindows[currentScope]->getTraceDy(currentTrace));
+        offset=-(offset/ScopeWindows[currentScope]->trace(currentTrace)->getDy());
 	changeOffset(offset);
 }
 
 
 void QRL_ScopesManager::fitDytoPP()
 {
-        double pp = ScopeWindows[currentScope]->getTracePP(currentTrace);
+        double pp = ScopeWindows[currentScope]->trace(currentTrace)->getPP();
 
         double dy =pp/10;
         dyComboBox->setEditText(tr("%1").arg(dy));
@@ -689,19 +698,19 @@ void QRL_ScopesManager::changeDy(const QString& text)
 {
 	if (!text.isEmpty() &&text.toDouble()!=0.0 ){
 		double dy=text.toDouble();
-		double offset = ScopeWindows[currentScope]->getTraceOffset(currentTrace);
-		offset=(offset*ScopeWindows[currentScope]->getTraceDy(currentTrace))/dy;
+                double offset = ScopeWindows[currentScope]->trace(currentTrace)->getOffset();
+                offset=(offset*ScopeWindows[currentScope]->trace(currentTrace)->getDy())/dy;
 		changeOffset(offset);
-		ScopeWindows[currentScope]->setTraceDy(dy,currentTrace);
+                ScopeWindows[currentScope]->trace(currentTrace)->setDy(dy);
 	}
 }
 
   void QRL_ScopesManager::changeZeroAxis(int state){
 
 	if(state==Qt::Checked){
-		ScopeWindows[currentScope]->setZeroAxis(true,currentTrace);
+                ScopeWindows[currentScope]->trace(currentTrace)->setZeroAxis(true);
 	} else {
-		ScopeWindows[currentScope]->setZeroAxis(false,currentTrace);
+                ScopeWindows[currentScope]->trace(currentTrace)->setZeroAxis(false);
 	}
 
 }
@@ -776,6 +785,46 @@ void QRL_ScopesManager::changeDy(const QString& text)
 	}
 	showTraceOptions(currentTrace+scopeItems.size());
 }
+
+  void QRL_ScopesManager::setTraceStyle(int index){
+
+
+switch(index){
+
+    case 0: //line none
+         ScopeWindows[currentScope]->trace(currentTrace)->setLineStyle(QwtPlotCurve::Lines);
+         ScopeWindows[currentScope]->trace(currentTrace)->setSymbolStyle(QwtSymbol::NoSymbol);
+    break;
+    case 1: //line cross
+         ScopeWindows[currentScope]->trace(currentTrace)->setSymbolStyle(QwtSymbol::Cross);
+          ScopeWindows[currentScope]->trace(currentTrace)->setSymbolPenColor(Qt::black);
+         ScopeWindows[currentScope]->trace(currentTrace)->setSymbolSize(5);
+            ScopeWindows[currentScope]->trace(currentTrace)->setLineStyle(QwtPlotCurve::Lines);
+    break;
+    case 2: //sticks ellipse
+          ScopeWindows[currentScope]->trace(currentTrace)->setSymbolStyle(QwtSymbol::Ellipse);
+            ScopeWindows[currentScope]->trace(currentTrace)->setSymbolPenColor(Qt::blue);
+            ScopeWindows[currentScope]->trace(currentTrace)->setSymbolBrushColor(Qt::yellow);
+            ScopeWindows[currentScope]->trace(currentTrace)->setSymbolSize(5);
+           ScopeWindows[currentScope]->trace(currentTrace)->setLineStyle(QwtPlotCurve::Sticks);
+    break;
+    case 3: //steps none
+        ScopeWindows[currentScope]->trace(currentTrace)->setLineStyle(QwtPlotCurve::Steps);
+          ScopeWindows[currentScope]->trace(currentTrace)->setSymbolStyle(QwtSymbol::NoSymbol);
+    break;
+    case 4: //none xcross
+                  ScopeWindows[currentScope]->trace(currentTrace)->setSymbolStyle(QwtSymbol::XCross);
+            ScopeWindows[currentScope]->trace(currentTrace)->setSymbolPenColor(Qt::darkMagenta);
+            ScopeWindows[currentScope]->trace(currentTrace)->setSymbolSize(5);
+            ScopeWindows[currentScope]->trace(currentTrace)->setLineStyle(QwtPlotCurve::NoCurve);
+
+    break;
+
+}
+
+  }
+
+
 
 QDataStream& operator<<(QDataStream &out, const QRL_ScopesManager &d){
 	out << d.size()  << d.pos() << d.isVisible();

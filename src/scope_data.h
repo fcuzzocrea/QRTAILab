@@ -55,7 +55,7 @@ public:
      QVector<float> getScopeTime();
     QVector<float> getScopeValue(int t);	 
     QVector< QVector<float> > getScopeValue();
-
+    bool dataAvailable();
     int start_saving_scope();
     void startSaving(FILE* Save_File_Pointer,double Save_Time);
      FILE* save_file();

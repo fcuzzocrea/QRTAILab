@@ -626,90 +626,6 @@ void QRL_ScopeWindow::setBgColor(QColor bgcolor){
 }
 
 
-void QRL_ScopeWindow::showTrace(bool visible,int trace){
-
-	Traces[trace]->show(visible);
-
-}
-
-void QRL_ScopeWindow::setTraceColor(const QColor& c,int trace)
-{
-	if (trace<Scope->getNTraces()){
-	  Traces[trace]->setColor(c);
-	}
-}
-
-void QRL_ScopeWindow::setTraceWidth(int traceWidth,int trace)
-{
-	if (trace<Scope->getNTraces()){
-		 Traces[trace]->setWidth(traceWidth);
-	}
-}
-
-int  QRL_ScopeWindow::getTraceWidth(int trace)
-{
-	if (trace<Scope->getNTraces()){
-		return  Traces[trace]->getWidth();
-	}
-	return 1;
-}
-
-   void QRL_ScopeWindow::setTraceOffset(double o,int trace)
-{
-	if (trace<Scope->getNTraces()){
-		//TraceOptions[trace].offset=o;
-		 timer->stop();
-		  Traces[trace]->setOffset(o);
-	//cData[trace]->setRawData(d_x, ScopeData[trace].d_y, NDataSoll);
-	     timer->start((int)(1./RefreshRate*1000.));
-     }
-
-}
-
-double  QRL_ScopeWindow::getTraceOffset(int trace)
-{
-	if (trace<Scope->getNTraces()){
-		return Traces[trace]->getOffset();
-	}
-	return 0.;
-}
-
-double  QRL_ScopeWindow::getTraceAverage(int trace)
-{
-	if (trace<Scope->getNTraces()){
-		return Traces[trace]->getAverage();
-	}
-	return 0.;
-}
-
-double  QRL_ScopeWindow::getTracePP(int trace)
-{
-        if (trace<Scope->getNTraces()){
-                return Traces[trace]->getPP();
-        }
-        return 0.;
-}
-
-
-
-   void QRL_ScopeWindow::setTraceDy(double d, int trace){
-
-	if (trace<Scope->getNTraces()){
-		 timer->stop();
-		  Traces[trace]->setDy(d);
-	     timer->start((int)(1./RefreshRate*1000.));
-	}
-
-}
-
-double  QRL_ScopeWindow::getTraceDy(int trace)
-{
-	if (trace<Scope->getNTraces()){
-		return Traces[trace]->getDy();
-	}
-	return 1.;
-}
-
 
 void QRL_ScopeWindow::startSingleRun(){
 	singleModeRunning=true;
@@ -717,11 +633,7 @@ void QRL_ScopeWindow::startSingleRun(){
 }
 
 
-void QRL_ScopeWindow::setZeroAxis(bool b,int trace){
 
-Traces[trace]->setZeroAxis(b);
-
-}
 
 void QRL_ScopeWindow::setTraceLabel(bool b,int trace){
 
@@ -912,15 +824,7 @@ void QRL_ScopeWindow::setRMSLabel(bool b,int trace){
 
 }
 
-void QRL_ScopeWindow::setTraceName(int trace, const QString &text){
 
-	
-	Traces[trace]->setName(text);
-	
-
-
-
-}
 
 
 void QRL_ScopeWindow::setTime(const  QVector<float>  &t){
@@ -1316,8 +1220,8 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 	 for (int nn=0; nn<Ncurve;++nn){
 	   if (nn<d.Ncurve) {
 		//in >> d.Traces[nn];
-		in >> str; d.setTraceName(nn, str);
-		in >> b; d.setZeroAxis(b,nn);
+                in >> str; d.trace(nn)->setName(str);
+                in >> b; d.trace(nn)->setZeroAxis(b);
 		in >> b; d.setAverageLabel(b,nn);
 		in >> b; d.setUnitLabel(b,nn);
 		in >> b; d.setMinLabel(b,nn);
@@ -1325,11 +1229,11 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 		in >> b; d.setPPLabel(b,nn);
 		in >> b; d.setRMSLabel(b,nn);
 		in >> b; d.setTraceLabel(b,nn);
-		in >> dd; d.setTraceOffset(dd,nn);
-		in >> dd; d.setTraceDy(dd,nn);
-		in >> c; d.setTraceColor(c,nn);
-		in >> a; d.setTraceWidth((int)a,nn);
-		in >> b; d.showTrace(b,nn);
+                in >> dd; d.trace(nn)->setOffset(dd);
+                in >> dd; d.trace(nn)->setDy(dd);
+                in >> c; d.trace(nn)->setColor(c);
+                in >> a; d.trace(nn)->setWidth((int)a);
+                in >> b; d.trace(nn)->show(b);
 
 
 	  } else {

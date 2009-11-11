@@ -40,6 +40,7 @@
 #include <qwt_plot_panner.h>
 #include <qwt_scale_widget.h>
 #include <qwt_legend.h>
+#include <qwt_symbol.h>
 #include <qwt_scale_draw.h>
 #include <qwt_math.h>
 #include "qrtailab.h"
@@ -94,6 +95,21 @@ void setZeroAxis();
    void moveDataToLeft(int s);
    void moveDataToRight(int s);
 
+//saving is missing
+    void setLineStyle(QwtPlotCurve::CurveStyle s){cData->setStyle(s);}
+     QwtPlotCurve::CurveStyle    getLineStyle() {return cData->style();}
+    void setSymbolPenColor(const QColor& c){sym.setPen(QColor(c));  cData->setSymbol(sym); }
+    QColor getSymbolPenColor(){return sym.pen().color();}
+    void setSymbolBrushColor(const QColor& c){sym.setBrush(QColor(c));  cData->setSymbol(sym); }
+    QColor getSymbolBrushColor(){return sym.brush().color();}
+    void setSymbolStyle(QwtSymbol::Style s){sym.setStyle(s); cData->setSymbol(sym);}
+    QwtSymbol::Style getSymbolStyle(){return sym.style();}
+    void setSymbolSize(int s){sym.setSize(s);  cData->setSymbol(sym); }
+    int getSymbolSize(){ return sym.size().width();}
+
+    void setSymbol(QwtSymbol s){sym=s;cData->setSymbol(sym);  }
+    QwtSymbol getSymbol(){return cData->symbol();}
+
 private:
 	QwtPlot *qwtPlot;
 	QColor gridColor;
@@ -102,6 +118,7 @@ private:
 	double dy;
 	int lineWidth;
 	QBrush brush;
+        QwtSymbol sym;
   	QwtPlotMarker zeroAxis;
 	double average;
 	double min,max;
