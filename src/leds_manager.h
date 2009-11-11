@@ -48,6 +48,7 @@ public:
    ~QRL_LedsManager();
     QRL_LedWindow** getLedWindows(){return LedWindows;}
  void refreshView();
+        void stopRefresh(){timer->stop();}
 public slots:
   void  showLed(int);
   void showLedOptions( QListWidgetItem * item );
