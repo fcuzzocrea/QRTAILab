@@ -275,7 +275,12 @@ void QRL_LogsManager::startSaving()
 	double Save_Time=timeCounter->value();
 	if( Logs[currentLog]->start_saving()==0){
 
-		QString File_Name=dirLineEdit->text()+fileLineEdit->text();
+                QString File_Name=dirLineEdit->text();
+                if (File_Name.isEmpty())
+                     File_Name="./";
+                 else if (!File_Name.endsWith(QDir::separator()))
+                     File_Name+=QDir::separator();
+
 		if (QFile::exists(File_Name)) {
 			printf("File %s exists already.",File_Name.toLocal8Bit().data() );
 			QMessageBox::critical(this, tr("QMessageBox::critical()"),

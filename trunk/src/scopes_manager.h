@@ -52,6 +52,8 @@ public:
   //void stopScopeThreads();
   QRL_ScopeWindow** getScopeWindows(){return ScopeWindows;}
     void setFileVersion(qint32 v);
+    void startRefresh(){   timer->start((int)(1./RefreshRate*1000.)); }
+    void stopRefresh(){timer->stop();}
 public slots:
    void refresh();
   void  showScope(int);
@@ -96,6 +98,7 @@ public slots:
     void setFileDirectory();
   void setOffsetToMean();
     void fitDytoPP();
+    void setTraceStyle(int);
 private:
   qint32 fileVersion;
   int Num_Scopes;

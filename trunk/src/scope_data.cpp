@@ -198,7 +198,10 @@ ScopeIndex[0]=0;
 // 	//ret=ScopeValues[n];
 // return ScopeValues[n];
 // } 
+ bool QRL_ScopeData::dataAvailable() {
 
+    return ScopeValues.size()>0;
+ }
 
 
 int  QRL_ScopeData::start_saving_scope() {return isSaving ;}

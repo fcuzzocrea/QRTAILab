@@ -595,6 +595,8 @@ zeroAxis.hide();
 
 
 
+
+
 void QRL_ScopeTrace::setName(const QString &text){
 
 	
@@ -603,8 +605,6 @@ void QRL_ScopeTrace::setName(const QString &text){
 	QwtText ttext(traceName);
    	ttext.setColor(QColor(brush.color()));
     	traceLabel.setLabel(ttext);
-
-
 
 
 }
@@ -653,7 +653,13 @@ QDataStream& operator<<(QDataStream &out, const QRL_ScopeTrace *d){
 		out << d->brush.color();
 		a=d->lineWidth; out <<a;
 		out << d->visible;
-
+/*
+                out <<d->cData->style();
+                out <<d->cData->symbol().pen().color();
+                out <<d->cData->symbol().brush().color();
+                out <<d->cData->symbol().style();
+                out <<d->cData->symbol().size();
+*/
 	return out;
 }
 

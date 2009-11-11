@@ -36,7 +36,7 @@
     <normaloff>:/icons/scope_icon.xpm</normaloff>:/icons/scope_icon.xpm</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="1" column="0" colspan="2">
+   <item row="1" column="0" colspan="3">
     <layout class="QHBoxLayout">
      <item>
       <spacer>
@@ -145,15 +145,15 @@
        <item row="1" column="0" colspan="2">
         <widget class="QToolBox" name="toolBox">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="Seite">
           <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>150</width>
-            <height>220</height>
+            <width>217</width>
+            <height>261</height>
            </rect>
           </property>
           <attribute name="label">
@@ -514,8 +514,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>192</width>
-            <height>214</height>
+            <width>217</width>
+            <height>261</height>
            </rect>
           </property>
           <attribute name="label">
@@ -657,49 +657,14 @@
          </item>
         </layout>
        </item>
-       <item row="1" column="0" rowspan="2">
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Line Width</string>
-         </property>
-         <layout class="QGridLayout">
-          <item row="0" column="0">
-           <widget class="QwtCounter" name="lineWidthCounter">
-            <property name="numButtons">
-             <number>0</number>
-            </property>
-            <property name="basicstep" stdset="0">
-             <double>1.000000000000000</double>
-            </property>
-            <property name="minValue">
-             <double>1.000000000000000</double>
-            </property>
-            <property name="maxValue">
-             <double>50.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QCheckBox" name="showTraceCheckBox">
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="text">
-          <string>Show/Hide</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
+       <item row="3" column="1">
         <widget class="QPushButton" name="traceColorPushButton">
          <property name="text">
           <string>Line Color</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
           <string>offset</string>
@@ -741,7 +706,7 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
         <widget class="QGroupBox" name="groupBox_4">
          <property name="title">
           <string>dy</string>
@@ -857,7 +822,7 @@
          </layout>
         </widget>
        </item>
-       <item row="4" column="0" colspan="2">
+       <item row="5" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
           <string>show</string>
@@ -941,6 +906,81 @@
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item row="2" column="0" rowspan="2">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Line width</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QwtCounter" name="lineWidthCounter">
+              <property name="numButtons">
+               <number>0</number>
+              </property>
+              <property name="basicstep" stdset="0">
+               <double>1.000000000000000</double>
+              </property>
+              <property name="minValue">
+               <double>1.000000000000000</double>
+              </property>
+              <property name="maxValue">
+               <double>50.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="showTraceCheckBox">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="text">
+             <string>Show/Hide</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="styleComboBox">
+         <item>
+          <property name="text">
+           <string>Line / None</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Line / Cross</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Sticks / Ellipse</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Steps / None</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>None / XCross</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>

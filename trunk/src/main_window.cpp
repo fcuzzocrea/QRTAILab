@@ -313,6 +313,7 @@ qTargetInterface->setPreferences(p);
 		if (qTargetInterface->getIsTargetRunning()){
 			enableActionStart(false);
 			enableActionStop(true);
+                         ScopesManager->startRefresh();
 		}else{
 			enableActionStart(true);
 			enableActionStop(false);
@@ -668,6 +669,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 		enableActionStart(false);
 		enableActionStop(true);
 		TargetsManager->setTargetIsRunning(true);
+                ScopesManager->startRefresh();
 	}
 }
 
@@ -676,6 +678,8 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 
 	qTargetInterface->stopTarget();
 	if (qTargetInterface->getIsTargetRunning()==0){
+                ScopesManager->stopRefresh();
+                disconnectDialog();
 		enableActionStop(false);
 		TargetsManager->setTargetIsRunning(false);
 		if (qTargetInterface->getIsTargetConnected()==0){
@@ -692,6 +696,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 			TargetsManager->setTargetIsConnected(false);
 		}
 	}
+
 	//close();
 }
 
