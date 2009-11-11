@@ -53,6 +53,7 @@ public:
     QRL_MeterWindow** getMeterWindows(){return MeterWindows;}
  void refreshView();
    void setFileVersion(qint32 v);
+       void stopRefresh(){timer->stop();}
 public slots:
    void refresh();
   void  showMeter(int);

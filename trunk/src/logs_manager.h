@@ -48,6 +48,7 @@ public:
   ~QRL_LogsManager();
       void setFileVersion(qint32 v);
   QRL_LogWindow** getLogWindows(){return LogWindows;}
+         void stopRefresh(){timer->stop();}
 public slots:
   void showLogOptions( QListWidgetItem * item  );
   void showLogOptions( int );

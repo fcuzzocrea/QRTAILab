@@ -120,7 +120,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterf
 	RefreshRate=30.;
 	timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
-        //timer->start((int)(1./RefreshRate*1000.));
+        timer->start((int)(1./RefreshRate*1000.));
 	
 	
 //	tabWidget->addTab(traceWidget,tr("trace %1").arg(Scopes[currentScope].getNTraces()));

@@ -313,7 +313,7 @@ qTargetInterface->setPreferences(p);
 		if (qTargetInterface->getIsTargetRunning()){
 			enableActionStart(false);
 			enableActionStop(true);
-                         ScopesManager->startRefresh();
+                         //ScopesManager->startRefresh();
 		}else{
 			enableActionStart(true);
 			enableActionStop(false);
@@ -669,7 +669,7 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 		enableActionStart(false);
 		enableActionStop(true);
 		TargetsManager->setTargetIsRunning(true);
-                ScopesManager->startRefresh();
+                //ScopesManager->startRefresh();
 	}
 }
 
@@ -678,7 +678,15 @@ Preferences_T Preferences=qTargetInterface->getPreferences();
 
 	qTargetInterface->stopTarget();
 	if (qTargetInterface->getIsTargetRunning()==0){
+            if (ScopesManager)
                 ScopesManager->stopRefresh();
+            if (MetersManager)
+                MetersManager->stopRefresh();
+            if (LedsManager)
+                 LedsManager->stopRefresh();
+            if (LogsManager)
+                LogsManager->stopRefresh();
+
                 disconnectDialog();
 		enableActionStop(false);
 		TargetsManager->setTargetIsRunning(false);
