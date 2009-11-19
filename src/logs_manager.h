@@ -44,11 +44,12 @@ class QRL_LogsManager : public QDialog, private Ui::QRL_LogsManager
 {
    Q_OBJECT
 public:
-  QRL_LogsManager(QWidget *parent = 0, QRtaiLabCore* qtargetinterface=NULL);
+  QRL_LogsManager(QWidget *parent = 0, int numLogs=0, QRL_LogData **logs=0, int verb=0);
   ~QRL_LogsManager();
       void setFileVersion(qint32 v);
   QRL_LogWindow** getLogWindows(){return LogWindows;}
          void stopRefresh(){timer->stop();}
+          void setLogName(int i,QString name);
 public slots:
   void showLogOptions( QListWidgetItem * item  );
   void showLogOptions( int );
@@ -69,11 +70,12 @@ public slots:
 private:
   qint32 fileVersion;
   int Num_Logs;
-  QRL_LogData **Logs;
+    QRL_LogData **Logs;
+    int verbose;
   unsigned int currentLog;
   QRL_LogWindow** LogWindows;
  // GetScopeDataThread* Get_Scope_Data_Thread;
-  QRtaiLabCore* qTargetInterface;
+  //QRtaiLabCore* qTargetInterface;
   QTimer *timer;
        MatrixModel *model;
       PixelDelegate *pixelView;

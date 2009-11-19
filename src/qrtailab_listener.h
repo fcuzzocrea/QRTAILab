@@ -410,7 +410,7 @@ static void *rt_get_led_data(void *arg)
 	long GetLedDataPort;
 	int MsgData = 0, MsgLen, MaxMsgLen, DataBytes;
 	unsigned int MsgBuf[MAX_MSG_LEN/sizeof(unsigned int)];	
-	int n;
+
 	int index = ((Args_T *)arg)->index;
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
 	unsigned int Led_Mask = 0;
@@ -504,7 +504,7 @@ static void *rt_get_alog_data(void *arg)
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	FILE *saving;
 	long size_counter = 0;
-	long logging = 0;
+
 	 long Target_Node = targetThread->getTargetNode();
 		RT_TASK *Target_Interface_Task = targetThread->getTask();
 	if((saving = fopen(alog_file_name, "a+")) == NULL){

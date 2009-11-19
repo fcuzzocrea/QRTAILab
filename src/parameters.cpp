@@ -39,7 +39,7 @@ QRL_ParameterMatrix::~QRL_ParameterMatrix(){
 
 void QRL_ParameterMatrix::setDim(unsigned int r, unsigned int c){
   values.resize(r);
-  for (int i=0; i<r; i++)
+  for (unsigned int i=0; i<r; i++)
     values[i].resize(c);
   n_rows=r;
   n_cols=c;
@@ -108,8 +108,8 @@ QRL_Parameters::QRL_Parameters(TargetThread	*t)
 // 	uploadParameters();
 	  for (int i=0; i<Num_Tunable_Blocks; ++i)
     for (int k=0; k<ParameterBlocks[i]->getNumberOfParameters();k++)
-     	 for(int r=0; r<ParameterBlocks[i]->getParameterRows(k); r++)
-	   for(int c=0; c<ParameterBlocks[i]->getParameterCols(k); c++)
+         for(unsigned int r=0; r<ParameterBlocks[i]->getParameterRows(k); r++)
+           for(unsigned int c=0; c<ParameterBlocks[i]->getParameterCols(k); c++)
 	    ParameterBlocks[i]->setParameterValue(k,r,c,targetthread->getParameterValue(i,k, r, c));
 }
 
@@ -210,8 +210,8 @@ Num_Tunable_Parameters=targetthread->getParameterNumber();
 	
   for (int i=0; i<Num_Tunable_Blocks; ++i)
     for (int k=0; k<ParameterBlocks[i]->getNumberOfParameters();k++)
-     	 for(int r=0; r<ParameterBlocks[i]->getParameterRows(k); r++)
-	   for(int c=0; c<ParameterBlocks[i]->getParameterCols(k); c++)
+         for(unsigned int r=0; r<ParameterBlocks[i]->getParameterRows(k); r++)
+           for(unsigned int c=0; c<ParameterBlocks[i]->getParameterCols(k); c++)
 	    ParameterBlocks[i]->setParameterValue(k,r,c,targetthread->getParameterValue(i,k, r, c));
 TargetName=QObject::tr(targetthread->getTargetName());
 }

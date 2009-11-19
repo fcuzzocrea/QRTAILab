@@ -224,7 +224,7 @@ void QRL_ScopeTrace::refresh()
 
 if ( isLabelVisible(lt_average)){
 	average=0.;
-	for (int k=0;k<NDataSoll;k++)
+        for (unsigned int k=0;k<NDataSoll;k++)
 		average+=(d_y[k]-offset)*dy/((double)NDataSoll);
 
 	QString astr;
@@ -244,7 +244,7 @@ if ( isLabelVisible(lt_unit)){
 }
 if ( isLabelVisible(lt_min)){
 	min=(d_y[0]-offset)*dy;
-	for (int k=0;k<NDataSoll;k++)
+        for (unsigned int k=0;k<NDataSoll;k++)
 		if (min>(d_y[k]-offset)*dy)
 			min=(d_y[k]-offset)*dy;
 
@@ -256,7 +256,7 @@ if ( isLabelVisible(lt_min)){
 }
 if ( isLabelVisible(lt_max)){
 	max=(d_y[0]-offset)*dy;
-	for (int k=0;k<NDataSoll;k++)
+        for (unsigned int k=0;k<NDataSoll;k++)
 		if (max<(d_y[k]-offset)*dy)
 			max=(d_y[k]-offset)*dy;
 
@@ -284,7 +284,7 @@ if ( isLabelVisible(lt_pp)){
 }
 if ( isLabelVisible(lt_rms)){
 	RMS=0.;
-	for (int k=0;k<NDataSoll;k++)
+        for (unsigned int k=0;k<NDataSoll;k++)
 		RMS+=(d_y[k]-offset)*dy*(d_y[k]-offset)*dy;
 	RMS=sqrt(RMS/((double)NDataSoll));
 	QString astr;
@@ -389,7 +389,7 @@ double QRL_ScopeTrace::getPP()
 {
     min=(d_y[0]-offset)*dy;
         max=(d_y[0]-offset)*dy;
-        for (int k=0;k<NDataSoll;k++){
+        for (unsigned int k=0;k<NDataSoll;k++){
                 if (max<(d_y[k]-offset)*dy)
                         max=(d_y[k]-offset)*dy;
                 if (min>(d_y[k]-offset)*dy)

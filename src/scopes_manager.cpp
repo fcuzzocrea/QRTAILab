@@ -31,20 +31,23 @@
 /**
 * @brief Initialize Scopes Manager
 */
-QRL_ScopesManager::QRL_ScopesManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
-	:QDialog(parent),qTargetInterface(qtargetinterface)
+QRL_ScopesManager::QRL_ScopesManager(QWidget *parent, int numScopes, QRL_ScopeData **scopes, int v)
+        :QDialog(parent),Num_Scopes(numScopes),Scopes(scopes),verbose(v)
 {
 	setupUi(this);
-	Num_Scopes=qTargetInterface->getScopeNumber();
-	Scopes=qTargetInterface->getScopes();
+        //Num_Scopes=qTargetInterface->getScopeNumber();
+        //Scopes=qTargetInterface->getScopes();
 	const QIcon ScopeIcon =QIcon(QString::fromUtf8(":/icons/scope_icon.xpm"));
-	ScopeWindows = new QRL_ScopeWindow* [Num_Scopes]; 
+        ScopeWindows = new QRL_ScopeWindow* [Num_Scopes];
 	for (int i=0; i<Num_Scopes; ++i){
-		scopeItems << new QListWidgetItem(ScopeIcon,qTargetInterface->getScopeName(i), scopeListWidget);
+                //scopeItems << new QListWidgetItem(ScopeIcon,qTargetInterface->getScopeName(i), scopeListWidget);
+                scopeItems << new QListWidgetItem(ScopeIcon,tr("%1").arg(i), scopeListWidget);
+
 		//if (qTargetInterface->getNumberOfTraces(i)>0){
 			ScopeWindows[i]=new QRL_ScopeWindow(parent,Scopes[i],i);
 			//connect( ScopeWindows[i], SIGNAL( stopSaving(int) ), this, SLOT( stopSaving(int) ) );
-			ScopeWindows[i]->setVerbose(qTargetInterface->getVerbose());
+                        //ScopeWindows[i]->setVerbose(qTargetInterface->getVerbose());
+                        ScopeWindows[i]->setVerbose(verbose);
 		//} else
 		//	ScopeWindows[i]=NULL;
 	}
@@ -220,6 +223,17 @@ void QRL_ScopesManager::changeDX(const QString& text)
 	showScopeOptions(currentScope);
 	}
 }
+
+void  QRL_ScopesManager::setScopeName(int i,QString name){
+
+    if (i<scopeItems.size())
+    scopeItems[i]->setText(name);
+
+    showScopeOptions(currentScope);
+
+}
+
+
 
 /**
 * @brief change the number of datapoints in the plot

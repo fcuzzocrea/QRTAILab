@@ -46,7 +46,7 @@ class QRL_MetersManager : public QDialog, private Ui::QRL_MetersManager
 {
    Q_OBJECT
 public:
-   QRL_MetersManager(QWidget *parent = 0, QRtaiLabCore* qtargetinterface=NULL);
+   QRL_MetersManager(QWidget *parent = 0, int numMeters=0, QRL_MeterData **meters = 0, int v=0);
    ~QRL_MetersManager();
        void startMeterThreads();
     void stopMeterThreads();
@@ -54,6 +54,7 @@ public:
  void refreshView();
    void setFileVersion(qint32 v);
        void stopRefresh(){timer->stop();}
+    void setMeterName(int i,QString name);
 public slots:
    void refresh();
   void  showMeter(int);
@@ -79,15 +80,17 @@ public slots:
 private:
     qint32 fileVersion;
    int Num_Meters;
+   int verbose;
      QRL_MeterData **Meters;
   //Target_Meters_T *Meters;
   unsigned int currentMeter;
    QRL_MeterWindow** MeterWindows;
-  QRtaiLabCore* qTargetInterface;
+  //QRtaiLabCore* qTargetInterface;
    QWidget* ThermoOptions;
    QWidget* DialOptions;   
    QWidget* LcdOptions;
    QTimer *timer;
+     QList<QListWidgetItem *> meterItems;
  double RefreshRate;
    
 friend QDataStream& operator<<(QDataStream &out, const QRL_MetersManager &d);

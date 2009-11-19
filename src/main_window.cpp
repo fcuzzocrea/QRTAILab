@@ -130,8 +130,19 @@ void QRL_MainWindow::setStatusBarMessage(const QString & message){
 
 void QRL_MainWindow::closeEvent(QCloseEvent *event)
 {
-	if (qTargetInterface->getIsTargetConnected()==1)
-		qTargetInterface->disconnectFromTarget();
+        if (qTargetInterface->getIsTargetConnected()==1) {
+                //qTargetInterface->disconnectFromTarget();
+            if (ScopesManager)
+                ScopesManager->stopRefresh();
+            if (MetersManager)
+                MetersManager->stopRefresh();
+            if (LedsManager)
+                 LedsManager->stopRefresh();
+            if (LogsManager)
+                LogsManager->stopRefresh();
+            disconnectFromTarget();
+    }
+
 	if (ScopesManager) {
 		ScopesManager->hide();
 		delete ScopesManager;
@@ -153,7 +164,9 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 		ParametersManager->hide();
 		delete ParametersManager;
 	}
+
         delete TargetsManager;
+
 	//if (Synchs_Manager) Synchs_Manager->hide();
 	//rt_send(Target_Interface_Task, CLOSE);
 	//pthread_join(Target_Interface_Thread, NULL);
@@ -166,8 +179,11 @@ void QRL_MainWindow::closeEvent(QCloseEvent *event)
 		printf("stop target!\n");
 
 	}
+
         delete target;
+
 	delete qTargetInterface;
+
 // 	rt_task_delete(RLG_Main_Task);
 	if (Verbose)
 	printf("Quitting Main window\n");
@@ -211,9 +227,10 @@ qTargetInterface->setPreferences(p);
 			if (qTargetInterface->getMeterNumber()>0){
 			enableActionShowMeter(true);
 			if (! MetersManager){
-				MetersManager = new QRL_MetersManager(this,qTargetInterface);
+                                MetersManager = new QRL_MetersManager(this,qTargetInterface->getMeterNumber(),qTargetInterface->getMeters(),qTargetInterface->getVerbose());
 				for (int i=0; i<qTargetInterface->getMeterNumber(); ++i){
-					mdiArea->addSubWindow(MetersManager->getMeterWindows()[i]);
+                                    MetersManager->setMeterName(i,qTargetInterface->getMeterName(i));
+                                    mdiArea->addSubWindow(MetersManager->getMeterWindows()[i]);
 				}
 			}
 			if (MetersManager) {
@@ -233,9 +250,10 @@ qTargetInterface->setPreferences(p);
 			if (qTargetInterface->getLedNumber()>0){
 			enableActionShowLed(true);
 			if (! LedsManager){
-				LedsManager = new QRL_LedsManager(this,qTargetInterface);
+                                LedsManager = new QRL_LedsManager(this,qTargetInterface->getLedNumber(),qTargetInterface->getLeds(),qTargetInterface->getVerbose());
 				for (int i=0; i<qTargetInterface->getLedNumber(); ++i){
-						 mdiArea->addSubWindow(LedsManager->getLedWindows()[i]);
+                                    LedsManager->setLedName(i,qTargetInterface->getLedName(i));
+                                    mdiArea->addSubWindow(LedsManager->getLedWindows()[i]);
 				}
 			}
 			if (LedsManager) {
@@ -253,9 +271,11 @@ qTargetInterface->setPreferences(p);
 			if (qTargetInterface->getLogNumber()>0){
 			enableActionShowLog(true);
 				if (! LogsManager){
-					LogsManager = new 		QRL_LogsManager(this,qTargetInterface);
+                                        LogsManager = new QRL_LogsManager(this,qTargetInterface->getLogNumber(),qTargetInterface->getLogs(),qTargetInterface->getVerbose());
 					for (int i=0; i<qTargetInterface->getLogNumber(); ++i){
-						 mdiArea->addSubWindow(LogsManager->getLogWindows()[i]);
+                                            LogsManager->setLogName(i,qTargetInterface->getLogName(i));
+                                            mdiArea->addSubWindow(LogsManager->getLogWindows()[i]);
+
 					}
 			}
 			if (LogsManager) {
@@ -273,8 +293,9 @@ qTargetInterface->setPreferences(p);
 			if (qTargetInterface->getScopeNumber()>0){
 				enableActionShowScope(true);
 				if (! ScopesManager){
-					ScopesManager = new QRL_ScopesManager(this,qTargetInterface);
+                                        ScopesManager = new QRL_ScopesManager(this,qTargetInterface->getScopeNumber(),qTargetInterface->getScopes(),qTargetInterface->getVerbose());
 					for (int i=0; i<qTargetInterface->getScopeNumber(); ++i){
+                                                 ScopesManager->setScopeName(i,qTargetInterface->getScopeName(i));
 						 mdiArea->addSubWindow(ScopesManager->getScopeWindows()[i]);
 					}
 				}
