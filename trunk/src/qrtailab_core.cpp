@@ -255,7 +255,7 @@ int	    QRtaiLabCore::getScopeDt(int n){
 
 }
     int    QRtaiLabCore::getNumberOfTraces(int n){
-	int ntraces;
+        int ntraces=0;
  if (n<targetthread->getScopeNumber())
 	ntraces=targetthread->getScopes()[n]->getNTraces();
       return ntraces;
@@ -314,7 +314,7 @@ int	    QRtaiLabCore::getLedDt(int n){
 
 }
     int    QRtaiLabCore::getNumberOfLeds(int n){
-	int n_leds;
+        int n_leds=0;
  if (n<targetthread->getLedNumber())
 	n_leds=targetthread->getLeds()[n]->getNLeds();
       return n_leds;

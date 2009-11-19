@@ -68,30 +68,33 @@ TargetThread::~TargetThread(){
 //  		delete[] Tunable_Blocks;
 //  	if (Scopes)
 //  		delete[] Scopes;
+   
 	if (Num_Scopes>0){
-	    for (int i=0; i<Num_Scopes;i++)
-	      delete Scopes[i];
-	    delete[] Scopes;
+//	    for (int i=0; i<Num_Scopes;i++)
+//                if (Scopes[i]!=NULL)
+//                    delete Scopes[i];
+//	    delete[] Scopes;
 	}
+
  	if (Num_Logs>0){
-	    for (int i=0; i<Num_Logs;i++)
-	      delete Logs[i];
-	    delete[] Logs;
+//	    for (int i=0; i<Num_Logs;i++)
+//	      delete Logs[i];
+//	    delete[] Logs;
 	}
  	if (Num_ALogs>0){
-	    for (int i=0; i<Num_ALogs;i++)
-	      delete ALogs[i];
-	    delete[] ALogs;
+//	    for (int i=0; i<Num_ALogs;i++)
+//	      delete ALogs[i];
+//	    delete[] ALogs;
 	}
  	if (Num_Leds>0){
-	    for (int i=0; i<Num_Leds;i++)
-	      delete Leds[i];
-	    delete[] Leds;
+//	    for (int i=0; i<Num_Leds;i++)
+//	      delete Leds[i];
+//	    delete[] Leds;
 	}
  	if (Num_Meters>0){
-	    for (int i=0; i<Num_Meters;i++)
-	      delete Meters[i];
-	    delete[] Meters;
+//	    for (int i=0; i<Num_Meters;i++)
+//	      delete Meters[i];
+//	    delete[] Meters;
 	}
 /*	stopScopeThreads();
 	//if (Get_Scope_Data_Thread)
@@ -104,6 +107,7 @@ TargetThread::~TargetThread(){
 	//	delete[] Get_Meter_Data_Thread;
 	stopALogThreads();
 	stopLogThreads();*/
+
 }
 /**
  * @brief Gets the Pameter value for a given entry. 
@@ -294,7 +298,7 @@ void TargetThread::run()
 		switch (code & 0xf) {
 
 			case CONNECT_TO_TARGET:
-end:
+
 				if (Verbose) {
 					printf("Reading target settings\n");
 				}
@@ -358,7 +362,7 @@ end:
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &c_req, &Tunable_Parameters[0], sizeof(char), sizeof(Target_Parameters_T));
                                         RLG_Target_Name = strdup(Tunable_Parameters[0].model_name);
 
-                                        for (int n = 0; n < Num_Tunable_Parameters; n++) {
+                                        for (unsigned int n = 0; n < Num_Tunable_Parameters; n++) {
                                                 RT_rpcx(Target_Node, Target_Port, If_Task, &c_req, &Tunable_Parameters[n], sizeof(char), sizeof(Target_Parameters_T));
                                                 if (n > 0) {
                                                         if (strcmp(Tunable_Parameters[n-1].block_name, Tunable_Parameters[n].block_name)) {
@@ -370,7 +374,7 @@ end:
                                         }
                                         if (Num_Tunable_Blocks > 0) Tunable_Blocks = new Target_Blocks_T [Num_Tunable_Blocks];
                                         blk_index = 0;
-                                        for (int n = 0; n < Num_Tunable_Parameters; n++) {
+                                        for (unsigned int n = 0; n < Num_Tunable_Parameters; n++) {
                                                 if (n > 0) {
                                                         if (strcmp(Tunable_Parameters[n-1].block_name, Tunable_Parameters[n].block_name)) {
                                                                 blk_index++;

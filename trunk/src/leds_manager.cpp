@@ -33,17 +33,19 @@
 /**
 * @brief Initialize Meters Manager
 */
-QRL_LedsManager::QRL_LedsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
-	:QDialog(parent),qTargetInterface(qtargetinterface)
+QRL_LedsManager::QRL_LedsManager(QWidget *parent,int numLeds, QRL_LedData **leds, int verb)
+        :QDialog(parent),Num_Leds(numLeds),Leds(leds),verbose(verb)
 {
 	setupUi(this);
-	Num_Leds=qTargetInterface->getLedNumber();
+        //Num_Leds=qTargetInterface->getLedNumber();
 	//Leds=targetThread->getLeds();
 	const QIcon LedIcon =QIcon(QString::fromUtf8(":/icons/led_icon.xpm"));
 	LedWindows = new QRL_LedWindow* [Num_Leds]; 
 	for (int i=0; i<Num_Leds; ++i){
-		new QListWidgetItem(LedIcon,qTargetInterface->getLedName(i), ledListWidget);
-		LedWindows[i]=new QRL_LedWindow(parent,qTargetInterface->getLed(i));
+                //ledItems << new QListWidgetItem(LedIcon,qTargetInterface->getLedName(i), ledListWidget);
+            ledItems << new QListWidgetItem(LedIcon,tr("%1").arg(i), ledListWidget);
+                //LedWindows[i]=new QRL_LedWindow(parent,qTargetInterface->getLed(i));
+                LedWindows[i]=new QRL_LedWindow(parent,Leds[i]);
 	}
 	connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showLed(int) ) );
 	connect( ledColorComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeLedColor(int) ) );
@@ -78,6 +80,13 @@ for (int i=0; i<Num_Leds; ++i){
 }
 }
 
+void  QRL_LedsManager::setLedName(int i,QString name){
+
+    if (i<ledItems.size())
+    ledItems[i]->setText(name);
+    showLedOptions(ledItems[currentLed]);
+
+}
 
 
 void QRL_LedsManager::refreshView()
@@ -121,7 +130,8 @@ void QRL_LedsManager::changeLedColor(int color)
 void QRL_LedsManager::showLedOptions( QListWidgetItem * item ){
 
 	currentLed= ledListWidget->row(item);
-	tabWidget->setTabText(0,qTargetInterface->getLedName(currentLed));
+        //tabWidget->setTabText(0,qTargetInterface->getLedName(currentLed));
+        tabWidget->setTabText(0,ledItems.at(currentLed)->text());
 
 	if(LedWindows[currentLed]->isVisible())
 		showCheckBox->setCheckState(Qt::Checked);

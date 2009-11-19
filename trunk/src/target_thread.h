@@ -147,8 +147,8 @@ class TargetThread : public QThread
 
 
    void upload_parameters_info(long port, RT_TASK *task);
-  int Num_Tunable_Parameters;
-  int Num_Tunable_Blocks;
+  unsigned int Num_Tunable_Parameters;
+  unsigned int Num_Tunable_Blocks;
   int Num_Scopes;
   int Num_Logs;
   int Num_ALogs;

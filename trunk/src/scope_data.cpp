@@ -63,7 +63,7 @@ QRL_ScopeData::QRL_ScopeData(int ntr, float d,char *c_name)
 
     int QRL_ScopeData::setScopeDt(double d)
 {
-int ret=-1;
+//int ret=-1;
 
 	scopeDt=d;
 

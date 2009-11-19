@@ -192,7 +192,7 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 	int jend;
 	int prm=prm_row;
 	int table_row=0;
-	int nrow,ncol;
+        int nrow=0,ncol;
 	
 	// get old value
 	jend=Parameters->getNumberOfParameters(blk);
@@ -314,8 +314,8 @@ QString filename = QFileDialog::getOpenFileName(this,tr("Load Parameter"), NULL,
 // 	std::cout << line.toStdString();
 	if (QMessageBox::question(NULL,"Load Parameter",tr("Should I load the parameter file for the target ")+target+tr("?\n ")+date, QMessageBox::Yes | QMessageBox::No )==QMessageBox::No)
 	  return;
-	int paramnr;
-        int blocknr;
+        int paramnr=0;
+        int blocknr=0;
         int nr=0;
         int nc=0;
         double value;

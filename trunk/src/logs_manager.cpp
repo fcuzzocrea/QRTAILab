@@ -31,17 +31,18 @@
 /**
 * @brief Initialize Logs Manager
 */
-QRL_LogsManager::QRL_LogsManager(QWidget *parent,QRtaiLabCore* qtargetinterface)
-	:QDialog(parent),qTargetInterface(qtargetinterface)
+QRL_LogsManager::QRL_LogsManager(QWidget *parent,int numLogs, QRL_LogData **logs, int verb)
+        :QDialog(parent),Num_Logs(numLogs),Logs(logs),verbose(verb)
 {
 	setupUi(this);
-	Num_Logs=qTargetInterface->getLogNumber();
-	Logs=qTargetInterface->getLogs();
+        //Num_Logs=qTargetInterface->getLogNumber();
+        //Logs=qTargetInterface->getLogs();
 	const QIcon LogIcon =QIcon(QString::fromUtf8(":/icons/log_icon.xpm"));
 	LogWindows = new QRL_LogWindow* [Num_Logs]; 
 	for (int i=0; i<Num_Logs; ++i){
-		logItems << new QListWidgetItem(LogIcon,qTargetInterface->getLogName(i), logListWidget);
-		LogWindows[i]=new QRL_LogWindow(parent,Logs[i]);
+                //logItems << new QListWidgetItem(LogIcon,qTargetInterface->getLogName(i), logListWidget);
+                logItems << new QListWidgetItem(LogIcon,tr("%1").arg(i), logListWidget);
+                LogWindows[i]=new QRL_LogWindow(parent,Logs[i]);
 	}
 	//connect( showCheckBox, SIGNAL( stateChanged(int) ), this, SLOT( showScope(int) ) );
 	connect( logListWidget, SIGNAL( itemActivated( QListWidgetItem * ) ), this, SLOT( showLogOptions( QListWidgetItem *  ) ) );
@@ -136,7 +137,13 @@ void QRL_LogsManager::setFileVersion(qint32 v){
       fileVersion=v;
 
 }
+void  QRL_LogsManager::setLogName(int i,QString name){
 
+    if (i<logItems.size())
+    logItems[i]->setText(name);
+    showLogOptions(currentLog);
+
+}
 void QRL_LogsManager::refresh()
 {
   if (Logs[currentLog]->getIsSaving()==0){
