@@ -288,6 +288,8 @@ void QRL_LogsManager::startSaving()
                  else if (!File_Name.endsWith(QDir::separator()))
                      File_Name+=QDir::separator();
 
+		File_Name+=fileLineEdit->text();
+
 		if (QFile::exists(File_Name)) {
 			printf("File %s exists already.",File_Name.toLocal8Bit().data() );
 			QMessageBox::critical(this, tr("QMessageBox::critical()"),
