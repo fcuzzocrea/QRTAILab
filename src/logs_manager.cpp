@@ -276,6 +276,30 @@ void QRL_LogsManager::setFileDirectory(){
 
 }
 
+ void QRL_LogsManager::setFileName(int logNumber, const QString& filename){
+
+     if (logNumber<Num_Logs)
+         LogWindows[logNumber]->setFileName(filename);
+
+     if (logNumber==currentLog){
+
+        if (!filename.contains(QDir::separator())){
+            dirLineEdit->clear();
+            fileLineEdit->clear();
+            dirLineEdit->insert(tr("./"));
+            fileLineEdit->insert(filename);
+        } else {
+                dirLineEdit->clear();
+            fileLineEdit->clear();
+            int pos = filename.lastIndexOf(    QDir::separator());
+            dirLineEdit->insert(filename.mid(0,pos+1));
+            fileLineEdit->insert(filename.mid(pos+1,filename.size()));
+
+        }
+    }
+}
+
+
 void QRL_LogsManager::startSaving()
 {
 	 FILE* Save_File_Pointer;

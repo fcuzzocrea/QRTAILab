@@ -50,8 +50,9 @@ public:
   QRL_LogWindow** getLogWindows(){return LogWindows;}
          void stopRefresh(){timer->stop();}
           void setLogName(int i,QString name);
+           void setFileName(int logNumber, const QString& filename);
 public slots:
-  void showLogOptions( QListWidgetItem * item  );
+   void showLogOptions( QListWidgetItem * item  );
   void showLogOptions( int );
   void startSaving();
   void stopSaving();

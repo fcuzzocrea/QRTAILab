@@ -79,7 +79,14 @@ public:
   //  ~QRL_MainWindow();
 //signals:
  //    void sendOrder(int);
-    //void setVerbose(int v){Verbose=v;}
+    void setVerbose(int v){Verbose=v; qTargetInterface->setVerbose(v);}
+
+  public slots:
+     void connectDialog();
+      void loadProfile(QString &filename);
+      void loadParameters(QString &filename);
+      void setScopeFileName(int ScopeNumber,const QString &filename);
+      void setLogFileName(int LogNumber,const QString &filename);
 protected:
      void closeEvent(QCloseEvent *event);
 
@@ -87,7 +94,7 @@ protected slots:
     void about();
     void disconnectDialog();
    // void startTarget();
-    void connectDialog();
+
     void loadProfile();
     void saveProfile();
     void start();

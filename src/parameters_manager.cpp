@@ -290,7 +290,10 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 
 
     void QRL_ParametersManager::loadParameter(){
-QString filename = QFileDialog::getOpenFileName(this,tr("Load Parameter"), NULL, tr("Parameter(*.qpf);; All Files (*.*)")); 
+        QString filename = QFileDialog::getOpenFileName(this,tr("Load Parameter"), NULL, tr("Parameter(*.qpf);; All Files (*.*)"));
+        loadParameter(filename);
+}
+ void QRL_ParametersManager::loadParameter(QString &filename){
 	QFile file(filename);
 	if (!file.open(QIODevice::ReadOnly)) return;
     QTextStream in(&file);

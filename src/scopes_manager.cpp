@@ -291,7 +291,30 @@ void QRL_ScopesManager::setFileDirectory(){
                                                  QFileDialog::ShowDirsOnly);
   dirLineEdit->setText(dir);
 
+}
 
+ void QRL_ScopesManager::setFileName(int scopeNumber, const QString& filename){
+
+  if (scopeNumber<Num_Scopes)
+     ScopeWindows[scopeNumber]->setFileName(filename);
+
+     if (scopeNumber==currentScope){
+
+
+        if (!filename.contains(QDir::separator())){
+            dirLineEdit->clear();
+            fileLineEdit->clear();
+            dirLineEdit->insert(tr("./"));
+            fileLineEdit->insert(filename);
+        } else {
+                dirLineEdit->clear();
+            fileLineEdit->clear();
+            int pos = filename.lastIndexOf(    QDir::separator());
+            dirLineEdit->insert(filename.mid(0,pos+1));
+            fileLineEdit->insert(filename.mid(pos+1,filename.size()));
+
+        }
+    }
 }
 
 void QRL_ScopesManager::startSaving()
