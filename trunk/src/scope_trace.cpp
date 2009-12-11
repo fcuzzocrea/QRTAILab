@@ -44,6 +44,10 @@ QRL_ScopeTrace::QRL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int 
 	 	cData->attach(qwtPlot);
 		cData->setPaintAttribute(QwtPlotCurve::PaintFiltered,true);
 		cData->setPaintAttribute(QwtPlotCurve::ClipPolygons,true);
+                oldStyle=QwtPlotCurve::Lines;
+                cData->setStyle(QwtPlotCurve::Lines);
+                setSymbolStyle(QwtSymbol::NoSymbol);
+                oldSymbol=QwtSymbol::NoSymbol;
 		xmax=1;
 		lineWidth=3;
 		dy=1.;
@@ -321,8 +325,11 @@ void QRL_ScopeTrace::show(bool v){
 	visible=v;
 	if (!visible) {
 		cData->setStyle(QwtPlotCurve::NoCurve);
+                sym.setStyle(QwtSymbol::NoSymbol); cData->setSymbol(sym);
+
 	}else{	
-		cData->setStyle(QwtPlotCurve::Lines);
+                cData->setStyle(oldStyle);
+                setSymbolStyle(oldSymbol);
 	}
 }
 
@@ -653,13 +660,13 @@ QDataStream& operator<<(QDataStream &out, const QRL_ScopeTrace *d){
 		out << d->brush.color();
 		a=d->lineWidth; out <<a;
 		out << d->visible;
-/*
+
                 out <<d->cData->style();
                 out <<d->cData->symbol().pen().color();
                 out <<d->cData->symbol().brush().color();
                 out <<d->cData->symbol().style();
-                out <<d->cData->symbol().size();
-*/
+                out <<d->cData->symbol().size().width();
+
 	return out;
 }
 
