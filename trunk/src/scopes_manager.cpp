@@ -96,7 +96,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent, int numScopes, QRL_ScopeDa
 	connect( dirPushButton, SIGNAL( pressed()), this, SLOT(setFileDirectory() ) );
 	connect( setMeanPushButton, SIGNAL( pressed()), this, SLOT(setOffsetToMean() ) );
         connect( fitDyPushButton, SIGNAL( pressed()), this, SLOT(fitDytoPP() ) );
-       // connect( styleComboBox,SIGNAL( currentIndexChanged(int) ),this, SLOT(setTraceStyle(int) ) );
+        connect( styleComboBox,SIGNAL( currentIndexChanged(int) ),this, SLOT(setTraceStyle(int) ) );
 
          connect( lineStyleComboBox,SIGNAL( currentIndexChanged(int) ),this, SLOT(setLineStyle(int) ) );
          connect( symbolStyleComboBox,SIGNAL( currentIndexChanged(int) ),this, SLOT(setSymbolStyle(int) ) );
@@ -936,28 +936,28 @@ void QRL_ScopesManager::changeSymbolBrushColor()
 
 switch(index){
 
-    case 0: //line none
+    case 1: //line none
          ScopeWindows[currentScope]->trace(currentTrace)->setLineStyle(QwtPlotCurve::Lines);
          ScopeWindows[currentScope]->trace(currentTrace)->setSymbolStyle(QwtSymbol::NoSymbol);
     break;
-    case 1: //line cross
+    case 2: //line cross
          ScopeWindows[currentScope]->trace(currentTrace)->setSymbolStyle(QwtSymbol::Cross);
           ScopeWindows[currentScope]->trace(currentTrace)->setSymbolPenColor(Qt::black);
          ScopeWindows[currentScope]->trace(currentTrace)->setSymbolSize(5);
             ScopeWindows[currentScope]->trace(currentTrace)->setLineStyle(QwtPlotCurve::Lines);
     break;
-    case 2: //sticks ellipse
+    case 3: //sticks ellipse
           ScopeWindows[currentScope]->trace(currentTrace)->setSymbolStyle(QwtSymbol::Ellipse);
             ScopeWindows[currentScope]->trace(currentTrace)->setSymbolPenColor(Qt::blue);
             ScopeWindows[currentScope]->trace(currentTrace)->setSymbolBrushColor(Qt::yellow);
             ScopeWindows[currentScope]->trace(currentTrace)->setSymbolSize(5);
            ScopeWindows[currentScope]->trace(currentTrace)->setLineStyle(QwtPlotCurve::Sticks);
     break;
-    case 3: //steps none
+    case 4: //steps none
         ScopeWindows[currentScope]->trace(currentTrace)->setLineStyle(QwtPlotCurve::Steps);
           ScopeWindows[currentScope]->trace(currentTrace)->setSymbolStyle(QwtSymbol::NoSymbol);
     break;
-    case 4: //none xcross
+    case 5: //none xcross
                   ScopeWindows[currentScope]->trace(currentTrace)->setSymbolStyle(QwtSymbol::XCross);
             ScopeWindows[currentScope]->trace(currentTrace)->setSymbolPenColor(Qt::darkMagenta);
             ScopeWindows[currentScope]->trace(currentTrace)->setSymbolSize(5);
@@ -966,8 +966,13 @@ switch(index){
     break;
 
 }
-
-  }
+if (index>0) {
+ symbolSizeCounter->setValue(ScopeWindows[currentScope]->trace(currentTrace)->getSymbolSize());
+        lineStyleComboBox->setCurrentIndex(ScopeWindows[currentScope]->trace(currentTrace)->getLineStyle());
+        symbolStyleComboBox->setCurrentIndex(ScopeWindows[currentScope]->trace(currentTrace)->getSymbolStyle()+1);
+        styleComboBox->setCurrentIndex(0);
+    }
+}
 
 
 
