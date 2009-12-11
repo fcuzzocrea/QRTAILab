@@ -59,6 +59,7 @@ public:
   enum labelTypes{lt_trace,lt_unit,lt_average,lt_min,lt_max,lt_pp,lt_rms};
   QRL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int j);
 ~QRL_ScopeTrace();
+    void setFileVersion(qint32 v){fileVersion=v;}
     void refresh();
   void changeNDataSoll(int ds, double dt);
 void setLabelsXValue(double x);
@@ -96,13 +97,13 @@ void setZeroAxis();
    void moveDataToRight(int s);
 
 //saving is missing
-    void setLineStyle(QwtPlotCurve::CurveStyle s){cData->setStyle(s);}
+    void setLineStyle(QwtPlotCurve::CurveStyle s){cData->setStyle(s); oldStyle=s;}
      QwtPlotCurve::CurveStyle    getLineStyle() {return cData->style();}
     void setSymbolPenColor(const QColor& c){sym.setPen(QColor(c));  cData->setSymbol(sym); }
     QColor getSymbolPenColor(){return sym.pen().color();}
     void setSymbolBrushColor(const QColor& c){sym.setBrush(QColor(c));  cData->setSymbol(sym); }
     QColor getSymbolBrushColor(){return sym.brush().color();}
-    void setSymbolStyle(QwtSymbol::Style s){sym.setStyle(s); cData->setSymbol(sym);}
+    void setSymbolStyle(QwtSymbol::Style s){sym.setStyle(s); cData->setSymbol(sym);oldSymbol=s;}
     QwtSymbol::Style getSymbolStyle(){return sym.style();}
     void setSymbolSize(int s){sym.setSize(s);  cData->setSymbol(sym); }
     int getSymbolSize(){ return sym.size().width();}
@@ -111,8 +112,11 @@ void setZeroAxis();
     QwtSymbol getSymbol(){return cData->symbol();}
 
 private:
+      qint32 fileVersion;
 	QwtPlot *qwtPlot;
 	QColor gridColor;
+        QwtPlotCurve::CurveStyle oldStyle;
+        QwtSymbol::Style oldSymbol;
  	int index;
 	double offset;
 	double dy;

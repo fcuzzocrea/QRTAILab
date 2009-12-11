@@ -146,24 +146,35 @@ int main(int argc, char *argv[])
 
       if ((Scopes.size() != ScopeFiles.size())) {
 
-            printf(("After the -S option a -s must follow! Example: -S0 -stest \n") );
+            std::cout <<"After the -S option a -s must follow! Example: -S0 -stest \n";
             exit(-1);
      }
       if ((Logs.size() != LogFiles.size())) {
 
-            printf(("After the -L option a -l must follow! Example: -L0 -ltest \n") );
+               std::cout <<"After the -L option a -l must follow! Example: -L0 -ltest \n";
+            exit(-1);
+     }
+      
+     if (!profilefile.isEmpty() && !QFile::exists(profilefile)){
+              std::cout <<"Profile " << profilefile.toAscii().data() << " does not exists! \n" ;
             exit(-1);
      }
 
+    if (!parameterfile.isEmpty() && !QFile::exists(parameterfile)) {
+             std::cout <<"Parameterfile "<< parameterfile.toAscii().data()<< " does not exists! \n" ;
+            exit(-1);
+    }
+
+
      mainWin.show();
-    if (!profilefile.isEmpty())
+    if (!profilefile.isEmpty() && QFile::exists(profilefile))
          mainWin.loadProfile(profilefile);
     else  if (connect)
          mainWin.connectDialog();
 
 
 
-    if (!parameterfile.isEmpty()) {
+    if (!parameterfile.isEmpty() && QFile::exists(parameterfile)) {
         if (profilefile.isEmpty() && !connect)
               mainWin.connectDialog();
         mainWin.loadParameters(parameterfile);

@@ -1234,7 +1234,13 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
                 in >> c; d.trace(nn)->setColor(c);
                 in >> a; d.trace(nn)->setWidth((int)a);
                 in >> b; d.trace(nn)->show(b);
-
+                if (d.fileVersion>107){
+                    in >> a;d.trace(nn)->setLineStyle((QwtPlotCurve::CurveStyle)a);
+                    in >> c;d.trace(nn)->setSymbolPenColor(c);
+                    in >> c;d.trace(nn)->setSymbolBrushColor(c);
+                    in >> a; d.trace(nn)->setSymbolStyle((QwtSymbol::Style)a);
+                    in >> a; d.trace(nn)->setSymbolSize((int)a);
+                }
 
 	  } else {
 		in >> str;

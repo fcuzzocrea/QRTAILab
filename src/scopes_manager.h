@@ -101,6 +101,12 @@ public slots:
   void setOffsetToMean();
     void fitDytoPP();
     void setTraceStyle(int);
+    void setLineStyle(int);
+    void setSymbolStyle(int index);
+      void setSymbolSize(double size);
+      void changeSymbolBrushColor();
+      void changeSymbolPenColor();
+
 private:
   qint32 fileVersion;
   int Num_Scopes;

@@ -142,7 +142,7 @@ public:
     void setValue(const QVector< QVector<float> > &v);
     void setTime(const QVector<float> &t);
     void setVerbose(int v){Verbose=v;}
-    void setFileVersion(qint32 v){fileVersion=v;}
+    void setFileVersion(qint32 v){fileVersion=v;for(int i=0;i<Scope->getNTraces();i++) Traces[i]->setFileVersion(v);}
     void setPlotting(bool b);
     bool isPlotting(){return plotting;}
 
