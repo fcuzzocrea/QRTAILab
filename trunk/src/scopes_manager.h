@@ -56,6 +56,7 @@ public:
     void stopRefresh(){timer->stop();}
     void setScopeName(int i,QString name);
 public slots:
+  void setFileName(int scopeNumber, const QString& filename);
    void refresh();
   void  showScope(int);
   void  showTrace(int);

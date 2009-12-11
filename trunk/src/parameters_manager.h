@@ -56,6 +56,7 @@ public slots:
   void  changeTunableParameter( QTableWidgetItem * item );
   void  uploadParameters();
   void downloadBatchParameters();
+      void loadParameter(QString &filename);
 protected slots:
     void loadParameter();
     void saveParameter();

@@ -434,53 +434,93 @@ void QRL_MainWindow::startTarget() {
 
 }*/
  
+ void QRL_MainWindow::loadParameters(QString &filename){
+    if (qTargetInterface->getIsTargetConnected()==1){
+        if (ParametersManager)
+            ParametersManager->loadParameter(filename);
+
+
+    }
+
+
+ }
+
+
+   void QRL_MainWindow::setScopeFileName(int ScopeNumber,const QString &filename){
+       if (ScopesManager)
+           ScopesManager->setFileName(ScopeNumber,filename);
+
+
+
+
+
+   }
+
+      void QRL_MainWindow::setLogFileName(int LogNumber,const QString &filename){
+       if (LogsManager)
+           LogsManager->setFileName(LogNumber,filename);
+
+
+
+
+
+   }
+
+ void QRL_MainWindow::loadProfile(QString &filename) {
+
+
+        QFile file(filename);
+        if (!file.open(QIODevice::ReadOnly)) return;
+    QDataStream in(&file);
+        qint32 mm,version;
+        in >> mm >> version;
+        if (mm!=DATA_STREAM_MAGIC_NUMBER) {
+                file.close();
+                QMessageBox::warning(NULL,"Error","Wrong file format! Could not load file!", QMessageBox::Ok );
+                return;
+        } else 	if (version<101) {
+                file.close();
+                QMessageBox::warning(NULL,"Error","Wrong version number! Could not load file!", QMessageBox::Ok );
+                return;
+        }
+        QSize s;QPoint p;
+        in >> s;this->resize(s);
+        in >> p; this->move(p);
+        TargetsManager->setFileVersion(version);
+        in >> *TargetsManager;
+        if (qTargetInterface->getIsTargetConnected()==0) {
+                connectToTarget(TargetsManager->getPreferences());
+        }
+        if (LogsManager){
+                LogsManager->setFileVersion(version);
+                in >> *LogsManager;
+        }
+        if (LedsManager)
+                in >> *LedsManager;
+        if (MetersManager){
+                MetersManager->setFileVersion(version);
+                in >> *MetersManager;
+        }
+        if (ScopesManager){
+                ScopesManager->setFileVersion(version);
+                in >> *ScopesManager;
+        }
+        if (ParametersManager){
+                ParametersManager->setFileVersion(version);
+                in >> *ParametersManager;
+        }
+
+        file.close();
+statusMessage->setText(tr("Profile loaded!"));
+}
+
+
 void QRL_MainWindow::loadProfile() {
 
 
 	QString filename = QFileDialog::getOpenFileName(this,tr("Load Profile"), NULL, tr("Settings(*.qrl);; All Files (*.*)")); 
-	QFile file(filename);
-	if (!file.open(QIODevice::ReadOnly)) return;
-    QDataStream in(&file);
-	qint32 mm,version;
-	in >> mm >> version;
-	if (mm!=DATA_STREAM_MAGIC_NUMBER) {
-		file.close();
-		QMessageBox::warning(NULL,"Error","Wrong file format! Could not load file!", QMessageBox::Ok );
-		return;
-	} else 	if (version<101) {
-		file.close();
-		QMessageBox::warning(NULL,"Error","Wrong version number! Could not load file!", QMessageBox::Ok );
-		return;
-	}
-	QSize s;QPoint p;
-	in >> s;this->resize(s);
-	in >> p; this->move(p);
-	TargetsManager->setFileVersion(version);
-	in >> *TargetsManager;
-	if (qTargetInterface->getIsTargetConnected()==0) {
-		connectToTarget(TargetsManager->getPreferences());
-	}
-	if (LogsManager){
-		LogsManager->setFileVersion(version);
- 		in >> *LogsManager;
-	}
-	if (LedsManager)
- 		in >> *LedsManager;
-	if (MetersManager){
-		MetersManager->setFileVersion(version);
- 		in >> *MetersManager;
-	}
-	if (ScopesManager){
-		ScopesManager->setFileVersion(version);
- 		in >> *ScopesManager;
-	}
-	if (ParametersManager){
-		ParametersManager->setFileVersion(version);
- 		in >> *ParametersManager;
-	}
-   
-	file.close();
-statusMessage->setText(tr("Profile loaded!"));
+        loadProfile(filename);
+
 
 //      QSettings profiles("QRtaiLab", "profiles");
 //      int size = profiles.beginReadArray("profiles");
