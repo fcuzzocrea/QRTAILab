@@ -828,9 +828,9 @@ void QRL_ScopeWindow::setRMSLabel(bool b,int trace){
 
 
 
-void QRL_ScopeWindow::setTime(const  QVector<float>  &t){
+void QRL_ScopeWindow::setTime(const  QVector<double>  &t){
   if (t.size()>0){
-    float meandt=t[0]-lastTime;
+    double meandt=t[0]-lastTime;
     for (int i=1;i<t.size();i++)
       meandt=meandt/2+(t[i]-t[i-1])/2;
 //    printf("dt %f\n",meandt);

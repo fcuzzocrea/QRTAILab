@@ -51,8 +51,8 @@ public:
     int setScopeRefreshRate(double rr);
     double getScopeRefreshRate();
     void setScopeValue(double v, int t);
-    void setScopeTime(float v);	 
-     QVector<float> getScopeTime();
+    void setScopeTime(double v);
+     QVector<double> getScopeTime();
     QVector<double> getScopeValue(int t);
     QVector< QVector<double> > getScopeValue();
     bool dataAvailable();
@@ -90,7 +90,7 @@ private:
 //     QRL_ScopeTrace **Traces;
     QVector <int>  ScopeIndex;
     QVector< QVector <double> >  ScopeValues;
-    QVector <float> ScopeTime;
+    QVector <double> ScopeTime;
     QVector <int>  ScopeIndexOut;
     QVector< QVector <double> >  ScopeValuesOut;
     double scopeDt;

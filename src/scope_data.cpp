@@ -102,13 +102,13 @@ double QRL_ScopeData::getScopeRefreshRate()
 	return ret;
 }
 
-void QRL_ScopeData::setScopeTime(float v){
+void QRL_ScopeData::setScopeTime(double v){
       if (ScopeIndex[0]<MAX_SCOPE_DATA){
 	ScopeTime[ScopeIndex[0]]=v;
       }
 }
 
- QVector<float> QRL_ScopeData::getScopeTime(){
+ QVector<double> QRL_ScopeData::getScopeTime(){
 	
 // QVector<float> ret;
 // mutex.lock();

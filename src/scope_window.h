@@ -140,7 +140,7 @@ public:
  bool getRMSLabel(int trace){return Traces[trace]->isLabelVisible(QRL_ScopeTrace::lt_rms);}
      //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
     void setValue(const QVector< QVector<double> > &v);
-    void setTime(const QVector<float> &t);
+    void setTime(const QVector<double> &t);
     void setVerbose(int v){Verbose=v;}
     void setFileVersion(qint32 v){fileVersion=v;for(int i=0;i<Scope->getNTraces();i++) Traces[i]->setFileVersion(v);}
     void setPlotting(bool b);
@@ -156,8 +156,8 @@ private:
   qint32 fileVersion;
   int Verbose;
   bool plotting;
-  float Value;
-  float lastTime;
+  double Value;
+  double lastTime;
  QRL_ScopeData *Scope;
   unsigned int NDataMax,Ncurve,NDataSoll, MaxDataPoints,Divider;
   int time,time2;
