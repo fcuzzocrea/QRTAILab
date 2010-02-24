@@ -192,7 +192,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QRL_ScopeData *scope,int ind)
 	NDataSoll=NDataMax;
 	saveTime=0.;
        fileName=tr("SCOPE");
-	RefreshRate=30.;
+        RefreshRate=20.;
 	//Werden genügend Daten bereitgestellt?
        if (NDataSoll>NDataMax)
 		NDataSoll=NDataMax;
@@ -211,6 +211,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QRL_ScopeData *scope,int ind)
 		Traces[j] = new QRL_ScopeTrace(qwtPlot, MaxDataPoints, j);
 		Traces[j]->changeNDataSoll(NDataSoll,dt);
 		Traces[j]->setGridColor(gridColor);
+                Traces[j]->setName(Scope->getTraceNames().at(j));
 // 		switch(j){
 // 			case 0:TraceOptions[j].brush=QBrush(Qt::red);
 // 				break;
@@ -1240,6 +1241,12 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
                     in >> c;d.trace(nn)->setSymbolBrushColor(c);
                     in >> a; d.trace(nn)->setSymbolStyle((QwtSymbol::Style)a);
                     in >> a; d.trace(nn)->setSymbolSize((int)a);
+                } else {
+                    d.trace(nn)->setLineStyle((QwtPlotCurve::Lines));
+                    d.trace(nn)->setSymbolPenColor(Qt::black);
+                    d.trace(nn)->setSymbolBrushColor(Qt::black);
+                    d.trace(nn)->setSymbolStyle((QwtSymbol::NoSymbol ));
+                    d.trace(nn)->setSymbolSize((int)3);
                 }
 
 	  } else {
@@ -1257,7 +1264,13 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
 		in >> c;
 		in >> a;
 		in >> b;
-
+                if (d.fileVersion>107){
+                    in >> a;
+                    in >> c;
+                    in >> c;
+                    in >> a;
+                    in >> a;
+                }
 	  }
 	}
 

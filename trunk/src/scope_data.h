@@ -36,7 +36,7 @@ class QRL_ScopeData //: public QThread
 {
  // Q_OBJECT
 public:
-  QRL_ScopeData(int ntraces, float dt,char*);
+  QRL_ScopeData(int ntraces, float dt,char*, QStringList &t_name);
   ~QRL_ScopeData();
   int getNTraces(){return ntraces;}
 //  void setNTraces(int t){ntraces=t;}
@@ -70,6 +70,7 @@ public:
     
     void setPlotting(bool b){plotting=b;}
     bool isPlotting(){return plotting;}
+    QStringList getTraceNames(){return traceNames;}
 // 	int ntraces;
 // protected:
 //    void run();
@@ -78,6 +79,7 @@ private:
     const int ntraces;
     const  float dt;
     std::string name;
+    QStringList traceNames;
     int isSaving;
     bool plotting;
     int visible;
