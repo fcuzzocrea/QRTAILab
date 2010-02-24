@@ -1,9 +1,9 @@
-Version 0.1.7
+Version 0.1.8
  - command line options like connect, load profile, etc are available
  - Parameter values can saved and loaded 
- - properties of the traces could be changed
+ - properties of the traces can be changed
  - some bugfixes
- - add xy-plot
+ - works only with rtai 3.8.0 and higher
 
 Version 0.1.7
  - offset in a scope  can now  be set to the average
