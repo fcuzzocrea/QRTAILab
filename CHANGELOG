@@ -4,6 +4,7 @@ Version 0.1.8
  - properties of the traces can be changed
  - some bugfixes
  - works only with rtai 3.8.0 and higher
+ - scopes works now with double
 
 Version 0.1.7
  - offset in a scope  can now  be set to the average
