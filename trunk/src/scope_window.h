@@ -139,7 +139,7 @@ public:
  bool getPPLabel(int trace){return Traces[trace]->isLabelVisible(QRL_ScopeTrace::lt_pp);}
  bool getRMSLabel(int trace){return Traces[trace]->isLabelVisible(QRL_ScopeTrace::lt_rms);}
      //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
-    void setValue(const QVector< QVector<float> > &v);
+    void setValue(const QVector< QVector<double> > &v);
     void setTime(const QVector<float> &t);
     void setVerbose(int v){Verbose=v;}
     void setFileVersion(qint32 v){fileVersion=v;for(int i=0;i<Scope->getNTraces();i++) Traces[i]->setFileVersion(v);}

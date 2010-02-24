@@ -126,7 +126,7 @@ void QRL_ScopeData::setScopeTime(float v){
 }
 
 
- void QRL_ScopeData::setScopeValue(float v, int t){
+ void QRL_ScopeData::setScopeValue(double v, int t){
 
 if ( ntraces>0){ 
 // mutex.lock();
@@ -162,10 +162,10 @@ if (t<ScopeValues.size()){
 // return ret;
 // } 
 
- QVector< QVector<float> > QRL_ScopeData::getScopeValue(){
+ QVector< QVector<double> > QRL_ScopeData::getScopeValue(){
 	
 // printf("getScopeindex %d\n",ScopeIndex[0]);
-QVector< QVector<float> > ret;
+QVector< QVector<double> > ret;
 // mutex.lock();
 ret.resize(ScopeValues.size());
  //ret= Get_Led_Data_Thread[n].getValue();

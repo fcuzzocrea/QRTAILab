@@ -838,7 +838,7 @@ void QRL_ScopeWindow::setTime(const  QVector<float>  &t){
    }
 }
 
-void QRL_ScopeWindow::setValue(const QVector< QVector<float> > &v)
+void QRL_ScopeWindow::setValue(const QVector< QVector<double> > &v)
 {
 
 

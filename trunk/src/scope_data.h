@@ -50,11 +50,11 @@ public:
     double getScopeDt();
     int setScopeRefreshRate(double rr);
     double getScopeRefreshRate();
-    void setScopeValue(float v, int t);	 
+    void setScopeValue(double v, int t);
     void setScopeTime(float v);	 
      QVector<float> getScopeTime();
-    QVector<float> getScopeValue(int t);	 
-    QVector< QVector<float> > getScopeValue();
+    QVector<double> getScopeValue(int t);
+    QVector< QVector<double> > getScopeValue();
     bool dataAvailable();
     int start_saving_scope();
     void startSaving(FILE* Save_File_Pointer,double Save_Time);
@@ -89,10 +89,10 @@ private:
     double scopeRefreshRate;
 //     QRL_ScopeTrace **Traces;
     QVector <int>  ScopeIndex;
-    QVector< QVector <float> >  ScopeValues;
+    QVector< QVector <double> >  ScopeValues;
     QVector <float> ScopeTime;
     QVector <int>  ScopeIndexOut;
-    QVector< QVector <float> >  ScopeValuesOut;
+    QVector< QVector <double> >  ScopeValuesOut;
     double scopeDt;
 };
 
