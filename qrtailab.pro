@@ -11,7 +11,7 @@ include( qrtailab.config )
 TEMPLATE = subdirs
 
 SUBDIRS = \
-    src
+    QRtaiLab
 
 contains(CONFIG, QRLtests ) {
     SUBDIRS += tests
