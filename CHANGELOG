@@ -1,7 +1,14 @@
 Version 0.1.7
+ - command line options like connect, load profile, etc are available
+ - Parameter values can saved and loaded 
+ - properties of the traces could be changed
+ - some bugfixes
+ - add xy-plot
+
+Version 0.1.7
  - offset in a scope  can now  be set to the average
  - offset will be recalculated during changes of dy
- - autoscaling in a scpoe is now possible
+ - autoscaling in a scope is now possible
  - Log blocks can be used for matrix plots (the size is very restricted!!! around 100-200 elements are possible)
  - 3 different matrix plots 
  - Meter options are displaying now to the actual meter options

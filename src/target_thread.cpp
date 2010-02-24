@@ -405,13 +405,26 @@ void TargetThread::run()
                                   Scopes = new QRL_ScopeData* [Num_Scopes];
                                 }
                                 for (int n = 0; n < Num_Scopes; n++) {
-                                        char scope_name[MAX_NAMES_SIZE];
+                                        char name[MAX_NAMES_SIZE];
+                                        char traceName[MAX_NAMES_SIZE];
                                         int ntraces;
                                         float dt;
+                                        QStringList traceNames;
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &n, &ntraces, sizeof(int), sizeof(int));
-                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &scope_name, sizeof(int), sizeof(scope_name));
-                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &dt, sizeof(int), sizeof(float));
-                                        Scopes[n] = new QRL_ScopeData(ntraces,dt,scope_name);
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &name, sizeof(int), sizeof(name));
+
+
+                                        int j;
+                                        for(j=0; j<ntraces; j++) {
+                                                RT_rpcx(Target_Node, Target_Port, If_Task, &j, &traceName, sizeof(int), sizeof(traceName));
+                                                traceNames<<QString(traceName);
+                                               // Scopes[n].traceName[j] = (char*)malloc(strlen(name)+1);
+                                               // strcpy(Scopes[n].traceName[j], name);
+                                        }
+                                        j=-1;
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &j, &dt, sizeof(int), sizeof(float));
+                                        Scopes[n] = new QRL_ScopeData(ntraces,dt,name,traceNames);
+
                                 }
                                 RT_rpcx(Target_Node, Target_Port, If_Task, &req, &msg, sizeof(int), sizeof(int));
 

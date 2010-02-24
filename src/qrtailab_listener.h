@@ -65,7 +65,7 @@ static void *rt_get_scope_data(void *arg)
 	char GetScopeDataMbxName[7];
 	long GetScopeDataPort;
 	int MsgData = 0, MsgLen, MaxMsgLen, TracesBytes,MsgWait;
-	float MsgBuf[MAX_MSG_LEN/sizeof(float)];
+        double MsgBuf[MAX_MSG_LEN/sizeof(double)];
 	int n, nn, js, jl;
 	int index = ((Args_T *)arg)->index;
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
@@ -91,7 +91,7 @@ static void *rt_get_scope_data(void *arg)
 		return (void *)1;
 	}
 	//munlockall();
-	TracesBytes = (scope->getNTraces() + 1)*sizeof(float);
+        TracesBytes = (scope->getNTraces() + 1)*sizeof(double);
 	MaxMsgLen = (MAX_MSG_LEN/TracesBytes)*TracesBytes;
 	MsgLen = (((int)(TracesBytes*dt*(1./scope->getDt())))/TracesBytes)*TracesBytes;
 	//MsgLen = (((int)(TracesBytes*(1./targetThread->getScopeRefreshRate(index))*(1./scope.dt)))/TracesBytes)*TracesBytes;

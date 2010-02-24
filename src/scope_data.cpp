@@ -28,8 +28,8 @@
 
 #include "scope_data.h"
 
-QRL_ScopeData::QRL_ScopeData(int ntr, float d,char *c_name)
-        :ntraces(ntr),dt(d)
+QRL_ScopeData::QRL_ScopeData(int ntr, float d,char *c_name, QStringList &t_name)
+        :ntraces(ntr),dt(d),traceNames(t_name)
 {
 		visible = false;
 		isSaving=0;
