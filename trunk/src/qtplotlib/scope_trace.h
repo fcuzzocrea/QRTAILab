@@ -43,7 +43,6 @@
 #include <qwt_symbol.h>
 #include <qwt_scale_draw.h>
 #include <qwt_math.h>
-
 #include "qtplot_global.h"
 
 
