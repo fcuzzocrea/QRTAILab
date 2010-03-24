@@ -166,7 +166,7 @@ void QRL_ScopesManager::refresh()
 // 	}
      if (Scopes[n]->dataAvailable()) {
 	if (Scopes[n]->getNTraces()>0) {
-	  if (Scopes[n]->isSaveScopeTime())
+          if (Scopes[n]->data2disk()->isSaveScopeTime())
 	     ScopeWindows[n]->setTime( Scopes[n]->getScopeTime());
 	  ScopeWindows[n]->setValue( Scopes[n]->getScopeValue());
 	 }
@@ -179,7 +179,7 @@ void QRL_ScopesManager::refresh()
 // }
 
 
-  if (Scopes[currentScope]->getIsSaving()==0){
+  if (Scopes[currentScope]->data2disk()->getIsSaving()==0){
       savePushButton->setEnabled(true);
       stopPushButton->setEnabled(false);
        saveProgressBar->setEnabled(false);
@@ -191,8 +191,8 @@ void QRL_ScopesManager::refresh()
      savePushButton->setEnabled(false);
      stopPushButton->setEnabled(true);
     saveProgressBar->setEnabled(true);
-    saveProgressBar->setMaximum(Scopes[currentScope]->n_points_to_save());
-     saveProgressBar->setValue(Scopes[currentScope]->getSavedPoints());
+    saveProgressBar->setMaximum(Scopes[currentScope]->data2disk()->n_points_to_save());
+     saveProgressBar->setValue(Scopes[currentScope]->data2disk()-> getSavedPoints());
   }
 
 
@@ -325,9 +325,9 @@ void QRL_ScopesManager::setFileDirectory(){
 
 void QRL_ScopesManager::startSaving()
 {
-	 FILE* Save_File_Pointer;
+
 	double Save_Time=timeCounter->value();
-	if( Scopes[currentScope]->start_saving_scope()==0){
+        if( Scopes[currentScope]->data2disk()->getIsSaving()==0){
 
                     QString File_Name=dirLineEdit->text();
                     if (File_Name.isEmpty())
@@ -345,15 +345,16 @@ void QRL_ScopesManager::startSaving()
 		 
 		  
 		
-		if ((Save_File_Pointer = fopen((File_Name.toLocal8Bit()).data(), "a+")) == NULL) {
+                //if ((Save_File_Pointer = fopen((File_Name.toLocal8Bit()).data(), "a+")) == NULL) {
+                  if (!Scopes[currentScope]->data2disk()->startSaving(File_Name.toLocal8Bit().data(),Save_Time)) {
 			printf("Error in opening file %s",File_Name.toLocal8Bit().data() );
 			QMessageBox::critical(this, tr("QMessageBox::critical()"),
                                      tr("Error in opening file!"),
                                      QMessageBox::Abort);
-		} else {
+                } //else {
 			//savePushButton->setEnabled(false);
-			Scopes[currentScope]->startSaving(Save_File_Pointer,Save_Time);
-		}
+                //	Scopes[currentScope]->startSaving(Save_File_Pointer,Save_Time);
+                //}
 
 		
 		//ScopeWindows[currentScope]->startSaving(fileLineEdit->text());
@@ -368,8 +369,8 @@ void QRL_ScopesManager::startSaving()
 
 void QRL_ScopesManager::stopSaving()
 {
- if (Scopes[currentScope]->getIsSaving()==1){
-	 Scopes[currentScope]->stop_saving();
+ if (Scopes[currentScope]->data2disk()->getIsSaving()==1){
+         Scopes[currentScope]->data2disk()->stopSaving();
   }
 }
 
@@ -484,7 +485,7 @@ void QRL_ScopesManager::changeTraceText(const QString & text ){
 void QRL_ScopesManager::showScopeOptions( int index ){
 
 	currentScope=index;
-	if(Scopes[currentScope]->start_saving_scope()==0){
+        if(Scopes[currentScope]->data2disk()->getIsSaving()==0){
 		savePushButton->setEnabled(true);
 	}
 	tabWidget->setTabText(0,tr(Scopes[currentScope]->getName()));

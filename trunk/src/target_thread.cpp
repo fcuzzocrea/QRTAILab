@@ -207,7 +207,21 @@ void TargetThread::printBlocksInfo(){
                                         for (int n = 0; n < Num_Scopes; n++) {
                                                 printf("Scope: %s\n", Scopes[n]->getName());
                                                 printf(" Number of traces...%d\n", Scopes[n]->getNTraces());
+                                                for(int j = 0; j < Scopes[n]->getNTraces(); j++) {
+                                                        printf("  %s\n", Scopes[n]->getTraceNames().at(j).toLocal8Bit().constData());
+                                                }
                                                 printf(" Sampling time...%f\n", Scopes[n]->getDt());
+                                                if (Scopes[n]->getDt() <= 0.) {
+                                                        printf("Fatal Error, Scope %s sampling time is equal to %f,\n", Scopes[n]->getName(),Scopes[n]->getDt());
+                                                        printf("while Rtai-lab needs a finite, positive sampling time\n");
+                                                        printf("This error often occurs when the sampling time is inherited\n");
+                                                        printf("from so-called time-continous simulink blocks\n");
+                                                        //abort_connection(Target_Port);
+                                                        rt_release_port(Target_Node, Target_Port);
+                                                        exit(1);
+
+                                                }
+
                                         }
 
 
@@ -217,37 +231,64 @@ void TargetThread::printBlocksInfo(){
                                                 printf(" Number of rows...%d\n", Logs[n]->getNRow());
                                                 printf(" Number of cols...%d\n", Logs[n]->getNCol());
                                                 printf(" Sampling time...%f\n", Logs[n]->getDt());
+                                                if (Logs[n]->getDt() <= 0.) {
+                                                        printf("Fatal Error, Log %s sampling time is equal to %f,\n", Logs[n]->getName(),Logs[n]->getDt());
+                                                        printf("while Rtai-lab needs a finite, positive sampling time\n");
+                                                        printf("This error often occurs when the sampling time is inherited\n");
+                                                        printf("from so-called time-continous simulink blocks\n");
+                                                        //abort_connection(Target_Port);
+                                                        rt_release_port(Target_Node, Target_Port);
+                                                        exit(1);
+                                                }
                                         }
-    // 					for (int n = 0; n < Num_Logs; n++) {
-// 						if (Logs[n]->getDt() <= 0.) {
-// 						  printf("Fatal Error, Log %s samplig time is equal to %f,\n", Logs[n]->getName(), Logs[n]->getDt());
-// 						  printf("while Rtai-lab needs a finite, positive sampling time\n");
-// 						  printf("This error often occurs when the sampling time is inherited\n");
-// 						  printf("from so-called time-continous simulink blocks\n");
-//
-// 						}
-//
-// 					}
+
                                 printf("Number of target real time automatic logs: %d\n", Num_ALogs);
                                         for (int n = 0; n < Num_ALogs; n++) {
                                                 printf("Log: %s\n", ALogs[n]->getName());
                                                 printf(" Number of rows...%d\n", ALogs[n]->getNRow());
                                                 printf(" Number of cols...%d\n", ALogs[n]->getNCol());
                                                 printf(" Sampling time...%f\n", ALogs[n]->getDt());
+                                                if (ALogs[n]->getDt() <= 0.) {
+                                                        printf("Fatal Error, ALog %s sampling time is equal to %f,\n", ALogs[n]->getName(),ALogs[n]->getDt());
+                                                        printf("while Rtai-lab needs a finite, positive sampling time\n");
+                                                        printf("This error often occurs when the sampling time is inherited\n");
+                                                        printf("from so-called time-continous simulink blocks\n");
+                                                        //abort_connection(Target_Port);
+                                                        rt_release_port(Target_Node, Target_Port);
+                                                        exit(1);
+                                                }
                                         }
                                 printf("Number of target real time leds: %d\n", Num_Leds);
                                         for (int n = 0; n < Num_Leds; n++) {
                                                 printf("Led: %s\n", Leds[n]->getName());
                                                 printf(" Number of leds...%d\n", Leds[n]->getNLeds());
                                                 printf(" Sampling time...%f\n", Leds[n]->getDt());
+                                                if (Leds[n]->getDt() <= 0.) {
+                                                        printf("Fatal Error, Led %s sampling time is equal to %f,\n", Leds[n]->getName(),Leds[n]->getDt());
+                                                        printf("while Rtai-lab needs a finite, positive sampling time\n");
+                                                        printf("This error often occurs when the sampling time is inherited\n");
+                                                        printf("from so-called time-continous simulink blocks\n");
+                                                        //abort_connection(Target_Port);
+                                                        rt_release_port(Target_Node, Target_Port);
+                                                        exit(1);
+                                                }
                                         }
                                   printf("Number of target real time meters: %d\n", Num_Meters);
                                         for (int n = 0; n < Num_Meters; n++) {
                                                 printf("Meter: %s\n", Meters[n]->getName());
                                                 printf(" Sampling time...%f\n", Meters[n]->getDt());
+                                                if (Meters[n]->getDt() <= 0.) {
+                                                        printf("Fatal Error, Meter %s sampling time is equal to %f,\n", Meters[n]->getName(),Meters[n]->getDt());
+                                                        printf("while Rtai-lab needs a finite, positive sampling time\n");
+                                                        printf("This error often occurs when the sampling time is inherited\n");
+                                                        printf("from so-called time-continous simulink blocks\n");
+                                                        //abort_connection(Target_Port);
+                                                        rt_release_port(Target_Node, Target_Port);
+                                                        exit(1);
+                                                }
                                         }
 
-                                                                        printf("Number of target real time synchronoscopes: %d\n", Num_Synchs);
+                                  printf("Number of target real time synchronoscopes: %d\n", Num_Synchs);
                                         for (int n = 0; n < Num_Synchs; n++) {
                                                 printf("Synchronoscope: %s\n", Synchs[n].name);
                                                 printf(" Sampling time...%f\n", Synchs[n].dt);
@@ -514,7 +555,7 @@ void TargetThread::run()
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &n, &n_leds, sizeof(int), sizeof(int));
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &n, &led_name, sizeof(int), sizeof(led_name));
                                         //strncpy(Leds[n]->name, led_name, MAX_NAMES_SIZE);
-                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &dt, sizeof(int), sizeof(float));
+                                        RT_rpcx(Target_Node, Target_Port, If_Task, &n, &dt, sizeof(int), sizeof(float   ));
                                         Leds[n] = new QRL_LedData(Num_Leds,dt,led_name);
                                 }
                                 RT_rpcx(Target_Node, Target_Port, If_Task, &req, &msg, sizeof(int), sizeof(int));

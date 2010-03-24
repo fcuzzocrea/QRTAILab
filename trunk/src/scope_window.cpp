@@ -174,7 +174,7 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QRL_ScopeData *scope,int ind)
 	//qwtPlot->axisScaleDiv(QwtPlot::xBottom)=new QwtScaleDiv(1,0);
        // qwtPlot->setAxisTitle(QwtPlot::yLeft, "Values");
        qwtPlot->setAxisScale(QwtPlot::yLeft, ymin, ymax,yStep);
-       if (Scope->isSaveScopeTime())
+       if (Scope->data2disk()->isSaveScopeTime())
 	   qwtPlot->enableAxis(QwtPlot::xBottom,true);
        else
 	  qwtPlot->enableAxis(QwtPlot::xBottom,false);

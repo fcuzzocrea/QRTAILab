@@ -24,55 +24,76 @@
    file for the classes QRL_ParametersManager
 */
 
-#ifndef _LOG_DATA_H
-#define _LOG_DATA_H 1
+#ifndef _SCOPE_DATA_H
+#define _SCOPE_DATA_H 1
 
 #include <QtGui> 
 
-#include "qrtailab.h"
-#include "data2disk.h"
+#include "qtplot_global.h"
 
-class QRL_LogData
+
+class QtplotData //: public QThread
 {
+ // Q_OBJECT
 public:
-  // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
-        QRL_LogData(int, int, float,char*);
-        ~QRL_LogData();
-        const char* getName(){return name.c_str();}
-	float getDt(){return dt;} 
-	int getNRow(){return nrow;}
-	int getNCol(){return ncol;}
-//    int get_points_counter(){return Saved_Points;}
-//    int getIsSaving(){return isSaving;}
-//    int start_saving();
-//    void startSaving(FILE* Save_File_Pointer,double Save_Time);
-//     FILE* save_file();
-//     void stop_saving();
-//      int n_points_to_save();
-//      void set_points_counter(int cnt);
-    int setLogRefreshRate(double rr);
-    double getLogRefreshRate();
+  QtplotData(int ntraces, float dt,QString, QStringList t_name);
+  ~QtplotData();
+  int getNTraces(){return ntraces;}
+//  void setNTraces(int t){ntraces=t;}
+  float getDt(){return dt;} 
+//  void setDt(float d){dt=d;}
+  bool getIsSaving(){return saving;}
+  int getSavedPoints(){return Saved_Points;}
+  QString getName(){return name;}
+
+  int setScopeDt(double);
+    double getScopeDt();
+    int setScopeRefreshRate(double rr);
+    double getScopeRefreshRate();
+    void setScopeValue(double v, int t);
+    void setScopeTime(double v);
+     QVector<double> getScopeTime();
+    QVector<double> getScopeValue(int t);
+    QVector< QVector<double> > getScopeValue();
+    bool dataAvailable();
+    int start_saving_scope();
+    void startSaving(FILE* Save_File_Pointer,double Save_Time);
+     FILE* getSaveFilePtr();
+     void stopSaving();
+      int n_points_to_save();
+    void set_points_counter(int cnt);
+
+    //char name[MAX_NAMES_SIZE];
+
+    void setSaveScopeTime(bool b){saveScopeTime=b;}
+    bool isSaveScopeTime(){return saveScopeTime;}
+    
     void setPlotting(bool b){plotting=b;}
     bool isPlotting(){return plotting;}
- QRL_Data2Disk* data2disk(){return d2d;}
-        void setLogValue(float v, int row, int col);
-        QVector< QVector<float> > getLogValue();
+    QStringList getTraceNames(){return traceNames;}
+// 	int ntraces;
+// protected:
+//    void run();
 private:
-        const int nrow;
-        const int ncol;
-        const float dt;
-            std::string name;
-        double logRefreshRate;
-        QVector< QVector <float> >  LogValues;
-
-	int isSaving;
-   	FILE* Save_File_Pointer;
-   	double Save_Time;
-	int Saved_Points;
-    double scopeRefreshRate;
-   bool plotting;
+    bool saveScopeTime;
+    const int ntraces;
+    const  float dt;
+    QString name;
+    QStringList traceNames;
+    bool saving;
+    bool plotting;
     int visible;
-        QRL_Data2Disk* d2d;
+    FILE* Save_File_Pointer;
+    double Save_Time;
+    int Saved_Points;
+    double scopeRefreshRate;
+//     QRL_ScopeTrace **Traces;
+    QVector <int>  ScopeIndex;
+    QVector< QVector <double> >  ScopeValues;
+    QVector <double> ScopeTime;
+    QVector <int>  ScopeIndexOut;
+    QVector< QVector <double> >  ScopeValuesOut;
+    double scopeDt;
 };
 
 

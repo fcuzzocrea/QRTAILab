@@ -33,7 +33,8 @@ SOURCES += ../src/main.cpp \
     ../src/led_data.cpp \
     ../src/alog_data.cpp \
     ../src/log_matrixview.cpp \
-    ../src/rtai_scope.cpp
+    ../src/rtai_scope.cpp \
+    ../src/data2disk.cpp
 HEADERS += ../src/targets_manager.h \
     ../src/target_thread.h \
     ../src/scope_window.h \
@@ -57,7 +58,8 @@ HEADERS += ../src/targets_manager.h \
     ../src/led_data.h \
     ../src/alog_data.h \
     ../src/log_matrixview.h \
-    ../src/rtai_scope.h
+    ../src/rtai_scope.h \
+    ../src/data2disk.h
 FORMS += ../src/qrl_leds_manager.ui \
     ../src/qrl_targets_manager.ui \
     ../src/qrl_scopes_manager.ui \

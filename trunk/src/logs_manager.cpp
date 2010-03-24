@@ -146,7 +146,7 @@ void  QRL_LogsManager::setLogName(int i,QString name){
 }
 void QRL_LogsManager::refresh()
 {
-  if (Logs[currentLog]->getIsSaving()==0){
+  if (Logs[currentLog]->data2disk()->getIsSaving()==0){
       savePushButton->setEnabled(true);
 	stopPushButton->setEnabled(false);
        saveProgressBar->setEnabled(false);
@@ -158,8 +158,8 @@ void QRL_LogsManager::refresh()
      savePushButton->setEnabled(false);
       stopPushButton->setEnabled(true);
     saveProgressBar->setEnabled(true);
-    saveProgressBar->setMaximum(Logs[currentLog]->n_points_to_save());
-     saveProgressBar->setValue(Logs[currentLog]->get_points_counter());
+    saveProgressBar->setMaximum(Logs[currentLog]->data2disk()->n_points_to_save());
+     saveProgressBar->setValue(Logs[currentLog]->data2disk()->getSavedPoints());
   }
 
   for (int n=0; n<Num_Logs; ++n){
@@ -304,7 +304,7 @@ void QRL_LogsManager::startSaving()
 {
 	 FILE* Save_File_Pointer;
 	double Save_Time=timeCounter->value();
-	if( Logs[currentLog]->start_saving()==0){
+        if( Logs[currentLog]->data2disk()->getIsSaving()==0){
 
                 QString File_Name=dirLineEdit->text();
                 if (File_Name.isEmpty())
@@ -323,15 +323,16 @@ void QRL_LogsManager::startSaving()
 		 
 		  
 		
-		if ((Save_File_Pointer = fopen((File_Name.toLocal8Bit()).data(), "a+")) == NULL) {
+                //if ((Save_File_Pointer = fopen((File_Name.toLocal8Bit()).data(), "a+")) == NULL) {
+                  if (!Logs[currentLog]->data2disk()->startSaving(File_Name.toLocal8Bit().data(),Save_Time)) {
 			printf("Error in opening file %s",File_Name.toLocal8Bit().data() );
 			QMessageBox::critical(this, tr("QMessageBox::critical()"),
                                      tr("Error in opening file!"),
                                      QMessageBox::Abort);
-		} else {
+                } //else {
 			//savePushButton->setEnabled(false);
-			Logs[currentLog]->startSaving(Save_File_Pointer,Save_Time);
-		}
+                        //Logs[currentLog]->startSaving(Save_File_Pointer,Save_Time);
+                //}
 
 		
 		//ScopeWindows[currentScope]->startSaving(fileLineEdit->text());
@@ -346,8 +347,8 @@ void QRL_LogsManager::startSaving()
 
 void QRL_LogsManager::stopSaving()
 {
-   if (Logs[currentLog]->getIsSaving()==1){
-	  Logs[currentLog]->stop_saving();
+   if (Logs[currentLog]->data2disk()->getIsSaving()==1){
+          Logs[currentLog]->data2disk()->stopSaving();
   }
 }
 
@@ -364,7 +365,7 @@ void QRL_LogsManager::showLogOptions(QListWidgetItem * item )
 void QRL_LogsManager::showLogOptions( int index ){
 
 	currentLog=index;
-	if(Logs[currentLog]->start_saving()==0){
+        if(Logs[currentLog]->data2disk()->getIsSaving()==0){
 		savePushButton->setEnabled(true);
 	}
 	tabWidget->setTabText(0,tr(Logs[currentLog]->getName()));

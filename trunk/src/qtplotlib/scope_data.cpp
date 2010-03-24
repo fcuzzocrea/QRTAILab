@@ -28,13 +28,13 @@
 
 #include "scope_data.h"
 
-QRL_ScopeData::QRL_ScopeData(int ntr, float d,char *c_name, QStringList &t_name)
-        :ntraces(ntr),dt(d),traceNames(t_name)
+QtplotData::QtplotData(int ntr, float d,QString c_name, QStringList t_name)
+        :ntraces(ntr),dt(d),name(c_name),traceNames(t_name)
 {
 		visible = false;
-		isSaving=0;
+                saving = false;
 		plotting=true;
-		Save_File_Pointer=NULL;
+                Save_File_Pointer=NULL;
                 saveScopeTime=false;
                 scopeRefreshRate=30.;
                 ScopeValues.resize(ntraces);
@@ -45,15 +45,13 @@ QRL_ScopeData::QRL_ScopeData(int ntr, float d,char *c_name, QStringList &t_name)
                         ScopeIndex[t]=0;
                 }
                 scopeDt=1./100.;
-                name=std::string(c_name);
-                d2d = new QRL_Data2Disk(dt);
+                //name=std::string(c_name);
 }
 
 
- QRL_ScopeData::~QRL_ScopeData()
+ QtplotData::~QtplotData()
  {
       //wait();
-     delete d2d;
  }
 
 // void QRL_ScopeData::run(){
@@ -63,7 +61,7 @@ QRL_ScopeData::QRL_ScopeData(int ntr, float d,char *c_name, QStringList &t_name)
 
 
 
-    int QRL_ScopeData::setScopeDt(double d)
+    int QtplotData::setScopeDt(double d)
 {
 //int ret=-1;
 
@@ -75,7 +73,7 @@ return 1;
 }
 
 
-double QRL_ScopeData::getScopeDt()
+double QtplotData::getScopeDt()
 {
 double ret=-1;
 
@@ -83,7 +81,7 @@ double ret=-1;
 return ret;
 }
 
-int QRL_ScopeData::setScopeRefreshRate(double rr)
+int QtplotData::setScopeRefreshRate(double rr)
 {
 int ret=-1;
 if (rr>0. && rr<50.){
@@ -95,7 +93,7 @@ if (rr>0. && rr<50.){
 return ret;
 }
 
-double QRL_ScopeData::getScopeRefreshRate()
+double QtplotData::getScopeRefreshRate()
 {
 	double ret=-1;
 
@@ -104,13 +102,13 @@ double QRL_ScopeData::getScopeRefreshRate()
 	return ret;
 }
 
-void QRL_ScopeData::setScopeTime(double v){
+void QtplotData::setScopeTime(double v){
       if (ScopeIndex[0]<MAX_SCOPE_DATA){
 	ScopeTime[ScopeIndex[0]]=v;
       }
 }
 
- QVector<double> QRL_ScopeData::getScopeTime(){
+ QVector<double> QtplotData::getScopeTime(){
 	
 // QVector<float> ret;
 // mutex.lock();
@@ -128,7 +126,7 @@ void QRL_ScopeData::setScopeTime(double v){
 }
 
 
- void QRL_ScopeData::setScopeValue(double v, int t){
+ void QtplotData::setScopeValue(double v, int t){
 
 if ( ntraces>0){ 
 // mutex.lock();
@@ -164,7 +162,7 @@ if (t<ScopeValues.size()){
 // return ret;
 // } 
 
- QVector< QVector<double> > QRL_ScopeData::getScopeValue(){
+ QVector< QVector<double> > QtplotData::getScopeValue(){
 	
 // printf("getScopeindex %d\n",ScopeIndex[0]);
 QVector< QVector<double> > ret;
@@ -200,43 +198,42 @@ ScopeIndex[0]=0;
 // 	//ret=ScopeValues[n];
 // return ScopeValues[n];
 // } 
- bool QRL_ScopeData::dataAvailable() {
+ bool QtplotData::dataAvailable() {
 
     return ScopeValues.size()>0;
  }
 
 
-//int  QRL_ScopeData::start_saving_scope() {return isSaving ;}
-//
-//void  QRL_ScopeData::startSaving(FILE* save_file_pointer,double save_time){
-//	Save_File_Pointer=save_file_pointer;
-//	Save_Time=save_time;
-//	isSaving=1;
-//}
-//FILE*  QRL_ScopeData::save_file() {
-//
-//	return Save_File_Pointer;
-//
-//}
-//     void  QRL_ScopeData::stop_saving(){
-//	isSaving=0;
-//	fclose(Save_File_Pointer);
-//	Save_File_Pointer=NULL;
-//	//emit stopSaving(index);
-//
-//}
-//      int  QRL_ScopeData::n_points_to_save(){
-//	int n_points;
-//
-//	n_points = (int)(Save_Time/dt);
-//	if (n_points < 0) return 0;
-//	return n_points;
-//
-//}
-//
-//  void  QRL_ScopeData::set_points_counter_scope(int cnt){
-//
-//  Saved_Points=cnt;
-//
-//}
+
+ void  QtplotData::startSaving(FILE* save_file_pointer,double save_time){
+         Save_File_Pointer=save_file_pointer;
+         Save_Time=save_time;
+         saving=true;
+ }
+ FILE*  QtplotData::getSaveFilePtr() {
+
+         return Save_File_Pointer;
+
+ }
+      void  QtplotData::stopSaving(){
+         saving=false;
+         fclose(Save_File_Pointer);
+         Save_File_Pointer=NULL;
+         //emit stopSaving(index);
+
+ }
+       int  QtplotData::n_points_to_save(){
+         int n_points;
+
+         n_points = (int)(Save_Time/dt);
+         if (n_points < 0) return 0;
+         return n_points;
+
+ }
+
+   void  QtplotData::set_points_counter(int cnt){
+
+   Saved_Points=cnt;
+
+ }
 
