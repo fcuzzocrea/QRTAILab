@@ -323,10 +323,6 @@ int	    QRtaiLabCore::getLedDt(int n){
 
 
 
-
-
-
-
 int QRtaiLabCore::getLogNumber()
 {
 	 int Num_Logs= targetthread->getLogNumber();

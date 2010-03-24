@@ -154,7 +154,7 @@ static void *rt_get_scope_data(void *arg)
 		   if (n==1)
 			js=0;
 		   while(n<=MsgData){
-			if (scope->isSaveScopeTime()){
+                        if (scope->data2disk()->isSaveScopeTime()){
 // 			    printf("Time %f\n",MsgBuf[js]);
 			    scope->setScopeTime(MsgBuf[js++]);
 			    
@@ -204,18 +204,22 @@ static void *rt_get_scope_data(void *arg)
 
 
 
-		if (scope->start_saving_scope()) {
+                if (scope->data2disk()->getIsSaving()) {
 			jl = 0;
 			//printf("%d from %d saved\n",save_idx,targetThread->n_points_to_save(index));
 			for (n = 0; n < MsgData; n++) {
 				for (nn = 0; nn < ntraces + 1; nn++) {
-					fprintf(scope->save_file(), "%1.10f ", MsgBuf[jl++]);
+                                        scope->data2disk()->writeNextData(MsgBuf[jl++],10);
+                                        //fprintf(scope->save_file(), "%1.10f ", MsgBuf[jl++]);
 				}
-				fprintf(scope->save_file(), "\n");
+                                scope->data2disk()->newLine();
+                                //fprintf(scope->save_file(), "\n");
 				save_idx++;
-				scope->set_points_counter_scope(save_idx);
-				if (save_idx == scope->n_points_to_save()) {
-					scope->stop_saving();
+                                scope->data2disk()->set_points_counter(save_idx);
+                                //scope->set_points_counter_scope(save_idx);
+                                if (save_idx == scope->data2disk()->n_points_to_save()) {
+                                        //scope->stop_saving();
+                                        scope->data2disk()->stopSaving();
 					save_idx = 0;
 					break;
 				}
@@ -689,21 +693,23 @@ static void *rt_get_log_data(void *arg)
                 }
 
 
-		if (log->start_saving()) {
+                if (log->data2disk()->getIsSaving()) {
 			for (n = 0; n < MsgData; n++) {
 				++DataCnt;
 //				fprintf(targetThread->save_file_log(index), "Data # %d\n", ++DataCnt);
 				for (i = 0; i < log->getNRow(); i++) {
 					j = n*log->getNRow()*log->getNCol() + i;
 					for (k = 0; k < log->getNCol(); k++) {
-						fprintf(log->save_file(), "%1.5f ", MsgBuf[j]);
+                                                //fprintf(log->save_file(), "%1.5f ", MsgBuf[j]);
+                                                log->data2disk()->writeNextData(MsgBuf[j],5);
 						j += log->getNRow();
 					}
-					fprintf(log->save_file(), "\n");
+                                        log->data2disk()->newLine();
+                                        //fprintf(log->save_file(), "\n");
 				}
-				log->set_points_counter(DataCnt);
-				if (DataCnt == log->n_points_to_save()) {
-					log->stop_saving();
+                                log->data2disk()->set_points_counter(DataCnt);
+                                if (DataCnt == log->data2disk()->n_points_to_save()) {
+                                        log->data2disk()->stopSaving();
 					DataCnt = 0;
 					break;
 				}

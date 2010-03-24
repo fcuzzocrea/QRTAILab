@@ -30,6 +30,7 @@
 #include <QtGui> 
 
 #include "qrtailab.h"
+#include "data2disk.h"
 // #include "scope_trace.h"
 
 class QRL_ScopeData //: public QThread
@@ -42,8 +43,8 @@ public:
 //  void setNTraces(int t){ntraces=t;}
   float getDt(){return dt;} 
 //  void setDt(float d){dt=d;}
-  int getIsSaving(){return isSaving;}
-  int getSavedPoints(){return Saved_Points;}
+//  int getIsSaving(){return isSaving;}
+//  int getSavedPoints(){return Saved_Points;}
   const char* getName(){return name.c_str();}
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
   int setScopeDt(double);
@@ -56,17 +57,18 @@ public:
     QVector<double> getScopeValue(int t);
     QVector< QVector<double> > getScopeValue();
     bool dataAvailable();
-    int start_saving_scope();
-    void startSaving(FILE* Save_File_Pointer,double Save_Time);
-     FILE* save_file();
-     void stop_saving();
-      int n_points_to_save();
-    void set_points_counter_scope(int cnt);
+       QRL_Data2Disk* data2disk(){return d2d;}
+//    int start_saving_scope();
+//    void startSaving(FILE* Save_File_Pointer,double Save_Time);
+//     FILE* save_file();
+//     void stop_saving();
+//      int n_points_to_save();
+//    void set_points_counter_scope(int cnt);
 
     //char name[MAX_NAMES_SIZE];
 
-    void setSaveScopeTime(bool b){saveScopeTime=b;}
-    bool isSaveScopeTime(){return saveScopeTime;}
+ //   void setSaveScopeTime(bool b){saveScopeTime=b;}
+ //   bool isSaveScopeTime(){return saveScopeTime;}
     
     void setPlotting(bool b){plotting=b;}
     bool isPlotting(){return plotting;}
@@ -94,8 +96,7 @@ private:
     QVector <int>  ScopeIndexOut;
     QVector< QVector <double> >  ScopeValuesOut;
     double scopeDt;
+    QRL_Data2Disk* d2d;
 };
-
-
 
 #endif

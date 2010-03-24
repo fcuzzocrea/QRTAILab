@@ -43,11 +43,12 @@ QRL_LogData::QRL_LogData(int r,int c,float d,char* c_name)
                         LogValues[t].resize(this->getNCol());
                 }
                 name=std::string(c_name);
+                d2d = new QRL_Data2Disk(dt);
 }
 
 QRL_LogData::~QRL_LogData()
 {
-
+    delete d2d;
 }
 
 
@@ -82,39 +83,39 @@ double QRL_LogData::getLogRefreshRate()
 
         return ret;
 }
-int  QRL_LogData::start_saving() {return isSaving ;}
-
-void  QRL_LogData::startSaving(FILE* fp,double save_time){ 
-	Save_File_Pointer=fp;
-	Save_Time=save_time;
-	isSaving=1;
-}
-FILE*  QRL_LogData::save_file() {
-
-	return Save_File_Pointer;
-
-}
-     void  QRL_LogData::stop_saving(){
-	isSaving=0;
-	fclose(Save_File_Pointer);
-	Save_File_Pointer=NULL;
-	//emit stopSaving(index);
-
-}
-
-      int  QRL_LogData::n_points_to_save(){
-	int n_points;
-
-	n_points = (int)(Save_Time/dt);
-	if (n_points < 0) return 0;
-	return n_points;
-
-}
-
-
-
-  void  QRL_LogData::set_points_counter(int cnt){
-
- Saved_Points=cnt;
-
-}
+//int  QRL_LogData::start_saving() {return isSaving ;}
+//
+//void  QRL_LogData::startSaving(FILE* fp,double save_time){
+//	Save_File_Pointer=fp;
+//	Save_Time=save_time;
+//	isSaving=1;
+//}
+//FILE*  QRL_LogData::save_file() {
+//
+//	return Save_File_Pointer;
+//
+//}
+//     void  QRL_LogData::stop_saving(){
+//	isSaving=0;
+//	fclose(Save_File_Pointer);
+//	Save_File_Pointer=NULL;
+//	//emit stopSaving(index);
+//
+//}
+//
+//      int  QRL_LogData::n_points_to_save(){
+//	int n_points;
+//
+//	n_points = (int)(Save_Time/dt);
+//	if (n_points < 0) return 0;
+//	return n_points;
+//
+//}
+//
+//
+//
+//  void  QRL_LogData::set_points_counter(int cnt){
+//
+// Saved_Points=cnt;
+//
+//}
