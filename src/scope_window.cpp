@@ -204,11 +204,11 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QRL_ScopeData *scope,int ind)
        Ncurve=Scope->getNTraces();
 //if (Ncurve>0){
        QPen pen;
-	Traces = new QRL_ScopeTrace*[Ncurve];
+        Traces = new QPL_ScopeTrace*[Ncurve];
 
 
        for (unsigned int j=0;j<Ncurve;j++){
-		Traces[j] = new QRL_ScopeTrace(qwtPlot, MaxDataPoints, j);
+                Traces[j] = new QPL_ScopeTrace(qwtPlot, MaxDataPoints, j);
 		Traces[j]->changeNDataSoll(NDataSoll,dt);
 		Traces[j]->setGridColor(gridColor);
                 Traces[j]->setName(Scope->getTraceNames().at(j));
@@ -589,7 +589,7 @@ NDistance=(int)(dt*(1./Scope->getDt()));  //doesnt work
 		Traces[j]->changeNDataSoll(NDataSoll,dt);
 		int k=0;
 		for (int nn=0;nn<j;nn++)
-			if (Traces[nn]->isLabelVisible(QRL_ScopeTrace::lt_trace))
+                        if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
 				k++;
 		  Traces[j]->setLabelsXValue(0.+k*xmax/5.);
 	}
@@ -642,18 +642,18 @@ void QRL_ScopeWindow::setTraceLabel(bool b,int trace){
 		return;
 
 	if (b) {
-		Traces[trace]->showLabel(QRL_ScopeTrace::lt_trace);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_trace);
 		for (unsigned int j=0;j<Ncurve;j++){
 			int k=0;
                         for (unsigned int nn=0;nn<j;nn++)
-				if (Traces[nn]->isLabelVisible(QRL_ScopeTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
 					k++;
 			Traces[j]->setLabelsXValue(0.+k*xmax/5.);
 		}
 
 	
 	}else {
-		Traces[trace]->hideLabel(QRL_ScopeTrace::lt_trace);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_trace);
 		setUnitLabel(false,trace);
 		setAverageLabel(false,trace);
 		setMinLabel(false,trace);
@@ -674,17 +674,17 @@ void QRL_ScopeWindow::setUnitLabel(bool b,int trace){
 		for (unsigned int j=0;j<Ncurve;j++){
 			int k=0;
                         for (unsigned int nn=0;nn<j;nn++)
-				if (Traces[nn]->isLabelVisible(QRL_ScopeTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
 					k++;
 			Traces[j]->setLabelsXValue(0.+k*xmax/5.);
 		}
-		Traces[trace]->showLabel(QRL_ScopeTrace::lt_unit);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_unit);
 
 	
 	}else{
 		if (getUnitLabel(trace)==false)
 			return;
-		Traces[trace]->hideLabel(QRL_ScopeTrace::lt_unit);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_unit);
 		setAverageLabel(getAverageLabel(trace),trace);
 		setMinLabel(getMinLabel(trace),trace);
 		setMaxLabel(getMaxLabel(trace),trace);
@@ -705,15 +705,15 @@ void QRL_ScopeWindow::setAverageLabel(bool b,int trace){
 		for (unsigned int j=0;j<Ncurve;j++){
 			int k=0;
                         for (unsigned int nn=0;nn<j;nn++)
-				if (Traces[nn]->isLabelVisible(QRL_ScopeTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
 					k++;
 			Traces[j]->setLabelsXValue(0.+k*xmax/5.);
 		}
-		Traces[trace]->showLabel(QRL_ScopeTrace::lt_average);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_average);
 	}else{
 		if (getAverageLabel(trace)==false)
 			return;
-		Traces[trace]->hideLabel(QRL_ScopeTrace::lt_average);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_average);
 		setUnitLabel(getUnitLabel(trace),trace);
 		setMinLabel(getMinLabel(trace),trace);
 		setMaxLabel(getMaxLabel(trace),trace);
@@ -731,15 +731,15 @@ void QRL_ScopeWindow::setMinLabel(bool b,int trace){
 		for (unsigned int j=0;j<Ncurve;j++){
 			int k=0;
                         for (unsigned int nn=0;nn<j;nn++)
-				if (Traces[nn]->isLabelVisible(QRL_ScopeTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
 					k++;
 			Traces[j]->setLabelsXValue(0.+k*xmax/5.);
 		}
-		Traces[trace]->showLabel(QRL_ScopeTrace::lt_min);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_min);
 	}else{
 		if (getMinLabel(trace)==false)
 			return;
-		Traces[trace]->hideLabel(QRL_ScopeTrace::lt_min);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_min);
 		setUnitLabel(getUnitLabel(trace),trace);
 		setAverageLabel(getAverageLabel(trace),trace);
 		setMaxLabel(getMaxLabel(trace),trace);
@@ -756,15 +756,15 @@ void QRL_ScopeWindow::setMaxLabel(bool b,int trace){
 		for (unsigned int j=0;j<Ncurve;j++){
 			int k=0;
                         for (unsigned int nn=0;nn<j;nn++)
-				if (Traces[nn]->isLabelVisible(QRL_ScopeTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
 					k++;
 			Traces[j]->setLabelsXValue(0.+k*xmax/5.);
 		}
-		Traces[trace]->showLabel(QRL_ScopeTrace::lt_max);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_max);
 	}else{
 		if (getMaxLabel(trace)==false)
 			return;
-		Traces[trace]->hideLabel(QRL_ScopeTrace::lt_max);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_max);
 		setUnitLabel(getUnitLabel(trace),trace);
 		setAverageLabel(getAverageLabel(trace),trace);
 		setMinLabel(getMinLabel(trace),trace);
@@ -782,15 +782,15 @@ void QRL_ScopeWindow::setPPLabel(bool b,int trace){
 		for (unsigned int j=0;j<Ncurve;j++){
 			int k=0;
 			for (int nn=0;nn<j;nn++)
-				if (Traces[nn]->isLabelVisible(QRL_ScopeTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
 					k++;
 			Traces[j]->setLabelsXValue(0.+k*xmax/5.);
 		}
-		Traces[trace]->showLabel(QRL_ScopeTrace::lt_pp);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_pp);
 	}else{
 		if (getPPLabel(trace)==false)
 			return;
-		Traces[trace]->hideLabel(QRL_ScopeTrace::lt_pp);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_pp);
 		setUnitLabel(getUnitLabel(trace),trace);
 		setAverageLabel(getAverageLabel(trace),trace);
 		setMaxLabel(getMaxLabel(trace),trace);
@@ -807,15 +807,15 @@ void QRL_ScopeWindow::setRMSLabel(bool b,int trace){
 		for (unsigned int j=0;j<Ncurve;j++){
 			int k=0;
                         for (unsigned int nn=0;nn<j;nn++)
-				if (Traces[nn]->isLabelVisible(QRL_ScopeTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
 					k++;
 			Traces[j]->setLabelsXValue(0.+k*xmax/5.);
 		}
-		Traces[trace]->showLabel(QRL_ScopeTrace::lt_rms);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_rms);
 	}else{
 		if (getRMSLabel(trace)==false)
 			return;
-		Traces[trace]->hideLabel(QRL_ScopeTrace::lt_rms);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_rms);
 		setUnitLabel(getUnitLabel(trace),trace);
 		setAverageLabel(getAverageLabel(trace),trace);
 		setMaxLabel(getMaxLabel(trace),trace);

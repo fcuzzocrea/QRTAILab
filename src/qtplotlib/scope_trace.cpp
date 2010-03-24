@@ -28,7 +28,7 @@
 #include "scope_trace.h"
 #include <stdlib.h>
 
-QtplotTrace::QtplotTrace(QwtPlot *parent, unsigned int maxdatapoints, int j){
+QPL_ScopeTrace::QPL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int j){
 		qwtPlot=parent;
 		MaxDataPoints=maxdatapoints;
 		index = j;
@@ -208,7 +208,7 @@ QtplotTrace::QtplotTrace(QwtPlot *parent, unsigned int maxdatapoints, int j){
 
 }
 
-QtplotTrace::~QtplotTrace(){
+QPL_ScopeTrace::~QPL_ScopeTrace(){
 //Plotting_Scope_Data_Thread->stopThread();
 //Plotting_Scope_Data_Thread->wait();
 //delete Plotting_Scope_Data_Thread;
@@ -220,7 +220,7 @@ QtplotTrace::~QtplotTrace(){
 }
 
 
-void QtplotTrace::refresh()
+void QPL_ScopeTrace::refresh()
 {
 
 
@@ -303,7 +303,7 @@ if ( isLabelVisible(lt_rms)){
 
 
 
-   void QtplotTrace::changeNDataSoll(int ds, double dt)
+   void QPL_ScopeTrace::changeNDataSoll(int ds, double dt)
 {
 	NDataSoll=(int)ds;
 
@@ -318,7 +318,7 @@ if ( isLabelVisible(lt_rms)){
 
 
 
-void QtplotTrace::show(bool v){
+void QPL_ScopeTrace::show(bool v){
 
 	visible=v;
 	if (!visible) {
@@ -326,12 +326,12 @@ void QtplotTrace::show(bool v){
                 sym.setStyle(QwtSymbol::NoSymbol); cData->setSymbol(sym);
 
 	}else{	
-		cData->setStyle(QwtPlotCurve::Lines);
+                cData->setStyle(oldStyle);
                 setSymbolStyle(oldSymbol);
 	}
 }
 
-void QtplotTrace::setColor(const QColor& c)
+void QPL_ScopeTrace::setColor(const QColor& c)
 {
 		QPen pen;
 		pen.setBrush(c);
@@ -345,7 +345,7 @@ void QtplotTrace::setColor(const QColor& c)
 		traceLabel.setLabel(ttext);
 }
 
-void QtplotTrace::setWidth(int traceWidth)
+void QPL_ScopeTrace::setWidth(int traceWidth)
 {
 		QPen pen;
 		pen.setBrush(brush);
@@ -354,12 +354,12 @@ void QtplotTrace::setWidth(int traceWidth)
 		cData->setPen(pen);
 }
 
-int  QtplotTrace::getWidth()
+int  QPL_ScopeTrace::getWidth()
 {
 		return cData->pen().width();
 }
 
-   void QtplotTrace::setOffset(double o)
+   void QPL_ScopeTrace::setOffset(double o)
 {
 		//QRL_ScopeTrace[trace].offset=o;
    		 for (unsigned int i = 0; i< NDataSoll; i++)
@@ -374,12 +374,12 @@ int  QtplotTrace::getWidth()
 
 }
 
-double  QtplotTrace::getOffset()
+double  QPL_ScopeTrace::getOffset()
 {
 		return offset;
 }
 
-double QtplotTrace::getAverage()
+double QPL_ScopeTrace::getAverage()
 {
 average=0.;
 	for (int k=0;k<NDataSoll;k++)
@@ -390,7 +390,7 @@ return average;
 
 }
 
-double QtplotTrace::getPP()
+double QPL_ScopeTrace::getPP()
 {
     min=(d_y[0]-offset)*dy;
         max=(d_y[0]-offset)*dy;
@@ -407,7 +407,7 @@ return PP;
 
 
 }
-   void QtplotTrace::setDy(double d){
+   void QPL_ScopeTrace::setDy(double d){
 
    		 for (unsigned int i = 0; i< NDataSoll; i++)
   		  {
@@ -420,14 +420,14 @@ return PP;
 
 }
 
-double  QtplotTrace::getDy()
+double  QPL_ScopeTrace::getDy()
 {
 		return dy;
 }
 
 
 
-   void QtplotTrace::showLabel(labelTypes lt){
+   void QPL_ScopeTrace::showLabel(labelTypes lt){
 
   switch(lt){
     case lt_trace:traceLabel.show();
@@ -472,7 +472,7 @@ double  QtplotTrace::getDy()
 
 
 
-   void QtplotTrace::hideLabel(labelTypes lt){
+   void QPL_ScopeTrace::hideLabel(labelTypes lt){
 
 
 
@@ -509,7 +509,7 @@ double  QtplotTrace::getDy()
 
 
 }
-   bool QtplotTrace::isLabelVisible(labelTypes lt){
+   bool QPL_ScopeTrace::isLabelVisible(labelTypes lt){
 bool isvisible=false;
   switch(lt){
     case lt_trace:isvisible=traceLabel.isVisible();
@@ -539,7 +539,7 @@ return isvisible;
 
 
 }
-   void QtplotTrace::setLabelVisible(labelTypes lt, bool setvisible){
+   void QPL_ScopeTrace::setLabelVisible(labelTypes lt, bool setvisible){
   switch(lt){
     case lt_trace:
 		  traceLabel.setVisible(setvisible);
@@ -574,7 +574,7 @@ return isvisible;
 
 
 
-  void QtplotTrace::setLabelsXValue(double x){
+  void QPL_ScopeTrace::setLabelsXValue(double x){
 
 		traceLabel.setXValue(x);
 		unitLabel.setXValue(x);
@@ -586,7 +586,7 @@ return isvisible;
 
 }
 
-void QtplotTrace::setZeroAxis(bool b){
+void QPL_ScopeTrace::setZeroAxis(bool b){
 
 if (b)
 zeroAxis.show();
@@ -602,7 +602,7 @@ zeroAxis.hide();
 
 
 
-void QtplotTrace::setName(const QString &text){
+void QPL_ScopeTrace::setName(const QString &text){
 
 	
 	traceName=QString(text);
@@ -615,7 +615,7 @@ void QtplotTrace::setName(const QString &text){
 }
 
 
-   void QtplotTrace::setValue(int index, double v){
+   void QPL_ScopeTrace::setValue(int index, double v){
    
    
    d_y[index]=(v)/getDy()+getOffset();
@@ -623,7 +623,7 @@ void QtplotTrace::setName(const QString &text){
    
    }
 
-   void QtplotTrace::moveDataToRight(int time){
+   void QPL_ScopeTrace::moveDataToRight(int time){
    
    
    		for (unsigned int i = NDataSoll - 1; i > time; i-- ){
@@ -632,7 +632,7 @@ void QtplotTrace::setName(const QString &text){
    
    
    }
-   void QtplotTrace::moveDataToLeft(int time){
+   void QPL_ScopeTrace::moveDataToLeft(int time){
    
    		for (unsigned int i = 0; i < NDataSoll-time-1; i++ ){
 		if ((i+time+1)<NDataSoll)
@@ -640,7 +640,7 @@ void QtplotTrace::setName(const QString &text){
 		}
    }
 
-QDataStream& operator<<(QDataStream &out, const QtplotTrace *d){
+QDataStream& operator<<(QDataStream &out, const QPL_ScopeTrace *d){
         qint32 a;
 		out << d->traceName;
 		out << d->zeroAxis.isVisible();
@@ -669,7 +669,7 @@ QDataStream& operator<<(QDataStream &out, const QtplotTrace *d){
 }
 
 
-QDataStream& operator>>(QDataStream &in, QtplotTrace(*d)){
+QDataStream& operator>>(QDataStream &in, QPL_ScopeTrace(*d)){
 	QSize s;QPoint p;bool b; QColor c; qint32 a;QFont f; double dd;
 	QString str; 
 

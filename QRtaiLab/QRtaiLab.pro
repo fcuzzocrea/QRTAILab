@@ -10,11 +10,11 @@ CONFIG += QwtPlot \
 MOC_DIR = moc
 OBJECTS_DIR = obj
 UI_DIR = ui
+INCLUDEPATH += ../src/qtplotlib/
 SOURCES += ../src/main.cpp \
     ../src/target_thread.cpp \
     ../src/targets_manager.cpp \
     ../src/scope_window.cpp \
-    ../src/scope_trace.cpp \
     ../src/scopes_manager.cpp \
     ../src/scope_data.cpp \
     ../src/qrtailab_listener.cpp \
@@ -34,11 +34,11 @@ SOURCES += ../src/main.cpp \
     ../src/alog_data.cpp \
     ../src/log_matrixview.cpp \
     ../src/rtai_scope.cpp \
-    ../src/data2disk.cpp
+    ../src/data2disk.cpp \
+    ../src/qtplotlib/scope_trace.cpp
 HEADERS += ../src/targets_manager.h \
     ../src/target_thread.h \
     ../src/scope_window.h \
-    ../src/scope_trace.h \
     ../src/scopes_manager.h \
     ../src/scope_data.h \
     ../src/qrtailab_listener.h \
@@ -59,7 +59,8 @@ HEADERS += ../src/targets_manager.h \
     ../src/alog_data.h \
     ../src/log_matrixview.h \
     ../src/rtai_scope.h \
-    ../src/data2disk.h
+    ../src/data2disk.h \
+    ../src/qtplotlib/scope_trace.h
 FORMS += ../src/qrl_leds_manager.ui \
     ../src/qrl_targets_manager.ui \
     ../src/qrl_scopes_manager.ui \
@@ -67,5 +68,4 @@ FORMS += ../src/qrl_leds_manager.ui \
     ../src/qrl_meters_manager.ui \
     ../src/qrl_main_window.ui \
     ../src/qrl_logs_manager.ui
-OTHER_FILES += 
 RESOURCES += ../src/qrtailab.qrc

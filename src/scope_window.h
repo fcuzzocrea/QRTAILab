@@ -41,9 +41,10 @@
 #include <qwt_scale_widget.h>
 #include <qwt_legend.h>
 #include <qwt_scale_draw.h>
+#include  <qwt_plot_marker.h>
 #include <qwt_math.h>
 #include "qrtailab.h"
-#include "scope_trace.h"
+#include <scope_trace.h>
 #include "scope_data.h"
 
 // class QRL_ScopeWindow;
@@ -104,7 +105,7 @@ public:
    QColor getGridColor(){return gridColor;}
    void setBgColor(QColor);
    QColor getBgColor(){return bgColor;}
-   QRL_ScopeTrace* trace(int trace){if (trace<Scope->getNTraces()) return Traces[trace]; else return NULL;}
+   QPL_ScopeTrace* trace(int trace){if (trace<Scope->getNTraces()) return Traces[trace]; else return NULL;}
    void setSaveTime(double t) {saveTime=t;}
    double getSaveTime(){return saveTime;}
    void setFileName(QString str) {fileName=str;}
@@ -131,13 +132,13 @@ public:
    void setMaxLabel(bool b, int);
    void setPPLabel(bool b, int);
    void setRMSLabel(bool b, int);
- bool getTraceLabel(int trace){return Traces[trace]->isLabelVisible(QRL_ScopeTrace::lt_trace);}
- bool getUnitLabel(int trace){return Traces[trace]->isLabelVisible(QRL_ScopeTrace::lt_unit);}
- bool getAverageLabel(int trace){return Traces[trace]->isLabelVisible(QRL_ScopeTrace::lt_average);}
- bool getMinLabel(int trace){return Traces[trace]->isLabelVisible(QRL_ScopeTrace::lt_min);}
- bool getMaxLabel(int trace){return Traces[trace]->isLabelVisible(QRL_ScopeTrace::lt_max);}
- bool getPPLabel(int trace){return Traces[trace]->isLabelVisible(QRL_ScopeTrace::lt_pp);}
- bool getRMSLabel(int trace){return Traces[trace]->isLabelVisible(QRL_ScopeTrace::lt_rms);}
+ bool getTraceLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_trace);}
+ bool getUnitLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_unit);}
+ bool getAverageLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_average);}
+ bool getMinLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_min);}
+ bool getMaxLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_max);}
+ bool getPPLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_pp);}
+ bool getRMSLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_rms);}
      //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
     void setValue(const QVector< QVector<double> > &v);
     void setTime(const QVector<double> &t);
@@ -181,7 +182,7 @@ private:
   int style;
   int yMajorTicks;
   double yStep, yOffset, dy ,ymin,ymax;
-  QRL_ScopeTrace **Traces;
+  QPL_ScopeTrace **Traces;
   Qt::LayoutDirection direction;
   PlottingMode plottingMode;
   bool triggerSearch,triggerUp,singleMode,singleModeRunning;
