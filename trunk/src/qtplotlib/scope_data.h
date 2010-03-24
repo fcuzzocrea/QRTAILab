@@ -32,12 +32,12 @@
 #include "qtplot_global.h"
 
 
-class QtplotData //: public QThread
+class QPL_ScopeData //: public QThread
 {
  // Q_OBJECT
 public:
-  QtplotData(int ntraces, float dt,QString, QStringList t_name);
-  ~QtplotData();
+  QPL_ScopeData(int ntraces, float dt,QString, QStringList t_name);
+  ~QPL_ScopeData();
   int getNTraces(){return ntraces;}
 //  void setNTraces(int t){ntraces=t;}
   float getDt(){return dt;} 

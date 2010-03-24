@@ -4,8 +4,9 @@
 TARGET = qtplot
 TEMPLATE = lib
 DEFINES += QTPLOT_LIBRARY
+DEPENDPATH += . /usr/local/qwt-5.2.0-svn/lib
 INCLUDEPATH += . \
-    /usr/include/qwt/
+  /usr/local/qwt-5.2.0-svn/include
 DESTDIR                 = /usr/local/lib/qtplot
 LIBS += -lqwt
 SOURCES += qtplot.cpp \

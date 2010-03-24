@@ -1,4 +1,4 @@
-#include "qtplot.h"
+#include "scope.h"
 
 
 #include <stdlib.h>
@@ -33,7 +33,7 @@ public:
 //  Initialize Scope window
 //
 
-Qtplot::Qtplot(QWidget *parent,QtplotData *scope,int ind,QwtPlot *qwt)
+QRL_Scope::QRL_Scope(QWidget *parent,QRL_ScopeData *scope,int ind,QwtPlot *qwt)
         :QWidget(parent),Scope(scope),index(ind),qwtPlot(qwt)
 {
 
@@ -163,11 +163,11 @@ Qtplot::Qtplot(QWidget *parent,QtplotData *scope,int ind,QwtPlot *qwt)
        Ncurve=Scope->getNTraces();
 //if (Ncurve>0){
        QPen pen;
-        Traces = new QtplotTrace*[Ncurve];
+        Traces = new QPL_ScopeTrace*[Ncurve];
 
 
        for (unsigned int j=0;j<Ncurve;j++){
-                Traces[j] = new QtplotTrace(qwtPlot, MaxDataPoints, j);
+                Traces[j] = new QPL_ScopeTrace(qwtPlot, MaxDataPoints, j);
                 Traces[j]->changeNDataSoll(NDataSoll,dt);
                 Traces[j]->setGridColor(gridColor);
 // 		switch(j){
@@ -254,7 +254,7 @@ Qtplot::Qtplot(QWidget *parent,QtplotData *scope,int ind,QwtPlot *qwt)
 //	isSaving=0;Save_Time=1.0;File_Name=tr(Scope->name);
 }
 
-Qtplot::~Qtplot(){
+QRL_Scope::~QRL_Scope(){
 //Plotting_Scope_Data_Thread->stopThread();
 //Plotting_Scope_Data_Thread->wait();
 //delete Plotting_Scope_Data_Thread;
@@ -266,7 +266,7 @@ delete[] Traces;
 }
 
 
-void Qtplot::refresh()
+void QRL_Scope::refresh()
 {
         qwtPlot->replot();
 
@@ -276,7 +276,7 @@ void Qtplot::refresh()
   }
 }
 
-void Qtplot::setPlotting(bool b){
+void QRL_Scope::setPlotting(bool b){
     plotting=b;
      QwtText bt;
     bt.setColor(QColor(gridColor));
@@ -292,7 +292,7 @@ void Qtplot::setPlotting(bool b){
   }
 
 
- void Qtplot::setPlottingMode(PlottingMode p){
+ void QRL_Scope::setPlottingMode(PlottingMode p){
         plottingMode=p;
  QwtText bt;
     bt.setColor(QColor(gridColor));
@@ -331,7 +331,7 @@ void Qtplot::setPlotting(bool b){
    }
 }
 
- void Qtplot::setPlottingDirection(Qt::LayoutDirection d){
+ void QRL_Scope::setPlottingDirection(Qt::LayoutDirection d){
         direction=d;
         for (int nn=0; nn<Ncurve;nn++)
           Traces[nn]->resetTime();
@@ -368,7 +368,7 @@ void Qtplot::setPlotting(bool b){
         }
     }
 }
-   void Qtplot::changeRefreshRate(double rr)
+   void QRL_Scope::changeRefreshRate(double rr)
 {
         RefreshRate=rr;
         if (	RefreshRate<0.)
@@ -382,7 +382,7 @@ void Qtplot::setPlotting(bool b){
 
 
 
- void Qtplot::changeDivider(double div)
+ void QRL_Scope::changeDivider(double div)
 {
 
        timer->stop();
@@ -427,7 +427,7 @@ void Qtplot::setPlotting(bool b){
 
 }
 
-   void Qtplot::changeDataPoints(double dp)
+   void QRL_Scope::changeDataPoints(double dp)
 {
         //if (dp<(1/((xmax-xmin)/dp)/100))
         //	return;
@@ -471,7 +471,7 @@ void Qtplot::setPlotting(bool b){
 }
 
 
-   void Qtplot::changeDX(double v)
+   void QRL_Scope::changeDX(double v)
 {
 
         //if ((xMajorTicks*v)/Scope->dt<10.)
@@ -547,7 +547,7 @@ NDistance=(int)(dt*(1./Scope->getDt()));  //doesnt work
                 Traces[j]->changeNDataSoll(NDataSoll,dt);
                 int k=0;
                 for (int nn=0;nn<j;nn++)
-                        if (Traces[nn]->isLabelVisible(QtplotTrace::lt_trace))
+                        if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                 k++;
                   Traces[j]->setLabelsXValue(0.+k*xmax/5.);
         }
@@ -565,7 +565,7 @@ NDistance=(int)(dt*(1./Scope->getDt()));  //doesnt work
 }
 
 
-void Qtplot::setGridColor(QColor gridcolor){
+void QRL_Scope::setGridColor(QColor gridcolor){
         gridColor=gridcolor;
         grid->setMajPen(QPen(gridColor, 0, Qt::DotLine));
         picker->setRubberBandPen(QColor(gridColor));
@@ -579,7 +579,7 @@ void Qtplot::setGridColor(QColor gridcolor){
           Traces[nn]->setGridColor(gridcolor);
 
 }
-void Qtplot::setBgColor(QColor bgcolor){
+void QRL_Scope::setBgColor(QColor bgcolor){
         bgColor=bgcolor;
         qwtPlot->setCanvasBackground(bgColor);
 }
@@ -590,36 +590,36 @@ void Qtplot::setBgColor(QColor bgcolor){
 
 
 
-void Qtplot::startSingleRun(){
+void QRL_Scope::startSingleRun(){
         singleModeRunning=true;
 
 }
 
 
-void Qtplot::setZeroAxis(bool b,int trace){
+void QRL_Scope::setZeroAxis(bool b,int trace){
 
 Traces[trace]->setZeroAxis(b);
 
 }
 
-void Qtplot::setTraceLabel(bool b,int trace){
+void QRL_Scope::setTraceLabel(bool b,int trace){
 
         if (b==getTraceLabel(trace))
                 return;
 
         if (b) {
-                Traces[trace]->showLabel(QtplotTrace::lt_trace);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_trace);
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
                         for (int nn=0;nn<j;nn++)
-                                if (Traces[nn]->isLabelVisible(QtplotTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
                 }
 
 
         }else {
-                Traces[trace]->hideLabel(QtplotTrace::lt_trace);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_trace);
                 setUnitLabel(false,trace);
                 setAverageLabel(false,trace);
                 setMinLabel(false,trace);
@@ -631,7 +631,7 @@ void Qtplot::setTraceLabel(bool b,int trace){
         }
 }
 
-void Qtplot::setUnitLabel(bool b,int trace){
+void QRL_Scope::setUnitLabel(bool b,int trace){
 
 
         if (b) {
@@ -640,17 +640,17 @@ void Qtplot::setUnitLabel(bool b,int trace){
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
                         for (int nn=0;nn<j;nn++)
-                                if (Traces[nn]->isLabelVisible(QtplotTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
                 }
-                Traces[trace]->showLabel(QtplotTrace::lt_unit);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_unit);
 
 
         }else{
                 if (getUnitLabel(trace)==false)
                         return;
-                Traces[trace]->hideLabel(QtplotTrace::lt_unit);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_unit);
                 setAverageLabel(getAverageLabel(trace),trace);
                 setMinLabel(getMinLabel(trace),trace);
                 setMaxLabel(getMaxLabel(trace),trace);
@@ -662,7 +662,7 @@ void Qtplot::setUnitLabel(bool b,int trace){
 }
 
 
-void Qtplot::setAverageLabel(bool b,int trace){
+void QRL_Scope::setAverageLabel(bool b,int trace){
 
 
                 if (b) {
@@ -671,15 +671,15 @@ void Qtplot::setAverageLabel(bool b,int trace){
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
                         for (int nn=0;nn<j;nn++)
-                                if (Traces[nn]->isLabelVisible(QtplotTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
                 }
-                Traces[trace]->showLabel(QtplotTrace::lt_average);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_average);
         }else{
                 if (getAverageLabel(trace)==false)
                         return;
-                Traces[trace]->hideLabel(QtplotTrace::lt_average);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_average);
                 setUnitLabel(getUnitLabel(trace),trace);
                 setMinLabel(getMinLabel(trace),trace);
                 setMaxLabel(getMaxLabel(trace),trace);
@@ -689,7 +689,7 @@ void Qtplot::setAverageLabel(bool b,int trace){
 
 }
 
-void Qtplot::setMinLabel(bool b,int trace){
+void QRL_Scope::setMinLabel(bool b,int trace){
 
         if (b) {
                 setTraceLabel(true,trace);
@@ -697,15 +697,15 @@ void Qtplot::setMinLabel(bool b,int trace){
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
                         for (int nn=0;nn<j;nn++)
-                                if (Traces[nn]->isLabelVisible(QtplotTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
                 }
-                Traces[trace]->showLabel(QtplotTrace::lt_min);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_min);
         }else{
                 if (getMinLabel(trace)==false)
                         return;
-                Traces[trace]->hideLabel(QtplotTrace::lt_min);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_min);
                 setUnitLabel(getUnitLabel(trace),trace);
                 setAverageLabel(getAverageLabel(trace),trace);
                 setMaxLabel(getMaxLabel(trace),trace);
@@ -715,22 +715,22 @@ void Qtplot::setMinLabel(bool b,int trace){
 
 }
 
-void Qtplot::setMaxLabel(bool b,int trace){
+void QRL_Scope::setMaxLabel(bool b,int trace){
         if (b) {
                 setTraceLabel(true,trace);
 
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
                         for (int nn=0;nn<j;nn++)
-                                if (Traces[nn]->isLabelVisible(QtplotTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
                 }
-                Traces[trace]->showLabel(QtplotTrace::lt_max);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_max);
         }else{
                 if (getMaxLabel(trace)==false)
                         return;
-                Traces[trace]->hideLabel(QtplotTrace::lt_max);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_max);
                 setUnitLabel(getUnitLabel(trace),trace);
                 setAverageLabel(getAverageLabel(trace),trace);
                 setMinLabel(getMinLabel(trace),trace);
@@ -740,7 +740,7 @@ void Qtplot::setMaxLabel(bool b,int trace){
 
 }
 
-void Qtplot::setPPLabel(bool b,int trace){
+void QRL_Scope::setPPLabel(bool b,int trace){
 
         if (b) {
                 setTraceLabel(true,trace);
@@ -748,15 +748,15 @@ void Qtplot::setPPLabel(bool b,int trace){
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
                         for (int nn=0;nn<j;nn++)
-                                if (Traces[nn]->isLabelVisible(QtplotTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
                 }
-                Traces[trace]->showLabel(QtplotTrace::lt_pp);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_pp);
         }else{
                 if (getPPLabel(trace)==false)
                         return;
-                Traces[trace]->hideLabel(QtplotTrace::lt_pp);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_pp);
                 setUnitLabel(getUnitLabel(trace),trace);
                 setAverageLabel(getAverageLabel(trace),trace);
                 setMaxLabel(getMaxLabel(trace),trace);
@@ -766,22 +766,22 @@ void Qtplot::setPPLabel(bool b,int trace){
 
 }
 
-void Qtplot::setRMSLabel(bool b,int trace){
+void QRL_Scope::setRMSLabel(bool b,int trace){
         if (b) {
                 setTraceLabel(true,trace);
 
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
                         for (int nn=0;nn<j;nn++)
-                                if (Traces[nn]->isLabelVisible(QtplotTrace::lt_trace))
+                                if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
                 }
-                Traces[trace]->showLabel(QtplotTrace::lt_rms);
+                Traces[trace]->showLabel(QPL_ScopeTrace::lt_rms);
         }else{
                 if (getRMSLabel(trace)==false)
                         return;
-                Traces[trace]->hideLabel(QtplotTrace::lt_rms);
+                Traces[trace]->hideLabel(QPL_ScopeTrace::lt_rms);
                 setUnitLabel(getUnitLabel(trace),trace);
                 setAverageLabel(getAverageLabel(trace),trace);
                 setMaxLabel(getMaxLabel(trace),trace);
@@ -791,7 +791,7 @@ void Qtplot::setRMSLabel(bool b,int trace){
 
 }
 
-void Qtplot::setTraceName(int trace, const QString &text){
+void QRL_Scope::setTraceName(int trace, const QString &text){
 
 
         Traces[trace]->setName(text);
@@ -802,7 +802,7 @@ void Qtplot::setTraceName(int trace, const QString &text){
 }
 
 
-void Qtplot::setTime(const  QVector<double>  &t){
+void QPL_Scope::setTime(const  QVector<double>  &t){
   if (t.size()>0){
     double meandt=t[0]-lastTime;
     for (int i=1;i<t.size();i++)
@@ -812,7 +812,7 @@ void Qtplot::setTime(const  QVector<double>  &t){
    }
 }
 
-void Qtplot::setValue(const QVector< QVector<double> > &v)
+void QPL_Scope::setValue(const QVector< QVector<double> > &v)
 {
 
 
@@ -990,7 +990,7 @@ default:
 
 
 /*
-void Qtplot::setValue( int nn, float v)
+void QRL_Scope::setValue( int nn, float v)
 {
 
 
@@ -1125,7 +1125,7 @@ default:
 //	ScopeData[nn].time2=time2;
 }*/
 
-QDataStream& operator<<(QDataStream &out, const Qtplot &d){
+QDataStream& operator<<(QDataStream &out, const QPL_Scope &d){
         qint32 a;
         out  << d.size()  << d.pos() << d.isVisible();
         a=d.Ncurve; out << a;
@@ -1156,7 +1156,7 @@ QDataStream& operator<<(QDataStream &out, const Qtplot &d){
 }
 
 
-QDataStream& operator>>(QDataStream &in, Qtplot(&d)){
+QDataStream& operator>>(QDataStream &in, QRL_Scope(&d)){
     QSize s;QPoint p;bool b; QColor c; qint32 a,a2;QFont f; double dd;
     QString str; int Ncurve;
     in >> s;d.resize(s);
@@ -1169,11 +1169,11 @@ QDataStream& operator>>(QDataStream &in, Qtplot(&d)){
     in >> dd; d.changeDX(dd);
     in >> a; //d.changeDataPoints(a);
     in >> a >> a2;
-    if ((Qtplot::PlottingMode)a==Qtplot::hold){
+    if ((QRL_Scope::PlottingMode)a==QRL_Scope::hold){
       d.setPlotting(false);
-      d.setPlottingMode(Qtplot::roll);
+      d.setPlottingMode(QRL_Scope::roll);
     }else{
-      d.setPlottingMode((Qtplot::PlottingMode)a);
+      d.setPlottingMode((QRL_Scope::PlottingMode)a);
       d.setPlotting(true);
     }
     d.setPlottingDirection((Qt::LayoutDirection)a2);
@@ -1256,7 +1256,7 @@ QDataStream& operator>>(QDataStream &in, Qtplot(&d)){
 ////**
 //* @brief Initialise PlottingScopeDataThread
 //*/
-// void PlottingScopeDataThread::start(Qtplot* scopewindow)
+// void PlottingScopeDataThread::start(QRL_Scope* scopewindow)
 // {
 // 	ScopeWindow=scopewindow;
 // 	isRunning=1;
