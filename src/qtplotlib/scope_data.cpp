@@ -28,7 +28,7 @@
 
 #include "scope_data.h"
 
-QtplotData::QtplotData(int ntr, float d,QString c_name, QStringList t_name)
+QPL_ScopeData::QPL_ScopeData(int ntr, float d,QString c_name, QStringList t_name)
         :ntraces(ntr),dt(d),name(c_name),traceNames(t_name)
 {
 		visible = false;
@@ -49,7 +49,7 @@ QtplotData::QtplotData(int ntr, float d,QString c_name, QStringList t_name)
 }
 
 
- QtplotData::~QtplotData()
+ QPL_ScopeData::~QPL_ScopeData()
  {
       //wait();
  }
@@ -61,7 +61,7 @@ QtplotData::QtplotData(int ntr, float d,QString c_name, QStringList t_name)
 
 
 
-    int QtplotData::setScopeDt(double d)
+    int QPL_ScopeData::setScopeDt(double d)
 {
 //int ret=-1;
 
@@ -73,7 +73,7 @@ return 1;
 }
 
 
-double QtplotData::getScopeDt()
+double QPL_ScopeData::getScopeDt()
 {
 double ret=-1;
 
@@ -81,7 +81,7 @@ double ret=-1;
 return ret;
 }
 
-int QtplotData::setScopeRefreshRate(double rr)
+int QPL_ScopeData::setScopeRefreshRate(double rr)
 {
 int ret=-1;
 if (rr>0. && rr<50.){
@@ -93,7 +93,7 @@ if (rr>0. && rr<50.){
 return ret;
 }
 
-double QtplotData::getScopeRefreshRate()
+double QPL_ScopeData::getScopeRefreshRate()
 {
 	double ret=-1;
 
@@ -102,13 +102,13 @@ double QtplotData::getScopeRefreshRate()
 	return ret;
 }
 
-void QtplotData::setScopeTime(double v){
+void QPL_ScopeData::setScopeTime(double v){
       if (ScopeIndex[0]<MAX_SCOPE_DATA){
 	ScopeTime[ScopeIndex[0]]=v;
       }
 }
 
- QVector<double> QtplotData::getScopeTime(){
+ QVector<double> QPL_ScopeData::getScopeTime(){
 	
 // QVector<float> ret;
 // mutex.lock();
@@ -126,7 +126,7 @@ void QtplotData::setScopeTime(double v){
 }
 
 
- void QtplotData::setScopeValue(double v, int t){
+ void QPL_ScopeData::setScopeValue(double v, int t){
 
 if ( ntraces>0){ 
 // mutex.lock();
@@ -162,7 +162,7 @@ if (t<ScopeValues.size()){
 // return ret;
 // } 
 
- QVector< QVector<double> > QtplotData::getScopeValue(){
+ QVector< QVector<double> > QPL_ScopeData::getScopeValue(){
 	
 // printf("getScopeindex %d\n",ScopeIndex[0]);
 QVector< QVector<double> > ret;
@@ -198,31 +198,31 @@ ScopeIndex[0]=0;
 // 	//ret=ScopeValues[n];
 // return ScopeValues[n];
 // } 
- bool QtplotData::dataAvailable() {
+ bool QPL_ScopeData::dataAvailable() {
 
     return ScopeValues.size()>0;
  }
 
 
 
- void  QtplotData::startSaving(FILE* save_file_pointer,double save_time){
+ void  QPL_ScopeData::startSaving(FILE* save_file_pointer,double save_time){
          Save_File_Pointer=save_file_pointer;
          Save_Time=save_time;
          saving=true;
  }
- FILE*  QtplotData::getSaveFilePtr() {
+ FILE*  QPL_ScopeData::getSaveFilePtr() {
 
          return Save_File_Pointer;
 
  }
-      void  QtplotData::stopSaving(){
+      void  QPL_ScopeData::stopSaving(){
          saving=false;
          fclose(Save_File_Pointer);
          Save_File_Pointer=NULL;
          //emit stopSaving(index);
 
  }
-       int  QtplotData::n_points_to_save(){
+       int  QPL_ScopeData::n_points_to_save(){
          int n_points;
 
          n_points = (int)(Save_Time/dt);
@@ -231,7 +231,7 @@ ScopeIndex[0]=0;
 
  }
 
-   void  QtplotData::set_points_counter(int cnt){
+   void  QPL_ScopeData::set_points_counter(int cnt){
 
    Saved_Points=cnt;
 

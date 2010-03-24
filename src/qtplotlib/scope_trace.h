@@ -52,14 +52,14 @@
  * @brief Display Trace
  */
 
-class QtplotTrace
+class QPL_ScopeTrace
 {
    
  //friend class PlottingScopeDataThread;
 public:
   enum labelTypes{lt_trace,lt_unit,lt_average,lt_min,lt_max,lt_pp,lt_rms};
-  QtplotTrace(QwtPlot *parent, unsigned int maxdatapoints, int j);
-~QtplotTrace();
+  QPL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int j);
+~QPL_ScopeTrace();
     void setFileVersion(qint32 v){fileVersion=v;}
     void refresh();
   void changeNDataSoll(int ds, double dt);
@@ -151,12 +151,12 @@ private:
   //PlottingScopeDataThread* Plotting_Scope_Data_Thread;
 //    friend QDataStream& operator<<(QDataStream &out, const QRL_ScopeTrace &d);
 //    friend QDataStream& operator>>(QDataStream &in, QRL_ScopeTrace(&d));
-   friend QDataStream& operator<<(QDataStream &out, const QtplotTrace* d);
-   friend QDataStream& operator>>(QDataStream &in, QtplotTrace* d);
-  friend class Qtplot;
+   friend QDataStream& operator<<(QDataStream &out, const QPL_ScopeTrace* d);
+   friend QDataStream& operator>>(QDataStream &in, QPL_ScopeTrace* d);
+  friend class QPL_Scope;
 };
-        QDataStream& operator<<(QDataStream &out, const QtplotTrace *d);
-        QDataStream& operator>>(QDataStream &in, QtplotTrace(*d));
+        QDataStream& operator<<(QDataStream &out, const QPL_ScopeTrace *d);
+        QDataStream& operator>>(QDataStream &in, QPL_ScopeTrace(*d));
 
 
 #endif

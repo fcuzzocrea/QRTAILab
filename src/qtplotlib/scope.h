@@ -1,19 +1,19 @@
-#ifndef QTPLOT_H
-#define QTPLOT_H
+#ifndef SCOPE_H
+#define SCOPE_H
 
 #include "qtplot_global.h"
 #include "scope_trace.h"
 #include "scope_data.h"
 
 
-class QTPLOTSHARED_EXPORT Qtplot : public QWidget
+class QTPLOTSHARED_EXPORT QPL_Scope : public QWidget
 {
    Q_OBJECT
  //friend class PlottingScopeDataThread;
 public:
    enum PlottingMode {roll,overwrite,trigger,hold};
-   Qtplot(QWidget *parent = 0,QtplotData *scope=0,int ind=0,QwtPlot *qwt=0);
-   ~Qtplot();
+   QPL_Scope(QWidget *parent = 0,QtplotData *scope=0,int ind=0,QwtPlot *qwt=0);
+   ~QPL_Scope();
    void changeRefreshRate(double);
    void changeDataPoints(double);
    void changeDivider(double);
@@ -106,11 +106,11 @@ private:
   bool triggerSearch,triggerUp,singleMode,singleModeRunning;
   double triggerLevel,lastValue;int triggerChannel;
   //PlottingScopeDataThread* Plotting_Scope_Data_Thread;
-  friend QDataStream& operator<<(QDataStream &out, const Qtplot &d);
-  friend QDataStream& operator>>(QDataStream &in, Qtplot(&d));
+  friend QDataStream& operator<<(QDataStream &out, const QPL_Scope &d);
+  friend QDataStream& operator>>(QDataStream &in, QPL_Scope(&d));
 };
-        QDataStream& operator<<(QDataStream &out, const Qtplot &d);
-        QDataStream& operator>>(QDataStream &in, Qtplot(&d));
+        QDataStream& operator<<(QDataStream &out, const QPL_Scope &d);
+        QDataStream& operator>>(QDataStream &in, QPL_Scope(&d));
 
 
-#endif // QTPLOT_H
+#endif // SCOPE_H
