@@ -34,7 +34,7 @@ QPL_ScopeData::QPL_ScopeData(int ntr, float d,QString c_name, QStringList t_name
 		visible = false;
                 saving = false;
 		plotting=true;
-                Save_File_Pointer=NULL;
+                //Save_File_Pointer=NULL;
                 saveScopeTime=false;
                 scopeRefreshRate=30.;
                 ScopeValues.resize(ntraces);

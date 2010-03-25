@@ -45,8 +45,8 @@
 #include <qwt_math.h>
 #include "qrtailab.h"
 #include <scope_trace.h>
-#include "scope_data.h"
-#include "scope.h"
+#include <scope_data.h>
+#include <scope.h>
 
 // class QRL_ScopeWindow;
 // 

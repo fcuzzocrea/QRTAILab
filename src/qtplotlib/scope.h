@@ -2,8 +2,8 @@
 #define SCOPE_H
 
 #include "qtplot_global.h"
-#include "scope_trace.h"
-#include "scope_data.h"
+#include <scope_trace.h>
+#include <scope_data.h>
 
 
 class QTPLOTSHARED_EXPORT QPL_Scope : public QWidget
