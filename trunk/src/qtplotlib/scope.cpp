@@ -1166,8 +1166,8 @@ QDataStream& operator<<(QDataStream &out, const QPL_Scope &d){
         out << d.triggerLevel;
         out << d.triggerUp;
         out << d.singleMode;
-        //out << d.saveTime;
-       // out << d.fileName;
+        out << d.Scope->data2disk()->getSaveTime();//out << d.saveTime;
+        out << d.Scope->data2disk()->getFileName();// out << d.fileName;
         a=d.Divider;out << a;
         out <<d.plotting;
          for (unsigned int nn=0; nn<d.Ncurve;++nn){
@@ -1209,8 +1209,8 @@ QDataStream& operator>>(QDataStream &in, QPL_Scope(&d)){
     in >> dd; d.setTriggerLevel(dd);
     in >> b; d.setTriggerUpDirection(b);
     in >> b; d.setSingleMode(b);
-    in >> dd; //d.setSaveTime(dd);
-    in >> str;// d.setFileName(str);
+    in >> dd; d.Scope->data2disk()->setSaveTime(dd);//d.setSaveTime(dd);
+    in >> str;d.Scope->data2disk()->setFileName(str);// d.setFileName(str);
 
     if (d.fileVersion>101){
       in >> a; d.changeDivider(a);

@@ -11,6 +11,7 @@ QRL_Data2Disk::QRL_Data2Disk(float d)
      seconds=0;
      save_file=NULL;
      saveScopeTime=false;
+     fileName=tr("test");
 }
 
 QRL_Data2Disk::~QRL_Data2Disk(){

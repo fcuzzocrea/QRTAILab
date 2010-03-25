@@ -34,7 +34,7 @@ SOURCES += ../src/main.cpp \
     ../src/alog_data.cpp \
     ../src/log_matrixview.cpp \
     ../src/rtai_scope.cpp \
-    ../src/data2disk.cpp \
+    ../src/qtplotlib/data2disk.cpp \
     ../src/qtplotlib/scope_trace.cpp \
     ../src/qtplotlib/scope_data.cpp \
     ../src/qtplotlib/scope.cpp
@@ -60,7 +60,7 @@ HEADERS += ../src/targets_manager.h \
     ../src/alog_data.h \
     ../src/log_matrixview.h \
     ../src/rtai_scope.h \
-    ../src/data2disk.h \
+    ../src/qtplotlib/data2disk.h \
     ../src/qtplotlib/scope_trace.h \
     ../src/qtplotlib/scope_data.h \
     ../src/qtplotlib/scope.h \

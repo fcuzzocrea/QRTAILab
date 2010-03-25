@@ -456,7 +456,7 @@ void TargetThread::run()
 
                                         int j;
                                         for(j=0; j<ntraces; j++) {
-                       #ifdef _RTAI_3_80_
+                       #ifndef _RTAI_<_3_80_
                                                 RT_rpcx(Target_Node, Target_Port, If_Task, &j, &traceName, sizeof(int), sizeof(traceName));
                                                 traceNames<<QString(traceName);
                         #else
