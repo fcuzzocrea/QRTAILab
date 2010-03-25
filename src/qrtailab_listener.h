@@ -65,7 +65,7 @@ static void *rt_get_scope_data(void *arg)
 	char GetScopeDataMbxName[7];
 	long GetScopeDataPort;
 	int MsgData = 0, MsgLen, MaxMsgLen, TracesBytes,MsgWait;
-        #ifdef _RTAI_3_80_
+        #ifndef _RTAI_<_3_80_
         double MsgBuf[MAX_MSG_LEN/sizeof(double)];
         #else
         float MsgBuf[MAX_MSG_LEN/sizeof(float)];
@@ -95,7 +95,7 @@ static void *rt_get_scope_data(void *arg)
 		return (void *)1;
 	}
 	//munlockall();
-        #ifdef _RTAI_3_80_
+        #ifndef _RTAI_<_3_80_
         TracesBytes = (scope->getNTraces() + 1)*sizeof(double);
         #else
         TracesBytes = (scope->getNTraces() + 1)*sizeof(float);
