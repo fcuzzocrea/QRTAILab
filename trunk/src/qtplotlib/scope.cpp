@@ -190,8 +190,8 @@ QPL_Scope::QPL_Scope(QWidget *parent,QPL_ScopeData *scope,int ind,QwtPlot *qwt)
        NDataMax=(int)((xmax-xmin)/Scope->getDt());
        NDataSoll=100;
         NDataSoll=NDataMax;
-        saveTime=0.;
-       fileName=tr("SCOPE");
+        //saveTime=0.;
+      // fileName=tr("SCOPE");
         RefreshRate=20.;
         //Werden genügend Daten bereitgestellt?
        if (NDataSoll>NDataMax)
@@ -1166,8 +1166,8 @@ QDataStream& operator<<(QDataStream &out, const QPL_Scope &d){
         out << d.triggerLevel;
         out << d.triggerUp;
         out << d.singleMode;
-        out << d.saveTime;
-        out << d.fileName;
+        //out << d.saveTime;
+       // out << d.fileName;
         a=d.Divider;out << a;
         out <<d.plotting;
          for (unsigned int nn=0; nn<d.Ncurve;++nn){
@@ -1209,8 +1209,8 @@ QDataStream& operator>>(QDataStream &in, QPL_Scope(&d)){
     in >> dd; d.setTriggerLevel(dd);
     in >> b; d.setTriggerUpDirection(b);
     in >> b; d.setSingleMode(b);
-    in >> dd; d.setSaveTime(dd);
-    in >> str; d.setFileName(str);
+    in >> dd; //d.setSaveTime(dd);
+    in >> str;// d.setFileName(str);
 
     if (d.fileVersion>101){
       in >> a; d.changeDivider(a);

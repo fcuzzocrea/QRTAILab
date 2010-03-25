@@ -36,7 +36,7 @@
 
 #include <QtGui> 
 #include "qrtailab.h"
-#include "scope_data.h"
+#include <scope_data.h>
 #include "led_data.h"
 #include "meter_data.h"
 #include "log_data.h"
