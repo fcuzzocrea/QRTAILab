@@ -46,7 +46,7 @@ class QRL_ScopesManager : public QDialog, private Ui::QRL_ScopesManager
 {
    Q_OBJECT
 public:
-  QRL_ScopesManager(QWidget *parent = 0, int numScopes=0, QRL_ScopeData **scopes = 0, int v=0);
+  QRL_ScopesManager(QWidget *parent = 0, int numScopes=0, QPL_ScopeData **scopes = 0, int v=0);
   ~QRL_ScopesManager();
   //void startScopeThreads();
   //void stopScopeThreads();
@@ -110,7 +110,7 @@ public slots:
 private:
   qint32 fileVersion;
   int Num_Scopes;
-  QRL_ScopeData **Scopes;
+  QPL_ScopeData **Scopes;
   int verbose;
   unsigned int currentScope;
  // GetScopeDataThread* Get_Scope_Data_Thread;

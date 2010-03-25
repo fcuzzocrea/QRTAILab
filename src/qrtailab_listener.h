@@ -65,14 +65,18 @@ static void *rt_get_scope_data(void *arg)
 	char GetScopeDataMbxName[7];
 	long GetScopeDataPort;
 	int MsgData = 0, MsgLen, MaxMsgLen, TracesBytes,MsgWait;
+        #ifdef _RTAI_3_80_
         double MsgBuf[MAX_MSG_LEN/sizeof(double)];
+        #else
+        float MsgBuf[MAX_MSG_LEN/sizeof(float)];
+        #endif
 	int n, nn, js, jl;
 	int index = ((Args_T *)arg)->index;
 	char *mbx_id = strdup(((Args_T *)arg)->mbx_id);
 	int save_idx = 0;
 	TargetThread* targetThread=(TargetThread*)((Args_T *)arg)->targetThread;
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
-	QRL_ScopeData* scope = targetThread->getScopes()[index];
+        QPL_ScopeData* scope = targetThread->getScopes()[index];
 	double dt=scope->getScopeDt();
 	 long Target_Node = targetThread->getTargetNode();
 	RT_TASK *Target_Interface_Task = targetThread->getTask();
@@ -91,7 +95,11 @@ static void *rt_get_scope_data(void *arg)
 		return (void *)1;
 	}
 	//munlockall();
+        #ifdef _RTAI_3_80_
         TracesBytes = (scope->getNTraces() + 1)*sizeof(double);
+        #else
+        TracesBytes = (scope->getNTraces() + 1)*sizeof(float);
+        #endif
 	MaxMsgLen = (MAX_MSG_LEN/TracesBytes)*TracesBytes;
 	MsgLen = (((int)(TracesBytes*dt*(1./scope->getDt())))/TracesBytes)*TracesBytes;
 	//MsgLen = (((int)(TracesBytes*(1./targetThread->getScopeRefreshRate(index))*(1./scope.dt)))/TracesBytes)*TracesBytes;

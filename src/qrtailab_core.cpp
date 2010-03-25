@@ -243,7 +243,7 @@ void QRtaiLabCore::addToBatch(int blk,int prm, int nr,int nc,double value)
 QString QRtaiLabCore::getScopeName(int n){
   QString str;
   if (n<targetthread->getScopeNumber())
-	str=tr(targetthread->getScopes()[n]->getName());
+        str=(targetthread->getScopes()[n]->getName());
   return str;
 
 }

@@ -46,12 +46,14 @@ QPL_ScopeData::QPL_ScopeData(int ntr, float d,QString c_name, QStringList t_name
                 }
                 scopeDt=1./100.;
                 //name=std::string(c_name);
+                d2d = new QRL_Data2Disk(dt);
 }
 
 
  QPL_ScopeData::~QPL_ScopeData()
  {
       //wait();
+      delete d2d;
  }
 
 // void QRL_ScopeData::run(){
@@ -205,35 +207,35 @@ ScopeIndex[0]=0;
 
 
 
- void  QPL_ScopeData::startSaving(FILE* save_file_pointer,double save_time){
-         Save_File_Pointer=save_file_pointer;
-         Save_Time=save_time;
-         saving=true;
- }
- FILE*  QPL_ScopeData::getSaveFilePtr() {
-
-         return Save_File_Pointer;
-
- }
-      void  QPL_ScopeData::stopSaving(){
-         saving=false;
-         fclose(Save_File_Pointer);
-         Save_File_Pointer=NULL;
-         //emit stopSaving(index);
-
- }
-       int  QPL_ScopeData::n_points_to_save(){
-         int n_points;
-
-         n_points = (int)(Save_Time/dt);
-         if (n_points < 0) return 0;
-         return n_points;
-
- }
-
-   void  QPL_ScopeData::set_points_counter(int cnt){
-
-   Saved_Points=cnt;
-
- }
-
+// void  QPL_ScopeData::startSaving(FILE* save_file_pointer,double save_time){
+//         Save_File_Pointer=save_file_pointer;
+//         Save_Time=save_time;
+//         saving=true;
+// }
+// FILE*  QPL_ScopeData::getSaveFilePtr() {
+//
+//         return Save_File_Pointer;
+//
+// }
+//      void  QPL_ScopeData::stopSaving(){
+//         saving=false;
+//         fclose(Save_File_Pointer);
+//         Save_File_Pointer=NULL;
+//         //emit stopSaving(index);
+//
+// }
+//       int  QPL_ScopeData::n_points_to_save(){
+//         int n_points;
+//
+//         n_points = (int)(Save_Time/dt);
+//         if (n_points < 0) return 0;
+//         return n_points;
+//
+// }
+//
+//   void  QPL_ScopeData::set_points_counter(int cnt){
+//
+//   Saved_Points=cnt;
+//
+// }
+//

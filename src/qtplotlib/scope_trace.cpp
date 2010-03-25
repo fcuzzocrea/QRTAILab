@@ -57,6 +57,7 @@ QPL_ScopeTrace::QPL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int 
 		max=0.;
 		PP=0.;
 		RMS=0.;
+                labelOffset=2.5;
 		visible=true;
 		labelCounter=0;
 		switch(j){
@@ -131,7 +132,7 @@ QPL_ScopeTrace::QPL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int 
     		unitLabel.setLineStyle(QwtPlotMarker::NoLine);
     		//zeroAxis.setYValue(offset/dy);
 		unitLabel.setXValue(0.+j*xmax/5.);
-                unitLabel.setYValue(2.5);
+                unitLabel.setYValue(labelOffset);
 		
     		unitLabel.setLinePen(QPen(brush,2.,Qt::DashDotLine));
     		unitLabel.attach(qwtPlot);
@@ -145,7 +146,7 @@ QPL_ScopeTrace::QPL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int 
     		averageLabel.setLineStyle(QwtPlotMarker::NoLine);
     		//zeroAxis.setYValue(offset/dy);
 		averageLabel.setXValue(0.+j*xmax/5.);
-                averageLabel.setYValue(2.5);
+                averageLabel.setYValue(labelOffset);
 		
     		averageLabel.setLinePen(QPen(brush,2.,Qt::DashDotLine));
     		averageLabel.attach(qwtPlot);
@@ -158,7 +159,7 @@ QPL_ScopeTrace::QPL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int 
     		minLabel.setLineStyle(QwtPlotMarker::NoLine);
     		//zeroAxis.setYValue(offset/dy);
 		minLabel.setXValue(0.+j*xmax/5.);
-                minLabel.setYValue(2.5);
+                minLabel.setYValue(labelOffset);
 		
     		minLabel.setLinePen(QPen(brush,2.,Qt::DashDotLine));
     		minLabel.attach(qwtPlot);
@@ -171,7 +172,7 @@ QPL_ScopeTrace::QPL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int 
     		maxLabel.setLineStyle(QwtPlotMarker::NoLine);
     		//zeroAxis.setYValue(offset/dy);
 		maxLabel.setXValue(0.+j*xmax/5.);
-                maxLabel.setYValue(2.5);
+                maxLabel.setYValue(labelOffset);
 		
     		maxLabel.setLinePen(QPen(brush,2.,Qt::DashDotLine));
     		maxLabel.attach(qwtPlot);
@@ -184,7 +185,7 @@ QPL_ScopeTrace::QPL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int 
     		ppLabel.setLineStyle(QwtPlotMarker::NoLine);
     		//zeroAxis.setYValue(offset/dy);
 		ppLabel.setXValue(0.+j*xmax/5.);
-                ppLabel.setYValue(2.5);
+                ppLabel.setYValue(labelOffset);
 		
     		ppLabel.setLinePen(QPen(brush,2.,Qt::DashDotLine));
     		ppLabel.attach(qwtPlot);
@@ -197,7 +198,7 @@ QPL_ScopeTrace::QPL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int 
     		rmsLabel.setLineStyle(QwtPlotMarker::NoLine);
     		//zeroAxis.setYValue(offset/dy);
 		rmsLabel.setXValue(0.+j*xmax/5.);
-                rmsLabel.setYValue(2.5);
+                rmsLabel.setYValue(labelOffset);
 		
     		rmsLabel.setLinePen(QPen(brush,2.,Qt::DashDotLine));
     		rmsLabel.attach(qwtPlot);
@@ -433,32 +434,32 @@ double  QPL_ScopeTrace::getDy()
     case lt_trace:traceLabel.show();
 		  break;
     case lt_unit:
-		unitLabel.setYValue(3.5-(0.5*labelCounter));
+                unitLabel.setYValue(labelOffset-(0.5*labelCounter));
 		labelCounter++;
 		unitLabel.show();
 		break;
   case lt_average:
-	      averageLabel.setYValue(3.5-(0.5*labelCounter));
+              averageLabel.setYValue(labelOffset-(0.5*labelCounter));
 		labelCounter++;
 		averageLabel.show();
 	      break;
   case lt_min:
-	      minLabel.setYValue(3.5-(0.5*labelCounter));
+              minLabel.setYValue(labelOffset-(0.5*labelCounter));
 		labelCounter++;
 		minLabel.show();
 	      break;
    case lt_max:
-	         maxLabel.setYValue(3.5-(0.5*labelCounter));
+                 maxLabel.setYValue(labelOffset-(0.5*labelCounter));
 		labelCounter++;
 		maxLabel.show();
 		break;
   case lt_pp:
-		ppLabel.setYValue(3.5-(0.5*labelCounter));
+                ppLabel.setYValue(labelOffset-(0.5*labelCounter));
 		labelCounter++;
 		ppLabel.show();
 		break;
   case lt_rms:
-		rmsLabel.setYValue(3.5-(0.5*labelCounter));
+                rmsLabel.setYValue(labelOffset-(0.5*labelCounter));
 		labelCounter++;
 		rmsLabel.show();
 		break;

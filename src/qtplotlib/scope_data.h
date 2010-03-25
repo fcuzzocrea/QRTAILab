@@ -30,6 +30,7 @@
 #include <QtGui> 
 
 #include "qtplot_global.h"
+#include "data2disk.h"
 
 
 class QPL_ScopeData //: public QThread
@@ -42,8 +43,8 @@ public:
 //  void setNTraces(int t){ntraces=t;}
   float getDt(){return dt;} 
 //  void setDt(float d){dt=d;}
-  bool getIsSaving(){return saving;}
-  int getSavedPoints(){return Saved_Points;}
+//  bool getIsSaving(){return saving;}
+//  int getSavedPoints(){return Saved_Points;}
   QString getName(){return name;}
 
   int setScopeDt(double);
@@ -56,17 +57,18 @@ public:
     QVector<double> getScopeValue(int t);
     QVector< QVector<double> > getScopeValue();
     bool dataAvailable();
-    int start_saving_scope();
-    void startSaving(FILE* Save_File_Pointer,double Save_Time);
-     FILE* getSaveFilePtr();
-     void stopSaving();
-      int n_points_to_save();
-    void set_points_counter(int cnt);
+    QRL_Data2Disk* data2disk(){return d2d;}
+//    int start_saving_scope();
+//    void startSaving(FILE* Save_File_Pointer,double Save_Time);
+//     FILE* getSaveFilePtr();
+//     void stopSaving();
+//      int n_points_to_save();
+//    void set_points_counter(int cnt);
 
     //char name[MAX_NAMES_SIZE];
 
-    void setSaveScopeTime(bool b){saveScopeTime=b;}
-    bool isSaveScopeTime(){return saveScopeTime;}
+//    void setSaveScopeTime(bool b){saveScopeTime=b;}
+//    bool isSaveScopeTime(){return saveScopeTime;}
     
     void setPlotting(bool b){plotting=b;}
     bool isPlotting(){return plotting;}
@@ -83,9 +85,9 @@ private:
     bool saving;
     bool plotting;
     int visible;
-    FILE* Save_File_Pointer;
-    double Save_Time;
-    int Saved_Points;
+//    FILE* Save_File_Pointer;
+//    double Save_Time;
+//    int Saved_Points;
     double scopeRefreshRate;
 //     QRL_ScopeTrace **Traces;
     QVector <int>  ScopeIndex;
@@ -94,6 +96,7 @@ private:
     QVector <int>  ScopeIndexOut;
     QVector< QVector <double> >  ScopeValuesOut;
     double scopeDt;
+       QRL_Data2Disk* d2d;
 };
 
 

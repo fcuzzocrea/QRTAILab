@@ -205,7 +205,7 @@ void TargetThread::printBlocksInfo(){
 
                                 printf("Number of target real time scopes: %d\n", Num_Scopes);
                                         for (int n = 0; n < Num_Scopes; n++) {
-                                                printf("Scope: %s\n", Scopes[n]->getName());
+                                                printf("Scope: %s\n", Scopes[n]->getName().toLocal8Bit().constData());
                                                 printf(" Number of traces...%d\n", Scopes[n]->getNTraces());
                                                 for(int j = 0; j < Scopes[n]->getNTraces(); j++) {
                                                         printf("  %s\n", Scopes[n]->getTraceNames().at(j).toLocal8Bit().constData());
@@ -443,7 +443,7 @@ void TargetThread::run()
                                 }
                                 if (Num_Scopes > 0) {
 
-                                  Scopes = new QRL_ScopeData* [Num_Scopes];
+                                  Scopes = new QPL_ScopeData* [Num_Scopes];
                                 }
                                 for (int n = 0; n < Num_Scopes; n++) {
                                         char name[MAX_NAMES_SIZE];
@@ -454,17 +454,21 @@ void TargetThread::run()
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &n, &ntraces, sizeof(int), sizeof(int));
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &n, &name, sizeof(int), sizeof(name));
 
-
                                         int j;
                                         for(j=0; j<ntraces; j++) {
+                       #ifdef _RTAI_3_80_
                                                 RT_rpcx(Target_Node, Target_Port, If_Task, &j, &traceName, sizeof(int), sizeof(traceName));
                                                 traceNames<<QString(traceName);
+                        #else
+                                                traceNames<<tr("%1").arg(j);
+                        #endif
+
                                                // Scopes[n].traceName[j] = (char*)malloc(strlen(name)+1);
                                                // strcpy(Scopes[n].traceName[j], name);
                                         }
                                         j=-1;
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &j, &dt, sizeof(int), sizeof(float));
-                                        Scopes[n] = new QRL_ScopeData(ntraces,dt,name,traceNames);
+                                        Scopes[n] = new QPL_ScopeData(ntraces,dt,name,traceNames);
 
                                 }
                                 RT_rpcx(Target_Node, Target_Port, If_Task, &req, &msg, sizeof(int), sizeof(int));
@@ -957,7 +961,7 @@ void TargetThread::stopScopeThreads()
 
 
    QString TargetThread::getScopeName(int i){
-	return tr(Scopes[i]->getName());
+        return (Scopes[i]->getName());
 }
 
 

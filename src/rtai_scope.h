@@ -30,7 +30,7 @@ private:
         int save_idx;
         TargetThread* targetThread;
         int hardRealTime;
-        QRL_ScopeData* scope;
+        QPL_ScopeData* scope;
         double dt;
          long Target_Node ;
         RT_TASK *Target_Interface_Task;

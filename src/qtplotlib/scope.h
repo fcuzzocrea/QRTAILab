@@ -12,7 +12,7 @@ class QTPLOTSHARED_EXPORT QPL_Scope : public QWidget
  //friend class PlottingScopeDataThread;
 public:
    enum PlottingMode {roll,overwrite,trigger,hold};
-   QPL_Scope(QWidget *parent = 0,QtplotData *scope=0,int ind=0,QwtPlot *qwt=0);
+   QPL_Scope(QWidget *parent = 0,QPL_ScopeData *scope=0,int ind=0,QwtPlot *qwt=0);
    ~QPL_Scope();
    void changeRefreshRate(double);
    void changeDataPoints(double);
@@ -28,7 +28,11 @@ public:
    QColor getGridColor(){return gridColor;}
    void setBgColor(QColor);
    QColor getBgColor(){return bgColor;}
-   QtplotTrace* trace(int trace){if (trace<Scope->getNTraces()) return Traces[trace]; else return NULL;}
+   QPL_ScopeTrace* trace(int trace){if (trace<Scope->getNTraces()) return Traces[trace]; else return NULL;}
+//   void setSaveTime(double t) {saveTime=t;}
+//   double getSaveTime(){return saveTime;}
+//   void setFileName(QString str) {fileName=str;}
+//   QString getFileName() {return fileName;}
    void setPlottingMode(PlottingMode p);
    void setPlottingDirection(Qt::LayoutDirection d);
    int getPlottingMode() {return (int)plottingMode ;}
@@ -43,7 +47,7 @@ public:
    void setSingleMode(bool b){singleMode=b;}
     bool getSingleMode(){return singleMode;}
    void startSingleRun();
-   void setZeroAxis(bool b,int);
+      void setZeroAxis(bool b,int);
    void setTraceLabel(bool b, int);
    void setUnitLabel(bool b, int);
    void setAverageLabel(bool b, int);
@@ -51,23 +55,22 @@ public:
    void setMaxLabel(bool b, int);
    void setPPLabel(bool b, int);
    void setRMSLabel(bool b, int);
- bool getTraceLabel(int trace){return Traces[trace]->isLabelVisible(QtplotTrace::lt_trace);}
- bool getUnitLabel(int trace){return Traces[trace]->isLabelVisible(QtplotTrace::lt_unit);}
- bool getAverageLabel(int trace){return Traces[trace]->isLabelVisible(QtplotTrace::lt_average);}
- bool getMinLabel(int trace){return Traces[trace]->isLabelVisible(QtplotTrace::lt_min);}
- bool getMaxLabel(int trace){return Traces[trace]->isLabelVisible(QtplotTrace::lt_max);}
- bool getPPLabel(int trace){return Traces[trace]->isLabelVisible(QtplotTrace::lt_pp);}
- bool getRMSLabel(int trace){return Traces[trace]->isLabelVisible(QtplotTrace::lt_rms);}
+ bool getTraceLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_trace);}
+ bool getUnitLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_unit);}
+ bool getAverageLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_average);}
+ bool getMinLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_min);}
+ bool getMaxLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_max);}
+ bool getPPLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_pp);}
+ bool getRMSLabel(int trace){return Traces[trace]->isLabelVisible(QPL_ScopeTrace::lt_rms);}
    bool getZeroAxis(int trace){return Traces[trace]->zeroAxis.isVisible();}
-   //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
     void setValue(const QVector< QVector<double> > &v);
     void setTime(const QVector<double> &t);
-   void setTraceName(int trace, const QString &text);
-   QString getTraceName(int trace){return Traces[trace]->getName();}
     void setVerbose(int v){Verbose=v;}
     void setFileVersion(qint32 v){fileVersion=v;}
     void setPlotting(bool b);
     bool isPlotting(){return plotting;}
+    void setTraceName(int trace, const QString &text);
+   QString getTraceName(int trace){return Traces[trace]->getName();}
 public slots:
    void refresh();
   //void setValue(int,float);
@@ -79,7 +82,7 @@ private:
   bool plotting;
   double Value;
   double lastTime;
- QtplotData *Scope;
+ QPL_ScopeData *Scope;
   unsigned int NDataMax,Ncurve,NDataSoll, MaxDataPoints,Divider;
   int time,time2;
   double xmin,xmax,dx,dt;
@@ -88,6 +91,8 @@ private:
   QTimer *timer;
   QwtPlot *qwtPlot;
   double RefreshRate;
+//  double saveTime;
+//  QString fileName;
   QwtPlotGrid *grid;
   QColor gridColor;
   QColor bgColor;
@@ -100,7 +105,7 @@ private:
   int style;
   int yMajorTicks;
   double yStep, yOffset, dy ,ymin,ymax;
-  QtplotTrace **Traces;
+  QPL_ScopeTrace **Traces;
   Qt::LayoutDirection direction;
   PlottingMode plottingMode;
   bool triggerSearch,triggerUp,singleMode,singleModeRunning;

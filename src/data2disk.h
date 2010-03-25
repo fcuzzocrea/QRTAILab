@@ -47,6 +47,8 @@ public:
  int getSavedPoints(){return Saved_Points;}
     void setSaveScopeTime(bool b){saveScopeTime=b;}
     bool isSaveScopeTime(){return saveScopeTime;}
+   void setFileName(QString str) {fileName=str;}
+   QString getFileName() {return fileName;}
 private:
         bool openSaveFile(const char * name);
         void closeSaveFile();

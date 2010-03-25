@@ -292,7 +292,8 @@ qTargetInterface->setPreferences(p);
 			}
 			if (qTargetInterface->getScopeNumber()>0){
 				enableActionShowScope(true);
-				if (! ScopesManager){
+
+                                if (! ScopesManager){
                                         ScopesManager = new QRL_ScopesManager(this,qTargetInterface->getScopeNumber(),qTargetInterface->getScopes(),qTargetInterface->getVerbose());
 					for (int i=0; i<qTargetInterface->getScopeNumber(); ++i){
                                                  ScopesManager->setScopeName(i,qTargetInterface->getScopeName(i));

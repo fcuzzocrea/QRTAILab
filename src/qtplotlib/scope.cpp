@@ -1,4 +1,29 @@
+/***************************************************************************
+ *   Copyright (C) 2008 by Holger Nahrstaedt                               *
+ *                                                                         *
+ *                                                                         *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License                  *
+ *   as published by  the Free Software Foundation; either version 2       *
+ *   of the License, or  (at your option) any later version.               *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+
 #include "scope.h"
+
+
+
+
 
 
 #include <stdlib.h>
@@ -33,9 +58,18 @@ public:
 //  Initialize Scope window
 //
 
-QRL_Scope::QRL_Scope(QWidget *parent,QRL_ScopeData *scope,int ind,QwtPlot *qwt)
+QPL_Scope::QPL_Scope(QWidget *parent,QPL_ScopeData *scope,int ind,QwtPlot *qwt)
         :QWidget(parent),Scope(scope),index(ind),qwtPlot(qwt)
 {
+
+
+
+
+
+
+
+
+
 
     //qwtPlot = new QwtPlot(this);
     //qwtPlot=this;
@@ -43,7 +77,13 @@ QRL_Scope::QRL_Scope(QWidget *parent,QRL_ScopeData *scope,int ind,QwtPlot *qwt)
 
 
 
-    #if QT_VERSION >= 0x040000
+
+
+
+
+
+
+#if QT_VERSION >= 0x040000
     #ifdef Q_WS_X11
     /*
        Qt::WA_PaintOnScreen is only supported for X11, but leads
@@ -134,9 +174,9 @@ QRL_Scope::QRL_Scope(QWidget *parent,QRL_ScopeData *scope,int ind,QwtPlot *qwt)
         //qwtPlot->axisScaleDiv(QwtPlot::xBottom)=new QwtScaleDiv(1,0);
        // qwtPlot->setAxisTitle(QwtPlot::yLeft, "Values");
        qwtPlot->setAxisScale(QwtPlot::yLeft, ymin, ymax,yStep);
-//       if (Scope->isSaveScopeTime())
-//           qwtPlot->enableAxis(QwtPlot::xBottom,true);
-//       else
+       if (Scope->data2disk()->isSaveScopeTime())
+           qwtPlot->enableAxis(QwtPlot::xBottom,true);
+       else
           qwtPlot->enableAxis(QwtPlot::xBottom,false);
        qwtPlot->enableAxis(QwtPlot::yLeft,false);
 //     QwtPlotMarker *mY = new QwtPlotMarker();
@@ -150,7 +190,8 @@ QRL_Scope::QRL_Scope(QWidget *parent,QRL_ScopeData *scope,int ind,QwtPlot *qwt)
        NDataMax=(int)((xmax-xmin)/Scope->getDt());
        NDataSoll=100;
         NDataSoll=NDataMax;
-
+        saveTime=0.;
+       fileName=tr("SCOPE");
         RefreshRate=20.;
         //Werden genügend Daten bereitgestellt?
        if (NDataSoll>NDataMax)
@@ -170,6 +211,7 @@ QRL_Scope::QRL_Scope(QWidget *parent,QRL_ScopeData *scope,int ind,QwtPlot *qwt)
                 Traces[j] = new QPL_ScopeTrace(qwtPlot, MaxDataPoints, j);
                 Traces[j]->changeNDataSoll(NDataSoll,dt);
                 Traces[j]->setGridColor(gridColor);
+                Traces[j]->setName(Scope->getTraceNames().at(j));
 // 		switch(j){
 // 			case 0:TraceOptions[j].brush=QBrush(Qt::red);
 // 				break;
@@ -254,7 +296,7 @@ QRL_Scope::QRL_Scope(QWidget *parent,QRL_ScopeData *scope,int ind,QwtPlot *qwt)
 //	isSaving=0;Save_Time=1.0;File_Name=tr(Scope->name);
 }
 
-QRL_Scope::~QRL_Scope(){
+QPL_Scope::~QPL_Scope(){
 //Plotting_Scope_Data_Thread->stopThread();
 //Plotting_Scope_Data_Thread->wait();
 //delete Plotting_Scope_Data_Thread;
@@ -266,17 +308,17 @@ delete[] Traces;
 }
 
 
-void QRL_Scope::refresh()
+void QPL_Scope::refresh()
 {
         qwtPlot->replot();
 
 
-  for (int nn=0; nn<Ncurve;++nn){
+  for (unsigned int nn=0; nn<Ncurve;++nn){
       Traces[nn]->refresh();
   }
 }
 
-void QRL_Scope::setPlotting(bool b){
+void QPL_Scope::setPlotting(bool b){
     plotting=b;
      QwtText bt;
     bt.setColor(QColor(gridColor));
@@ -292,11 +334,11 @@ void QRL_Scope::setPlotting(bool b){
   }
 
 
- void QRL_Scope::setPlottingMode(PlottingMode p){
+ void QPL_Scope::setPlottingMode(PlottingMode p){
         plottingMode=p;
  QwtText bt;
     bt.setColor(QColor(gridColor));
-        for (int nn=0; nn<Ncurve;nn++)
+        for (unsigned int nn=0; nn<Ncurve;nn++)
           Traces[nn]->resetTime();
   if (plotting){
         switch(plottingMode){
@@ -331,9 +373,9 @@ void QRL_Scope::setPlotting(bool b){
    }
 }
 
- void QRL_Scope::setPlottingDirection(Qt::LayoutDirection d){
+ void QPL_Scope::setPlottingDirection(Qt::LayoutDirection d){
         direction=d;
-        for (int nn=0; nn<Ncurve;nn++)
+        for (unsigned int nn=0; nn<Ncurve;nn++)
           Traces[nn]->resetTime();
  QwtText bt;
     bt.setColor(QColor(gridColor));
@@ -368,7 +410,7 @@ void QRL_Scope::setPlotting(bool b){
         }
     }
 }
-   void QRL_Scope::changeRefreshRate(double rr)
+   void QPL_Scope::changeRefreshRate(double rr)
 {
         RefreshRate=rr;
         if (	RefreshRate<0.)
@@ -382,7 +424,7 @@ void QRL_Scope::setPlotting(bool b){
 
 
 
- void QRL_Scope::changeDivider(double div)
+ void QPL_Scope::changeDivider(double div)
 {
 
        timer->stop();
@@ -427,7 +469,7 @@ void QRL_Scope::setPlotting(bool b){
 
 }
 
-   void QRL_Scope::changeDataPoints(double dp)
+   void QPL_Scope::changeDataPoints(double dp)
 {
         //if (dp<(1/((xmax-xmin)/dp)/100))
         //	return;
@@ -471,7 +513,7 @@ void QRL_Scope::setPlotting(bool b){
 }
 
 
-   void QRL_Scope::changeDX(double v)
+   void QPL_Scope::changeDX(double v)
 {
 
         //if ((xMajorTicks*v)/Scope->dt<10.)
@@ -524,10 +566,10 @@ void QRL_Scope::setPlotting(bool b){
                         bt.setText(tr("x: %1 sec/dev  trigger <-").arg(dx));
                 bottomText->setLabel(bt);
                 break;
-// 	case hold: //hold
+        case hold: //hold
 // 		bt.setText(tr("x: %1 sec/dev  hold").arg(dx));
 // 		bottomText->setLabel(bt);
-// 		break;
+                break;
 
         }
 }
@@ -565,7 +607,7 @@ NDistance=(int)(dt*(1./Scope->getDt()));  //doesnt work
 }
 
 
-void QRL_Scope::setGridColor(QColor gridcolor){
+void QPL_Scope::setGridColor(QColor gridcolor){
         gridColor=gridcolor;
         grid->setMajPen(QPen(gridColor, 0, Qt::DotLine));
         picker->setRubberBandPen(QColor(gridColor));
@@ -575,34 +617,26 @@ void QRL_Scope::setGridColor(QColor gridcolor){
         bottomText->setLabel(bt);
         zeroLine->setLinePen(QPen(QColor(gridColor),1,Qt::DotLine));
         vertLine->setLinePen(QPen(QColor(gridColor),1,Qt::DotLine));
-        for (int nn=0; nn<Ncurve;nn++)
+        for (unsigned int nn=0; nn<Ncurve;nn++)
           Traces[nn]->setGridColor(gridcolor);
 
 }
-void QRL_Scope::setBgColor(QColor bgcolor){
+void QPL_Scope::setBgColor(QColor bgcolor){
         bgColor=bgcolor;
         qwtPlot->setCanvasBackground(bgColor);
 }
 
 
-
-
-
-
-
-void QRL_Scope::startSingleRun(){
+void QPL_Scope::startSingleRun(){
         singleModeRunning=true;
 
 }
-
-
-void QRL_Scope::setZeroAxis(bool b,int trace){
+void QPL_Scope::setZeroAxis(bool b,int trace){
 
 Traces[trace]->setZeroAxis(b);
 
 }
-
-void QRL_Scope::setTraceLabel(bool b,int trace){
+void QPL_Scope::setTraceLabel(bool b,int trace){
 
         if (b==getTraceLabel(trace))
                 return;
@@ -611,7 +645,7 @@ void QRL_Scope::setTraceLabel(bool b,int trace){
                 Traces[trace]->showLabel(QPL_ScopeTrace::lt_trace);
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
-                        for (int nn=0;nn<j;nn++)
+                        for (unsigned int nn=0;nn<j;nn++)
                                 if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
@@ -631,7 +665,7 @@ void QRL_Scope::setTraceLabel(bool b,int trace){
         }
 }
 
-void QRL_Scope::setUnitLabel(bool b,int trace){
+void QPL_Scope::setUnitLabel(bool b,int trace){
 
 
         if (b) {
@@ -639,7 +673,7 @@ void QRL_Scope::setUnitLabel(bool b,int trace){
 
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
-                        for (int nn=0;nn<j;nn++)
+                        for (unsigned int nn=0;nn<j;nn++)
                                 if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
@@ -662,7 +696,7 @@ void QRL_Scope::setUnitLabel(bool b,int trace){
 }
 
 
-void QRL_Scope::setAverageLabel(bool b,int trace){
+void QPL_Scope::setAverageLabel(bool b,int trace){
 
 
                 if (b) {
@@ -670,7 +704,7 @@ void QRL_Scope::setAverageLabel(bool b,int trace){
 
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
-                        for (int nn=0;nn<j;nn++)
+                        for (unsigned int nn=0;nn<j;nn++)
                                 if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
@@ -689,14 +723,14 @@ void QRL_Scope::setAverageLabel(bool b,int trace){
 
 }
 
-void QRL_Scope::setMinLabel(bool b,int trace){
+void QPL_Scope::setMinLabel(bool b,int trace){
 
         if (b) {
                 setTraceLabel(true,trace);
 
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
-                        for (int nn=0;nn<j;nn++)
+                        for (unsigned int nn=0;nn<j;nn++)
                                 if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
@@ -715,13 +749,13 @@ void QRL_Scope::setMinLabel(bool b,int trace){
 
 }
 
-void QRL_Scope::setMaxLabel(bool b,int trace){
+void QPL_Scope::setMaxLabel(bool b,int trace){
         if (b) {
                 setTraceLabel(true,trace);
 
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
-                        for (int nn=0;nn<j;nn++)
+                        for (unsigned int nn=0;nn<j;nn++)
                                 if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
@@ -740,14 +774,14 @@ void QRL_Scope::setMaxLabel(bool b,int trace){
 
 }
 
-void QRL_Scope::setPPLabel(bool b,int trace){
+void QPL_Scope::setPPLabel(bool b,int trace){
 
         if (b) {
                 setTraceLabel(true,trace);
 
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
-                        for (int nn=0;nn<j;nn++)
+                        for (unsigned int nn=0;nn<j;nn++)
                                 if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
@@ -766,13 +800,13 @@ void QRL_Scope::setPPLabel(bool b,int trace){
 
 }
 
-void QRL_Scope::setRMSLabel(bool b,int trace){
+void QPL_Scope::setRMSLabel(bool b,int trace){
         if (b) {
                 setTraceLabel(true,trace);
 
                 for (unsigned int j=0;j<Ncurve;j++){
                         int k=0;
-                        for (int nn=0;nn<j;nn++)
+                        for (unsigned int nn=0;nn<j;nn++)
                                 if (Traces[nn]->isLabelVisible(QPL_ScopeTrace::lt_trace))
                                         k++;
                         Traces[j]->setLabelsXValue(0.+k*xmax/5.);
@@ -790,17 +824,9 @@ void QRL_Scope::setRMSLabel(bool b,int trace){
         }
 
 }
-
-void QRL_Scope::setTraceName(int trace, const QString &text){
-
-
+void QPL_Scope::setTraceName(int trace, const QString &text){
         Traces[trace]->setName(text);
-
-
-
-
 }
-
 
 void QPL_Scope::setTime(const  QVector<double>  &t){
   if (t.size()>0){
@@ -920,7 +946,7 @@ case trigger:
                 } else {
                         if (y<triggerLevel && lastValue>triggerLevel){
                                 triggerSearch=false;singleModeRunning=false;
-                                for (int n=0;n<Ncurve;n++){ //reset time counter
+                                for (unsigned int n=0;n<Ncurve;n++){ //reset time counter
                                         if (Qt::LeftToRight==direction)
                                         Traces[nn]->setTime(0);
                                         else
@@ -990,7 +1016,7 @@ default:
 
 
 /*
-void QRL_Scope::setValue( int nn, float v)
+void QPL_Scope::setValue( int nn, float v)
 {
 
 
@@ -1127,7 +1153,7 @@ default:
 
 QDataStream& operator<<(QDataStream &out, const QPL_Scope &d){
         qint32 a;
-        out  << d.size()  << d.pos() << d.isVisible();
+      //  out  << d.size()  << d.pos() << d.isVisible();
         a=d.Ncurve; out << a;
         out << d.gridColor;
         out << d.bgColor;
@@ -1140,9 +1166,11 @@ QDataStream& operator<<(QDataStream &out, const QPL_Scope &d){
         out << d.triggerLevel;
         out << d.triggerUp;
         out << d.singleMode;
+        out << d.saveTime;
+        out << d.fileName;
         a=d.Divider;out << a;
         out <<d.plotting;
-         for (int nn=0; nn<d.Ncurve;++nn){
+         for (unsigned int nn=0; nn<d.Ncurve;++nn){
 
                 out << d.Traces[nn];
 // 		out << d.Traces[nn].offset;
@@ -1156,12 +1184,12 @@ QDataStream& operator<<(QDataStream &out, const QPL_Scope &d){
 }
 
 
-QDataStream& operator>>(QDataStream &in, QRL_Scope(&d)){
+QDataStream& operator>>(QDataStream &in, QPL_Scope(&d)){
     QSize s;QPoint p;bool b; QColor c; qint32 a,a2;QFont f; double dd;
     QString str; int Ncurve;
-    in >> s;d.resize(s);
-    in >> p; d.move(p);
-    in >> b; d.setVisible(b);
+//    in >> s;d.resize(s);
+//    in >> p; d.move(p);
+//    in >> b; d.setVisible(b);
     in >> a; Ncurve=(int)a;
     in >> c; d.setGridColor(c);
     in >> c; d.setBgColor(c);
@@ -1169,11 +1197,11 @@ QDataStream& operator>>(QDataStream &in, QRL_Scope(&d)){
     in >> dd; d.changeDX(dd);
     in >> a; //d.changeDataPoints(a);
     in >> a >> a2;
-    if ((QRL_Scope::PlottingMode)a==QRL_Scope::hold){
+    if ((QPL_Scope::PlottingMode)a==QPL_Scope::hold){
       d.setPlotting(false);
-      d.setPlottingMode(QRL_Scope::roll);
+      d.setPlottingMode(QPL_Scope::roll);
     }else{
-      d.setPlottingMode((QRL_Scope::PlottingMode)a);
+      d.setPlottingMode((QPL_Scope::PlottingMode)a);
       d.setPlotting(true);
     }
     d.setPlottingDirection((Qt::LayoutDirection)a2);
@@ -1181,8 +1209,8 @@ QDataStream& operator>>(QDataStream &in, QRL_Scope(&d)){
     in >> dd; d.setTriggerLevel(dd);
     in >> b; d.setTriggerUpDirection(b);
     in >> b; d.setSingleMode(b);
-    //in >> dd; d.setSaveTime(dd);
-    //in >> str; d.setFileName(str);
+    in >> dd; d.setSaveTime(dd);
+    in >> str; d.setFileName(str);
 
     if (d.fileVersion>101){
       in >> a; d.changeDivider(a);
@@ -1256,7 +1284,7 @@ QDataStream& operator>>(QDataStream &in, QRL_Scope(&d)){
 ////**
 //* @brief Initialise PlottingScopeDataThread
 //*/
-// void PlottingScopeDataThread::start(QRL_Scope* scopewindow)
+// void PlottingScopeDataThread::start(QPL_Scope* scopewindow)
 // {
 // 	ScopeWindow=scopewindow;
 // 	isRunning=1;
