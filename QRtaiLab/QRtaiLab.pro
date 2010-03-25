@@ -10,13 +10,13 @@ CONFIG += QwtPlot \
 MOC_DIR = moc
 OBJECTS_DIR = obj
 UI_DIR = ui
-INCLUDEPATH += ../src/qtplotlib/
+INCLUDEPATH += ../src/qtplotlib/ \
+    ../src/
 SOURCES += ../src/main.cpp \
     ../src/target_thread.cpp \
     ../src/targets_manager.cpp \
     ../src/scope_window.cpp \
     ../src/scopes_manager.cpp \
-    ../src/scope_data.cpp \
     ../src/qrtailab_listener.cpp \
     ../src/qrtailab_core.cpp \
     ../src/parameters_manager.cpp \
@@ -35,12 +35,13 @@ SOURCES += ../src/main.cpp \
     ../src/log_matrixview.cpp \
     ../src/rtai_scope.cpp \
     ../src/data2disk.cpp \
-    ../src/qtplotlib/scope_trace.cpp
+    ../src/qtplotlib/scope_trace.cpp \
+    ../src/qtplotlib/scope_data.cpp \
+    ../src/qtplotlib/scope.cpp
 HEADERS += ../src/targets_manager.h \
     ../src/target_thread.h \
     ../src/scope_window.h \
     ../src/scopes_manager.h \
-    ../src/scope_data.h \
     ../src/qrtailab_listener.h \
     ../src/qrtailab.h \
     ../src/qrtailab_core.h \
@@ -60,7 +61,10 @@ HEADERS += ../src/targets_manager.h \
     ../src/log_matrixview.h \
     ../src/rtai_scope.h \
     ../src/data2disk.h \
-    ../src/qtplotlib/scope_trace.h
+    ../src/qtplotlib/scope_trace.h \
+    ../src/qtplotlib/scope_data.h \
+    ../src/qtplotlib/scope.h \
+    ../src/qtplotlib/qtplot_global.h
 FORMS += ../src/qrl_leds_manager.ui \
     ../src/qrl_targets_manager.ui \
     ../src/qrl_scopes_manager.ui \
