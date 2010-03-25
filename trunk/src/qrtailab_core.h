@@ -89,7 +89,7 @@ public:
 //     void updateParameterValue(int blk,int prm, int nr,int nc,double value);
 //     void addToBatch(int blk,int prm, int nr,int nc, double value);
 
-  QRL_ScopeData** getScopes(){return targetthread->getScopes();}
+  QPL_ScopeData** getScopes(){return targetthread->getScopes();}
      int getScopeNumber();
    QString getScopeName(int);
     int	    getScopeDt(int);

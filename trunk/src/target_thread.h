@@ -81,7 +81,7 @@ class TargetThread : public QThread
     int getEndApp(){return End_App;}
     int getVerbose(){return Verbose;}
     // should  be removed
-    QRL_ScopeData** getScopes(){return Scopes;}
+    QPL_ScopeData** getScopes(){return Scopes;}
     QRL_MeterData** getMeters(){return Meters;}
     QRL_LedData** getLeds(){return Leds;}
     QRL_ALogData** getALogs(){return ALogs;}
@@ -160,7 +160,7 @@ class TargetThread : public QThread
   int hardRealTimeALog;
   Target_Parameters_T *Tunable_Parameters;
   Target_Blocks_T *Tunable_Blocks;
-  QRL_ScopeData **Scopes;
+  QPL_ScopeData **Scopes;
   QRL_LogData **Logs;
   QRL_ALogData **ALogs;
   QRL_LedData **Leds;

@@ -10,6 +10,7 @@ QRL_Data2Disk::QRL_Data2Disk(float d)
      saveFormat=ascii;
      seconds=0;
      save_file=NULL;
+     saveScopeTime=false;
 }
 
 QRL_Data2Disk::~QRL_Data2Disk(){

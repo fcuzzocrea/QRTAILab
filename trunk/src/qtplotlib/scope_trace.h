@@ -134,6 +134,7 @@ private:
 	QwtPlotMarker maxLabel;
 	QwtPlotMarker ppLabel;
 	QwtPlotMarker rmsLabel;
+        double labelOffset;
 	QString traceName;
 	int labelCounter;
 	bool visible;
@@ -145,6 +146,7 @@ private:
 	double * d_yempty;
 	int time;
 	int yt;
+
 //curve
   QwtPlotCurve *cData;
   //PlottingScopeDataThread* Plotting_Scope_Data_Thread;
