@@ -58,28 +58,18 @@ public:
 //  Initialize Scope window
 //
 
-QPL_Scope::QPL_Scope(QWidget *parent,QPL_ScopeData *scope,int ind,QwtPlot *qwt)
-        :QWidget(parent),Scope(scope),index(ind),qwtPlot(qwt)
+
+
+
+QPL_Scope::QPL_Scope(QWidget *parent)
+        :QwtPlot(parent)
 {
-
-
-
-
-
-
-
 
 
 
     //qwtPlot = new QwtPlot(this);
     //qwtPlot=this;
-    qwtPlot->setObjectName(QString::fromUtf8("qwtPlot"));
-
-
-
-
-
-
+    this->setObjectName(QString::fromUtf8("Scope"));
 
 
 
@@ -89,7 +79,7 @@ QPL_Scope::QPL_Scope(QWidget *parent,QPL_ScopeData *scope,int ind,QwtPlot *qwt)
        Qt::WA_PaintOnScreen is only supported for X11, but leads
        to substantial bugs with Qt 4.2.x/Windows
      */
-    //qwtPlot->canvas()->setAttribute(Qt::WA_PaintOnScreen, true);
+    //this->canvas()->setAttribute(Qt::WA_PaintOnScreen, true);
     #endif
     #endif
         plotting=true;
@@ -116,7 +106,7 @@ QPL_Scope::QPL_Scope(QWidget *parent,QPL_ScopeData *scope,int ind,QwtPlot *qwt)
     picker = new QwtPlotPicker(QwtPlot::xBottom, QwtPlot::yLeft,
         QwtPicker::PointSelection | QwtPicker::DragSelection,
         QwtPlotPicker::CrossRubberBand, QwtPicker::AlwaysOn,
-        qwtPlot->canvas());
+        this->canvas());
     picker->setRubberBandPen(QColor(gridColor));
     picker->setRubberBand(QwtPicker::CrossRubberBand);
     picker->setTrackerPen(QColor(gridColor));
@@ -127,7 +117,7 @@ QPL_Scope::QPL_Scope(QWidget *parent,QPL_ScopeData *scope,int ind,QwtPlot *qwt)
     zeroLine->setLineStyle(QwtPlotMarker::HLine);
     zeroLine->setYValue(0.0);
     zeroLine->setLinePen(QPen(QColor(gridColor),1,Qt::DotLine));
-    zeroLine->attach(qwtPlot);
+    zeroLine->attach(this);
 
     vertLine = new QwtPlotMarker();
     //zeroLine->setLabel(QString::fromLatin1("y = 0"));
@@ -135,18 +125,18 @@ QPL_Scope::QPL_Scope(QWidget *parent,QPL_ScopeData *scope,int ind,QwtPlot *qwt)
     vertLine->setLineStyle(QwtPlotMarker::VLine);
     vertLine->setXValue(xmax/2.);
     vertLine->setLinePen(QPen(QColor(gridColor),1,Qt::DotLine));
-    vertLine->attach(qwtPlot);
+    vertLine->attach(this);
 
-    zoomer[0] = new Zoomer( QwtPlot::xBottom, QwtPlot::yLeft,qwtPlot->canvas());
+    zoomer[0] = new Zoomer( QwtPlot::xBottom, QwtPlot::yLeft,this->canvas());
     zoomer[0]->setRubberBand(QwtPicker::RectRubberBand);
     zoomer[0]->setRubberBandPen(QColor(gridColor));
     zoomer[0]->setTrackerMode(QwtPicker::ActiveOnly);
     zoomer[0]->setTrackerPen(QColor(gridColor));
-
+     
     zoomer[1] = new Zoomer(QwtPlot::xTop, QwtPlot::yRight,
-         qwtPlot->canvas());
+         this->canvas());
 
-    panner = new QwtPlotPanner(qwtPlot->canvas());
+    panner = new QwtPlotPanner(this->canvas());
     panner->setMouseButton(Qt::MidButton);
     panner->setEnabled(false);
 
@@ -155,7 +145,11 @@ QPL_Scope::QPL_Scope(QWidget *parent,QPL_ScopeData *scope,int ind,QwtPlot *qwt)
 
     zoomer[1]->setEnabled(false);
     zoomer[1]->zoom(0);
+  
+    zoomer[0]->setZoomBase(false);
+    zoomer[1]->setZoomBase(false);
 
+  
     bottomText = new QwtPlotMarker();
     QwtText bt(tr("x: %1.%2 sec/dev  roll <-").arg(0).arg(1));
     bt.setColor(QColor(gridColor));
@@ -163,22 +157,40 @@ QPL_Scope::QPL_Scope(QWidget *parent,QPL_ScopeData *scope,int ind,QwtPlot *qwt)
     bottomText->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
     bottomText->setLineStyle(QwtPlotMarker::NoLine);
     bottomText->setValue(0.0,-5.);
-   bottomText->attach(qwtPlot);
+   bottomText->attach(this);
 
 
-    //picker->setEnabled(!on);
-
-       //  qwtPlot->setTitle(tr(Scope->name));
+   Traces=NULL;
+   
+       grid = new QwtPlotGrid;
+    //grid->enableXMin(true);
+    grid->setMajPen(QPen(gridColor, 0, Qt::DotLine));
+    grid->attach(this);
+    
+           //  qwtPlot->setTitle(tr(Scope->name));
        //qwtPlot->setAxisTitle(QwtPlot::xBottom, "Delta Time [sec]");
-       qwtPlot->setAxisScale(QwtPlot::xBottom, xmin, xmax,xStep);
+       this->setAxisScale(QwtPlot::xBottom, xmin, xmax,xStep);
         //qwtPlot->axisScaleDiv(QwtPlot::xBottom)=new QwtScaleDiv(1,0);
        // qwtPlot->setAxisTitle(QwtPlot::yLeft, "Values");
-       qwtPlot->setAxisScale(QwtPlot::yLeft, ymin, ymax,yStep);
+       this->setAxisScale(QwtPlot::yLeft, ymin, ymax,yStep);
+           this->enableAxis(QwtPlot::xBottom,false);
+       this->enableAxis(QwtPlot::yLeft,false);
+          replot();
+}
+
+
+void QPL_Scope::initTraces(QPL_ScopeData *scope,int ind)
+{
+      index=ind;
+      Scope=scope;
+    //picker->setEnabled(!on);
+
+
        if (Scope->data2disk()->isSaveScopeTime())
-           qwtPlot->enableAxis(QwtPlot::xBottom,true);
+           this->enableAxis(QwtPlot::xBottom,true);
        else
-          qwtPlot->enableAxis(QwtPlot::xBottom,false);
-       qwtPlot->enableAxis(QwtPlot::yLeft,false);
+          this->enableAxis(QwtPlot::xBottom,false);
+       this->enableAxis(QwtPlot::yLeft,false);
 //     QwtPlotMarker *mY = new QwtPlotMarker();
 //     mY->setLabelAlignment(Qt::AlignRight|Qt::AlignTop);
 //     mY->setLineStyle(QwtPlotMarker::HLine);
@@ -208,7 +220,7 @@ QPL_Scope::QPL_Scope(QWidget *parent,QPL_ScopeData *scope,int ind,QwtPlot *qwt)
 
 
        for (unsigned int j=0;j<Ncurve;j++){
-                Traces[j] = new QPL_ScopeTrace(qwtPlot, MaxDataPoints, j);
+                Traces[j] = new QPL_ScopeTrace(this, MaxDataPoints, j);
                 Traces[j]->changeNDataSoll(NDataSoll,dt);
                 Traces[j]->setGridColor(gridColor);
                 Traces[j]->setName(Scope->getTraceNames().at(j));
@@ -280,10 +292,7 @@ QPL_Scope::QPL_Scope(QWidget *parent,QPL_ScopeData *scope,int ind,QwtPlot *qwt)
 
   //  }
            // grid
-    grid = new QwtPlotGrid;
-    //grid->enableXMin(true);
-    grid->setMajPen(QPen(gridColor, 0, Qt::DotLine));
-    grid->attach(qwtPlot);
+
 
 
         timer = new QTimer(this);
@@ -301,16 +310,18 @@ QPL_Scope::~QPL_Scope(){
 //Plotting_Scope_Data_Thread->wait();
 //delete Plotting_Scope_Data_Thread;
 //delete mY;
+if (Traces) {
 for (unsigned int j=0;j<Ncurve;j++){
         delete Traces[j];
 }
 delete[] Traces;
 }
+}
 
 
 void QPL_Scope::refresh()
 {
-        qwtPlot->replot();
+        this->replot();
 
 
   for (unsigned int nn=0; nn<Ncurve;++nn){
@@ -594,7 +605,7 @@ NDistance=(int)(dt*(1./Scope->getDt()));  //doesnt work
                   Traces[j]->setLabelsXValue(0.+k*xmax/5.);
         }
         xStep=(xmax-xmin)/xMajorTicks;
-        qwtPlot->setAxisScale(QwtPlot::xBottom, xmin, xmax,xStep);
+        this->setAxisScale(QwtPlot::xBottom, xmin, xmax,xStep);
             vertLine->setXValue(xmax/2.);
         if (Verbose) {
                 printf("xmin: %f,xmax %f, scope->dt ist %f\n",xmin,xmax,Scope->getDt());
@@ -623,7 +634,7 @@ void QPL_Scope::setGridColor(QColor gridcolor){
 }
 void QPL_Scope::setBgColor(QColor bgcolor){
         bgColor=bgcolor;
-        qwtPlot->setCanvasBackground(bgColor);
+        this->setCanvasBackground(bgColor);
 }
 
 

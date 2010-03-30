@@ -5,15 +5,18 @@
 #include <scope_trace.h>
 #include <scope_data.h>
 
+#include <qwt_plot.h>
 
-class QTPLOTSHARED_EXPORT QPL_Scope : public QWidget
+class  QPL_Scope : public QwtPlot
 {
    Q_OBJECT
  //friend class PlottingScopeDataThread;
 public:
    enum PlottingMode {roll,overwrite,trigger,hold};
-   QPL_Scope(QWidget *parent = 0,QPL_ScopeData *scope=0,int ind=0,QwtPlot *qwt=0);
-   ~QPL_Scope();
+   //QPL_Scope(QWidget *parent = 0,QPL_ScopeData *scope=0,int ind=0);
+   QPL_Scope(QWidget *parent = 0);
+   virtual ~QPL_Scope();
+   void initTraces(QPL_ScopeData *scope,int ind);
    void changeRefreshRate(double);
    void changeDataPoints(double);
    void changeDivider(double);
@@ -89,7 +92,7 @@ private:
   double xMajorTicks,xStep;
   int NDistance;
   QTimer *timer;
-  QwtPlot *qwtPlot;
+
   double RefreshRate;
 //  double saveTime;
 //  QString fileName;
