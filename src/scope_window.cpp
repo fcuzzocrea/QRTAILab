@@ -48,13 +48,16 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QPL_ScopeData *scope,int ind)
     this->setSizePolicy(sizePolicy);
     this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/scope_icon.xpm")));
     this->setWindowFlags(windowFlags() ^ Qt::WindowMaximizeButtonHint );
-    qwtPlot = new QwtPlot(this);
+     //qwtscope = new QPL_Scope(this,scope,index);
+        qwtscope = new QPL_Scope(this);
+        qwtscope->initTraces(scope,index);
+    //qwtPlot = new QwtPlot(this);
     //qwtPlot=this;
-    qwtPlot->setObjectName(QString::fromUtf8("qwtPlot"));
+    qwtscope->setObjectName(QString::fromUtf8("qwtPlot"));
 
-    this->setWidget(qwtPlot);
+    this->setWidget(qwtscope);
     this->setWindowTitle(QApplication::translate("QRL_ScopeWindow", scope->getName().toLocal8Bit().data(), 0, QApplication::UnicodeUTF8));
-    qwtscope = new QPL_Scope(this,scope,index,qwtPlot);
+
     // Disable polygon clipping
    // QwtPainter::setDeviceClipping(false);
     // We don't need the cache here

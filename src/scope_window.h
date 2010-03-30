@@ -104,7 +104,7 @@ protected slots:
 private:
   qint32 fileVersion;
   QPL_Scope* qwtscope;
-  QwtPlot *qwtPlot;
+ // QwtPlot *qwtPlot;
   int index;
    friend QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d);
   friend QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d));
