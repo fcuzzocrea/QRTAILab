@@ -275,7 +275,26 @@ void QRL_LogsManager::setFileDirectory(){
 
 
 }
+  void QRL_LogsManager::setSaveTime(int logNumber, double savetime, bool autosave){
 
+if (logNumber<Num_Logs){
+     Logs[logNumber]->data2disk()->setSaveTime(savetime);
+     if (autosave)
+       if (!Logs[logNumber]->data2disk()->startSaving()) {
+         printf("Error in opening file %s", Logs[logNumber]->data2disk()->getFileName().toLocal8Bit().data() );
+                        QMessageBox::critical(this, tr("QMessageBox::critical()"),
+                                     tr("Error in opening file!"),
+                                     QMessageBox::Abort);
+     }
+ }
+if (logNumber==currentLog){
+timeCounter->setValue(savetime);
+
+}
+
+
+
+  }
  void QRL_LogsManager::setFileName(int logNumber, const QString& filename){
 
      if (logNumber<Num_Logs)

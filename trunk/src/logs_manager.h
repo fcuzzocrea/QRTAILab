@@ -49,8 +49,9 @@ public:
       void setFileVersion(qint32 v);
   QRL_LogWindow** getLogWindows(){return LogWindows;}
          void stopRefresh(){timer->stop();}
-          void setLogName(int i,QString name);
-           void setFileName(int logNumber, const QString& filename);
+         void setLogName(int i,QString name);
+         void setFileName(int logNumber, const QString& filename);
+         void setSaveTime(int logNumber, double savetime, bool autosave);
 public slots:
    void showLogOptions( QListWidgetItem * item  );
   void showLogOptions( int );

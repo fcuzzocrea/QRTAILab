@@ -33,6 +33,8 @@ static const struct option long_options[ ] = {
         { "parameterfile", 1, 0, 'P' },
         { "log", 1, 0, 'L' },
         { "logfile", 1, 0, 'l' },
+        { "logsavetime", 1, 0, 'T' },
+        { "logautosave", 0, 0, 'A' },
         { "scope", 1, 0, 'S' },
         { "scopefile", 1, 0, 's' },
         { "scopesavetime", 1, 0, 't' },
@@ -59,11 +61,13 @@ int main(int argc, char *argv[])
 
         QVector <int> Logs;
         QVector <QString> LogFiles;
+        QVector <double> LogSaveTime;
+        QVector <bool> LogAutoSave;
 
      QApplication app(argc, argv);
      QRL_MainWindow mainWin(verboseOutput);
 	
-        while ( ( optionFlag = getopt_long( argc, argv, "hvVp:P:l:L:s:S:t:ac", long_options, NULL ) ) != EOF ) {
+        while ( ( optionFlag = getopt_long( argc, argv, "hvVp:P:l:L:T:As:S:t:ac", long_options, NULL ) ) != EOF ) {
  		
 		switch ( optionFlag ) {
 			case 'v':
@@ -88,6 +92,20 @@ int main(int argc, char *argv[])
                         case 'L':
 //                                printf ("option L with value '%s'\n", optarg);
                                 Logs.append(QString(optarg).toInt());
+                                break;
+                        case 'T':
+//                                printf ("option T with value '%s'\n", optarg);
+                                LogSaveTime.append(QString(optarg).toDouble());
+                                if (LogSaveTime.size()>LogAutoSave.size())
+                                   LogAutoSave.append(false);
+
+                                break;
+                        case 'A':
+//                                printf ("option A with value '%s'\n", optarg);
+                                if (LogSaveTime.size()==LogAutoSave.size())
+                                    LogAutoSave[LogAutoSave.size()-1]=true;
+                                else
+                                    LogAutoSave.append(true);
                                 break;
                         case 's':
 //                                printf ("option s with value '%s'\n", optarg);
@@ -140,6 +158,10 @@ int main(int argc, char *argv[])
                                         "     defines a log for setting  a filename\n" <<
                                         "  -l [filename], --logfile [filename]\n" <<
                                         "     sets a filename for saving for a log\n" <<
+                                        "  -T [filename], --logsavetime [time]\n" <<
+                                        "     sets a save time in sec for saving for a log\n" <<
+                                        "  -A , --logautosave \n" <<
+                                        "     start saving to file\n" <<
 					"  -v, --verbose\n" <<
 					"      verbose output\n" <<
 					"  -V, --version\n" <<
@@ -195,6 +217,25 @@ int main(int argc, char *argv[])
             exit(-1);
      }
       
+
+            if ((Logs.size() != LogFiles.size()) && LogSaveTime.size()==0&&LogAutoSave.size()==0) {
+
+            std::cout <<"After the -L option a -l must follow! Example: -L0 -ltest \n";
+            exit(-1);
+     }
+
+      if ((Logs.size() != LogSaveTime.size()) &&LogFiles.size()==0 ) {
+
+            std::cout <<"After the -L option a -T must follow! Example: -L0 -T4.2 \n";
+            exit(-1);
+     }
+
+            if ((LogSaveTime.size() != LogAutoSave.size()) || (LogSaveTime.size()==0 && LogAutoSave.size()>0 )) {
+
+            std::cout <<"The save time must be specified! Example: -L0 -T4.2 -A \n";
+            exit(-1);
+     }
+
      if (!profilefile.isEmpty() && !QFile::exists(profilefile)){
               std::cout <<"Profile " << profilefile.toAscii().data() << " does not exists! \n" ;
             exit(-1);
@@ -227,7 +268,10 @@ int main(int argc, char *argv[])
             mainWin.setLogFileName((int)Logs.at(i),LogFiles.at(i));
 
      }
-
+     if ((Logs.size() == LogSaveTime.size()) && Logs.size()>0){
+        for (int i=0;i<Logs.size();i++)
+            mainWin.setLogSaveTime((int)Logs.at(i),LogSaveTime.at(i),LogAutoSave.at(i));
+     }
 
      if ((Scopes.size() == ScopeFiles.size()) && Scopes.size()>0){
         for (int i=0;i<Scopes.size();i++)
