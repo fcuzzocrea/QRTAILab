@@ -32,8 +32,8 @@ QRL_LogData::QRL_LogData(int r,int c,float d,char* c_name)
         :nrow(r),ncol(c),dt(d)
 {
 	    visible = false;
-	    isSaving=0;
-  Save_File_Pointer=NULL;
+//	    isSaving=0;
+//  Save_File_Pointer=NULL;
 	    plotting=false;
 
                 logRefreshRate=30.;
