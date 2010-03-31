@@ -324,6 +324,29 @@ void QRL_ScopesManager::setFileDirectory(){
     }
 }
 
+  void QRL_ScopesManager::setSaveTime(int scopeNumber, double savetime, bool autosave){
+
+if (scopeNumber<Num_Scopes){
+     Scopes[scopeNumber]->data2disk()->setSaveTime(savetime);
+     if (autosave)
+       if (!Scopes[scopeNumber]->data2disk()->startSaving()) {
+         printf("Error in opening file %s", Scopes[scopeNumber]->data2disk()->getFileName().toLocal8Bit().data() );
+                        QMessageBox::critical(this, tr("QMessageBox::critical()"),
+                                     tr("Error in opening file!"),
+                                     QMessageBox::Abort);
+
+     }
+
+ }
+if (scopeNumber==currentScope){
+timeCounter->setValue(savetime);
+
+}
+
+
+
+  }
+
 void QRL_ScopesManager::startSaving()
 {
 

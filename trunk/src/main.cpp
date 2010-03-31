@@ -35,6 +35,8 @@ static const struct option long_options[ ] = {
         { "logfile", 1, 0, 'l' },
         { "scope", 1, 0, 'S' },
         { "scopefile", 1, 0, 's' },
+        { "scopesavetime", 1, 0, 't' },
+        { "scopeautosave", 0, 0, 'a' },
         { "connect", 0, 0, 'c' },
         {0, 0, 0, 0}
 };
@@ -52,6 +54,8 @@ int main(int argc, char *argv[])
         QString parameterfile;
         QVector <int> Scopes;
         QVector <QString> ScopeFiles;
+        QVector <double> ScopeSaveTime;
+        QVector <bool> ScopeAutoSave;
 
         QVector <int> Logs;
         QVector <QString> LogFiles;
@@ -59,7 +63,7 @@ int main(int argc, char *argv[])
      QApplication app(argc, argv);
      QRL_MainWindow mainWin(verboseOutput);
 	
-        while ( ( optionFlag = getopt_long( argc, argv, "hvVp:P:l:L:s:S:c", long_options, NULL ) ) != EOF ) {
+        while ( ( optionFlag = getopt_long( argc, argv, "hvVp:P:l:L:s:S:t:ac", long_options, NULL ) ) != EOF ) {
  		
 		switch ( optionFlag ) {
 			case 'v':
@@ -93,6 +97,20 @@ int main(int argc, char *argv[])
 //                                printf ("option S with value '%s'\n", optarg);
                                 Scopes.append(QString(optarg).toInt());
                                 break;
+                        case 't':
+//                                printf ("option t with value '%s'\n", optarg);
+                                ScopeSaveTime.append(QString(optarg).toDouble());
+                                if (ScopeSaveTime.size()>ScopeAutoSave.size())
+                                    ScopeAutoSave.append(false);
+
+                                break;
+                        case 'a':
+//                                printf ("option t with value '%s'\n", optarg);
+                                if (ScopeSaveTime.size()==ScopeAutoSave.size())
+                                    ScopeAutoSave[ScopeAutoSave.size()-1]=true;
+                                else
+                                    ScopeAutoSave.append(true);
+                                break;
 			case 'V':
 				std::cout << "QRtaiLab version " << QRTAILAB_VERSION << std::endl;
 				exit( 0 );
@@ -114,6 +132,10 @@ int main(int argc, char *argv[])
                                         "     defines a scope for setting  a filename\n" <<
                                         "  -s [filename], --scopefile [filename]\n" <<
                                         "     sets a filename for saving for a scope\n" <<
+                                        "  -t [filename], --scopesavetime [time]\n" <<
+                                        "     sets a save time in sec for saving for a scope\n" <<
+                                        "  -a , --scopeautosave \n" <<
+                                        "     start saving to file\n" <<
                                         "  -L [number], --log [number]\n" <<
                                         "     defines a log for setting  a filename\n" <<
                                         "  -l [filename], --logfile [filename]\n" <<
@@ -143,12 +165,30 @@ int main(int argc, char *argv[])
 
      //mainWin.setVerbose(verboseOutput);
 
+       if ((Scopes.size() != 0 || Logs.size()!= 0) && !connect) {
 
-      if ((Scopes.size() != ScopeFiles.size())) {
+             std::cout <<"The connect option -c is necessary!\n";
+            exit(-1);
+       }
+
+      if ((Scopes.size() != ScopeFiles.size()) && ScopeSaveTime.size()==0&&ScopeAutoSave.size()==0) {
 
             std::cout <<"After the -S option a -s must follow! Example: -S0 -stest \n";
             exit(-1);
      }
+
+      if ((Scopes.size() != ScopeSaveTime.size()) &&ScopeFiles.size()==0 ) {
+
+            std::cout <<"After the -S option a -t must follow! Example: -S0 -t4.2 \n";
+            exit(-1);
+     }
+
+            if ((ScopeSaveTime.size() != ScopeAutoSave.size()) || (ScopeSaveTime.size()==0 && ScopeAutoSave.size()>0 )) {
+
+            std::cout <<"The save time must be specified! Example: -S0 -t4.2 -a \n";
+            exit(-1);
+     }
+
       if ((Logs.size() != LogFiles.size())) {
 
                std::cout <<"After the -L option a -l must follow! Example: -L0 -ltest \n";
@@ -192,6 +232,11 @@ int main(int argc, char *argv[])
      if ((Scopes.size() == ScopeFiles.size()) && Scopes.size()>0){
         for (int i=0;i<Scopes.size();i++)
             mainWin.setScopeFileName((int)Scopes.at(i),ScopeFiles.at(i));
+     }
+
+     if ((Scopes.size() == ScopeSaveTime.size()) && Scopes.size()>0){
+        for (int i=0;i<Scopes.size();i++)
+            mainWin.setScopeSaveTime((int)Scopes.at(i),ScopeSaveTime.at(i),ScopeAutoSave.at(i));
      }
 
      int ret= app.exec();

@@ -11,9 +11,23 @@ QRL_Data2Disk::QRL_Data2Disk(float d)
      seconds=0;
      save_file=NULL;
      saveScopeTime=false;
+     fileName=tr("data");
 }
 
 QRL_Data2Disk::~QRL_Data2Disk(){
+
+
+}
+
+bool QRL_Data2Disk::startSaving(){
+
+        bool ret;
+    ret=openSaveFile(fileName.toLocal8Bit().data());
+    if (ret){
+        return true;
+    } else
+        return false;
+
 
 
 }
@@ -22,6 +36,7 @@ bool QRL_Data2Disk::startSaving(const char * name, double save_time){
     bool ret;
     ret=openSaveFile(name);
     if (ret){
+        fileName=QString(name);
         saveTime=save_time;
         return true;
     } else

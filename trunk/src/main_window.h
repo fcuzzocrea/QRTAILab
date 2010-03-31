@@ -86,6 +86,7 @@ public:
       void loadProfile(QString &filename);
       void loadParameters(QString &filename);
       void setScopeFileName(int ScopeNumber,const QString &filename);
+      void setScopeSaveTime(int ScopeNumber,double savetime,bool autosave);
       void setLogFileName(int LogNumber,const QString &filename);
 protected:
      void closeEvent(QCloseEvent *event);
