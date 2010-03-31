@@ -4,6 +4,8 @@
 TARGET = qrtailab
 DESTDIR = ../
 TEMPLATE = app
+target.path = /usr/bin
+INSTALLS += target
 include( ../qrtailab.config )
 CONFIG += QwtPlot \
     QwtWidgets

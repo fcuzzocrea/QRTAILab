@@ -1,3 +1,9 @@
+Version 0.1.9
+ - command line options for scope/log save time and automatic saving from beginning
+ - some bugfixes
+ - works together with rtai 3.8.0 and older releases
+ - make install installs qrtailab to /usr/bin
+
 Version 0.1.8
  - command line options like connect, load profile, etc are available
  - Parameter values can saved and loaded 
