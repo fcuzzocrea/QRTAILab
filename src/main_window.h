@@ -88,6 +88,7 @@ public:
       void setScopeFileName(int ScopeNumber,const QString &filename);
       void setScopeSaveTime(int ScopeNumber,double savetime,bool autosave);
       void setLogFileName(int LogNumber,const QString &filename);
+      void setLogSaveTime(int ScopeNumber,double savetime,bool autosave);
 protected:
      void closeEvent(QCloseEvent *event);
 
