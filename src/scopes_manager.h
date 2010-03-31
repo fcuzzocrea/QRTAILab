@@ -57,6 +57,7 @@ public:
     void setScopeName(int i,QString name);
 public slots:
   void setFileName(int scopeNumber, const QString& filename);
+  void setSaveTime(int scopeNumber, double savetime, bool autosave);
    void refresh();
   void  showScope(int);
   void  showTrace(int);

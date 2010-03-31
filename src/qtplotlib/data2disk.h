@@ -39,6 +39,7 @@ public:
    void setSaveTime(double t) {saveTime=t;}
    double getSaveTime(){return saveTime;}
     bool startSaving(const char * name, double save_time);
+        bool startSaving();
      void stopSaving();
       int n_points_to_save();
     void set_points_counter(int cnt);

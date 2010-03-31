@@ -457,6 +457,14 @@ void QRL_MainWindow::startTarget() {
 
    }
 
+      void QRL_MainWindow::setScopeSaveTime(int ScopeNumber,double savetime,bool autosave){
+
+             if (ScopesManager)
+                        ScopesManager->setSaveTime(ScopeNumber,savetime,autosave);
+
+
+      }
+
       void QRL_MainWindow::setLogFileName(int LogNumber,const QString &filename){
        if (LogsManager)
            LogsManager->setFileName(LogNumber,filename);
