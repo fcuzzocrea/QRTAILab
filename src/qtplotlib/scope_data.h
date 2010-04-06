@@ -57,7 +57,7 @@ public:
     QVector<double> getScopeValue(int t);
     QVector< QVector<double> > getScopeValue();
     bool dataAvailable();
-    QRL_Data2Disk* data2disk(){return d2d;}
+    QPL_Data2Disk* data2disk(){return d2d;}
 //    int start_saving_scope();
 //    void startSaving(FILE* Save_File_Pointer,double Save_Time);
 //     FILE* getSaveFilePtr();
@@ -96,7 +96,7 @@ private:
     QVector <int>  ScopeIndexOut;
     QVector< QVector <double> >  ScopeValuesOut;
     double scopeDt;
-       QRL_Data2Disk* d2d;
+       QPL_Data2Disk* d2d;
 };
 
 

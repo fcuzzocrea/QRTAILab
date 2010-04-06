@@ -2,7 +2,7 @@
 
 
 
-QRL_Data2Disk::QRL_Data2Disk(float d)
+QPL_Data2Disk::QPL_Data2Disk(float d)
       :  dt(d)
     {
 
@@ -14,12 +14,12 @@ QRL_Data2Disk::QRL_Data2Disk(float d)
      fileName=tr("data");
 }
 
-QRL_Data2Disk::~QRL_Data2Disk(){
+QPL_Data2Disk::~QPL_Data2Disk(){
 
 
 }
 
-bool QRL_Data2Disk::startSaving(){
+bool QPL_Data2Disk::startSaving(){
 
         bool ret;
     ret=openSaveFile(fileName.toLocal8Bit().data());
@@ -32,7 +32,7 @@ bool QRL_Data2Disk::startSaving(){
 
 }
 
-bool QRL_Data2Disk::startSaving(const char * name, double save_time){
+bool QPL_Data2Disk::startSaving(const char * name, double save_time){
     bool ret;
     ret=openSaveFile(name);
     if (ret){
@@ -43,7 +43,7 @@ bool QRL_Data2Disk::startSaving(const char * name, double save_time){
         return false;
 }
 
- bool QRL_Data2Disk::openSaveFile(const char * name){
+ bool QPL_Data2Disk::openSaveFile(const char * name){
 
  if (saveFormat==ascii){
   if ((save_file = fopen(name, "w+")) == NULL) {
@@ -60,18 +60,18 @@ bool QRL_Data2Disk::startSaving(const char * name, double save_time){
 
  }
 
-  void QRL_Data2Disk::closeSaveFile(){
+  void QPL_Data2Disk::closeSaveFile(){
 
     fclose(save_file);
     save_file=NULL;
   }
 
-   void QRL_Data2Disk::stopSaving(){
+   void QPL_Data2Disk::stopSaving(){
       closeSaveFile();
       Is_Target_Saving=0;
    }
 
-   void QRL_Data2Disk::writeNextData(double d,int a){
+   void QPL_Data2Disk::writeNextData(double d,int a){
     switch(a){
        case 5:
         fprintf(save_file, "%1.5f ", d);
@@ -83,14 +83,14 @@ bool QRL_Data2Disk::startSaving(const char * name, double save_time){
     }
 
    }
-    void QRL_Data2Disk::newLine(){
+    void QPL_Data2Disk::newLine(){
 
         fprintf(save_file, "\n");
 
     }
 
 
-      int  QRL_Data2Disk::n_points_to_save(){
+      int  QPL_Data2Disk::n_points_to_save(){
         int n_points;
 
         n_points = (int)(saveTime/dt);
@@ -99,7 +99,7 @@ bool QRL_Data2Disk::startSaving(const char * name, double save_time){
 
 }
 
-  void  QRL_Data2Disk::set_points_counter(int cnt){
+  void  QPL_Data2Disk::set_points_counter(int cnt){
 
   Saved_Points=cnt;
 

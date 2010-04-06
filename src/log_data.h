@@ -54,7 +54,7 @@ public:
     double getLogRefreshRate();
     void setPlotting(bool b){plotting=b;}
     bool isPlotting(){return plotting;}
- QRL_Data2Disk* data2disk(){return d2d;}
+ QPL_Data2Disk* data2disk(){return d2d;}
         void setLogValue(float v, int row, int col);
         QVector< QVector<float> > getLogValue();
 private:
@@ -72,7 +72,7 @@ private:
     double scopeRefreshRate;
    bool plotting;
     int visible;
-        QRL_Data2Disk* d2d;
+        QPL_Data2Disk* d2d;
 };
 
 

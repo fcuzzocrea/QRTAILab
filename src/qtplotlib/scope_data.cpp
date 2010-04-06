@@ -46,7 +46,7 @@ QPL_ScopeData::QPL_ScopeData(int ntr, float d,QString c_name, QStringList t_name
                 }
                 scopeDt=1./100.;
                 //name=std::string(c_name);
-                d2d = new QRL_Data2Disk(dt);
+                d2d = new QPL_Data2Disk(dt);
 }
 
 
