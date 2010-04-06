@@ -43,7 +43,7 @@ QRL_LogData::QRL_LogData(int r,int c,float d,char* c_name)
                         LogValues[t].resize(this->getNCol());
                 }
                 name=std::string(c_name);
-                d2d = new QRL_Data2Disk(dt);
+                d2d = new QPL_Data2Disk(dt);
 }
 
 QRL_LogData::~QRL_LogData()

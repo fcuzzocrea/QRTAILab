@@ -26,13 +26,13 @@
 #include <QtGui>
 
 
-class QRL_Data2Disk : public QObject
+class QPL_Data2Disk : public QObject
 {
   Q_OBJECT
 public:
     enum saveFormats {ascii};
-    QRL_Data2Disk(float d);
-   ~QRL_Data2Disk();
+    QPL_Data2Disk(float d);
+   ~QPL_Data2Disk();
     int getIsSaving(){return Is_Target_Saving;}
     void writeNextData(double d,int a);
     void newLine();
