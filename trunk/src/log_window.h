@@ -36,7 +36,7 @@
 
 
 
-class QRL_LogWindow : public QMdiSubWindow
+class QRL_LogWindow : public QDialog
 {
    Q_OBJECT
  //friend class PlottingScopeDataThread;

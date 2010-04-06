@@ -30,7 +30,7 @@
 
 
 QRL_LedWindow::QRL_LedWindow(QWidget *parent,QPL_LedData *led)
-	:QMdiSubWindow(parent),Led(led)
+        :QDialog(parent),Led(led)
 {
 	num_leds = Led->getNLeds();
 	if (this->objectName().isEmpty())
@@ -42,6 +42,7 @@ QRL_LedWindow::QRL_LedWindow(QWidget *parent,QPL_LedData *led)
    // this->setLayout(layout);
     Leds = new QPL_Led* [num_leds];
     ledLabels = new QLabel* [num_leds];
+      this->setLayout(new QVBoxLayout);
     for(int i=0;i<num_leds;++i){
         Leds[i] = new QPL_Led(frame);
 	//Leds[i]->setObjectName(QString::fromUtf8("Led"));
@@ -51,10 +52,18 @@ QRL_LedWindow::QRL_LedWindow(QWidget *parent,QPL_LedData *led)
 	ledLabels[i] = new QLabel(frame);
 	ledLabels[i]->setGeometry(QRect(10+40, 20+i*35, 30, 30));
 	ledLabels[i]->setText(tr("%1").arg(i+1));
+        QFrame *ledFrame = new QFrame(this);
+        ledFrame->setLayout(new QHBoxLayout);
+        ledFrame->layout()->addWidget(Leds[i]);
+        ledFrame->layout()->addWidget(ledLabels[i]);
 	//layout->addWidget(Leds[i],i,1);
 	//this->setWidget(Leds[i]);
+         this->layout()->addWidget(ledFrame);
+
     }
-	this->setWidget(frame);
+        //this->setWidget(frame);
+ this->hide();
+
     this->setMinimumSize(30,50+num_leds*35+10);
     
     this->setWindowTitle(Led->getName());

@@ -35,7 +35,7 @@
 //
 
 QRL_LogWindow::QRL_LogWindow(QWidget *parent,QRL_LogData *log)
-	:QMdiSubWindow(parent),Log(log)
+        :QDialog(parent),Log(log)
 {
     if (this->objectName().isEmpty())
         this->setObjectName(QString::fromUtf8("QRL_LogWindow"));
@@ -74,7 +74,10 @@ QRL_LogWindow::QRL_LogWindow(QWidget *parent,QRL_LogData *log)
     //qwtPlot=this;
 //    matrixPlot->setObjectName(QString::fromUtf8("qwtPlot"));
 
-    this->setWidget(matrixPlot);
+    //this->setWidget(matrixPlot);
+     this->hide();
+     this->setLayout(new QVBoxLayout);
+        this->layout()->addWidget(matrixPlot);
     this->setWindowTitle(QApplication::translate("QRL_LogWindow", Log->getName(), 0, QApplication::UnicodeUTF8));
 //     minScale=0;
 //     maxScale=1;

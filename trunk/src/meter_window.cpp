@@ -31,7 +31,7 @@
 
 
 QRL_MeterWindow::QRL_MeterWindow(QWidget *parent,QRL_MeterData *meter)
-	:QMdiSubWindow(parent),Meter(meter)
+        :QDialog(parent),Meter(meter)
 {
 if (this->objectName().isEmpty())
         this->setObjectName(QString::fromUtf8("QRL_MeterWindow"));
@@ -90,8 +90,10 @@ RefreshRate=20;
 //	Lcd->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 //	Lcd->hide();
         Lcd = new QPL_LcdQLabel(this);
-        this->setWidget(Thermo);
-
+       // this->setWidget(Thermo);
+         this->hide();
+        this->setLayout(new QVBoxLayout);
+        this->layout()->addWidget(Thermo);
 
     this->setWindowTitle(Meter->getName());
 
@@ -119,7 +121,9 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 //                Lcd->setVisible(false);
                  if (!Dial->isVisible()) Dial->setVisible(true);
 
-		 this->setWidget(Dial);
+                // this->setWidget(Dial);
+                 this->layout()->removeWidget(this->layout()->widget());
+                 this->layout()->addWidget(Dial);
 
 		// delete Thermo;
 		break;
@@ -133,7 +137,9 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 //                Thermo->setVisible(true);
 //                Lcd->setVisible(false);
 //                 Dial->setVisible(false);
-		this->setWidget(Thermo);
+                //this->setWidget(Thermo);
+                 this->layout()->removeWidget(this->layout()->widget());
+                 this->layout()->addWidget(Thermo);
 
 		//pipeDistance=Thermo->pos().x();
                 //pipeDistance=Thermo->minimumSizeHint().width()-Thermo->pipeWidth()-Thermo->borderWidth()*2;
@@ -143,7 +149,9 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 //                Thermo->setVisible(false);
 //                Lcd->setVisible(true);
 //                 Dial->setVisible(false);
-		this->setWidget(Lcd);
+                //this->setWidget(Lcd);
+                 this->layout()->removeWidget(this->layout()->widget());
+                 this->layout()->addWidget(Lcd);
 
 		break;
 	default:
