@@ -4,7 +4,7 @@
  *                                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License           *
+ *   it under the terms of the GNU General Public License                  *
  *   as published by  the Free Software Foundation; either version 2       *
  *   of the License, or  (at your option) any later version.               *
  *                                                                         *
@@ -18,37 +18,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-/*
- file:		parameters.h
- describtion:
-   file for the classes QRL_ParametersManager
-*/
 
-#ifndef _LED_DATA_H
-#define _LED_DATA_H 1
+#ifndef LED_DATA_H
+#define LED_DATA_H
+#include <QtGui>
 
-#include <QtGui> 
 
-#include "qrtailab.h"
 
-class QRL_LedData{
+class QPL_LedData{
 public:
   // enum Param_Class {rt_SCALAR,rt_VECTOR,rt_MATRIX_ROW_MAJOR,rt_MATRIX_COL_MAJOR,rt_MATRIX_COL_MAJOR_ND};
-  QRL_LedData(int,float,char*);
+  QPL_LedData(int,float,char*);
   const char* getName(){return name.c_str();}
-  float getDt(){return dt;} 
+  float getDt(){return dt;}
   int getNLeds(){return n_leds;}
   void setLedValue(unsigned int v);
     unsigned int getLedValue();
 
 private:
-    unsigned int LedValues; 
+    unsigned int LedValues;
 const	int n_leds;
-	int visible;
+        int visible;
 const	float dt;
     std::string name;
 };
 
-
-
-#endif
+#endif // LED_DATA_H

@@ -28,75 +28,8 @@
 #include "led_window.h"
 
 
-QLed::QLed(QWidget *parent)
-    : QWidget(parent)
-{
-   m_value=false;
-   m_color=Qt::red;
-   setMinimumSize(QSize(20,20));
-   //setFocusPolicy(Qt::StrongFocus);
-   
-}
 
-void QLed::paintEvent(QPaintEvent *)
-{
-
-
-	QPainter painter(this);
-	painter.setRenderHint(QPainter::Antialiasing, true);
-	painter.setWindow( -50,-50,100,100);
-	
-	painter.setPen(Qt::white);
-	painter.drawArc(-25,-25,50,50,0,5670);
-	painter.drawArc(-32,-33,66,66,0,5670);
-	painter.setPen(Qt::darkGray);
-	painter.drawArc(-34,-33,66,66,3400,3000);
-	
-    if(m_value)
-    {
-      QRadialGradient radialGrad(QPointF(-8, -8), 20);
-      radialGrad.setColorAt(0, Qt::white);
-       
-      radialGrad.setColorAt(1, m_color);
-   	  QBrush brush(radialGrad);
-      painter.setBrush(brush);
-      painter.setPen(Qt::black);
-	  painter.drawEllipse(-25,-25,50,50);
-    }
-    else
-    {
-      QRadialGradient radialGrad(QPointF(-8, -8), 20);
-      radialGrad.setColorAt(0, Qt::white);
-      radialGrad.setColorAt(1, Qt::lightGray);
-   	  QBrush brush(radialGrad);
-      painter.setBrush(brush);
-	  painter.drawEllipse(-25,-25,50,50);
-    }	
-
-}
-
-void QLed::setColor(QColor newColor)
-{
-   m_color=newColor;
-   update();
-}
-
-
-void QLed::setValue(bool value)
-{
-   m_value=value;
-   update();
-}
-
-
-void QLed::toggleValue()
-{ 
-	m_value=!m_value;
-	update();
-}
-
-
-QRL_LedWindow::QRL_LedWindow(QWidget *parent,QRL_LedData *led)
+QRL_LedWindow::QRL_LedWindow(QWidget *parent,QPL_LedData *led)
 	:QMdiSubWindow(parent),Led(led)
 {
 	num_leds = Led->getNLeds();
@@ -107,10 +40,10 @@ QRL_LedWindow::QRL_LedWindow(QWidget *parent,QRL_LedData *led)
 	frame->resize(122, 119);
    // layout=new QGridLayout(this);
    // this->setLayout(layout);
-    Leds = new QLed* [num_leds];
+    Leds = new QPL_Led* [num_leds];
     ledLabels = new QLabel* [num_leds];
     for(int i=0;i<num_leds;++i){
-	Leds[i] = new QLed(frame);
+        Leds[i] = new QPL_Led(frame);
 	//Leds[i]->setObjectName(QString::fromUtf8("Led"));
 	Leds[i]->setGeometry(QRect(10, 20+i*35, 30, 30));
 	Leds[i]->setValue(false);

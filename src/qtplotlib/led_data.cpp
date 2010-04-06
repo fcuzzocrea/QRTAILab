@@ -18,32 +18,25 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-/*
- file:		parameters.h
- describtion:
-   file for the classes QRL_ParametersManager
-*/
-
-
-
 #include "led_data.h"
 
-QRL_LedData::QRL_LedData(int n,float d,char* c_name)
+
+QPL_LedData::QPL_LedData(int n,float d,char* c_name)
         :n_leds(n),dt(d)
 {
-		visible = false;
+                visible = false;
                 LedValues=0;
                 name=std::string(c_name);
 
 }
 
-void QRL_LedData::setLedValue(unsigned int v){
+void QPL_LedData::setLedValue(unsigned int v){
 
-	LedValues=v;
-	
+        LedValues=v;
+
 }
 
-unsigned int QRL_LedData::getLedValue(){
+unsigned int QPL_LedData::getLedValue(){
 
 unsigned int ret=-1;
 

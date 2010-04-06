@@ -548,7 +548,7 @@ void TargetThread::run()
                                         }
                                 }
                                 if (Num_Leds > 0) {
-                                  Leds = new QRL_LedData* [Num_Leds];
+                                  Leds = new QPL_LedData* [Num_Leds];
                                 }
                                 for (int n = 0; n < Num_Leds; n++) {
                                         char led_name[MAX_NAMES_SIZE];
@@ -560,7 +560,7 @@ void TargetThread::run()
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &n, &led_name, sizeof(int), sizeof(led_name));
                                         //strncpy(Leds[n]->name, led_name, MAX_NAMES_SIZE);
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &n, &dt, sizeof(int), sizeof(float   ));
-                                        Leds[n] = new QRL_LedData(Num_Leds,dt,led_name);
+                                        Leds[n] = new QPL_LedData(Num_Leds,dt,led_name);
                                 }
                                 RT_rpcx(Target_Node, Target_Port, If_Task, &req, &msg, sizeof(int), sizeof(int));
 
