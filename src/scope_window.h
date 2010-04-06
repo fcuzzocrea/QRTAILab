@@ -84,7 +84,7 @@
  * @bug overwride: for more then one trace the beginning all traces can get different. -> error in time axis
  */
 
-class QRL_ScopeWindow : public QMdiSubWindow
+class QRL_ScopeWindow : public QDialog
 {
    Q_OBJECT
  //friend class PlottingScopeDataThread;

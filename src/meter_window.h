@@ -44,7 +44,7 @@
  * @brief Display Meter 
  * @todo calculate lineargradient for horizontal layout
  */
-class QRL_MeterWindow : public QMdiSubWindow
+class QRL_MeterWindow : public QDialog
 {
    Q_OBJECT
    Q_ENUMS( Meter_Type )

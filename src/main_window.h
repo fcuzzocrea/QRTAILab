@@ -132,6 +132,8 @@ private:
     QRL_TargetsManager *TargetsManager;
     QLabel* statusMessage;
     QMdiArea *mdiArea;
+     QGraphicsView *view;
+     QGraphicsScene *scene;
     int Verbose;
     QRtaiLabCore	*qTargetInterface;
 //       QRL_Parameters *Parameters;
