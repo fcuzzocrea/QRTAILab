@@ -212,39 +212,39 @@ void QRL_MetersManager::changeMeter(int type)
 
 void QRL_MetersManager::changeThermoColor1()
 {
-	QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->getThermoColor1());
-	MeterWindows[currentMeter]->setThermoColor1(color);
+        QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->thermo()->getThermoColor1());
+        MeterWindows[currentMeter]->thermo()->setThermoColor1(color);
 
 }
 
 void QRL_MetersManager::changeThermoColor2()
 {
-	QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->getThermoColor2());
-	MeterWindows[currentMeter]->setThermoColor2(color);
+        QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->thermo()->getThermoColor2());
+        MeterWindows[currentMeter]->thermo()->setThermoColor2(color);
 
 }
 
 void QRL_MetersManager::changePipeWith(double w)
 {
-	MeterWindows[currentMeter]->setPipeWith(w);
+        MeterWindows[currentMeter]->thermo()->setPipeWith(w);
 }
 
 void QRL_MetersManager::changeAlarmThermoColor1()
 {
-	QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->getAlarmThermoColor1());
-	MeterWindows[currentMeter]->setAlarmThermoColor1(color);
+        QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->thermo()->getAlarmThermoColor1());
+        MeterWindows[currentMeter]->thermo()->setAlarmThermoColor1(color);
 
 }
 
 void QRL_MetersManager::changeAlarmThermoColor2()
 {
-	QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->getAlarmThermoColor2());
-	MeterWindows[currentMeter]->setAlarmThermoColor2(color);
+        QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->thermo()->getAlarmThermoColor2());
+        MeterWindows[currentMeter]->thermo()->setAlarmThermoColor2(color);
 
 }
 void QRL_MetersManager::enableThermoAlarm(int state) 
 {
-	MeterWindows[currentMeter]->setThermoAlarm(state);
+        MeterWindows[currentMeter]->thermo()->setThermoAlarm(state);
 }
 
 void QRL_MetersManager::changeThermoColorType(int colorType)
@@ -253,12 +253,12 @@ void QRL_MetersManager::changeThermoColorType(int colorType)
 	case 0:
 		alarmThermoColor2PushButton->setEnabled(true);
 		thermoColor2PushButton->setEnabled(true);
-		MeterWindows[currentMeter]->setGradientEnabled(true);
+                MeterWindows[currentMeter]->thermo()->setGradientEnabled(true);
 		break;
 	case 1:
 		alarmThermoColor2PushButton->setEnabled(false);
 		thermoColor2PushButton->setEnabled(false);
-		MeterWindows[currentMeter]->setGradientEnabled(false);
+                MeterWindows[currentMeter]->thermo()->setGradientEnabled(false);
 		break;
 	default:
 		break;
@@ -266,17 +266,17 @@ void QRL_MetersManager::changeThermoColorType(int colorType)
 }
 void QRL_MetersManager::changeAlarmLevel(double level)
 {
-	MeterWindows[currentMeter]->setAlarmLevel(level);
+        MeterWindows[currentMeter]->thermo()->setAlarmLevel(level);
 }
 
 void QRL_MetersManager::changeThermoDirection(int d)
 {
 	switch(d){
 	case 0:
-		MeterWindows[currentMeter]->setThermoDirection(Qt::Vertical);
+                MeterWindows[currentMeter]->thermo()->setThermoDirection(Qt::Vertical);
 		break;
 	case 1:
-		MeterWindows[currentMeter]->setThermoDirection(Qt::Horizontal);
+                MeterWindows[currentMeter]->thermo()->setThermoDirection(Qt::Horizontal);
 		break;
 	default:
 		break;
@@ -315,22 +315,22 @@ void QRL_MetersManager::showMeterOptions( int index ){
 //connect( meterComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeMeter(int) ) );
 
 if (MeterWindows[currentMeter]->getMeterType()==QRL_MeterWindow::THERMO) {
-	alarmLevelCounter->setValue(MeterWindows[currentMeter]->getAlarmLevel());
-	if(MeterWindows[currentMeter]->getThermoAlarm())
+        alarmLevelCounter->setValue(MeterWindows[currentMeter]->thermo()->alarmLevel());
+        if(MeterWindows[currentMeter]->thermo()->getThermoAlarm())
 		alarmCheckBox->setCheckState(Qt::Checked);
 	else
 		alarmCheckBox->setCheckState(Qt::Unchecked);
 	
-	pipeWithCounter->setValue(MeterWindows[currentMeter]->getPipeWidth());
-	if (MeterWindows[currentMeter]->getGradientEnabled()) 
+        pipeWithCounter->setValue(MeterWindows[currentMeter]->thermo()->pipeWidth());
+        if (MeterWindows[currentMeter]->thermo()->getGradientEnabled())
 		colorComboBox->setCurrentIndex(0);
 	else
 		colorComboBox->setCurrentIndex(1);
     } else {
     if (MeterWindows[currentMeter]->getMeterType()==QRL_MeterWindow::DIAL)
-           MeterWindows[currentMeter]->setNeedleColor(MeterWindows[currentMeter]->getNeedleColor());
+           MeterWindows[currentMeter]->dial()->setNeedleColor(MeterWindows[currentMeter]->dial()->getNeedleColor());
         else { //LCD
-                 switch(MeterWindows[currentMeter]->getLcdFormat()){
+                 switch(MeterWindows[currentMeter]->lcd()->getLcdFormat()){
                         case 'e':
                                 formatComboBox->setCurrentIndex(0);
                                 break;
@@ -343,7 +343,7 @@ if (MeterWindows[currentMeter]->getMeterType()==QRL_MeterWindow::THERMO) {
                         default:
                                 break;
                   }
-                  precisionCounter->setValue(MeterWindows[currentMeter]->getLcdPrecision());
+                  precisionCounter->setValue(MeterWindows[currentMeter]->lcd()->getLcdPrecision());
         }
   }
 
@@ -365,32 +365,32 @@ void QRL_MetersManager::showMeter(int state)
 
   void QRL_MetersManager::changeNeedleColor(){
 
-	QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->getNeedleColor());
-	MeterWindows[currentMeter]->setNeedleColor(color);
+        QColor color= QColorDialog::getColor(MeterWindows[currentMeter]->dial()->getNeedleColor());
+        MeterWindows[currentMeter]->dial()->setNeedleColor(color);
 
 }
   void QRL_MetersManager::changeLcdFont(){
 	bool ok;
 	QFont font = QFontDialog::getFont(
-                 &ok, MeterWindows[currentMeter]->getLcdFont(), this);
-	MeterWindows[currentMeter]->setLcdFont(font);
+                 &ok, MeterWindows[currentMeter]->lcd()->getLcdFont(), this);
+        MeterWindows[currentMeter]->lcd()->setLcdFont(font);
 }
 
 void QRL_MetersManager::changeLcdPrecision(double p){
 
-  MeterWindows[currentMeter]->setLcdPrecision(p);
+  MeterWindows[currentMeter]->lcd()->setLcdPrecision(p);
 }
 
 void QRL_MetersManager::changeLcdFormat(int d){
   switch(d){
 	case 0:
-		MeterWindows[currentMeter]->setLcdFormat('e');
+                MeterWindows[currentMeter]->lcd()->setLcdFormat('e');
 		break;
 	case 1:
-		MeterWindows[currentMeter]->setLcdFormat('f');
+                MeterWindows[currentMeter]->lcd()->setLcdFormat('f');
 		break;
 	case 2:
-		MeterWindows[currentMeter]->setLcdFormat('g');
+                MeterWindows[currentMeter]->lcd()->setLcdFormat('g');
 		break;
 	default:
 		break;

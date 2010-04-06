@@ -37,6 +37,9 @@
 //#include "qmeter.h"
  #include <QMdiSubWindow>
 #include "meter_data.h"
+#include "thermo_qwt.h"
+#include "dial_qwt.h"
+#include "lcd_qlabel.h"
 /**
  * @brief Display Meter 
  * @todo calculate lineargradient for horizontal layout
@@ -58,32 +61,10 @@ public:
     double getMax(){return Max;}
    void setMeter(Meter_Type);
    Meter_Type getMeterType(){return MeterType;}
-   void setThermoColor1(const QColor&);
-   QColor getThermoColor1(){return thermoColor1;}
-   void setThermoColor2(const QColor&);
-   QColor getThermoColor2(){return thermoColor2;}
-   void setPipeWith(double);
-   double getPipeWidth(){return pipeWidth;}
-   void setAlarmThermoColor1(const QColor&);
-   QColor getAlarmThermoColor1(){return alarmThermoColor1;}
-   void setAlarmThermoColor2(const QColor&);
-   QColor getAlarmThermoColor2(){return alarmThermoColor2;}
-   void setThermoAlarm(int);
-      void setThermoAlarm(bool);
-   bool getThermoAlarm(){return Thermo->alarmEnabled();}
-   void setGradientEnabled(bool);
-   bool getGradientEnabled(){return gradientEnabled;}
-   void setAlarmLevel(double);
-   double getAlarmLevel(){return alarmLevel;}
-   void setThermoDirection(Qt::Orientation o);
-   void setLcdFont(const QFont& font);
-   QFont getLcdFont(){return Lcd->font();}
-  void setLcdFormat(char c) ;
-  char getLcdFormat() {return format;}
-  void setLcdPrecision(int p);
-   int getLcdPrecision(){return precision;}
-   void setNeedleColor(const QColor&);
-   QColor getNeedleColor(){return needle->palette().button().color();}
+   QPL_ThermoQwt* thermo(){return Thermo;}
+   QPL_DialQwt* dial(){return Dial;}
+   QPL_LcdQLabel* lcd(){return Lcd;}
+
    void setFileVersion(qint32 v){fileVersion=v;}
 protected slots:
   void closeEvent ( QCloseEvent * event ){event->ignore(); this->hide(); }
@@ -92,23 +73,25 @@ private:
   // void setDistance(const QwtThermo* const);
  // float Value;
    QRL_MeterData* Meter;
-  QwtThermo *Thermo;
-  QwtDial *Dial;
+  //QwtThermo *Thermo;
+  QPL_ThermoQwt *Thermo;
+  QPL_DialQwt *Dial;
  // QMeter *Dial;
 //  QLCDNumber *Lcd;
-  QLabel *Lcd;
+  //QLabel *Lcd;
+  QPL_LcdQLabel* Lcd;
   double RefreshRate;
-  double Max,Min;
   Meter_Type MeterType;
-  QColor thermoColor1,thermoColor2,alarmThermoColor1,alarmThermoColor2;
-  bool gradientEnabled;
-  int pipeWidth,pipeDistance;
-  double alarmLevel;
-  QBrush brush;
-  QLinearGradient gradient,alarmGradient;
-  QwtDialSimpleNeedle *needle;
-  int precision;
-  char format;
+//  QColor thermoColor1,thermoColor2,alarmThermoColor1,alarmThermoColor2;
+//  bool gradientEnabled;
+ // int pipeWidth,pipeDistance;
+  double Min,Max;
+//  double alarmLevel;
+//  QBrush brush;
+//  QLinearGradient gradient,alarmGradient;
+//  QwtDialSimpleNeedle *needle;
+//  int precision;
+//  char format;
   friend QDataStream& operator<<(QDataStream &out, const QRL_MeterWindow &d);
   friend QDataStream& operator>>(QDataStream &in, QRL_MeterWindow(&d));
 };

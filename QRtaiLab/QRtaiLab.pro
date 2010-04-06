@@ -40,7 +40,11 @@ SOURCES += ../src/main.cpp \
     ../src/qtplotlib/scope_data.cpp \
     ../src/qtplotlib/scope.cpp \
     ../src/qtplotlib/led.cpp \
-    ../src/qtplotlib/led_data.cpp
+    ../src/qtplotlib/led_data.cpp \
+    ../src/qtplotlib/thermo_qwt.cpp \
+    ../src/qtplotlib/dial_qwt.cpp \
+    ../src/qtplotlib/Lcd_qlabel.cpp \
+    ../src/qtplotlib/lcd_qlabel.cpp
 HEADERS += ../src/targets_manager.h \
     ../src/target_thread.h \
     ../src/scope_window.h \
@@ -68,7 +72,11 @@ HEADERS += ../src/targets_manager.h \
     ../src/qtplotlib/scope.h \
     ../src/qtplotlib/qtplot_global.h \
     ../src/qtplotlib/led.h \
-    ../src/qtplotlib/led_data.h
+    ../src/qtplotlib/led_data.h \
+    ../src/qtplotlib/thermo_qwt.h \
+    ../src/qtplotlib/dial_qwt.h \
+    ../src/qtplotlib/Lcd_qlabel.h \
+    ../src/qtplotlib/lcd_qlabel.h
 FORMS += ../src/qrl_leds_manager.ui \
     ../src/qrl_targets_manager.ui \
     ../src/qrl_scopes_manager.ui \
