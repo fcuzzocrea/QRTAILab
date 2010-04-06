@@ -30,34 +30,8 @@
 
 #include <QtGui>
 #include "led_data.h"
+#include "led.h"
 
-class QColor;
-
-/**
- * @brief QLed
- */
-class  QLed : public QWidget
-{
- Q_OBJECT
-	Q_PROPERTY(bool value READ value WRITE setValue);
-	Q_PROPERTY(QColor color READ color WRITE setColor);
-
-public: 
-    QLed(QWidget *parent = 0);
-    bool value() const { return m_value; }
-    QColor color() const { return m_color; }
-public slots:
-	void setValue(bool);
-	void setColor(QColor);
-	void toggleValue();
-
-
-protected:
-    bool m_value;
-    QColor m_color;
-    void paintEvent(QPaintEvent *event);
-
-};
 /**
  * @brief LedWindow
  */
@@ -65,7 +39,7 @@ class QRL_LedWindow : public QMdiSubWindow
 {
    Q_OBJECT
 public:
-   QRL_LedWindow(QWidget *parent = 0,QRL_LedData* led=0);
+   QRL_LedWindow(QWidget *parent = 0,QPL_LedData* led=0);
    ~QRL_LedWindow();
    void refresh();
    void setLedColor(QColor);
@@ -74,8 +48,8 @@ protected slots:
   void closeEvent ( QCloseEvent * event );
 private:
 //   float Value;
-    QRL_LedData* Led;
-  QLed **Leds;
+    QPL_LedData* Led;
+  QPL_Led **Leds;
   QFrame * frame;
   int num_leds;
   QLabel **ledLabels;

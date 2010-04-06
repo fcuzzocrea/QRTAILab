@@ -33,7 +33,7 @@
 /**
 * @brief Initialize Meters Manager
 */
-QRL_LedsManager::QRL_LedsManager(QWidget *parent,int numLeds, QRL_LedData **leds, int verb)
+QRL_LedsManager::QRL_LedsManager(QWidget *parent,int numLeds, QPL_LedData **leds, int verb)
         :QDialog(parent),Num_Leds(numLeds),Leds(leds),verbose(verb)
 {
 	setupUi(this);

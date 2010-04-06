@@ -101,8 +101,8 @@ public:
     QString getMeterName(int);
     int	    getMeterDt(int);
 
-   QRL_LedData** getLeds(){return targetthread->getLeds();}
-    QRL_LedData* getLed(int i){return targetthread->getLeds()[i];}
+   QPL_LedData** getLeds(){return targetthread->getLeds();}
+    QPL_LedData* getLed(int i){return targetthread->getLeds()[i];}
     int getLedNumber();
     QString getLedName(int);
     int	    getLedDt(int);

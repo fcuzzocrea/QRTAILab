@@ -83,7 +83,7 @@ class TargetThread : public QThread
     // should  be removed
     QPL_ScopeData** getScopes(){return Scopes;}
     QRL_MeterData** getMeters(){return Meters;}
-    QRL_LedData** getLeds(){return Leds;}
+    QPL_LedData** getLeds(){return Leds;}
     QRL_ALogData** getALogs(){return ALogs;}
     QRL_LogData** getLogs(){return Logs;}
     Target_Parameters_T* getParameters(){return Tunable_Parameters;}
@@ -163,7 +163,7 @@ class TargetThread : public QThread
   QPL_ScopeData **Scopes;
   QRL_LogData **Logs;
   QRL_ALogData **ALogs;
-  QRL_LedData **Leds;
+  QPL_LedData **Leds;
   QRL_MeterData **Meters;
   Target_Synchs_T *Synchs;
   Batch_Parameters_T Batch_Parameters[MAX_BATCH_PARAMS];

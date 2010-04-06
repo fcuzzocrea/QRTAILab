@@ -32,14 +32,15 @@ SOURCES += ../src/main.cpp \
     ../src/log_data.cpp \
     ../src/led_window.cpp \
     ../src/leds_manager.cpp \
-    ../src/led_data.cpp \
     ../src/alog_data.cpp \
     ../src/log_matrixview.cpp \
     ../src/rtai_scope.cpp \
     ../src/qtplotlib/data2disk.cpp \
     ../src/qtplotlib/scope_trace.cpp \
     ../src/qtplotlib/scope_data.cpp \
-    ../src/qtplotlib/scope.cpp
+    ../src/qtplotlib/scope.cpp \
+    ../src/qtplotlib/led.cpp \
+    ../src/qtplotlib/led_data.cpp
 HEADERS += ../src/targets_manager.h \
     ../src/target_thread.h \
     ../src/scope_window.h \
@@ -58,7 +59,6 @@ HEADERS += ../src/targets_manager.h \
     ../src/log_data.h \
     ../src/led_window.h \
     ../src/leds_manager.h \
-    ../src/led_data.h \
     ../src/alog_data.h \
     ../src/log_matrixview.h \
     ../src/rtai_scope.h \
@@ -66,7 +66,9 @@ HEADERS += ../src/targets_manager.h \
     ../src/qtplotlib/scope_trace.h \
     ../src/qtplotlib/scope_data.h \
     ../src/qtplotlib/scope.h \
-    ../src/qtplotlib/qtplot_global.h
+    ../src/qtplotlib/qtplot_global.h \
+    ../src/qtplotlib/led.h \
+    ../src/qtplotlib/led_data.h
 FORMS += ../src/qrl_leds_manager.ui \
     ../src/qrl_targets_manager.ui \
     ../src/qrl_scopes_manager.ui \

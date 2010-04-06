@@ -430,7 +430,7 @@ static void *rt_get_led_data(void *arg)
 	int hardRealTime = ((Args_T *)arg)->hardRealTime;
 	 long Target_Node = targetThread->getTargetNode();
 		RT_TASK *Target_Interface_Task = targetThread->getTask();
-	QRL_LedData* led = targetThread->getLeds()[index];
+        QPL_LedData* led = targetThread->getLeds()[index];
 	rt_allow_nonroot_hrt();
 	//mlockall(MCL_CURRENT | MCL_FUTURE);
 	if (!(GetLedDataTask = rt_task_init_schmod(qrl::get_an_id("HGE"), 97, 0, 0, SCHED_RR, 0xFF))) {
