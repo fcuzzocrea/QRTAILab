@@ -1,4 +1,4 @@
-#include "log_matrixview.h"
+#include "matrix_view.h"
 
 
 PixelDelegate::PixelDelegate(QObject *parent)

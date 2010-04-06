@@ -31,7 +31,8 @@
 
 #include "qrtailab.h"
 #include "log_data.h"
-#include "log_matrixview.h"
+#include "matrix_view.h"
+#include "matrix_plot.h"
 
 
 
@@ -53,17 +54,18 @@ public:
     void setFileVersion(qint32 v){fileVersion=v;}
     void setPlotting(bool b);
     bool isPlotting(){return plotting;}
-    void setValue(const QVector< QVector<float> > &v);
-     void setMinScale(double min);
-     void setMaxScale(double max);
-     double getMinScale(){return minScale;}
-     double getMaxScale(){return maxScale;}
+//    void setValue(const QVector< QVector<float> > &v);
+//     void setMinScale(double min);
+//     void setMaxScale(double max);
+//     double getMinScale(){return minScale;}
+//     double getMaxScale(){return maxScale;}
      void setDelegate(matrixDelegate d);
      matrixDelegate getDelegate(){return actualDelegate;}
-     void setPixelSize(int psize);
-     int  getPixelSize(){return pixelSize;}
-     void  setShowItemNumber(bool n);
-     bool  getShowItemNumber(){return showItemNumber;}
+//     void setPixelSize(int psize);
+//     int  getPixelSize(){return pixelSize;}
+//     void  setShowItemNumber(bool n);
+//     bool  getShowItemNumber(){return showItemNumber;}
+     QPL_MatrixPlot* matrixplot(){return matrixPlot;}
 public slots:
    void refresh();
   //void setValue(int,float);
@@ -76,20 +78,21 @@ private:
   bool plotting;
   float Value;
   double RefreshRate;
-       double minScale;
-     double maxScale;
-      int pixelSize;
-     bool showItemNumber;
+//       double minScale;
+//     double maxScale;
+//      int pixelSize;
+//     bool showItemNumber;
   QTimer *timer;
  QRL_LogData *Log;
   double saveTime;
   QString fileName;
-     MatrixModel *model;
-      PixelDelegate *pixelView;
-       BlackWhiteDelegate *blackwhiteView;
-       ColorBarDelegate *colorView;
+//     MatrixModel *model;
+//      PixelDelegate *pixelView;
+//       BlackWhiteDelegate *blackwhiteView;
+//       ColorBarDelegate *colorView;
        matrixDelegate actualDelegate;
-      QTableView *matrixPlot;
+//      QTableView *matrixPlot;
+  QPL_MatrixPlot *matrixPlot;
   friend QDataStream& operator<<(QDataStream &out, const QRL_LogWindow &d);
   friend QDataStream& operator>>(QDataStream &in, QRL_LogWindow(&d));
 };

@@ -2,7 +2,7 @@
 #define THERMO_QWT_H
 
 #include "qtplot_global.h"
-#include <qwt_thermo.h>
+#include "qwt_thermo.h"
 
 class  QPL_ThermoQwt : public QwtThermo
 {
