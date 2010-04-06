@@ -32,7 +32,7 @@
 #include "ui_qrl_logs_manager.h"
 #include "qrtailab_core.h"
 #include "log_window.h"
-#include "log_matrixview.h"
+#include "matrix_view.h"
 
 
 

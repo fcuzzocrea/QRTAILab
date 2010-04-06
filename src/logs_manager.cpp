@@ -71,7 +71,7 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,int numLogs, QRL_LogData **logs
         rowDimLineEdit->setText(tr("%1").arg(Logs[currentLog]->getNRow()));
         colDimLineEdit->setText(tr("%1").arg(Logs[currentLog]->getNCol()));
 
-             model = new MatrixModel(this);
+     model = new MatrixModel(this);
      legendTableView->setShowGrid(false);
      legendTableView->horizontalHeader()->hide();
      legendTableView->verticalHeader()->hide();
@@ -90,22 +90,23 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,int numLogs, QRL_LogData **logs
                       v[t].resize(1);
         }
       for (int t=0; t<9; t++){
-         v[8-t][0]=(float)t/8.*(LogWindows[currentLog]->getMaxScale()-LogWindows[currentLog]->getMinScale())+LogWindows[currentLog]->getMinScale();
+         v[8-t][0]=(float)t/8.*(LogWindows[currentLog]->matrixplot()->getMaxScale()-LogWindows[currentLog]->matrixplot()->getMinScale())+LogWindows[currentLog]->matrixplot()->getMinScale();
      }
-         colorView->setMinScale(LogWindows[currentLog]->getMinScale());
-         colorView->setMaxScale(LogWindows[currentLog]->getMaxScale());
+         colorView->setMinScale(LogWindows[currentLog]->matrixplot()->getMinScale());
+         colorView->setMaxScale(LogWindows[currentLog]->matrixplot()->getMaxScale());
          colorView->setPixelSize(20);
          colorView->setShowValue(true);
-         pixelView->setMinScale(LogWindows[currentLog]->getMinScale());
-         pixelView->setMaxScale(LogWindows[currentLog]->getMaxScale());
+         pixelView->setMinScale(LogWindows[currentLog]->matrixplot()->getMinScale());
+         pixelView->setMaxScale(LogWindows[currentLog]->matrixplot()->getMaxScale());
          pixelView->setPixelSize(20);
                  pixelView->setShowValue(true);
-         blackwhiteView->setMinScale(LogWindows[currentLog]->getMinScale());
+         blackwhiteView->setMinScale(LogWindows[currentLog]->matrixplot()->getMinScale());
          blackwhiteView->setPixelSize(20);
                  blackwhiteView->setShowValue(true);
          model->setData(v);
     legendTableView->resizeColumnsToContents();
     legendTableView->resizeRowsToContents();
+    changeDelegate(0);
 
 // 	for(int i=0; i<1; ++i){
 // 		//tabWidget->addTab(new QWidget(tabWidget->widget(1)),tr("Trace ")+tr("%1").arg(i+1));
@@ -164,7 +165,7 @@ void QRL_LogsManager::refresh()
 
   for (int n=0; n<Num_Logs; ++n){
       if (Logs[n]->isPlotting())
-         LogWindows[n]->setValue( Logs[n]->getLogValue());
+         LogWindows[n]->matrixplot()->setValue( Logs[n]->getLogValue());
   }
 }
 
@@ -178,32 +179,32 @@ void QRL_LogsManager::showLog(int state)
 
 }
 void QRL_LogsManager::setMinScale(double min) {
-    if (min<=LogWindows[currentLog]->getMaxScale()){
-        LogWindows[currentLog]->setMinScale(min);
+    if (min<=LogWindows[currentLog]->matrixplot()->getMaxScale()){
+        LogWindows[currentLog]->matrixplot()->setMinScale(min);
              colorView->setMinScale(min);
          pixelView->setMinScale(min);
          blackwhiteView->setMinScale(min);
        for (int t=0; t<9; t++)
-         v[8-t][0]=(float)t/8.*(LogWindows[currentLog]->getMaxScale()-LogWindows[currentLog]->getMinScale())+LogWindows[currentLog]->getMinScale();
+         v[8-t][0]=(float)t/8.*(LogWindows[currentLog]->matrixplot()->getMaxScale()-LogWindows[currentLog]->matrixplot()->getMinScale())+LogWindows[currentLog]->matrixplot()->getMinScale();
 
          model->setData(v);
      }else
-        minScaleCounter->setValue(LogWindows[currentLog]->getMinScale());
+        minScaleCounter->setValue(LogWindows[currentLog]->matrixplot()->getMinScale());
 
 
 }
 void QRL_LogsManager::setMaxScale(double max) {
 
-    if (max>=LogWindows[currentLog]->getMinScale()){
-        LogWindows[currentLog]->setMaxScale(max);
+    if (max>=LogWindows[currentLog]->matrixplot()->getMinScale()){
+        LogWindows[currentLog]->matrixplot()->setMaxScale(max);
                  colorView->setMaxScale(max);
          pixelView->setMaxScale(max);
       for (int t=0; t<9; t++)
-         v[8-t][0]=(float)t/8.*(LogWindows[currentLog]->getMaxScale()-LogWindows[currentLog]->getMinScale())+LogWindows[currentLog]->getMinScale();
+         v[8-t][0]=(float)t/8.*(LogWindows[currentLog]->matrixplot()->getMaxScale()-LogWindows[currentLog]->matrixplot()->getMinScale())+LogWindows[currentLog]->matrixplot()->getMinScale();
 
          model->setData(v);
      } else
-        maxScaleCounter->setValue(LogWindows[currentLog]->getMaxScale());
+        maxScaleCounter->setValue(LogWindows[currentLog]->matrixplot()->getMaxScale());
 
 
 
@@ -211,7 +212,7 @@ void QRL_LogsManager::setMaxScale(double max) {
 void QRL_LogsManager::setPixelSize(int psize) {
 
 
-     LogWindows[currentLog]->setPixelSize(psize);
+     LogWindows[currentLog]->matrixplot()->setPixelSize(psize);
 
 }
 void QRL_LogsManager::changeDelegate(int d)
@@ -242,9 +243,9 @@ void QRL_LogsManager::changeDelegate(int d)
 void QRL_LogsManager::setShowItemNumber(int state)
 {
         if(state==Qt::Checked){
-                LogWindows[currentLog]->setShowItemNumber(true);
+                LogWindows[currentLog]->matrixplot()->setShowItemNumber(true);
         } else {
-                LogWindows[currentLog]->setShowItemNumber(false);
+                LogWindows[currentLog]->matrixplot()->setShowItemNumber(false);
         }
 
 }
@@ -392,8 +393,8 @@ void QRL_LogsManager::showLogOptions( int index ){
         colDimLineEdit->setText(tr("%1").arg(Logs[currentLog]->getNCol()));
         showCheckBox->setChecked(LogWindows[currentLog]->isVisible());
         holdCheckBox->setChecked(!LogWindows[currentLog]->isPlotting());
-        minScaleCounter->setValue(LogWindows[currentLog]->getMinScale());
-         maxScaleCounter->setValue(LogWindows[currentLog]->getMaxScale());
+        minScaleCounter->setValue(LogWindows[currentLog]->matrixplot()->getMinScale());
+         maxScaleCounter->setValue(LogWindows[currentLog]->matrixplot()->getMaxScale());
          rrCounter->setValue(LogWindows[currentLog]->getRefreshRate());
          switch(LogWindows[currentLog]->getDelegate()){
              case QRL_LogWindow::pixel:
@@ -407,8 +408,8 @@ void QRL_LogsManager::showLogOptions( int index ){
                     break;
 
          }
-         pixelSizeSpinBox->setValue(LogWindows[currentLog]->getPixelSize());
-         viewNumberCheckBox->setChecked(LogWindows[currentLog]->getShowItemNumber());
+         pixelSizeSpinBox->setValue(LogWindows[currentLog]->matrixplot()->getPixelSize());
+         viewNumberCheckBox->setChecked(LogWindows[currentLog]->matrixplot()->getShowItemNumber());
 //  	timeCounter->setValue(saveTime[currentLog] );
 //  	fileLineEdit->setText(fileName[currentLog] );
 
