@@ -328,14 +328,23 @@ void QRL_ScopesManager::setFileDirectory(){
 
 if (scopeNumber<Num_Scopes){
      Scopes[scopeNumber]->data2disk()->setSaveTime(savetime);
-     if (autosave)
-       if (!Scopes[scopeNumber]->data2disk()->startSaving()) {
-         printf("Error in opening file %s", Scopes[scopeNumber]->data2disk()->getFileName().toLocal8Bit().data() );
+     if (autosave){
+                if (QFile::exists(Scopes[scopeNumber]->data2disk()->getFileName())) {
+                        printf("File %s exists already.\n",Scopes[scopeNumber]->data2disk()->getFileName().toLocal8Bit().data() );
+                        QMessageBox::critical(this, tr("QMessageBox::critical()"),
+                                     tr("The File exists! Please change the name!"),
+                                     QMessageBox::Abort);
+                } else {
+                //if ((Save_File_Pointer = fopen((File_Name.toLocal8Bit()).data(), "a+")) == NULL) {
+                  if (!Scopes[scopeNumber]->data2disk()->startSaving()) {
+                        printf("Error in opening file %s\n",Scopes[scopeNumber]->data2disk()->getFileName().toLocal8Bit().data() );
                         QMessageBox::critical(this, tr("QMessageBox::critical()"),
                                      tr("Error in opening file!"),
                                      QMessageBox::Abort);
+                }
 
      }
+ }
 
  }
 if (scopeNumber==currentScope){

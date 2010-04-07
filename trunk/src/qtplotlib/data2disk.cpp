@@ -32,6 +32,13 @@ bool QPL_Data2Disk::startSaving(){
 
 }
 
+   void QPL_Data2Disk::setFileName(QString str) {
+        fileName=str;
+ if (!fileName.contains(QDir::separator())){
+     fileName=tr(".")+QDir::separator()+fileName;
+ }
+
+   }
 bool QPL_Data2Disk::startSaving(const char * name, double save_time){
     bool ret;
     ret=openSaveFile(name);

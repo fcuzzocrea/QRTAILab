@@ -15,7 +15,7 @@ class QRL_OpenGLScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    QRL_OpenGLScene();
+    QRL_OpenGLScene(QGraphicsView* v);
 
     void drawBackground(QPainter *painter, const QRectF &rect);
     void addDialog(QDialog *);
@@ -37,7 +37,7 @@ private:
     int m_mouseEventTime;
 
    QTimer *scopeTimer;
-
+QGraphicsView* view;
 
 #ifndef QT_NO_CONCURRENT
     QFutureWatcher<Model *> m_modelLoader;

@@ -102,16 +102,22 @@ QRL_MainWindow::QRL_MainWindow(int v)
         view->setViewport(glWidget);
         view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
 #else
-          view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+          //view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+         // view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+          view->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+          view->setOptimizationFlag(QGraphicsView::DontClipPainter,true);
+         // view->setOptimizationFlag(QGraphicsView::DontSavePainterState,true);
+          view->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing,true);
+          //view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
 #endif
         //view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
         //view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
-
+    view->setTransformationAnchor(QGraphicsView::NoAnchor);
 
      //view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
      view->setFocusPolicy(Qt::NoFocus);
      //scene = new QGraphicsScene(0,0,740,430);
-     scene = new QRL_OpenGLScene();
+     scene = new QRL_OpenGLScene(view);
      scene->setBackgroundBrush(Qt::gray);
      view->setScene(scene);
      view->show();

@@ -259,8 +259,8 @@ QDataStream& operator<<(QDataStream &out, const QRL_LogWindow &d){
 //        a=d.pixelSize; out << a;
 //        out << d.showItemNumber;
         out << *(d.matrixPlot);
-        out << d.saveTime;
-        out << d.fileName;
+        out << d.Log->data2disk()->getSaveTime();//out << d.saveTime;
+        out << d.Log->data2disk()->getFileName();// out << d.fileName;
         a= (qint32)d.actualDelegate; out << a;
 
 	return out;
@@ -280,8 +280,8 @@ QDataStream& operator>>(QDataStream &in, QRL_LogWindow(&d)){
 //        in >> a; d.setPixelSize(a);
 //        in >> b; d.setShowItemNumber(b);
         in >> *(d.matrixPlot);
-        in >> dd; d.setSaveTime(dd);
-        in >> str; d.setFileName(str);
+        in >> dd; d.Log->data2disk()->setSaveTime(dd);//d.setSaveTime(dd);
+        in >> str;d.Log->data2disk()->setFileName(str);// d.setFileName(str);
         in >> a;   d.setDelegate((QRL_LogWindow::matrixDelegate)a);
 		  
 	return in;
