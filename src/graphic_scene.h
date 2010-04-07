@@ -2,7 +2,9 @@
 #define GRAPHIC_SCENE_H
 
 #include <QtGui>
-//#include <QtOpenGL>
+#ifdef _use_opengl_
+#include <QtOpenGL>
+#endif
 #ifndef QT_NO_CONCURRENT
 #include <QFutureWatcher>
 #endif

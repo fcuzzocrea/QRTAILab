@@ -117,8 +117,8 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 	MeterType=metertype;
 	switch (MeterType){
 	case DIAL:
-//                Thermo->setVisible(false);
-//                Lcd->setVisible(false);
+                Thermo->setVisible(false);
+                Lcd->setVisible(false);
                  if (!Dial->isVisible()) Dial->setVisible(true);
 
                 // this->setWidget(Dial);
@@ -134,10 +134,11 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 		//Thermo->setScale(Min,Max);
 		//Thermo->setFillColor(thermoColor);
 
-//                Thermo->setVisible(true);
-//                Lcd->setVisible(false);
-//                 Dial->setVisible(false);
+                Thermo->setVisible(true);
+                Lcd->setVisible(false);
+                 Dial->setVisible(false);
                 //this->setWidget(Thermo);
+
                  this->layout()->removeWidget(this->layout()->widget());
                  this->layout()->addWidget(Thermo);
 
@@ -146,10 +147,11 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
 		//delete Dial;
 		break;
 	case LCD:
-//                Thermo->setVisible(false);
-//                Lcd->setVisible(true);
-//                 Dial->setVisible(false);
+                Thermo->setVisible(false);
+                Lcd->setVisible(true);
+                 Dial->setVisible(false);
                 //this->setWidget(Lcd);
+
                  this->layout()->removeWidget(this->layout()->widget());
                  this->layout()->addWidget(Lcd);
 

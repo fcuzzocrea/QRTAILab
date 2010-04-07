@@ -9,7 +9,8 @@
 
 
 QRL_OpenGLScene::QRL_OpenGLScene()
-:m_backgroundColor(0, 170, 255)
+//:m_backgroundColor(0, 170, 255)
+  :m_backgroundColor(Qt::gray)
 {
 
 
@@ -41,7 +42,9 @@ QRL_OpenGLScene::QRL_OpenGLScene()
 
       scopeTimer = new QTimer(this);
          connect(scopeTimer, SIGNAL(timeout()), this, SLOT(update()));
-         scopeTimer->start((int)(1./20*1000.));
+         #ifdef _use_opengl_
+          scopeTimer->start((int)(1./20*1000.));
+         #endif
 }
 
   void QRL_OpenGLScene::addDialog(QDialog * newDialog){
@@ -67,18 +70,19 @@ QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget(0, Qt::Dialog);
 
 void QRL_OpenGLScene::drawBackground(QPainter *painter, const QRectF &)
 {
-//    if (painter->paintEngine()->type() != QPaintEngine::OpenGL)
-//    //    && painter->paintEngine()->type() != QPaintEngine::OpenGL2)
-//    {
-//        qWarning("OpenGLScene: drawBackground needs a QGLWidget to be set as viewport on the graphics view");
-//        return;
-//    }
-
+    #ifdef _use_opengl_
+    if (painter->paintEngine()->type() != QPaintEngine::OpenGL)
+    //    && painter->paintEngine()->type() != QPaintEngine::OpenGL2)
+    {
+        qWarning("OpenGLScene: drawBackground needs a QGLWidget to be set as viewport on the graphics view");
+        return;
+    }
+#endif
     //painter->beginNativePainting();
-
-   // glClearColor(m_backgroundColor.redF(), m_backgroundColor.greenF(), m_backgroundColor.blueF(), 1.0f);
-   // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+#ifdef _use_opengl_
+    glClearColor(m_backgroundColor.redF(), m_backgroundColor.greenF(), m_backgroundColor.blueF(), 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+#endif
    // painter->endNativePainting();
 
    // QTimer::singleShot(20, this, SLOT(update()));

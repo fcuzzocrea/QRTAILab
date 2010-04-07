@@ -96,12 +96,16 @@ QRL_MainWindow::QRL_MainWindow(int v)
   view = new QGraphicsView();
      //view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
      //view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-//        QGLWidget *glWidget = new QGLWidget(QGLFormat(QGL::SampleBuffers));
+#ifdef _use_opengl_
+        QGLWidget *glWidget = new QGLWidget(QGLFormat(QGL::SampleBuffers));
         //QGLWidget *glWidget = new QGLWidget(QGLFormat(QGL::DoubleBuffer));
-//        view->setViewport(glWidget);
-        //view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+        view->setViewport(glWidget);
         view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
+#else
+          view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+#endif
+        //view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+        //view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
 
 
      //view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
