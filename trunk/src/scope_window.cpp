@@ -75,7 +75,7 @@ QRL_ScopeWindow::~QRL_ScopeWindow(){
 
 void QRL_ScopeWindow::refresh()
 {
- qwtscope->refresh();
+ //qwtscope->refresh();
 }
 
 

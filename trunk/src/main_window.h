@@ -38,6 +38,9 @@
 #include "qrtailab_core.h"
 #include "targets_manager.h"
 #include <locale.h>
+#include "graphic_scene.h"
+//#include <QGLWidget>
+//#include <QtOpenGL>
 
 
 /**
@@ -133,7 +136,8 @@ private:
     QLabel* statusMessage;
     QMdiArea *mdiArea;
      QGraphicsView *view;
-     QGraphicsScene *scene;
+    // QGraphicsScene *scene;
+     QRL_OpenGLScene *scene;
     int Verbose;
     QRtaiLabCore	*qTargetInterface;
 //       QRL_Parameters *Parameters;

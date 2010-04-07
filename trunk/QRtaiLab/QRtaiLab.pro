@@ -9,6 +9,7 @@ INSTALLS += target
 include( ../qrtailab.config )
 CONFIG += QwtPlot \
     QwtWidgets
+#QT += opengl
 MOC_DIR = moc
 OBJECTS_DIR = obj
 UI_DIR = ui
@@ -44,7 +45,8 @@ SOURCES += ../src/main.cpp \
     ../src/qtplotlib/thermo_qwt.cpp \
     ../src/qtplotlib/dial_qwt.cpp \
     ../src/qtplotlib/lcd_qlabel.cpp \
-    ../src/qtplotlib/matrix_plot.cpp
+    ../src/qtplotlib/matrix_plot.cpp \
+    ../src/graphic_scene.cpp
 HEADERS += ../src/targets_manager.h \
     ../src/target_thread.h \
     ../src/scope_window.h \
@@ -76,7 +78,8 @@ HEADERS += ../src/targets_manager.h \
     ../src/qtplotlib/thermo_qwt.h \
     ../src/qtplotlib/dial_qwt.h \
     ../src/qtplotlib/lcd_qlabel.h \
-    ../src/qtplotlib/matrix_plot.h
+    ../src/qtplotlib/matrix_plot.h \
+    ../src/graphic_scene.h
 FORMS += ../src/qrl_leds_manager.ui \
     ../src/qrl_targets_manager.ui \
     ../src/qrl_scopes_manager.ui \
