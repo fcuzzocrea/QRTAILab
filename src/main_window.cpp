@@ -96,9 +96,18 @@ QRL_MainWindow::QRL_MainWindow(int v)
   view = new QGraphicsView();
      //view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
      //view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-     view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+
+//        QGLWidget *glWidget = new QGLWidget(QGLFormat(QGL::SampleBuffers));
+        //QGLWidget *glWidget = new QGLWidget(QGLFormat(QGL::DoubleBuffer));
+//        view->setViewport(glWidget);
+        //view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+        view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
+
+
+     //view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
      view->setFocusPolicy(Qt::NoFocus);
-     scene = new QGraphicsScene(0,0,740,430);
+     //scene = new QGraphicsScene(0,0,740,430);
+     scene = new QRL_OpenGLScene();
      scene->setBackgroundBrush(Qt::gray);
      view->setScene(scene);
      view->show();
@@ -240,7 +249,8 @@ qTargetInterface->setPreferences(p);
 				for (int i=0; i<qTargetInterface->getMeterNumber(); ++i){
                                     MetersManager->setMeterName(i,qTargetInterface->getMeterName(i));
                                     //mdiArea->addSubWindow(MetersManager->getMeterWindows()[i]);
-                                    QGraphicsProxyWidget *proxy = scene->addWidget(MetersManager->getMeterWindows()[i]);
+                                    //QGraphicsProxyWidget *proxy = scene->addWidget(MetersManager->getMeterWindows()[i]);
+                                      scene->addDialog(MetersManager->getMeterWindows()[i]);
 				}
 			}
 			if (MetersManager) {
@@ -264,7 +274,8 @@ qTargetInterface->setPreferences(p);
 				for (int i=0; i<qTargetInterface->getLedNumber(); ++i){
                                     LedsManager->setLedName(i,qTargetInterface->getLedName(i));
                                     //mdiArea->addSubWindow(LedsManager->getLedWindows()[i]);
-                                    QGraphicsProxyWidget *proxy = scene->addWidget(LedsManager->getLedWindows()[i]);
+                                    scene->addDialog(LedsManager->getLedWindows()[i]);
+                                    //QGraphicsProxyWidget *proxy = scene->addWidget(LedsManager->getLedWindows()[i]);
 				}
 			}
 			if (LedsManager) {
@@ -286,7 +297,8 @@ qTargetInterface->setPreferences(p);
 					for (int i=0; i<qTargetInterface->getLogNumber(); ++i){
                                             LogsManager->setLogName(i,qTargetInterface->getLogName(i));
                                             //mdiArea->addSubWindow(LogsManager->getLogWindows()[i]);
-                                             QGraphicsProxyWidget *proxy = scene->addWidget(LogsManager->getLogWindows()[i]);
+                                             //QGraphicsProxyWidget *proxy = scene->addWidget(LogsManager->getLogWindows()[i]);
+                                              scene->addDialog(LogsManager->getLogWindows()[i]);
 
 					}
 			}
@@ -310,7 +322,8 @@ qTargetInterface->setPreferences(p);
 					for (int i=0; i<qTargetInterface->getScopeNumber(); ++i){
                                                  ScopesManager->setScopeName(i,qTargetInterface->getScopeName(i));
                                                  //mdiArea->addSubWindow(ScopesManager->getScopeWindows()[i]);
-                                                  QGraphicsProxyWidget *proxy = scene->addWidget(ScopesManager->getScopeWindows()[i]);
+                                                  //QGraphicsProxyWidget *proxy = scene->addWidget(ScopesManager->getScopeWindows()[i]);
+                                                    scene->addDialog(ScopesManager->getScopeWindows()[i]);
 					}
 				}
 				if (ScopesManager) {

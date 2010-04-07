@@ -538,7 +538,7 @@ void TargetThread::run()
 
                                 //get led blocks info
                                 req = -1;
-
+                                Num_Leds=0;
                                 for (int n = 0; n < MAX_RTAI_LEDS; n++) {
                                         char mbx_name[7];
                                         sprintf(mbx_name, "%s%d", Preferences.Target_Led_Mbx_ID, n);
@@ -553,14 +553,14 @@ void TargetThread::run()
                                 for (int n = 0; n < Num_Leds; n++) {
                                         char led_name[MAX_NAMES_SIZE];
                                         float dt;
-                                        int n_leds;
+                                        int n_leds=0;
                                         //Leds[n].visible = false;
 
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &n, &n_leds, sizeof(int), sizeof(int));
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &n, &led_name, sizeof(int), sizeof(led_name));
                                         //strncpy(Leds[n]->name, led_name, MAX_NAMES_SIZE);
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &n, &dt, sizeof(int), sizeof(float   ));
-                                        Leds[n] = new QPL_LedData(Num_Leds,dt,led_name);
+                                        Leds[n] = new QPL_LedData(n_leds,dt,led_name);
                                 }
                                 RT_rpcx(Target_Node, Target_Port, If_Task, &req, &msg, sizeof(int), sizeof(int));
 

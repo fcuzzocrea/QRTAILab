@@ -18,16 +18,20 @@ public:
     QPL_Led(QWidget *parent = 0);
     bool value() const { return m_value; }
     QColor color() const { return m_color; }
+
 public slots:
         void setValue(bool);
         void setColor(QColor);
         void toggleValue();
-
+        void setText(QString );
 
 protected:
     bool m_value;
     QColor m_color;
+    QString m_str;
     void paintEvent(QPaintEvent *event);
+    private:
+    qreal scaledSize;
 
 };
 

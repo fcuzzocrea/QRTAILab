@@ -35,36 +35,38 @@ QRL_LedWindow::QRL_LedWindow(QWidget *parent,QPL_LedData *led)
 	num_leds = Led->getNLeds();
 	if (this->objectName().isEmpty())
         this->setObjectName(QString::fromUtf8("QRL_LedWindow"));
-    this->resize(122, 119);
-	frame=new QFrame(this);
-	frame->resize(122, 119);
+    //this->resize(122, 119);
+    this->resize(80, 60);
+//	frame=new QFrame(this);
+//	frame->resize(122, 119);
    // layout=new QGridLayout(this);
    // this->setLayout(layout);
     Leds = new QPL_Led* [num_leds];
-    ledLabels = new QLabel* [num_leds];
+   //ledLabels = new QLabel* [num_leds];
       this->setLayout(new QVBoxLayout);
     for(int i=0;i<num_leds;++i){
-        Leds[i] = new QPL_Led(frame);
+        Leds[i] = new QPL_Led(this);
 	//Leds[i]->setObjectName(QString::fromUtf8("Led"));
 	Leds[i]->setGeometry(QRect(10, 20+i*35, 30, 30));
 	Leds[i]->setValue(false);
+        Leds[i]->setText(tr("%1").arg(i+1));
 
-	ledLabels[i] = new QLabel(frame);
-	ledLabels[i]->setGeometry(QRect(10+40, 20+i*35, 30, 30));
-	ledLabels[i]->setText(tr("%1").arg(i+1));
-        QFrame *ledFrame = new QFrame(this);
-        ledFrame->setLayout(new QHBoxLayout);
-        ledFrame->layout()->addWidget(Leds[i]);
-        ledFrame->layout()->addWidget(ledLabels[i]);
+//	ledLabels[i] = new QLabel(frame);
+//	ledLabels[i]->setGeometry(QRect(10+40, 20+i*35, 30, 30));
+//	ledLabels[i]->setText(tr("%1").arg(i+1));
+//        QFrame *ledFrame = new QFrame(this);
+//        ledFrame->setLayout(new QHBoxLayout);
+//        ledFrame->layout()->addWidget(Leds[i]);
+//        ledFrame->layout()->addWidget(ledLabels[i]);
 	//layout->addWidget(Leds[i],i,1);
 	//this->setWidget(Leds[i]);
-         this->layout()->addWidget(ledFrame);
+         this->layout()->addWidget(Leds[i]);
 
     }
         //this->setWidget(frame);
  this->hide();
 
-    this->setMinimumSize(30,50+num_leds*35+10);
+    this->setMinimumSize(60,20+num_leds*35+10);
     
     this->setWindowTitle(Led->getName());
    // Led->setText(QApplication::translate("QRL_LedWindow", "Led1", 0, QApplication::UnicodeUTF8));
@@ -81,7 +83,7 @@ for (unsigned int j=0;j<num_leds;j++){
 	delete Leds[j];
 }
 delete[] Leds;
-delete frame;
+//delete frame;
 }
 
 void QRL_LedWindow::setLedColor(QColor c)
