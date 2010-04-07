@@ -63,8 +63,8 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QPL_ScopeData *scope,int ind)
     // Disable polygon clipping
    // QwtPainter::setDeviceClipping(false);
     // We don't need the cache here
-//     qwtPlot->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
-//     qwtPlot->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
+     //qwtscope->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
+     //qwtscope->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
 
 }
 QRL_ScopeWindow::~QRL_ScopeWindow(){

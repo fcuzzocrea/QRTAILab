@@ -46,10 +46,10 @@ public:
    ~QRL_LogWindow();
    void changeRefreshRate(double);
    double getRefreshRate(){return RefreshRate;}
-   void setSaveTime(double t) {saveTime=t;}
-   double getSaveTime(){return saveTime;}
-   void setFileName(QString str) {fileName=str;}
-   QString getFileName() {return fileName;}
+//   void setSaveTime(double t) {saveTime=t;}
+//   double getSaveTime(){return saveTime;}
+//   void setFileName(QString str) {fileName=str;}
+//   QString getFileName() {return fileName;}
     void setVerbose(int v){Verbose=v;}
     void setFileVersion(qint32 v){fileVersion=v;}
     void setPlotting(bool b);
@@ -84,8 +84,8 @@ private:
 //     bool showItemNumber;
   QTimer *timer;
  QRL_LogData *Log;
-  double saveTime;
-  QString fileName;
+//  double saveTime;
+//  QString fileName;
 //     MatrixModel *model;
 //      PixelDelegate *pixelView;
 //       BlackWhiteDelegate *blackwhiteView;

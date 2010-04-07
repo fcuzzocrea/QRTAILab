@@ -43,7 +43,7 @@ QPL_ScopeTrace::QPL_ScopeTrace(QwtPlot *parent, unsigned int maxdatapoints, int 
 		cData = new QwtPlotCurve(QObject::tr("Trace %1").arg(j));
 	 	cData->attach(qwtPlot);
                 //cData->setPaintAttribute(QwtPlotCurve::PaintFiltered,true);
-                //cData->setPaintAttribute(QwtPlotCurve::ClipPolygons,true);
+                cData->setPaintAttribute(QwtPlotCurve::ClipPolygons,true);
                 oldStyle=QwtPlotCurve::Lines;
                 cData->setStyle(QwtPlotCurve::Lines);
                 setSymbolStyle(QwtSymbol::NoSymbol);

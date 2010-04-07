@@ -8,9 +8,9 @@
 #endif
 
 
-QRL_OpenGLScene::QRL_OpenGLScene()
+QRL_OpenGLScene::QRL_OpenGLScene(QGraphicsView* v)
 //:m_backgroundColor(0, 170, 255)
-  :m_backgroundColor(Qt::gray)
+  :m_backgroundColor(Qt::gray),view(v)
 {
 
 
@@ -44,6 +44,8 @@ QRL_OpenGLScene::QRL_OpenGLScene()
          connect(scopeTimer, SIGNAL(timeout()), this, SLOT(update()));
          #ifdef _use_opengl_
           scopeTimer->start((int)(1./20*1000.));
+#else
+           //scopeTimer->start((int)(1./20*1000.));
          #endif
 }
 
@@ -104,9 +106,17 @@ void QRL_OpenGLScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mouseMoveEvent(event);
     if (event->isAccepted())
         return;
-    if (event->buttons() & Qt::LeftButton) {
-
-    }
+//    if (event->buttons() & Qt::LeftButton) {
+//        QRectF rect = this->itemsBoundingRect();
+//        if (rect.isNull())
+//        {
+//            //this->setSceneRect(QRectF(0, 0, 1, 1));
+//        }else{
+//            this->setSceneRect(rect);
+//        }
+//    }
+    event->accept();
+    update();
 }
 
 void QRL_OpenGLScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -124,10 +134,29 @@ void QRL_OpenGLScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     QGraphicsScene::mouseReleaseEvent(event);
     if (event->isAccepted())
         return;
+ //if (event->buttons() & Qt::LeftButton) {
+//        QRectF rect = this->itemsBoundingRect();
+//        QRectF arect= this ->sceneRect();
+//      if (view->verticalScrollBar()->isVisible() || view->horizontalScrollBar()->isVisible()) {
+//        //QRectF arect= this ->sceneRect();
+//        //arect.setWidth(rect.width());
+//        //arect.setHeight(rect.height());
+//        if (rect.isNull())
+//        {
+//           // this->setSceneRect(QRectF(0, 0, 1, 1));
+//        }else{
+//            this->setSceneRect(rect);
+//                //update();
+//        }
+//     }
+
+
+
+
 
 
     event->accept();
-    update();
+    //update();
 }
 
 void QRL_OpenGLScene::wheelEvent(QGraphicsSceneWheelEvent *event)

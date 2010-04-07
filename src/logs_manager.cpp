@@ -280,13 +280,23 @@ void QRL_LogsManager::setFileDirectory(){
 
 if (logNumber<Num_Logs){
      Logs[logNumber]->data2disk()->setSaveTime(savetime);
-     if (autosave)
-       if (!Logs[logNumber]->data2disk()->startSaving()) {
-         printf("Error in opening file %s", Logs[logNumber]->data2disk()->getFileName().toLocal8Bit().data() );
+     if (autosave){
+                if (QFile::exists(Logs[logNumber]->data2disk()->getFileName())) {
+                        printf("File %s exists already.\n",Logs[logNumber]->data2disk()->getFileName().toLocal8Bit().data() );
+                        QMessageBox::critical(this, tr("QMessageBox::critical()"),
+                                     tr("The File exists! Please change the name!"),
+                                     QMessageBox::Abort);
+                } else {
+                //if ((Save_File_Pointer = fopen((File_Name.toLocal8Bit()).data(), "a+")) == NULL) {
+                  if (!Logs[currentLog]->data2disk()->startSaving()) {
+                        printf("Error in opening file %s\n",Logs[logNumber]->data2disk()->getFileName().toLocal8Bit().data() );
                         QMessageBox::critical(this, tr("QMessageBox::critical()"),
                                      tr("Error in opening file!"),
                                      QMessageBox::Abort);
+                }
+
      }
+ }
  }
 if (logNumber==currentLog){
 timeCounter->setValue(savetime);
@@ -298,8 +308,10 @@ timeCounter->setValue(savetime);
   }
  void QRL_LogsManager::setFileName(int logNumber, const QString& filename){
 
-     if (logNumber<Num_Logs)
-         LogWindows[logNumber]->setFileName(filename);
+     if (logNumber<Num_Logs){
+
+         Logs[logNumber]->data2disk()->setFileName(filename);
+     }
 
      if (logNumber==currentLog){
 
@@ -322,7 +334,7 @@ timeCounter->setValue(savetime);
 
 void QRL_LogsManager::startSaving()
 {
-	 FILE* Save_File_Pointer;
+         //FILE* Save_File_Pointer;
 	double Save_Time=timeCounter->value();
         if( Logs[currentLog]->data2disk()->getIsSaving()==0){
 
@@ -340,29 +352,16 @@ void QRL_LogsManager::startSaving()
                                      tr("The File exists! Please change the name!"),
                                      QMessageBox::Abort);
 		} else {
-		 
-		  
-		
+
                 //if ((Save_File_Pointer = fopen((File_Name.toLocal8Bit()).data(), "a+")) == NULL) {
                   if (!Logs[currentLog]->data2disk()->startSaving(File_Name.toLocal8Bit().data(),Save_Time)) {
 			printf("Error in opening file %s",File_Name.toLocal8Bit().data() );
 			QMessageBox::critical(this, tr("QMessageBox::critical()"),
                                      tr("Error in opening file!"),
                                      QMessageBox::Abort);
-                } //else {
-			//savePushButton->setEnabled(false);
-                        //Logs[currentLog]->startSaving(Save_File_Pointer,Save_Time);
-                //}
-
-		
-		//ScopeWindows[currentScope]->startSaving(fileLineEdit->text());
-		//targetThread->startSaving(fileLineEdit->text(),currentScope);
-
-
+                }
 	       }
        }
-
-
 }
 
 void QRL_LogsManager::stopSaving()
