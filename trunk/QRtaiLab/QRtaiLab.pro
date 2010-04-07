@@ -9,7 +9,10 @@ INSTALLS += target
 include( ../qrtailab.config )
 CONFIG += QwtPlot \
     QwtWidgets
-#QT += opengl
+contains(CONFIG, QRL_OpenGL ) {
+   QT      += opengl
+   DEFINES += _use_opengl_
+}
 MOC_DIR = moc
 OBJECTS_DIR = obj
 UI_DIR = ui

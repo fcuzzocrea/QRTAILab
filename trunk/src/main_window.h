@@ -39,9 +39,10 @@
 #include "targets_manager.h"
 #include <locale.h>
 #include "graphic_scene.h"
-//#include <QGLWidget>
-//#include <QtOpenGL>
-
+#ifdef _use_opengl_
+#include <QGLWidget>
+#include <QtOpenGL>
+#endif
 
 /**
  * @brief Main QThread 
