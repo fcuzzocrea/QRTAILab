@@ -33,7 +33,7 @@
 #include "qrtailab_core.h"
 #include "log_window.h"
 #include "matrix_view.h"
-
+#include "xyplot.h"
 
 
 
@@ -60,7 +60,7 @@ public slots:
   void changeSaveTime(double);
   void changeFileName(const QString&);
    void refresh();
-     void changeRefreshRate(double);
+  void changeRefreshRate(double);
    void setFileDirectory();
   void  showLog(int);
    void holdPlot(int);
@@ -69,6 +69,7 @@ public slots:
    void changeDelegate(int d);
    void setPixelSize(int);
    void setShowItemNumber(int);
+   void changeLogView(int);
 private:
   qint32 fileVersion;
   int Num_Logs;
@@ -79,6 +80,9 @@ private:
  // GetScopeDataThread* Get_Scope_Data_Thread;
   //QRtaiLabCore* qTargetInterface;
   QTimer *timer;
+     QWidget* MatrixViewOptions;
+   QWidget* XYPlotOptions;
+
        MatrixModel *model;
       PixelDelegate *pixelView;
        BlackWhiteDelegate *blackwhiteView;

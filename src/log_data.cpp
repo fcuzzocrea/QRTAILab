@@ -44,6 +44,9 @@ QRL_LogData::QRL_LogData(int r,int c,float d,char* c_name)
                 }
                 name=std::string(c_name);
                 d2d = new QPL_Data2Disk(dt);
+                hist=false;
+                hist_distance=100;
+                hist_counter=0;
 }
 
 QRL_LogData::~QRL_LogData()
@@ -54,13 +57,38 @@ QRL_LogData::~QRL_LogData()
 
  void QRL_LogData::setLogValue(float v, int row, int col){
 
+     if (hist_distance==hist_counter) {
+        hist_counter=0;
+        LogValuesHist.append(LogValues);
+     }
         LogValues[row][col]=v;
- }
 
+ }
+void QRL_LogData::add2Hist(){
+
+
+if (hist){
+    //LogValuesHist.append(LogValues);
+    hist_counter++;
+}
+
+
+}
 
   QVector< QVector<float> > QRL_LogData::getLogValue(){
 
         return LogValues;
+}
+
+   QVector<  QVector< QVector<float> > > QRL_LogData::getLogValueHist(){
+
+       QVector<  QVector< QVector<float> > > ret(LogValuesHist);
+       LogValuesHist.clear();
+
+       if (ret.size()==0)
+            ret.append(LogValues);
+
+       return ret;
 }
 
   int QRL_LogData::setLogRefreshRate(double rr)

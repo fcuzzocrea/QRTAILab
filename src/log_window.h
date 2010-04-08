@@ -33,7 +33,7 @@
 #include "log_data.h"
 #include "matrix_view.h"
 #include "matrix_plot.h"
-
+#include "xyplot.h"
 
 
 class QRL_LogWindow : public QDialog
@@ -42,8 +42,11 @@ class QRL_LogWindow : public QDialog
  //friend class PlottingScopeDataThread;
 public:
     enum matrixDelegate {pixel,blackwhite,colorbar,text};
+    enum LogView_Type {MATRIXVIEW,	XYPLOT};
    QRL_LogWindow(QWidget *parent = 0,QRL_LogData *log=0);
    ~QRL_LogWindow();
+      LogView_Type getLogType(){return LogViewType;}
+      void setLog(LogView_Type);
    void changeRefreshRate(double);
    double getRefreshRate(){return RefreshRate;}
 //   void setSaveTime(double t) {saveTime=t;}
@@ -66,6 +69,7 @@ public:
 //     void  setShowItemNumber(bool n);
 //     bool  getShowItemNumber(){return showItemNumber;}
      QPL_MatrixPlot* matrixplot(){return matrixPlot;}
+     QPL_XYPlot* xyplot(){return xyPlot;}
 public slots:
    void refresh();
   //void setValue(int,float);
@@ -78,6 +82,7 @@ private:
   bool plotting;
   float Value;
   double RefreshRate;
+ LogView_Type LogViewType;
 //       double minScale;
 //     double maxScale;
 //      int pixelSize;
@@ -93,6 +98,7 @@ private:
        matrixDelegate actualDelegate;
 //      QTableView *matrixPlot;
   QPL_MatrixPlot *matrixPlot;
+  QPL_XYPlot *xyPlot;
   friend QDataStream& operator<<(QDataStream &out, const QRL_LogWindow &d);
   friend QDataStream& operator>>(QDataStream &in, QRL_LogWindow(&d));
 };

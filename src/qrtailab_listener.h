@@ -673,6 +673,7 @@ static void *rt_get_log_data(void *arg)
                                                 j += log->getNRow();
                                         }
                                 }
+                         log->add2Hist();
                         }
                         n=Ndistance-(n);
                     }
