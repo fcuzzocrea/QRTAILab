@@ -54,6 +54,7 @@ QRL_MetersManager::QRL_MetersManager(QWidget *parent, int numMeters, QRL_MeterDa
 	ThermoOptions = tabWidget->widget(1);
 	DialOptions = tabWidget->widget(2);
 	LcdOptions = tabWidget->widget(3);
+
 	connect( thermoColor1PushButton, SIGNAL( pressed() ), this, SLOT( changeThermoColor1() ) );
 	connect( thermoColor2PushButton, SIGNAL( pressed() ), this, SLOT( changeThermoColor2() ) );
 	connect( pipeWithCounter, SIGNAL( valueChanged(double) ), this, SLOT( changePipeWith(double) ) );

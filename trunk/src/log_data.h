@@ -54,9 +54,13 @@ public:
     double getLogRefreshRate();
     void setPlotting(bool b){plotting=b;}
     bool isPlotting(){return plotting;}
+    void setHistory(bool b){hist=b;}
+    bool History(){return hist;}
+    void add2Hist();
  QPL_Data2Disk* data2disk(){return d2d;}
         void setLogValue(float v, int row, int col);
         QVector< QVector<float> > getLogValue();
+        QVector< QVector< QVector<float> > > getLogValueHist();
 private:
         const int nrow;
         const int ncol;
@@ -64,7 +68,11 @@ private:
             std::string name;
         double logRefreshRate;
         QVector< QVector <float> >  LogValues;
-
+        QVector< QVector< QVector <float> > > LogValuesHist;
+        bool hist;
+        int hist_length;
+        int hist_distance;
+        int hist_counter;
 //	int isSaving;
 //   	FILE* Save_File_Pointer;
 //   	double Save_Time;

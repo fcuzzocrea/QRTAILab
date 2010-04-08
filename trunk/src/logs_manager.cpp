@@ -64,6 +64,7 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,int numLogs, QRL_LogData **logs
         connect( viewNumberCheckBox , SIGNAL( stateChanged(int) ), this, SLOT( setShowItemNumber(int) ) );
         connect(rrCounter, SIGNAL(valueChanged(double)), this, SLOT(changeRefreshRate(double)));
 
+        connect(viewComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeLogView(int) ) );
 
 	currentLog=0;
 	holdCheckBox->setCheckState(Qt::Checked);
@@ -121,9 +122,30 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,int numLogs, QRL_LogData **logs
 	
 //	tabWidget->addTab(traceWidget,tr("trace %1").arg(Scopes[currentScope].ntraces));
 
+        MatrixViewOptions = tabWidget->widget(1);
+        XYPlotOptions = tabWidget->widget(2);
+
+
+       switch(LogWindows[currentLog]->getLogType())
+        {
+                case QRL_LogWindow::MATRIXVIEW:
+                     tabWidget->removeTab(2);
+
+
+                        break;
+                case QRL_LogWindow::XYPLOT:
+                        tabWidget->removeTab(1);
+
+                        break;
+                default:break;
+        }
+        tabWidget->setCurrentIndex(0);
+
+
+
 	timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
-        timer->start((int)(1./10*1000.));
+        timer->start((int)(1./20*1000.));
 
 }
 QRL_LogsManager::~QRL_LogsManager()
@@ -164,8 +186,12 @@ void QRL_LogsManager::refresh()
   }
 
   for (int n=0; n<Num_Logs; ++n){
-      if (Logs[n]->isPlotting())
-         LogWindows[n]->matrixplot()->setValue( Logs[n]->getLogValue());
+      if (Logs[n]->isPlotting()){
+          if (LogWindows[n]->getLogType()==QRL_LogWindow::MATRIXVIEW)
+            LogWindows[n]->matrixplot()->setValue( Logs[n]->getLogValue());
+          else if (LogWindows[n]->getLogType()==QRL_LogWindow::XYPLOT)
+              LogWindows[n]->xyplot()->setValue( Logs[n]->getLogValueHist());
+     }
   }
 }
 
@@ -176,6 +202,34 @@ void QRL_LogsManager::showLog(int state)
 	} else {
 		LogWindows[currentLog]->hide();
 	}
+
+}
+
+void QRL_LogsManager::changeLogView(int type) {
+
+        switch(type)
+        {
+                case 0: //thermo
+                        tabWidget->removeTab(1);
+                        tabWidget->addTab(MatrixViewOptions,tr("Matrix View Options"));
+                        if (LogWindows[currentLog]->getLogType()!=QRL_LogWindow::MATRIXVIEW)
+                                LogWindows[currentLog]->setLog(QRL_LogWindow::MATRIXVIEW);
+                          Logs[currentLog]->setHistory(false);
+                        break;
+                case 1: //dial
+                        tabWidget->removeTab(1);
+                        tabWidget->addTab(XYPlotOptions,tr("X-Y Plot Options"));
+                        if (LogWindows[currentLog]->getLogType()!=QRL_LogWindow::XYPLOT)
+                                LogWindows[currentLog]->setLog(QRL_LogWindow::XYPLOT);
+                          Logs[currentLog]->setHistory(true);
+                        break;
+
+                default:break;
+        }
+        //}
+        showLogOptions(currentLog);
+
+
 
 }
 void QRL_LogsManager::setMinScale(double min) {

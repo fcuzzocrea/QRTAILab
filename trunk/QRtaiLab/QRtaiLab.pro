@@ -9,13 +9,13 @@ INSTALLS += target
 include( ../qrtailab.config )
 CONFIG += QwtPlot \
     QwtWidgets
-contains(CONFIG, QRL_OpenGL ) {
-   QT      += opengl
-   DEFINES += _use_opengl_
+contains(CONFIG, QRL_OpenGL ) { 
+    QT += opengl
+    DEFINES += _use_opengl_
 }
-MOC_DIR = moc
-OBJECTS_DIR = obj
-UI_DIR = ui
+MOC_DIR = ../moc
+OBJECTS_DIR = ../obj
+UI_DIR = ../ui
 INCLUDEPATH += ../src/qtplotlib/ \
     ../src/
 SOURCES += ../src/main.cpp \
@@ -49,7 +49,9 @@ SOURCES += ../src/main.cpp \
     ../src/qtplotlib/dial_qwt.cpp \
     ../src/qtplotlib/lcd_qlabel.cpp \
     ../src/qtplotlib/matrix_plot.cpp \
-    ../src/graphic_scene.cpp
+    ../src/graphic_scene.cpp \
+    ../src/qtplotlib/xyplot.cpp \
+    ../src/qtplotlib/xyplot_trace.cpp
 HEADERS += ../src/targets_manager.h \
     ../src/target_thread.h \
     ../src/scope_window.h \
@@ -82,7 +84,9 @@ HEADERS += ../src/targets_manager.h \
     ../src/qtplotlib/dial_qwt.h \
     ../src/qtplotlib/lcd_qlabel.h \
     ../src/qtplotlib/matrix_plot.h \
-    ../src/graphic_scene.h
+    ../src/graphic_scene.h \
+    ../src/qtplotlib/xyplot.h \
+    ../src/qtplotlib/xyplot_trace.h
 FORMS += ../src/qrl_leds_manager.ui \
     ../src/qrl_targets_manager.ui \
     ../src/qrl_scopes_manager.ui \

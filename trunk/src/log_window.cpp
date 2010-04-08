@@ -48,8 +48,11 @@ QRL_LogWindow::QRL_LogWindow(QWidget *parent,QRL_LogData *log)
     this->setWindowIcon(QIcon(QString::fromUtf8(":/icons/log_icon.xpm")));
     this->setWindowFlags(windowFlags() ^ Qt::WindowMaximizeButtonHint );
    RefreshRate=20.;
-
+LogViewType = QRL_LogWindow::MATRIXVIEW;
     matrixPlot = new QPL_MatrixPlot(this);
+    xyPlot = new QPL_XYPlot(this);
+     xyPlot->setVisible(false);
+     xyPlot->initTraces(1,1,100);
 //     model = new MatrixModel(this);
 //     matrixPlot = new QTableView;
 //     matrixPlot->setShowGrid(false);
@@ -104,6 +107,34 @@ void QRL_LogWindow::refresh()
 {
 	
 }
+
+ void QRL_LogWindow::setLog(LogView_Type logtype){
+
+LogViewType=logtype;
+        switch (LogViewType){
+        case MATRIXVIEW:
+                xyPlot->setVisible(false);
+                matrixPlot->setVisible(true);
+                // this->setWidget(Dial);
+                 this->layout()->removeWidget(this->layout()->widget());
+                 this->layout()->addWidget(matrixPlot);
+
+                // delete Thermo;
+                break;
+        case XYPLOT:
+                matrixPlot->setVisible(false);
+                 xyPlot->setVisible(true);
+                 this->layout()->removeWidget(this->layout()->widget());
+                 this->layout()->addWidget(xyPlot);
+
+                break;
+        default:
+                break;
+        }
+
+
+
+ }
 
 void QRL_LogWindow::setDelegate(matrixDelegate d){
     actualDelegate=d;

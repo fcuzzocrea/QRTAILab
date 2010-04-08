@@ -19,7 +19,7 @@
 #include <qwt_scale_draw.h>
 #include <qwt_math.h>
 
-#define MAX_SCOPE_DATA		10000
+#define MAX_SCOPE_DATA		100000
 
 
 #if defined(QTPLOT_LIBRARY)
