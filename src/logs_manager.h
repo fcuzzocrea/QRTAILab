@@ -70,6 +70,12 @@ public slots:
    void setPixelSize(int);
    void setShowItemNumber(int);
    void changeLogView(int);
+   void changeHistDistance(double);
+   void changeHistLength(double);
+  void changeDx(const QString&);
+  void changeDy(const QString&);
+  void changeXOffset(double);
+  void changeYOffset(double);
 private:
   qint32 fileVersion;
   int Num_Logs;

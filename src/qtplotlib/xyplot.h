@@ -34,15 +34,15 @@ class  QPL_XYPlot : public QwtPlot
 public:
    QPL_XYPlot(QWidget *parent = 0);
    virtual ~QPL_XYPlot();
-   void initTraces(int ind, int n, int nsoll);
+   void initTraces(int ncurve, int nsoll);
 //   void changeRefreshRate(double);
-//   void changeDataPoints(double);
+    void changeDataPoints(double);
 //   void changeDivider(double);
 //   unsigned int getDivider(){return Divider;}
 //   void changeDX(double);
 //   double getDt(){return dt;}
 //   double getRefreshRate(){return RefreshRate;}
-//   int getDataPoints(){return NDataSoll;}
+   int getDataPoints(){return NDataSoll;}
 //   double getDX(){return dx;}
 //   int getDXDistance(){return NDistance;}
 //   void setGridColor(QColor);
@@ -60,6 +60,7 @@ public:
 //    bool isPlotting(){return plotting;}
 //    void setTraceName(int trace, const QString &text);
 //   QString getTraceName(int trace){return Traces[trace]->getName();}
+    int getNCurve(){return Ncurve;}
 public slots:
    void refresh();
 //protected slots:

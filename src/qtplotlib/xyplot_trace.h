@@ -62,6 +62,10 @@ public:
    double getDx();
       void setDy(double);
    double getDy();
+      void setXOffset(double);
+   double getXOffset();
+      void setYOffset(double);
+   double getYOffset();
    void show(bool);
    bool isVisible(){return  visible;}
    //PlottingScopeDataThread* getThread(){return Plotting_Scope_Data_Thread;}
@@ -108,12 +112,12 @@ private:
         double * d_yempty;
         QwtPlotCurve *cData;
 
-        friend QDataStream& operator<<(QDataStream &out, const QPL_XYPlotTrace* d);
-         friend QDataStream& operator>>(QDataStream &in, QPL_XYPlotTrace* d);
+        friend QDataStream& operator<<(QDataStream &out, const QPL_XYPlotTrace  &d);
+         friend QDataStream& operator>>(QDataStream &in, QPL_XYPlotTrace &d);
          friend class QPL_XYPlot;
 };
-        QDataStream& operator<<(QDataStream &out, const QPL_XYPlotTrace *d);
-        QDataStream& operator>>(QDataStream &in, QPL_XYPlotTrace(*d));
+        QDataStream& operator<<(QDataStream &out, const QPL_XYPlotTrace &d);
+        QDataStream& operator>>(QDataStream &in, QPL_XYPlotTrace(&d));
 
 
 #endif // XYPLOT_TRACE_H

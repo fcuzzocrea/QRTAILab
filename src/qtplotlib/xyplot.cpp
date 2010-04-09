@@ -77,7 +77,7 @@ QPL_XYPlot::QPL_XYPlot(QWidget *parent)
        xmax=(xMajorTicks*dx);
         Divider=1;
          xStep=(xmax-xmin)/xMajorTicks;
-
+        Ncurve=0;
         gridColor=Qt::blue;
 
         bgColor=QColor(240,240,240);
@@ -156,9 +156,9 @@ QPL_XYPlot::QPL_XYPlot(QWidget *parent)
 }
 
 
-void QPL_XYPlot::initTraces(int ind, int n, int nsoll)
+void QPL_XYPlot::initTraces(int ncurve, int nsoll)
 {
-      index=ind;
+
 
     //picker->setEnabled(!on);
 
@@ -168,7 +168,7 @@ void QPL_XYPlot::initTraces(int ind, int n, int nsoll)
         RefreshRate=20.;
 
 
-       Ncurve=n;
+       Ncurve=ncurve;
 //if (Ncurve>0){
        QPen pen;
         Traces = new QPL_XYPlotTrace*[Ncurve];
@@ -214,6 +214,24 @@ void QPL_XYPlot::refresh()
 
 }
 
+
+   void QPL_XYPlot::changeDataPoints(double dp)
+{
+        //if (dp<(1/((xmax-xmin)/dp)/100))
+        //	return;
+      // timer->stop();
+        NDataSoll=(int)dp;
+
+
+     for (unsigned int j=0;j<Ncurve;j++){
+        Traces[j]->changeNDataSoll(NDataSoll);
+     }
+ //    timer->start((int)(1./RefreshRate*1000.));
+
+
+
+}
+
 void QPL_XYPlot::setValue(const QVector< QVector< QVector<float> > >&v){
     for (int j=0;j<v.size();j++){
         for (int i=0;i<Ncurve;i++){
@@ -227,4 +245,32 @@ void QPL_XYPlot::setValue(const QVector< QVector< QVector<float> > >&v){
         }
     }
     this->replot();
+}
+
+
+QDataStream& operator<<(QDataStream &out, const QPL_XYPlot &d){
+        qint32 a;
+      //  out  << d.size()  << d.pos() << d.isVisible();
+        a=d.Ncurve; out << a;
+        a=d.NDataSoll;out << a;
+        for (unsigned int nn=0; nn<d.Ncurve;++nn){
+
+                out << *(d.Traces[nn]);
+        }
+    }
+
+
+QDataStream& operator>>(QDataStream &in, QPL_XYPlot(&d)){
+    QSize s;QPoint p;bool b; QColor c; qint32 a,a2;QFont f; double dd;
+    QString str; int Ncurve;
+//    in >> s;d.resize(s);
+//    in >> p; d.move(p);
+//    in >> b; d.setVisible(b);
+    in >> a; Ncurve=(int)a;
+    in >> a; d.changeDataPoints(a);
+     for (int nn=0; nn<Ncurve;++nn){
+       if (nn<d.Ncurve) {
+            in >> *(d.Traces[nn]);
+       }
+   }
 }

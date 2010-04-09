@@ -687,6 +687,7 @@ static void *rt_get_log_data(void *arg)
 //                                }
 //                                printf("n: %d,more then one matrix,ndist %d\n",n,Ndistance);
 //                        }
+                    if (!log->History()){
                     if (RefreshRate!=log->getLogRefreshRate()){
 
                         RefreshRate=log->getLogRefreshRate();
@@ -699,6 +700,9 @@ static void *rt_get_log_data(void *arg)
                                 Ndistance=1;
 
                     }
+                   } else {
+                        Ndistance=1;
+                   }
                 }
 
 
