@@ -32,7 +32,7 @@
    <string>Logs Manager</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="qrtailab.qrc">
     <normaloff>:/icons/log_icon.xpm</normaloff>:/icons/log_icon.xpm</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
@@ -118,7 +118,7 @@
    <item row="0" column="2">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="Log">
       <attribute name="title">
@@ -731,7 +731,9 @@
    <header>qwt_counter.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="qrtailab.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>closeButton</sender>
