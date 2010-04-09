@@ -171,6 +171,9 @@ void  QRL_LogsManager::setLogName(int i,QString name){
 }
 void QRL_LogsManager::refresh()
 {
+      if (!LogWindows[currentLog]->isVisible() && showCheckBox->isChecked())
+      showCheckBox->setCheckState(Qt::Unchecked);
+
   if (Logs[currentLog]->data2disk()->getIsSaving()==0){
       savePushButton->setEnabled(true);
 	stopPushButton->setEnabled(false);

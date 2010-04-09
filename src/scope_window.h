@@ -94,7 +94,10 @@ public:
    ~QRL_ScopeWindow();
 
     QPL_Scope* scope(){return qwtscope;}
-
+   void changeRefreshRate(double);
+   double getRefreshRate(){return RefreshRate;}
+   void startRefresh(){   timer->start((int)(1./RefreshRate*1000.)); }
+   void stopRefresh(){timer->stop(); }
 public slots:
    void refresh();
   //void setValue(int,float);
@@ -104,7 +107,10 @@ protected slots:
 private:
   qint32 fileVersion;
   QPL_Scope* qwtscope;
+  QPL_ScopeData* ScopeData;
+    QTimer *timer;
  // QwtPlot *qwtPlot;
+  double RefreshRate;
   int index;
    friend QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d);
   friend QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d));

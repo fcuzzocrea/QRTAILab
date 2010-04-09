@@ -78,6 +78,8 @@ for (int i=0; i<Num_Leds; ++i){
 		LedWindows[i]->refresh();
 	//}
 }
+  if (!LedWindows[currentLed]->isVisible() && showCheckBox->isChecked())
+      showCheckBox->setCheckState(Qt::Unchecked);
 }
 
 void  QRL_LedsManager::setLedName(int i,QString name){

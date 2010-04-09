@@ -52,8 +52,8 @@ public:
   //void stopScopeThreads();
   QRL_ScopeWindow** getScopeWindows(){return ScopeWindows;}
     void setFileVersion(qint32 v);
-    void startRefresh(){   timer->start((int)(1./RefreshRate*1000.)); }
-    void stopRefresh(){timer->stop();}
+    void startRefresh(){   timer->start((int)(1./5.*1000.)); for (int i = 0; i < Num_Scopes; ++i)ScopeWindows[i]->startRefresh(); }
+    void stopRefresh(){timer->stop(); for (int i = 0; i < Num_Scopes; ++i)ScopeWindows[i]->stopRefresh(); }
     void setScopeName(int i,QString name);
 public slots:
   void setFileName(int scopeNumber, const QString& filename);
@@ -121,7 +121,7 @@ private:
   int currentTrace;
   QList<QListWidgetItem *> scopeItems,traceItems;
   QTimer *timer;
-  double RefreshRate;
+  //double RefreshRate;
 friend QDataStream& operator<<(QDataStream &out, const QRL_ScopesManager &d);
 friend QDataStream& operator>>(QDataStream &in, QRL_ScopesManager(&d));
 };

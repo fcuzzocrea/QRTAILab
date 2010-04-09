@@ -127,10 +127,10 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent, int numScopes, QPL_ScopeDa
 	dxComboBox->setCompleter(0);
 	dxComboBox->setValidator(new QDoubleValidator(this));
 
-        RefreshRate=20.;
+       // RefreshRate=20.;
 	timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
-        timer->start((int)(1./RefreshRate*1000.));
+        timer->start((int)(1./5.*1000.));
 	
 	
 //	tabWidget->addTab(traceWidget,tr("trace %1").arg(Scopes[currentScope].getNTraces()));
@@ -153,32 +153,37 @@ void QRL_ScopesManager::refresh()
 {
 
 //try {
-  for (int n=0; n<Num_Scopes; ++n){
-	//QVector< QVector<float> > v;
-	//v = qTargetInterface->getTargetThread()->getScopeValue(n);
-	//if (v.size()>0) {
+//  for (int n=0; n<Num_Scopes; ++n){
+//	//QVector< QVector<float> > v;
+//	//v = qTargetInterface->getTargetThread()->getScopeValue(n);
+//	//if (v.size()>0) {
+//
+////	printf("size scopevector:  %d x %d\n",v.size(),v.at(0).size());
+//
+//// 	for (int t=0; t<qTargetInterface->getNumberOfTraces(n);++t)
+//// 	for (int k=0; k<v.at(0).size(); ++k){
+//// 			if (k<v.at(t).size())
+//// 			ScopeWindows[n]->setValue(t,v.at(t).at(k));
+//// 	}
+//     if (Scopes[n]->dataAvailable()) {
+//	if (Scopes[n]->getNTraces()>0) {
+//          if (Scopes[n]->data2disk()->isSaveScopeTime())
+//             ScopeWindows[n]->scope()->setTime( Scopes[n]->getScopeTime());
+//          ScopeWindows[n]->scope()->setValue( Scopes[n]->getScopeValue());
+//	 }
+//        //}
+//        }
+//    }
 
-//	printf("size scopevector:  %d x %d\n",v.size(),v.at(0).size());
 
-// 	for (int t=0; t<qTargetInterface->getNumberOfTraces(n);++t)
-// 	for (int k=0; k<v.at(0).size(); ++k){
-// 			if (k<v.at(t).size())
-// 			ScopeWindows[n]->setValue(t,v.at(t).at(k));
-// 	}
-     if (Scopes[n]->dataAvailable()) {
-	if (Scopes[n]->getNTraces()>0) {
-          if (Scopes[n]->data2disk()->isSaveScopeTime())
-             ScopeWindows[n]->scope()->setTime( Scopes[n]->getScopeTime());
-          ScopeWindows[n]->scope()->setValue( Scopes[n]->getScopeValue());
-	 }
-        //}
-        }
-    }
+
 // } catch (...){
 // 	qDebug()<<"error in ScopesManager::refresh";
 // 
 // }
 
+  if (!ScopeWindows[currentScope]->isVisible() && showCheckBox->isChecked())
+      showCheckBox->setCheckState(Qt::Unchecked);
 
   if (Scopes[currentScope]->data2disk()->getIsSaving()==0){
       savePushButton->setEnabled(true);
@@ -214,7 +219,8 @@ void QRL_ScopesManager::changeRefreshRate(double rr)
 {
 	//double rr=text.toDouble();
         ScopeWindows[currentScope]->scope()->changeRefreshRate(rr);
-	Scopes[currentScope]->setScopeRefreshRate(rr);
+        ScopeWindows[currentScope]->changeRefreshRate(rr);
+        Scopes[currentScope]->setScopeRefreshRate(rr);
 }
 
 
@@ -527,7 +533,10 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 		showCheckBox->setCheckState(Qt::Checked);
 	else
 		showCheckBox->setCheckState(Qt::Unchecked);
+        disconnect( rrCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeRefreshRate(double) ) );
         rrCounter->setValue(ScopeWindows[currentScope]->scope()->getRefreshRate());
+        connect( rrCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeRefreshRate(double) ) );
+
         dataCounter->setValue(ScopeWindows[currentScope]->scope()->getDataPoints());
         dxComboBox->setEditText(tr("%1").arg(ScopeWindows[currentScope]->scope()->getDX()));
         dividerCounter->setValue(ScopeWindows[currentScope]->scope()->getDivider());

@@ -321,6 +321,16 @@ delete[] Traces;
 
 void QPL_Scope::refresh()
 {
+
+//         if (Scope->dataAvailable()) {
+//        if (Scope->getNTraces()>0) {
+//          if (Scope->data2disk()->isSaveScopeTime())
+//             setTime( Scope->getScopeTime());
+//            setValue( Scope->getScopeValue());
+//         }
+//        //}
+//        }
+
         this->replot();
 
 
