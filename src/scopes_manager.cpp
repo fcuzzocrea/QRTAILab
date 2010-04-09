@@ -127,7 +127,7 @@ QRL_ScopesManager::QRL_ScopesManager(QWidget *parent, int numScopes, QPL_ScopeDa
 	dxComboBox->setCompleter(0);
 	dxComboBox->setValidator(new QDoubleValidator(this));
 
-	RefreshRate=30.;
+        RefreshRate=20.;
 	timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
         timer->start((int)(1./RefreshRate*1000.));

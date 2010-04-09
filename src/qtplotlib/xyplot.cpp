@@ -137,7 +137,6 @@ QPL_XYPlot::QPL_XYPlot(QWidget *parent)
     bottomText->setValue(0.0,-5.);
    bottomText->attach(this);
 
-
    Traces=NULL;
 
        grid = new QwtPlotGrid;
@@ -155,9 +154,6 @@ QPL_XYPlot::QPL_XYPlot(QWidget *parent)
        this->enableAxis(QwtPlot::yLeft,false);
           replot();
 }
-
-
-
 
 
 void QPL_XYPlot::initTraces(int ind, int n, int nsoll)
@@ -203,12 +199,12 @@ void QPL_XYPlot::initTraces(int ind, int n, int nsoll)
 
 QPL_XYPlot::~QPL_XYPlot(){
 
-if (Traces) {
-for (unsigned int j=0;j<Ncurve;j++){
-        delete Traces[j];
-}
-delete[] Traces;
-}
+    if (Traces) {
+    for (unsigned int j=0;j<Ncurve;j++){
+            delete Traces[j];
+    }
+    delete[] Traces;
+    }
 }
 
 
@@ -220,15 +216,15 @@ void QPL_XYPlot::refresh()
 
 void QPL_XYPlot::setValue(const QVector< QVector< QVector<float> > >&v){
     for (int j=0;j<v.size();j++){
-    for (int i=0;i<Ncurve;i++){
-        trace(i)->moveDataToRight(1);
-        trace(i)->setValue(0,v.at(j).at(i).at(0),v.at(j).at(i).at(1));
-//        for (int j=0;j<v.at(i).size();j++){
-////             printf(" %f ",v.at(i).at(j));
-//             (matrixPlot->item(i,j))->setText(tr("%1").arg(v.at(i).at(j)));
-//         }
-////         printf("\n");
+        for (int i=0;i<Ncurve;i++){
+            trace(i)->moveDataToRight(1);
+            trace(i)->setValue(0,v.at(j).at(i).at(0),v.at(j).at(i).at(1));
+    //        for (int j=0;j<v.at(i).size();j++){
+    ////             printf(" %f ",v.at(i).at(j));
+    //             (matrixPlot->item(i,j))->setText(tr("%1").arg(v.at(i).at(j)));
+    //         }
+    ////         printf("\n");
+        }
     }
-}
- this->replot();
+    this->replot();
 }

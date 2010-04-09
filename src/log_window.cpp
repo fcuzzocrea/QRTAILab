@@ -89,9 +89,9 @@ LogViewType = QRL_LogWindow::MATRIXVIEW;
        plotting=false;
 actualDelegate=colorbar;
 
-//	timer = new QTimer(this);
-//        connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
-//        timer->start((int)(1./RefreshRate*1000.));
+        timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
+        timer->start((int)(1./RefreshRate*1000.));
 
 
 }
@@ -105,7 +105,14 @@ QRL_LogWindow::~QRL_LogWindow(){
 
 void QRL_LogWindow::refresh()
 {
-	
+
+      if (Log->isPlotting()){
+          if (getLogType()==QRL_LogWindow::MATRIXVIEW)
+            matrixplot()->setValue( Log->getLogValue());
+          else if (getLogType()==QRL_LogWindow::XYPLOT)
+              xyplot()->setValue( Log->getLogValueHist());
+     }
+
 }
 
  void QRL_LogWindow::setLog(LogView_Type logtype){
@@ -256,8 +263,8 @@ void QRL_LogWindow::setPlotting(bool b){
 	RefreshRate=rr;
 	if (	RefreshRate<0.)
 		RefreshRate=20.;
-//	timer->stop();
-//	timer->start((int)(1./RefreshRate*1000.));
+        timer->stop();
+        timer->start((int)(1./RefreshRate*1000.));
 	
 	//Plotting_Scope_Data_Thread->changeRefreshRate(RefreshRate);
 

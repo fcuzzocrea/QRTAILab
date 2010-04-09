@@ -82,7 +82,6 @@ private:
   QTimer *timer;
      QWidget* MatrixViewOptions;
    QWidget* XYPlotOptions;
-
        MatrixModel *model;
       PixelDelegate *pixelView;
        BlackWhiteDelegate *blackwhiteView;

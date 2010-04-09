@@ -132,7 +132,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="0" column="2">
         <widget class="QCheckBox" name="holdCheckBox">
          <property name="toolTip">
           <string>stop plotting will reduce cpu load. Saving is still possible!</string>
@@ -142,7 +142,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0" colspan="2">
+       <item row="5" column="0" colspan="3">
         <widget class="QToolBox" name="toolBox">
          <property name="currentIndex">
           <number>0</number>
@@ -153,7 +153,7 @@
             <x>0</x>
             <y>0</y>
             <width>286</width>
-            <height>201</height>
+            <height>199</height>
            </rect>
           </property>
           <attribute name="label">
@@ -290,6 +290,29 @@
          </item>
         </widget>
        </item>
+       <item row="3" column="2">
+        <widget class="QwtCounter" name="rrCounter">
+         <property name="numButtons">
+          <number>1</number>
+         </property>
+         <property name="basicstep" stdset="0">
+          <double>0.100000000000000</double>
+         </property>
+         <property name="maxValue">
+          <double>100.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>10.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLabel" name="label_15">
+         <property name="text">
+          <string>FPS:</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="matrixView">
@@ -340,10 +363,10 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0" rowspan="8" colspan="3">
+       <item row="2" column="0" rowspan="6" colspan="3">
         <widget class="QTableView" name="legendTableView"/>
        </item>
-       <item row="9" column="3">
+       <item row="7" column="3">
         <widget class="QSpinBox" name="pixelSizeSpinBox">
          <property name="maximum">
           <number>500</number>
@@ -353,7 +376,7 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="3">
+       <item row="6" column="3">
         <widget class="QLabel" name="label_6">
          <property name="text">
           <string>Cell size (px):</string>
@@ -434,32 +457,6 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="3">
-        <widget class="QwtCounter" name="rrCounter">
-         <property name="numButtons">
-          <number>1</number>
-         </property>
-         <property name="basicstep" stdset="0">
-          <double>0.100000000000000</double>
-         </property>
-         <property name="maxValue">
-          <double>100.000000000000000</double>
-         </property>
-         <property name="value">
-          <double>20.000000000000000</double>
-         </property>
-         <property name="editable">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="3">
-        <widget class="QLabel" name="label_8">
-         <property name="text">
-          <string>Refresh rate:</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="xyPlot">
@@ -469,8 +466,8 @@
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>80</x>
-         <y>60</y>
+         <x>4</x>
+         <y>54</y>
          <width>173</width>
          <height>28</height>
         </rect>
@@ -495,9 +492,9 @@
       <widget class="QWidget" name="layoutWidget_2">
        <property name="geometry">
         <rect>
-         <x>80</x>
-         <y>100</y>
-         <width>152</width>
+         <x>4</x>
+         <y>105</y>
+         <width>98</width>
          <height>28</height>
         </rect>
        </property>
@@ -521,9 +518,9 @@
       <widget class="QWidget" name="layoutWidget_3">
        <property name="geometry">
         <rect>
-         <x>80</x>
-         <y>140</y>
-         <width>152</width>
+         <x>4</x>
+         <y>155</y>
+         <width>130</width>
          <height>28</height>
         </rect>
        </property>
@@ -547,9 +544,9 @@
       <widget class="QWidget" name="layoutWidget_4">
        <property name="geometry">
         <rect>
-         <x>90</x>
-         <y>180</y>
-         <width>152</width>
+         <x>4</x>
+         <y>205</y>
+         <width>98</width>
          <height>28</height>
         </rect>
        </property>
@@ -573,9 +570,9 @@
       <widget class="QWidget" name="layoutWidget_5">
        <property name="geometry">
         <rect>
-         <x>80</x>
-         <y>220</y>
-         <width>152</width>
+         <x>4</x>
+         <y>256</y>
+         <width>130</width>
          <height>28</height>
         </rect>
        </property>
@@ -596,11 +593,11 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
-         <x>80</x>
-         <y>30</y>
+         <x>4</x>
+         <y>4</y>
          <width>152</width>
          <height>28</height>
         </rect>

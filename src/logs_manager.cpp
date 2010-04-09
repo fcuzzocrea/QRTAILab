@@ -66,6 +66,7 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,int numLogs, QRL_LogData **logs
 
         connect(viewComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeLogView(int) ) );
 
+
 	currentLog=0;
 	holdCheckBox->setCheckState(Qt::Checked);
 	LogWindows[currentLog]->setPlotting(false);
@@ -145,7 +146,8 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,int numLogs, QRL_LogData **logs
 
 	timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
-        timer->start((int)(1./20*1000.));
+        //RefreshRate=LogWindows[currentLog]->getRefreshRate();
+        timer->start((int)(1./5.*1000.));
 
 }
 QRL_LogsManager::~QRL_LogsManager()
@@ -185,14 +187,14 @@ void QRL_LogsManager::refresh()
      saveProgressBar->setValue(Logs[currentLog]->data2disk()->getSavedPoints());
   }
 
-  for (int n=0; n<Num_Logs; ++n){
-      if (Logs[n]->isPlotting()){
-          if (LogWindows[n]->getLogType()==QRL_LogWindow::MATRIXVIEW)
-            LogWindows[n]->matrixplot()->setValue( Logs[n]->getLogValue());
-          else if (LogWindows[n]->getLogType()==QRL_LogWindow::XYPLOT)
-              LogWindows[n]->xyplot()->setValue( Logs[n]->getLogValueHist());
-     }
-  }
+//  for (int n=0; n<Num_Logs; ++n){
+//      if (Logs[n]->isPlotting()){
+//          if (LogWindows[n]->getLogType()==QRL_LogWindow::MATRIXVIEW)
+//            LogWindows[n]->matrixplot()->setValue( Logs[n]->getLogValue());
+//          else if (LogWindows[n]->getLogType()==QRL_LogWindow::XYPLOT)
+//              LogWindows[n]->xyplot()->setValue( Logs[n]->getLogValueHist());
+//     }
+//  }
 }
 
 void QRL_LogsManager::showLog(int state) 
@@ -219,6 +221,7 @@ void QRL_LogsManager::changeLogView(int type) {
                 case 1: //dial
                         tabWidget->removeTab(1);
                         tabWidget->addTab(XYPlotOptions,tr("X-Y Plot Options"));
+                        //tabWidget->addTab(xyPlot,tr("X-Y Plot Options"));
                         if (LogWindows[currentLog]->getLogType()!=QRL_LogWindow::XYPLOT)
                                 LogWindows[currentLog]->setLog(QRL_LogWindow::XYPLOT);
                           Logs[currentLog]->setHistory(true);
@@ -316,9 +319,12 @@ void QRL_LogsManager::holdPlot(int state) {
 
 void QRL_LogsManager::changeRefreshRate(double rr)
 {
+
         //double rr=text.toDouble();
         LogWindows[currentLog]->changeRefreshRate(rr);
         Logs[currentLog]->setLogRefreshRate(rr);
+
+
 }
 
 void QRL_LogsManager::setFileDirectory(){
