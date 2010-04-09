@@ -534,12 +534,23 @@ void QRL_ScopesManager::showScopeOptions( int index ){
 	else
 		showCheckBox->setCheckState(Qt::Unchecked);
         disconnect( rrCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeRefreshRate(double) ) );
-        rrCounter->setValue(ScopeWindows[currentScope]->scope()->getRefreshRate());
+        rrCounter->setValue(ScopeWindows[currentScope]->getRefreshRate());
         connect( rrCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeRefreshRate(double) ) );
 
+        disconnect( dataCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDataPoints(double) ) );
         dataCounter->setValue(ScopeWindows[currentScope]->scope()->getDataPoints());
+        connect( dataCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDataPoints(double) ) );
+
+        disconnect( dxComboBox, SIGNAL( currentIndexChanged(const QString &) ), this, SLOT( changeDX(const QString&) ) );
+        disconnect( dxComboBox, SIGNAL( editTextChanged(const QString &) ), this, SLOT( changeDX(const QString&) ) );
         dxComboBox->setEditText(tr("%1").arg(ScopeWindows[currentScope]->scope()->getDX()));
+        connect( dxComboBox, SIGNAL( currentIndexChanged(const QString &) ), this, SLOT( changeDX(const QString&) ) );
+        connect( dxComboBox, SIGNAL( editTextChanged(const QString &) ), this, SLOT( changeDX(const QString&) ) );
+
+        disconnect( dividerCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDivider(double) ) );
         dividerCounter->setValue(ScopeWindows[currentScope]->scope()->getDivider());
+        connect( dividerCounter, SIGNAL( valueChanged(double) ), this, SLOT( changeDivider(double) ) );
+
 	currentTrace=0;
 	for(int i=0; i<traceItems.size();i++)
 		delete traceItems[i];
