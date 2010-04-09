@@ -6,11 +6,12 @@ QPL_XYPlotTrace::QPL_XYPlotTrace(QwtPlot *parent, unsigned int maxdatapoints, in
                 index = j;
                 d_x = new double[MaxDataPoints+1];
                 d_y = new double[MaxDataPoints+1];
-
+                yOffset=0;
+                xOffset=.5;
                 for (unsigned int i = 0; i< MaxDataPoints; i++)
               {
-                  d_x[i] =0.;
-                  d_y[i] = 0.;
+                  d_x[i] =xOffset;
+                  d_y[i] =yOffset;
               }
                 cData = new QwtPlotCurve(QObject::tr("Trace %1").arg(j));
                 cData->attach(qwtPlot);
@@ -22,8 +23,8 @@ QPL_XYPlotTrace::QPL_XYPlotTrace(QwtPlot *parent, unsigned int maxdatapoints, in
                 oldSymbol=QwtSymbol::NoSymbol;
                 xmax=1;
                 lineWidth=3;
-                dy=1.;
-                dx=1.;
+                dy=2;
+                dx=2.;
 
 
                 visible=true;
@@ -92,8 +93,8 @@ QPL_XYPlotTrace::~QPL_XYPlotTrace(){
     for (unsigned int i = 0; i< NDataSoll; i++)
     {
         //if (Scope->dt<=0.05)
-        d_x[i] =0;     // time axis
-            d_y[i] = 0;
+        d_x[i] =xOffset;     // time axis
+        d_y[i] = yOffset;
     }
         cData->setRawData(d_x, d_y, NDataSoll);
 }
@@ -143,7 +144,7 @@ int  QPL_XYPlotTrace::getWidth()
 
                  for (unsigned int i = 0; i< NDataSoll; i++)
                   {
-                        d_x[i]=(((d_x[i])*dx)/d);
+                        d_x[i]=(((d_x[i]-xOffset)*dx)/d+xOffset);
 
                     }
                 dx=d;
@@ -161,7 +162,7 @@ double  QPL_XYPlotTrace::getDx()
 
                  for (unsigned int i = 0; i< NDataSoll; i++)
                   {
-                        d_y[i]=(((d_y[i])*dy)/d);
+                        d_y[i]=(((d_y[i]-yOffset)*dy)/d+yOffset);
 
                     }
                 dy=d;
@@ -193,8 +194,8 @@ void QPL_XYPlotTrace::setName(const QString &text){
    void QPL_XYPlotTrace::setValue(int index, double x, double y){
 
 
-   d_x[index]=(x)/getDx();
-  d_y[index]=(y)/getDy();
+   d_x[index]=(x)/getDx()+xOffset;
+  d_y[index]=(y)/getDy()+yOffset;
 
    }
 

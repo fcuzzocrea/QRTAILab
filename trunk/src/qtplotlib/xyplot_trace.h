@@ -102,6 +102,7 @@ private:
         QString traceName;
         bool visible;
         unsigned int  MaxDataPoints,NDataSoll,xmax;
+        double xOffset,yOffset;
         double *d_x;
         double * d_y;
         double * d_yempty;
