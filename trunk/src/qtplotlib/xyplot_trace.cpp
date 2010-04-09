@@ -7,10 +7,10 @@ QPL_XYPlotTrace::QPL_XYPlotTrace(QwtPlot *parent, unsigned int maxdatapoints, in
                 d_x = new double[MaxDataPoints+1];
                 d_y = new double[MaxDataPoints+1];
                 yOffset=0;
-                xOffset=.5;
+                xOffset=0;
                 for (unsigned int i = 0; i< MaxDataPoints; i++)
               {
-                  d_x[i] =xOffset;
+                  d_x[i] =xOffset+.5;
                   d_y[i] =yOffset;
               }
                 cData = new QwtPlotCurve(QObject::tr("Trace %1").arg(j));
@@ -93,7 +93,7 @@ QPL_XYPlotTrace::~QPL_XYPlotTrace(){
     for (unsigned int i = 0; i< NDataSoll; i++)
     {
         //if (Scope->dt<=0.05)
-        d_x[i] =xOffset;     // time axis
+        d_x[i] =xOffset+.5;     // time axis
         d_y[i] = yOffset;
     }
         cData->setRawData(d_x, d_y, NDataSoll);
@@ -110,6 +110,46 @@ QPL_XYPlotTrace::~QPL_XYPlotTrace(){
                 cData->setStyle(oldStyle);
                 setSymbolStyle(oldSymbol);
         }
+}
+
+      void QPL_XYPlotTrace::setXOffset(double o)
+{
+                //QRL_ScopeTrace[trace].offset=o;
+                 for (unsigned int i = 0; i< NDataSoll; i++)
+                  {
+                        d_x[i]=(((d_x[i]-xOffset-.5)*dx))/dx+o+.5;
+
+                    }
+        //cData[trace]->setRawData(d_x, ScopeData[trace].d_y, NDataSoll);
+                xOffset=o;
+               // zeroAxis.setYValue(offset);
+
+
+}
+
+double  QPL_XYPlotTrace::getXOffset()
+{
+                return xOffset;
+}
+
+   void QPL_XYPlotTrace::setYOffset(double o)
+{
+                //QRL_ScopeTrace[trace].offset=o;
+                 for (unsigned int i = 0; i< NDataSoll; i++)
+                  {
+                        d_y[i]=(((d_y[i]-yOffset)*dy))/dy+o;
+
+                    }
+        //cData[trace]->setRawData(d_x, ScopeData[trace].d_y, NDataSoll);
+                yOffset=o;
+                //zeroAxis.setYValue(offset);
+
+
+}
+
+double  QPL_XYPlotTrace::getYOffset()
+{
+                return yOffset;
 }
 
    void QPL_XYPlotTrace::setColor(const QColor& c)
@@ -144,7 +184,7 @@ int  QPL_XYPlotTrace::getWidth()
 
                  for (unsigned int i = 0; i< NDataSoll; i++)
                   {
-                        d_x[i]=(((d_x[i]-xOffset)*dx)/d+xOffset);
+                        d_x[i]=(((d_x[i]-xOffset-0.5)*dx)/d+xOffset+0.5);
 
                     }
                 dx=d;
@@ -194,7 +234,7 @@ void QPL_XYPlotTrace::setName(const QString &text){
    void QPL_XYPlotTrace::setValue(int index, double x, double y){
 
 
-   d_x[index]=(x)/getDx()+xOffset;
+   d_x[index]=(x)/getDx()+xOffset+.5;
   d_y[index]=(y)/getDy()+yOffset;
 
    }
@@ -218,3 +258,24 @@ void QPL_XYPlotTrace::setName(const QString &text){
                     }
                 }
    }
+
+
+QDataStream& operator<<(QDataStream &out, const QPL_XYPlotTrace &d){
+        qint32 a;
+
+                out << d.dx;
+                out << d.dy;
+                out << d.xOffset;
+                out << d.yOffset;
+}
+
+
+QDataStream& operator>>(QDataStream &in, QPL_XYPlotTrace(&d)){
+        QSize s;QPoint p;bool b; QColor c; qint32 a;QFont f; double dd;
+        QString str;
+
+            in>>dd; d.setDx(dd);
+            in>>dd; d.setDy(dd);
+            in>>dd; d.setXOffset(dd);
+            in>>dd; d.setYOffset(dd);
+    }

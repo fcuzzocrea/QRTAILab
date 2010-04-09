@@ -65,7 +65,14 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,int numLogs, QRL_LogData **logs
         connect(rrCounter, SIGNAL(valueChanged(double)), this, SLOT(changeRefreshRate(double)));
 
         connect(viewComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( changeLogView(int) ) );
-
+        connect(pointDistCounter, SIGNAL(valueChanged(double)), this, SLOT(changeHistDistance(double)));
+        connect(histLengthDistCounter, SIGNAL(valueChanged(double)), this, SLOT(changeHistLength(double)));
+        connect( dxComboBox, SIGNAL( currentIndexChanged(const QString &) ), this, SLOT( changeDx(const QString&) ) );
+        connect( dxComboBox, SIGNAL( editTextChanged(const QString &) ), this, SLOT( changeDx(const QString&) ) );
+        connect( dyComboBox, SIGNAL( currentIndexChanged(const QString &) ), this, SLOT( changeDy(const QString&) ) );
+        connect( dyComboBox, SIGNAL( editTextChanged(const QString &) ), this, SLOT( changeDy(const QString&) ) );
+        connect(xOffsetCounter, SIGNAL(valueChanged(double)), this, SLOT(changeXOffset(double)));
+        connect(yOffsetCounter, SIGNAL(valueChanged(double)), this, SLOT(changeYOffset(double)));
 
 	currentLog=0;
 	holdCheckBox->setCheckState(Qt::Checked);
@@ -152,7 +159,12 @@ QRL_LogsManager::QRL_LogsManager(QWidget *parent,int numLogs, QRL_LogData **logs
 }
 QRL_LogsManager::~QRL_LogsManager()
 {
+        for (int i=0; i<Num_Logs; ++i){
+                LogWindows[i]->hide();
+                delete LogWindows[i];
 
+        }
+        delete[] LogWindows;
 	//stopScopeThreads();
 	//if (Get_Scope_Data_Thread)
 	//	delete[] Get_Scope_Data_Thread;
@@ -200,6 +212,57 @@ void QRL_LogsManager::refresh()
 //  }
 }
 
+void QRL_LogsManager::changeDx(const QString& text)
+{
+        if (!text.isEmpty() &&text.toDouble()!=0.0 ){
+                double dx=text.toDouble();
+                for (int i=0;i<LogWindows[currentLog]->xyplot()->getNCurve();i++){
+                    //double xoffset = LogWindows[currentLog]->xyplot()->
+                    LogWindows[currentLog]->xyplot()->trace(i)->setDx(dx);
+
+                }
+//                double xoffset = ScopeWindows[currentScope]->scope()->trace(currentTrace)->getOffset();
+//                xoffset=(offset*ScopeWindows[currentScope]->scope()->trace(currentTrace)->getDx())/dx;
+//                changeXOffset(xoffset);
+//                ScopeWindows[currentScope]->scope()->trace(currentTrace)->setDy(dx);
+        }
+}
+
+void QRL_LogsManager::changeDy(const QString& text)
+{
+        if (!text.isEmpty() &&text.toDouble()!=0.0 ){
+                double dy=text.toDouble();
+                for (int i=0;i<LogWindows[currentLog]->xyplot()->getNCurve();i++){
+                    //double xoffset = LogWindows[currentLog]->xyplot()->
+                    LogWindows[currentLog]->xyplot()->trace(i)->setDy(dy);
+
+                }
+//                double yoffset = LogWindows[currentLog]->xyplot()->trace(currentTrace)->getOffset();
+//                yoffset=(offset*ScopeWindows[currentScope]->scope()->trace(currentTrace)->getDy())/dy;
+//                changeYOffset(yoffset);
+//                ScopeWindows[currentScope]->scope()->trace(currentTrace)->setDy(dy);
+        }
+}
+
+void QRL_LogsManager::changeXOffset(double o)
+{
+  for (int i=0;i<LogWindows[currentLog]->xyplot()->getNCurve();i++){
+    LogWindows[currentLog]->xyplot()->trace(i)->setXOffset(o);
+  }
+
+
+
+}
+void QRL_LogsManager::changeYOffset(double o)
+{
+
+  for (int i=0;i<LogWindows[currentLog]->xyplot()->getNCurve();i++){
+    LogWindows[currentLog]->xyplot()->trace(i)->setYOffset(o);
+  }
+
+
+}
+
 void QRL_LogsManager::showLog(int state) 
 {
 	if(state==Qt::Checked){
@@ -214,14 +277,14 @@ void QRL_LogsManager::changeLogView(int type) {
 
         switch(type)
         {
-                case 0: //thermo
+                case 0: //matrixview
                         tabWidget->removeTab(1);
                         tabWidget->addTab(MatrixViewOptions,tr("Matrix View Options"));
                         if (LogWindows[currentLog]->getLogType()!=QRL_LogWindow::MATRIXVIEW)
                                 LogWindows[currentLog]->setLog(QRL_LogWindow::MATRIXVIEW);
                           Logs[currentLog]->setHistory(false);
                         break;
-                case 1: //dial
+                case 1: //xyplot
                         tabWidget->removeTab(1);
                         tabWidget->addTab(XYPlotOptions,tr("X-Y Plot Options"));
                         //tabWidget->addTab(xyPlot,tr("X-Y Plot Options"));
@@ -329,6 +392,20 @@ void QRL_LogsManager::changeRefreshRate(double rr)
 
 
 }
+
+void QRL_LogsManager::changeHistDistance(double d) {
+
+
+ Logs[currentLog]->setHistDistance(d);
+
+
+}
+   void QRL_LogsManager::changeHistLength(double d){
+
+
+    LogWindows[currentLog]->xyplot()->changeDataPoints(d);
+
+   }
 
 void QRL_LogsManager::setFileDirectory(){
 
@@ -458,6 +535,14 @@ void QRL_LogsManager::showLogOptions( int index ){
         minScaleCounter->setValue(LogWindows[currentLog]->matrixplot()->getMinScale());
          maxScaleCounter->setValue(LogWindows[currentLog]->matrixplot()->getMaxScale());
          rrCounter->setValue(LogWindows[currentLog]->getRefreshRate());
+         viewComboBox->setCurrentIndex((int)LogWindows[currentLog]->getLogType());
+         histLengthDistCounter->setValue(LogWindows[currentLog]->xyplot()->getDataPoints());
+         pointDistCounter->setValue(Logs[currentLog]->getHistDistance());
+         xOffsetCounter->setValue(LogWindows[currentLog]->xyplot()->trace(0)->getXOffset());
+         yOffsetCounter->setValue(LogWindows[currentLog]->xyplot()->trace(0)->getYOffset());
+         dxComboBox->setEditText(tr("%1").arg(LogWindows[currentLog]->xyplot()->trace(0)->getDx()));
+         dyComboBox->setEditText(tr("%1").arg(LogWindows[currentLog]->xyplot()->trace(0)->getDy()));
+
          switch(LogWindows[currentLog]->getDelegate()){
              case QRL_LogWindow::pixel:
                     delegateComboBox->setCurrentIndex(2);

@@ -57,6 +57,8 @@ public:
     void setHistory(bool b){hist=b;}
     bool History(){return hist;}
     void add2Hist();
+    void setHistDistance(int d){hist_distance=d;}
+    int getHistDistance(){return hist_distance;}
  QPL_Data2Disk* data2disk(){return d2d;}
         void setLogValue(float v, int row, int col);
         QVector< QVector<float> > getLogValue();

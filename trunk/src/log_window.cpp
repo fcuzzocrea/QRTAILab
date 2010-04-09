@@ -52,8 +52,9 @@ LogViewType = QRL_LogWindow::MATRIXVIEW;
     matrixPlot = new QPL_MatrixPlot(this);
     xyPlot = new QPL_XYPlot(this);
      xyPlot->setVisible(false);
-     xyPlot->initTraces(1,1,100);
-//     model = new MatrixModel(this);
+     if (Log->getNCol()==2)
+        xyPlot->initTraces(Log->getNRow(),100);
+ //     model = new MatrixModel(this);
 //     matrixPlot = new QTableView;
 //     matrixPlot->setShowGrid(false);
 //     matrixPlot->horizontalHeader()->hide();
@@ -99,7 +100,7 @@ actualDelegate=colorbar;
 QRL_LogWindow::~QRL_LogWindow(){
    // delete model;
     delete matrixPlot;
-
+    delete xyPlot;
 }
 
 
@@ -129,6 +130,13 @@ LogViewType=logtype;
                 // delete Thermo;
                 break;
         case XYPLOT:
+                if (xyPlot->getNCurve()==0){
+                     QMessageBox::critical(this, tr("QMessageBox::critical()"),
+                                     tr("xy-plot is not possible. you need 2 columns!"),
+                                     QMessageBox::Abort);
+                    break;
+                }
+
                 matrixPlot->setVisible(false);
                  xyPlot->setVisible(true);
                  this->layout()->removeWidget(this->layout()->widget());
@@ -297,6 +305,9 @@ QDataStream& operator<<(QDataStream &out, const QRL_LogWindow &d){
 //        a=d.pixelSize; out << a;
 //        out << d.showItemNumber;
         out << *(d.matrixPlot);
+        out << *(d.xyPlot);
+        out << (qint32)d.Log->getHistDistance();
+        out << (qint32)d.LogViewType;
         out << d.Log->data2disk()->getSaveTime();//out << d.saveTime;
         out << d.Log->data2disk()->getFileName();// out << d.fileName;
         a= (qint32)d.actualDelegate; out << a;
@@ -318,6 +329,11 @@ QDataStream& operator>>(QDataStream &in, QRL_LogWindow(&d)){
 //        in >> a; d.setPixelSize(a);
 //        in >> b; d.setShowItemNumber(b);
         in >> *(d.matrixPlot);
+        if (d.fileVersion>109){
+            in >> *(d.xyPlot);
+            in >> a;d.Log->setHistDistance(a);
+            in >> a; d.setLog((QRL_LogWindow::LogView_Type) a);
+        }
         in >> dd; d.Log->data2disk()->setSaveTime(dd);//d.setSaveTime(dd);
         in >> str;d.Log->data2disk()->setFileName(str);// d.setFileName(str);
         in >> a;   d.setDelegate((QRL_LogWindow::matrixDelegate)a);

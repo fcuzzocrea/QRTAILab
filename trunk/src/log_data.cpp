@@ -36,7 +36,7 @@ QRL_LogData::QRL_LogData(int r,int c,float d,char* c_name)
 //  Save_File_Pointer=NULL;
 	    plotting=false;
 
-                logRefreshRate=30.;
+                logRefreshRate=20.;
                  LogValues.resize(this->getNRow());
 
                 for (int t=0; t<this->getNRow(); t++){
@@ -57,7 +57,7 @@ QRL_LogData::~QRL_LogData()
 
  void QRL_LogData::setLogValue(float v, int row, int col){
 
-     if (hist_distance==hist_counter) {
+     if (hist_distance<=hist_counter) {
         hist_counter=0;
         LogValuesHist.append(LogValues);
      }
@@ -84,7 +84,7 @@ if (hist){
 
        QVector<  QVector< QVector<float> > > ret(LogValuesHist);
        LogValuesHist.clear();
-
+         // hist_counter=0;
        if (ret.size()==0)
             ret.append(LogValues);
 
@@ -94,7 +94,7 @@ if (hist){
   int QRL_LogData::setLogRefreshRate(double rr)
 {
 int ret=-1;
-if (rr>0. && rr<50.){
+if (rr>0. && rr<150.){
 
         scopeRefreshRate=rr;
 
