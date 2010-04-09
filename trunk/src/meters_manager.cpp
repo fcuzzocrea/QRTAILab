@@ -134,6 +134,8 @@ for (int i=0; i<Num_Meters; ++i){
 		MeterWindows[i]->refresh();
 	//}
 }
+  if (!MeterWindows[currentMeter]->isVisible() && showCheckBox->isChecked())
+      showCheckBox->setCheckState(Qt::Unchecked);
 }
 
 void QRL_MetersManager::refreshView()

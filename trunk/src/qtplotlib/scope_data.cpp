@@ -88,7 +88,7 @@ int QPL_ScopeData::setScopeRefreshRate(double rr)
 int ret=-1;
 if (rr>0. && rr<50.){
 
-	scopeRefreshRate=rr;
+        scopeRefreshRate=rr;
 
 }
  //ret= Get_Meter_Data_Thread[n].setRefreshRate(rr);
@@ -97,11 +97,11 @@ return ret;
 
 double QPL_ScopeData::getScopeRefreshRate()
 {
-	double ret=-1;
+        double ret=-1;
 
-		ret=scopeRefreshRate;
-	
-	return ret;
+                ret=scopeRefreshRate;
+
+        return ret;
 }
 
 void QPL_ScopeData::setScopeTime(double v){

@@ -18,6 +18,8 @@ public:
    virtual ~QPL_Scope();
    void initTraces(QPL_ScopeData *scope,int ind);
    void changeRefreshRate(double);
+   void startRefresh(){   timer->start((int)(1./RefreshRate*1000.)); }
+   void stopRefresh(){timer->stop(); }
    void changeDataPoints(double);
    void changeDivider(double);
    unsigned int getDivider(){return Divider;}

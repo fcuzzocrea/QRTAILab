@@ -36,7 +36,7 @@
 //
 
 QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QPL_ScopeData *scope,int ind)
-        :QDialog(parent),index(ind)
+        :QDialog(parent),ScopeData(scope),index(ind)
 {
     if (this->objectName().isEmpty())
         this->setObjectName(QString::fromUtf8("QRL_ScopeWindow"));
@@ -65,6 +65,10 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QPL_ScopeData *scope,int ind)
     // We don't need the cache here
      //qwtscope->canvas()->setPaintAttribute(QwtPlotCanvas::PaintCached, false);
      //qwtscope->canvas()->setPaintAttribute(QwtPlotCanvas::PaintPacked, false);
+    RefreshRate=20;
+            timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(refresh()));
+        timer->start((int)(1./RefreshRate*1000.));
 
 }
 QRL_ScopeWindow::~QRL_ScopeWindow(){
@@ -73,9 +77,30 @@ QRL_ScopeWindow::~QRL_ScopeWindow(){
 
 }
 
+void QRL_ScopeWindow::changeRefreshRate(double rr)
+{
+        RefreshRate=rr;
+        if (	RefreshRate<0.)
+                RefreshRate=20.;
+        timer->stop();
+        timer->start((int)(1./RefreshRate*1000.));
+
+        //Plotting_Scope_Data_Thread->changeRefreshRate(RefreshRate);
+
+}
+
 void QRL_ScopeWindow::refresh()
 {
- //qwtscope->refresh();
+
+     if (ScopeData->dataAvailable()) {
+        if (ScopeData->getNTraces()>0) {
+          if (ScopeData->data2disk()->isSaveScopeTime())
+             scope()->setTime( ScopeData->getScopeTime());
+           scope()->setValue( ScopeData->getScopeValue());
+         }
+        //}
+        }
+
 }
 
 
