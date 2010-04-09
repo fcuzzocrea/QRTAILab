@@ -428,7 +428,7 @@ if (logNumber<Num_Logs){
                                      QMessageBox::Abort);
                 } else {
                 //if ((Save_File_Pointer = fopen((File_Name.toLocal8Bit()).data(), "a+")) == NULL) {
-                  if (!Logs[currentLog]->data2disk()->startSaving()) {
+                  if (!Logs[logNumber]->data2disk()->startSaving()) {
                         printf("Error in opening file %s\n",Logs[logNumber]->data2disk()->getFileName().toLocal8Bit().data() );
                         QMessageBox::critical(this, tr("QMessageBox::critical()"),
                                      tr("Error in opening file!"),
@@ -559,6 +559,15 @@ void QRL_LogsManager::showLogOptions( int index ){
          viewNumberCheckBox->setChecked(LogWindows[currentLog]->matrixplot()->getShowItemNumber());
 //  	timeCounter->setValue(saveTime[currentLog] );
 //  	fileLineEdit->setText(fileName[currentLog] );
+         timeCounter->setValue(Logs[currentLog]->data2disk()->getSaveTime() );
+        //fileLineEdit->setText(ScopeWindows[currentScope]->getFileName() );
+        if (!(Logs[currentLog]->data2disk()->getFileName()).contains(tr("/"))){
+          fileLineEdit->setText((Logs[currentLog]->data2disk()->getFileName()));
+          dirLineEdit->setText("./");
+        }else {
+          dirLineEdit->setText((Logs[currentLog]->data2disk()->getFileName()).left((Logs[currentLog]->data2disk()->getFileName()).lastIndexOf(tr("/"))+1));
+          fileLineEdit->setText( (Logs[currentLog]->data2disk()->getFileName()).mid((Logs[currentLog]->data2disk()->getFileName()).lastIndexOf(tr("/"))+1));
+        }
 
 }
 
