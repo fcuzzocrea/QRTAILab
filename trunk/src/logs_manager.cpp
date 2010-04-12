@@ -4,7 +4,7 @@
  *                                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License           *
+ *   it under the terms of the GNU General Public License                  *
  *   as published by  the Free Software Foundation; either version 2       *
  *   of the License, or  (at your option) any later version.               *
  *                                                                         *
@@ -538,11 +538,12 @@ void QRL_LogsManager::showLogOptions( int index ){
          viewComboBox->setCurrentIndex((int)LogWindows[currentLog]->getLogType());
          histLengthDistCounter->setValue(LogWindows[currentLog]->xyplot()->getDataPoints());
          pointDistCounter->setValue(Logs[currentLog]->getHistDistance());
-         xOffsetCounter->setValue(LogWindows[currentLog]->xyplot()->trace(0)->getXOffset());
-         yOffsetCounter->setValue(LogWindows[currentLog]->xyplot()->trace(0)->getYOffset());
-         dxComboBox->setEditText(tr("%1").arg(LogWindows[currentLog]->xyplot()->trace(0)->getDx()));
-         dyComboBox->setEditText(tr("%1").arg(LogWindows[currentLog]->xyplot()->trace(0)->getDy()));
-
+         if (LogWindows[currentLog]->xyplot()->getNCurve()>0){
+             xOffsetCounter->setValue(LogWindows[currentLog]->xyplot()->trace(0)->getXOffset());
+             yOffsetCounter->setValue(LogWindows[currentLog]->xyplot()->trace(0)->getYOffset());
+             dxComboBox->setEditText(tr("%1").arg(LogWindows[currentLog]->xyplot()->trace(0)->getDx()));
+             dyComboBox->setEditText(tr("%1").arg(LogWindows[currentLog]->xyplot()->trace(0)->getDy()));
+        }
          switch(LogWindows[currentLog]->getDelegate()){
              case QRL_LogWindow::pixel:
                     delegateComboBox->setCurrentIndex(2);

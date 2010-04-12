@@ -4,7 +4,7 @@
  *                                                                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License           *
+ *   it under the terms of the GNU General Public License                  *
  *   as published by  the Free Software Foundation; either version 2       *
  *   of the License, or  (at your option) any later version.               *
  *                                                                         *
@@ -52,6 +52,7 @@ LogViewType = QRL_LogWindow::MATRIXVIEW;
     matrixPlot = new QPL_MatrixPlot(this);
     xyPlot = new QPL_XYPlot(this);
      xyPlot->setVisible(false);
+
      if (Log->getNCol()==2)
         xyPlot->initTraces(Log->getNRow(),100);
  //     model = new MatrixModel(this);
