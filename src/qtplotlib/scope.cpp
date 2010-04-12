@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008 by Holger Nahrstaedt                               *
+ *   Copyright (C) 2010 by Holger Nahrstaedt                               *
  *                                                                         *
  *                                                                         *
  *                                                                         *
