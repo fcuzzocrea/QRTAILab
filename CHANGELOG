@@ -1,3 +1,7 @@
+Version 0.1.11
+ - Log Bugfix removed
+ - Define Bug removed
+
 Version 0.1.10
  - some bugfixes
  - Log blocks can be used for xy plots (the columm size must be 2)
