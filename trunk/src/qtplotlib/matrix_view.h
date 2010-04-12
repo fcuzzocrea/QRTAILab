@@ -24,7 +24,7 @@
 
 #include <QtGui>
 
-#include "qrtailab.h"
+#include "qtplot_global.h"
 
  class PixelDelegate : public QAbstractItemDelegate
  {
