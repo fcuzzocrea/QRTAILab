@@ -35,8 +35,11 @@
 #include "matrix_plot.h"
 #include "xyplot.h"
 
-
+#ifndef _OLD_LAYOUT_
 class QRL_LogWindow : public QDialog
+#else
+class QRL_LogWindow : public QMdiSubWindow
+#endif
 {
    Q_OBJECT
  //friend class PlottingScopeDataThread;

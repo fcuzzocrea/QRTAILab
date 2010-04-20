@@ -35,7 +35,11 @@
 /**
  * @brief LedWindow
  */
+#ifndef _OLD_LAYOUT_
 class QRL_LedWindow : public QDialog
+#else
+class QRL_LedWindow : public QMdiSubWindow
+#endif
 {
    Q_OBJECT
 public:

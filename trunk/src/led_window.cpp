@@ -30,7 +30,11 @@
 
 
 QRL_LedWindow::QRL_LedWindow(QWidget *parent,QPL_LedData *led)
+#ifndef _OLD_LAYOUT_
         :QDialog(parent),Led(led)
+#else
+        :QMdiSubWindow(parent),Led(led)
+#endif
 {
 	num_leds = Led->getNLeds();
 	if (this->objectName().isEmpty())
@@ -43,7 +47,9 @@ QRL_LedWindow::QRL_LedWindow(QWidget *parent,QPL_LedData *led)
    // this->setLayout(layout);
     Leds = new QPL_Led* [num_leds];
    //ledLabels = new QLabel* [num_leds];
+#ifndef _OLD_LAYOUT_
       this->setLayout(new QVBoxLayout);
+#endif
     for(int i=0;i<num_leds;++i){
         Leds[i] = new QPL_Led(this);
 	//Leds[i]->setObjectName(QString::fromUtf8("Led"));
@@ -59,8 +65,11 @@ QRL_LedWindow::QRL_LedWindow(QWidget *parent,QPL_LedData *led)
 //        ledFrame->layout()->addWidget(Leds[i]);
 //        ledFrame->layout()->addWidget(ledLabels[i]);
 	//layout->addWidget(Leds[i],i,1);
-	//this->setWidget(Leds[i]);
+#ifndef _OLD_LAYOUT_
          this->layout()->addWidget(Leds[i]);
+#else
+          this->layout()->addWidget(Leds[i]);
+#endif
 
     }
         //this->setWidget(frame);

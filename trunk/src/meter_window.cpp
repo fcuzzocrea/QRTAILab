@@ -31,7 +31,11 @@
 
 
 QRL_MeterWindow::QRL_MeterWindow(QWidget *parent,QRL_MeterData *meter)
+#ifndef _OLD_LAYOUT_
         :QDialog(parent),Meter(meter)
+#else
+         :QMdiSubWindow(parent),Meter(meter)
+#endif
 {
 if (this->objectName().isEmpty())
         this->setObjectName(QString::fromUtf8("QRL_MeterWindow"));
@@ -90,11 +94,13 @@ RefreshRate=20;
 //	Lcd->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 //	Lcd->hide();
         Lcd = new QPL_LcdQLabel(this);
-       // this->setWidget(Thermo);
+#ifdef _OLD_LAYOUT_
+        this->setWidget(Thermo);
+#else
          this->hide();
         this->setLayout(new QVBoxLayout);
         this->layout()->addWidget(Thermo);
-
+#endif
     this->setWindowTitle(Meter->getName());
 
 }
@@ -120,11 +126,12 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
                 Thermo->setVisible(false);
                 Lcd->setVisible(false);
                  if (!Dial->isVisible()) Dial->setVisible(true);
-
-                // this->setWidget(Dial);
+#ifdef _OLD_LAYOUT_
+                 this->setWidget(Dial);
+#else
                  this->layout()->removeWidget(this->layout()->widget());
                  this->layout()->addWidget(Dial);
-
+#endif
 		// delete Thermo;
 		break;
 	case THERMO:
@@ -137,11 +144,12 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
                 Thermo->setVisible(true);
                 Lcd->setVisible(false);
                  Dial->setVisible(false);
-                //this->setWidget(Thermo);
-
+ #ifdef _OLD_LAYOUT_
+                this->setWidget(Thermo);
+#else
                  this->layout()->removeWidget(this->layout()->widget());
                  this->layout()->addWidget(Thermo);
-
+#endif
 		//pipeDistance=Thermo->pos().x();
                 //pipeDistance=Thermo->minimumSizeHint().width()-Thermo->pipeWidth()-Thermo->borderWidth()*2;
 		//delete Dial;
@@ -150,11 +158,12 @@ void QRL_MeterWindow::setMeter(Meter_Type metertype)
                 Thermo->setVisible(false);
                 Lcd->setVisible(true);
                  Dial->setVisible(false);
-                //this->setWidget(Lcd);
-
-                 this->layout()->removeWidget(this->layout()->widget());
+#ifdef _OLD_LAYOUT_
+                this->setWidget(Lcd);
+#else
+                this->layout()->removeWidget(this->layout()->widget());
                  this->layout()->addWidget(Lcd);
-
+#endif
 		break;
 	default:
 		break;
