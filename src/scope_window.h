@@ -83,9 +83,12 @@
 * @bug   continuous rolling: a to smal sec/dev value consumes to much cpu power and blocks the gui
  * @bug overwride: for more then one trace the beginning all traces can get different. -> error in time axis
  */
-
+#ifndef _OLD_LAYOUT_
 class QRL_ScopeWindow : public QDialog
-{
+#else
+class QRL_ScopeWindow : public QMdiSubWindow
+#endif
+ {
    Q_OBJECT
  //friend class PlottingScopeDataThread;
 public:

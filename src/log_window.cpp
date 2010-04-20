@@ -35,7 +35,11 @@
 //
 
 QRL_LogWindow::QRL_LogWindow(QWidget *parent,QRL_LogData *log)
+#ifndef _OLD_LAYOUT_
         :QDialog(parent),Log(log)
+#else
+         :QMdiSubWindow(parent),Log(log)
+#endif
 {
     if (this->objectName().isEmpty())
         this->setObjectName(QString::fromUtf8("QRL_LogWindow"));
@@ -78,11 +82,13 @@ LogViewType = QRL_LogWindow::MATRIXVIEW;
 //            }
     //qwtPlot=this;
 //    matrixPlot->setObjectName(QString::fromUtf8("qwtPlot"));
-
-    //this->setWidget(matrixPlot);
+#ifdef _OLD_LAYOUT_
+    this->setWidget(matrixPlot);
+#else
      this->hide();
      this->setLayout(new QVBoxLayout);
         this->layout()->addWidget(matrixPlot);
+#endif
     this->setWindowTitle(QApplication::translate("QRL_LogWindow", Log->getName(), 0, QApplication::UnicodeUTF8));
 //     minScale=0;
 //     maxScale=1;

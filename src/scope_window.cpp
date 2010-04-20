@@ -36,7 +36,11 @@
 //
 
 QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QPL_ScopeData *scope,int ind)
+#ifndef _OLD_LAYOUT_
         :QDialog(parent),ScopeData(scope),index(ind)
+#else
+         :QMdiSubWindow(parent),ScopeData(scope),index(ind)
+#endif
 {
     if (this->objectName().isEmpty())
         this->setObjectName(QString::fromUtf8("QRL_ScopeWindow"));
@@ -55,9 +59,12 @@ QRL_ScopeWindow::QRL_ScopeWindow(QWidget *parent,QPL_ScopeData *scope,int ind)
     //qwtPlot=this;
     qwtscope->setObjectName(QString::fromUtf8("qwtPlot"));
     this->hide();
-    //this->setWidget(qwtscope);
+#ifdef _OLD_LAYOUT_
+    this->setWidget(qwtscope);
+#else
        this->setLayout(new QVBoxLayout);
     this->layout()->addWidget(qwtscope);
+#endif
     this->setWindowTitle(QApplication::translate("QRL_ScopeWindow", scope->getName().toLocal8Bit().data(), 0, QApplication::UnicodeUTF8));
 
     // Disable polygon clipping

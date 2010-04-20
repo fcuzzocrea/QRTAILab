@@ -90,39 +90,40 @@ QRL_MainWindow::QRL_MainWindow(int v)
    connect( qTargetInterface, SIGNAL( statusBarMessage(const QString &) ), this, SLOT( setStatusBarMessage(const QString &) ) ); 
 
      mdiArea = new QMdiArea;
-     //setCentralWidget(mdiArea);
-
-	//Verbose=0;
-  view = new QGraphicsView();
-     //view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-     //view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-#ifdef _use_opengl_
-        QGLWidget *glWidget = new QGLWidget(QGLFormat(QGL::SampleBuffers));
-        //QGLWidget *glWidget = new QGLWidget(QGLFormat(QGL::DoubleBuffer));
-        view->setViewport(glWidget);
-        view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
+ #ifdef _OLD_LAYOUT_
+     setCentralWidget(mdiArea);
 #else
-          //view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-         // view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-          view->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
-          view->setOptimizationFlag(QGraphicsView::DontClipPainter,true);
-         // view->setOptimizationFlag(QGraphicsView::DontSavePainterState,true);
-          view->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing,true);
-          //view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
+            //Verbose=0;
+      view = new QGraphicsView();
+         //view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+         //view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    #ifdef _use_opengl_
+            QGLWidget *glWidget = new QGLWidget(QGLFormat(QGL::SampleBuffers));
+            //QGLWidget *glWidget = new QGLWidget(QGLFormat(QGL::DoubleBuffer));
+            view->setViewport(glWidget);
+            view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
+    #else
+              //view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+             // view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+              view->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
+              view->setOptimizationFlag(QGraphicsView::DontClipPainter,true);
+             // view->setOptimizationFlag(QGraphicsView::DontSavePainterState,true);
+              view->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing,true);
+              //view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
+    #endif
+            //view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+            //view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
+        view->setTransformationAnchor(QGraphicsView::NoAnchor);
+
+         //view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+         view->setFocusPolicy(Qt::NoFocus);
+         //scene = new QGraphicsScene(0,0,740,430);
+         scene = new QRL_OpenGLScene(view);
+         scene->setBackgroundBrush(Qt::gray);
+         view->setScene(scene);
+         view->show();
+         setCentralWidget(view);
 #endif
-        //view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-        //view->setViewportUpdateMode(QGraphicsView::NoViewportUpdate);
-    view->setTransformationAnchor(QGraphicsView::NoAnchor);
-
-     //view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-     view->setFocusPolicy(Qt::NoFocus);
-     //scene = new QGraphicsScene(0,0,740,430);
-     scene = new QRL_OpenGLScene(view);
-     scene->setBackgroundBrush(Qt::gray);
-     view->setScene(scene);
-     view->show();
-     setCentralWidget(view);
-
 
 /*
 
@@ -258,9 +259,12 @@ qTargetInterface->setPreferences(p);
                                 MetersManager = new QRL_MetersManager(this,qTargetInterface->getMeterNumber(),qTargetInterface->getMeters(),qTargetInterface->getVerbose());
 				for (int i=0; i<qTargetInterface->getMeterNumber(); ++i){
                                     MetersManager->setMeterName(i,qTargetInterface->getMeterName(i));
-                                    //mdiArea->addSubWindow(MetersManager->getMeterWindows()[i]);
+                                    #ifdef _OLD_LAYOUT_
+                                      mdiArea->addSubWindow(MetersManager->getMeterWindows()[i]);
+                                    #else
                                     //QGraphicsProxyWidget *proxy = scene->addWidget(MetersManager->getMeterWindows()[i]);
                                       scene->addDialog(MetersManager->getMeterWindows()[i]);
+                                    #endif
 				}
 			}
 			if (MetersManager) {
@@ -283,9 +287,12 @@ qTargetInterface->setPreferences(p);
                                 LedsManager = new QRL_LedsManager(this,qTargetInterface->getLedNumber(),qTargetInterface->getLeds(),qTargetInterface->getVerbose());
 				for (int i=0; i<qTargetInterface->getLedNumber(); ++i){
                                     LedsManager->setLedName(i,qTargetInterface->getLedName(i));
-                                    //mdiArea->addSubWindow(LedsManager->getLedWindows()[i]);
+                                      #ifdef _OLD_LAYOUT_
+                                      mdiArea->addSubWindow(LedsManager->getLedWindows()[i]);
+                                    #else
                                     scene->addDialog(LedsManager->getLedWindows()[i]);
                                     //QGraphicsProxyWidget *proxy = scene->addWidget(LedsManager->getLedWindows()[i]);
+                                    #endif
 				}
 			}
 			if (LedsManager) {
@@ -306,9 +313,12 @@ qTargetInterface->setPreferences(p);
                                         LogsManager = new QRL_LogsManager(this,qTargetInterface->getLogNumber(),qTargetInterface->getLogs(),qTargetInterface->getVerbose());
 					for (int i=0; i<qTargetInterface->getLogNumber(); ++i){
                                             LogsManager->setLogName(i,qTargetInterface->getLogName(i));
-                                            //mdiArea->addSubWindow(LogsManager->getLogWindows()[i]);
+                                            #ifdef _OLD_LAYOUT_
+                                             mdiArea->addSubWindow(LogsManager->getLogWindows()[i]);
+                                             #else
                                              //QGraphicsProxyWidget *proxy = scene->addWidget(LogsManager->getLogWindows()[i]);
                                               scene->addDialog(LogsManager->getLogWindows()[i]);
+                                            #endif
 
 					}
 			}
@@ -331,9 +341,12 @@ qTargetInterface->setPreferences(p);
                                         ScopesManager = new QRL_ScopesManager(this,qTargetInterface->getScopeNumber(),qTargetInterface->getScopes(),qTargetInterface->getVerbose());
 					for (int i=0; i<qTargetInterface->getScopeNumber(); ++i){
                                                  ScopesManager->setScopeName(i,qTargetInterface->getScopeName(i));
-                                                 //mdiArea->addSubWindow(ScopesManager->getScopeWindows()[i]);
+                                                   #ifdef _OLD_LAYOUT_
+                                                 mdiArea->addSubWindow(ScopesManager->getScopeWindows()[i]);
+                                                    #else
                                                   //QGraphicsProxyWidget *proxy = scene->addWidget(ScopesManager->getScopeWindows()[i]);
                                                     scene->addDialog(ScopesManager->getScopeWindows()[i]);
+                                                 #endif
 					}
 				}
 				if (ScopesManager) {
