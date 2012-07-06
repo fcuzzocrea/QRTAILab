@@ -1207,15 +1207,15 @@ QDataStream& operator<<(QDataStream &out, const QPL_Scope &d){
 
 QDataStream& operator>>(QDataStream &in, QPL_Scope(&d)){
     QSize s;QPoint p;bool b; QColor c; qint32 a,a2;QFont f; double dd;
-    QString str; int Ncurve;
+    QString str; int Ncurve; double RR=0; double dx=0;
 //    in >> s;d.resize(s);
 //    in >> p; d.move(p);
 //    in >> b; d.setVisible(b);
     in >> a; Ncurve=(int)a;
     in >> c; d.setGridColor(c);
     in >> c; d.setBgColor(c);
-    in >> dd; d.changeRefreshRate(dd);
-    in >> dd; d.changeDX(dd);
+    in >> RR; d.changeRefreshRate(RR);
+    in >> dx; d.changeDX(dx);
     in >> a; //d.changeDataPoints(a);
     in >> a >> a2;
     if ((QPL_Scope::PlottingMode)a==QPL_Scope::hold){
@@ -1239,6 +1239,7 @@ QDataStream& operator>>(QDataStream &in, QPL_Scope(&d)){
     if (d.fileVersion>104){
       in >> b; d.setPlotting(b);
     }
+    d.changeDX(dx);
      for (int nn=0; nn<Ncurve;++nn){
        if (nn<d.Ncurve) {
             //in >> d.Traces[nn];
@@ -1294,7 +1295,6 @@ QDataStream& operator>>(QDataStream &in, QPL_Scope(&d)){
             }
       }
     }
-
 
     return in;
 

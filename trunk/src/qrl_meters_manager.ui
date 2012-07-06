@@ -26,7 +26,7 @@
    <string>Meters Manager</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="qrtailab.qrc">
     <normaloff>:/icons/meter_icon.xpm</normaloff>:/icons/meter_icon.xpm</iconset>
   </property>
   <layout class="QGridLayout">
@@ -123,9 +123,6 @@
        </item>
        <item row="1" column="2">
         <widget class="QwtCounter" name="rrCounter">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
          <property name="numButtons">
           <number>1</number>
          </property>
@@ -136,7 +133,7 @@
           <double>0.100000000000000</double>
          </property>
          <property name="maxValue">
-          <double>50.000000000000000</double>
+          <double>10000000.000000000000000</double>
          </property>
          <property name="value">
           <double>20.000000000000000</double>
@@ -581,7 +578,10 @@
   <tabstop>maxCounter</tabstop>
   <tabstop>meterComboBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="qrtailab.qrc"/>
+  <include location="qrtailab.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>closeButton</sender>

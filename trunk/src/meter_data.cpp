@@ -40,7 +40,7 @@ QRL_MeterData::QRL_MeterData(float d,char* c_name)
 int QRL_MeterData::setMeterRefreshRate(double rr)
 {
 int ret=-1;
-if (rr>0. && rr<50.){
+if (rr>0.){
 
 	ret=1;
 	meterRefreshRate=rr;
