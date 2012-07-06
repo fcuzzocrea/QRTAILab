@@ -420,9 +420,10 @@ QDataStream& operator>>(QDataStream &in, QRL_MetersManager(&d)){
 	qint32 a;
 	in >> a;
 	for (int i = 0; i < (int)a; ++i) {
-		if (d.Num_Meters>i)
+            if (d.Num_Meters>i){
 			in>>*(d.MeterWindows[i]);
-		else 
+                        d.Meters[i]->setMeterRefreshRate(d.MeterWindows[i]->getRefreshRate());
+                    }else
 			in>>*(d.MeterWindows[d.Num_Meters-1]);
 	}
 	return in;
