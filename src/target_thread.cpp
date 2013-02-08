@@ -212,7 +212,7 @@ void TargetThread::printBlocksInfo(){
                                                 }
                                                 printf(" Sampling time...%f\n", Scopes[n]->getDt());
                                                 if (Scopes[n]->getDt() <= 0.) {
-                                                        printf("Fatal Error, Scope %s sampling time is equal to %f,\n", Scopes[n]->getName(),Scopes[n]->getDt());
+                                                        printf("Fatal Error, Scope %s sampling time is equal to %f,\n", Scopes[n]->getName().toLocal8Bit().constData(),Scopes[n]->getDt());
                                                         printf("while Rtai-lab needs a finite, positive sampling time\n");
                                                         printf("This error often occurs when the sampling time is inherited\n");
                                                         printf("from so-called time-continous simulink blocks\n");
