@@ -88,7 +88,7 @@ QRL_LedWindow::~QRL_LedWindow(){
 //Plotting_Scope_Data_Thread->wait();
 //delete Plotting_Scope_Data_Thread;
 //delete mY;
-for (unsigned int j=0;j<num_leds;j++){
+for (int j=0;j<num_leds;j++){
 	delete Leds[j];
 }
 delete[] Leds;

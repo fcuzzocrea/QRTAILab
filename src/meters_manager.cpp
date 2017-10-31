@@ -413,17 +413,16 @@ QDataStream& operator<<(QDataStream &out, const QRL_MetersManager &d){
 
 
 QDataStream& operator>>(QDataStream &in, QRL_MetersManager(&d)){
-	QSize s;QPoint p;bool b; int i;
+	QSize s;QPoint p;bool b;
 	in >> s;d.resize(s);
 	in >> p; d.move(p);
 	in >> b; d.setVisible(b);
 	qint32 a;
 	in >> a;
 	for (int i = 0; i < (int)a; ++i) {
-            if (d.Num_Meters>i){
+		if (d.Num_Meters>i)
 			in>>*(d.MeterWindows[i]);
-                        d.Meters[i]->setMeterRefreshRate(d.MeterWindows[i]->getRefreshRate());
-                    }else
+		else 
 			in>>*(d.MeterWindows[d.Num_Meters-1]);
 	}
 	return in;

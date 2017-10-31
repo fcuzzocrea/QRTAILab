@@ -147,8 +147,8 @@ class TargetThread : public QThread
 
 
    void upload_parameters_info(long port, RT_TASK *task);
-  unsigned int Num_Tunable_Parameters;
-  unsigned int Num_Tunable_Blocks;
+  int Num_Tunable_Parameters;
+  int Num_Tunable_Blocks;
   int Num_Scopes;
   int Num_Logs;
   int Num_ALogs;
@@ -173,7 +173,7 @@ class TargetThread : public QThread
   Preferences_T Preferences;
    int Verbose;
    int Is_Target_Connected;
-   unsigned int Is_Target_Running;
+   unsigned long Is_Target_Running;
    int End_App;
    long Target_Node;
    int test;

@@ -159,6 +159,7 @@ void QRL_MainWindow::setStatusBarMessage(const QString & message){
 
 void QRL_MainWindow::closeEvent(QCloseEvent *event)
 {
+	(void) event;
         if (qTargetInterface->getIsTargetConnected()==1) {
                 //qTargetInterface->disconnectFromTarget();
             if (ScopesManager)
@@ -540,7 +541,7 @@ void QRL_MainWindow::startTarget() {
     QDataStream in(&file);
         qint32 mm,version;
         in >> mm >> version;
-        if (mm!=DATA_STREAM_MAGIC_NUMBER) {
+        if ((unsigned int)mm != DATA_STREAM_MAGIC_NUMBER) {
                 file.close();
                 QMessageBox::warning(NULL,"Error","Wrong file format! Could not load file!", QMessageBox::Ok );
                 return;

@@ -46,6 +46,7 @@ void GetScopeDataThread::start(void* arg,TargetThread* targetthread)//,QRL_Scope
 	QThread::start();
 }
 */
+
 /**
 * @brief set new dt
 * @param d points per second
@@ -76,9 +77,11 @@ int GetScopeDataThread::setDt(double d)
 	return -1;
 }
 */
+
 /**
 * @brief starting GetScopeDataThread
 */
+
 /*
 void GetScopeDataThread::run()
 {
@@ -236,9 +239,7 @@ void GetScopeDataThread::run()
 //			}
 //		}
 
-/*
 	}
-
 end:
 //rt_make_soft_real_time();
 	if (targetThread->getVerbose()) {
@@ -255,7 +256,8 @@ end:
 	rt_task_delete(GetScopeDataTask);
 
 
-}*/
+}
+*/
 
 
 

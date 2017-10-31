@@ -1051,7 +1051,6 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopesManager(&d)){
 		if (d.Num_Scopes>i){
                         d.ScopeWindows[i]->setFileVersion(d.fileVersion);
                         in>>*(d.ScopeWindows[i]);
-                        d.Scopes[i]->setScopeDt(d.ScopeWindows[i]->scope()->getDt());
 		}
 		else {
                         d.ScopeWindows[d.Num_Scopes-1]->setFileVersion(d.fileVersion);

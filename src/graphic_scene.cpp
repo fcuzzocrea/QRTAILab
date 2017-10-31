@@ -93,6 +93,7 @@ QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget(0, Qt::Dialog);
 
 void QRL_OpenGLScene::drawBackground(QPainter *painter, const QRectF &)
 {
+    (void) painter;
     #ifdef _use_opengl_
     if (painter->paintEngine()->type() != QPaintEngine::OpenGL)
     //    && painter->paintEngine()->type() != QPaintEngine::OpenGL2)

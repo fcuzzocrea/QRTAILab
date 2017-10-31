@@ -384,6 +384,7 @@ void QPL_Scope::setPlotting(bool b){
                         bt.setText(tr("x: %1 sec/dev  trigger <-").arg(dx));
                 bottomText->setLabel(bt);
                 break;
+ 	case hold: break;
 // 	case hold: //hold
 // 		bt.setText(tr("x: %1 sec/dev  hold").arg(dx));
 // 		bottomText->setLabel(bt);
@@ -423,6 +424,7 @@ void QPL_Scope::setPlotting(bool b){
                         bt.setText(tr("x: %1 sec/dev  trigger <-").arg(dx));
                 bottomText->setLabel(bt);
                 break;
+ 	case hold: break;
 // 	case hold: //hold
 // 		bt.setText(tr("x: %1 sec/dev  hold").arg(dx));
 // 		bottomText->setLabel(bt);
@@ -605,7 +607,7 @@ NDistance=(int)(dt*(1./Scope->getDt()));  //doesnt work
         }
          d_x = new double[NDataMax];*/
 
-       for (unsigned int j=0;j<Ncurve;j++){
+       for (int j=0;j<(int)Ncurve;j++){
                 //ScopeData[j].d_y = new double[NDataMax];
                 Traces[j]->changeNDataSoll(NDataSoll,dt);
                 int k=0;
@@ -867,7 +869,7 @@ void QPL_Scope::setValue(const QVector< QVector<double> > &v)
 
 int time; int start=0;  PlottingMode PM=plottingMode;
 
-if (v.at(0).size()>NDataSoll){  //roll mode is to cpu expensive and not necassary -> switch to overwrite mode
+if (v.at(0).size()>(int)NDataSoll){  //roll mode is to cpu expensive and not necassary -> switch to overwrite mode
         if (PM==roll)
                 PM=overwrite;
 }
@@ -886,8 +888,8 @@ case roll:
                 if (Qt::LeftToRight==direction){
                   Traces[nn]->moveDataToRight(time);
 
-                for ( unsigned int i = 0; i<=time; i++){
-                   if ((time-i)<v.at(nn).size())
+                for ( int i = 0; i<=time; i++){
+                   if ((time-i)< (int)(v.at(nn).size()))
                         Traces[nn]->setValue(i,((double)v.at(nn).at(time-i)));
                         //d_y[i]=(double)temp[nn][time-i];
                 }
@@ -929,7 +931,7 @@ case overwrite:
                 time=NDataSoll-1;
                 //break;
         }
-        if(time>NDataSoll-1){
+        if(time>(int)(NDataSoll-1)) {
 
 // 		for (int n=0;n<Ncurve;n++){ // reset time counter
 // 			d_y[ScopeData[n].time]=((double)v.at(nn).at(k))/Traces[nn]->getDy()+Traces[nn]->getOffset();
@@ -957,7 +959,7 @@ case trigger:
                 } else 	if (triggerUp){
                         if (y>triggerLevel && lastValue<triggerLevel){
                                 triggerSearch=false;singleModeRunning=false;
-                                for (int n=0;n<Ncurve;n++){ // reset time counter
+                                for (int n=0;n<(int)Ncurve;n++){ // reset time counter
                                         if (Qt::LeftToRight==direction)
                                         Traces[nn]->setTime(0);
                                         else
@@ -978,7 +980,7 @@ case trigger:
                 lastValue=y;
           } else { // plot last data for the other traces
                 time=Traces[nn]->getTime();
-                if (time>0 && time <NDataSoll-1){
+                if (time>0 && time < (int)(NDataSoll-1)) {
                         Traces[nn]->setValue(time,((double)v.at(nn).at(k)));
                         if (Qt::LeftToRight==direction)
                                 time++;
@@ -1002,7 +1004,7 @@ case trigger:
                         lastValue=(double)v.at(nn).at(k);
                 }
         }
-        if(time>NDataSoll-1){
+        if(time > (int)(NDataSoll-1)){
                 time=0;
                 if (nn==triggerChannel){ // start searching
                         triggerSearch=true;
@@ -1207,15 +1209,15 @@ QDataStream& operator<<(QDataStream &out, const QPL_Scope &d){
 
 QDataStream& operator>>(QDataStream &in, QPL_Scope(&d)){
     QSize s;QPoint p;bool b; QColor c; qint32 a,a2;QFont f; double dd;
-    QString str; int Ncurve; double RR=0; double dx=0;
+    QString str; int Ncurve;
 //    in >> s;d.resize(s);
 //    in >> p; d.move(p);
 //    in >> b; d.setVisible(b);
     in >> a; Ncurve=(int)a;
     in >> c; d.setGridColor(c);
     in >> c; d.setBgColor(c);
-    in >> RR; d.changeRefreshRate(RR);
-    in >> dx; d.changeDX(dx);
+    in >> dd; d.changeRefreshRate(dd);
+    in >> dd; d.changeDX(dd);
     in >> a; //d.changeDataPoints(a);
     in >> a >> a2;
     if ((QPL_Scope::PlottingMode)a==QPL_Scope::hold){
@@ -1239,9 +1241,8 @@ QDataStream& operator>>(QDataStream &in, QPL_Scope(&d)){
     if (d.fileVersion>104){
       in >> b; d.setPlotting(b);
     }
-    d.changeDX(dx);
      for (int nn=0; nn<Ncurve;++nn){
-       if (nn<d.Ncurve) {
+       if (nn < (int)d.Ncurve) {
             //in >> d.Traces[nn];
             in >> str; d.trace(nn)->setName(str);
             in >> b; d.trace(nn)->setZeroAxis(b);
@@ -1295,6 +1296,7 @@ QDataStream& operator>>(QDataStream &in, QPL_Scope(&d)){
             }
       }
     }
+
 
     return in;
 

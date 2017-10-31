@@ -438,7 +438,7 @@ if (logNumber<Num_Logs){
      }
  }
  }
-if (logNumber==currentLog){
+if (logNumber == (int)currentLog){
 timeCounter->setValue(savetime);
 
 }
@@ -448,12 +448,12 @@ timeCounter->setValue(savetime);
   }
  void QRL_LogsManager::setFileName(int logNumber, const QString& filename){
 
-     if (logNumber<Num_Logs){
+     if (logNumber < Num_Logs){
 
          Logs[logNumber]->data2disk()->setFileName(filename);
      }
 
-     if (logNumber==currentLog){
+     if (logNumber == (int)currentLog){
 
         if (!filename.contains(QDir::separator())){
             dirLineEdit->clear();
@@ -554,6 +554,7 @@ void QRL_LogsManager::showLogOptions( int index ){
              case QRL_LogWindow::colorbar:
                     delegateComboBox->setCurrentIndex(0);
                     break;
+             case QRL_LogWindow::text: break;
 
          }
          pixelSizeSpinBox->setValue(LogWindows[currentLog]->matrixplot()->getPixelSize());
@@ -576,6 +577,7 @@ void QRL_LogsManager::showLogOptions( int index ){
 
 void QRL_LogsManager::changeSaveTime(double time)
 {
+	(void) time;
 	//ScopeWindows[currentScope]->setSaveTime(time);
 // 	Logs[currentLog].Save_Time=time;
 // 	saveTime[currentLog]=time;
@@ -584,6 +586,7 @@ void QRL_LogsManager::changeSaveTime(double time)
 
 void QRL_LogsManager::changeFileName(const QString& str)
 {
+	(void) str;
 	//ScopeWindows[currentScope]->setFileName(str);
 // 	fileName[currentLog]=str;
 }
@@ -605,7 +608,7 @@ QDataStream& operator<<(QDataStream &out, const QRL_LogsManager &d){
 
 
 QDataStream& operator>>(QDataStream &in, QRL_LogsManager(&d)){
-        QSize s;QPoint p;bool b; int i;QString str;double dd;qint32 a;
+        QSize s;QPoint p;bool b; QString str;double dd;qint32 a;
         in >> s;d.resize(s);
         in >> p; d.move(p);
         in >> b; d.setVisible(b);

@@ -272,7 +272,7 @@ if ( isLabelVisible(lt_max)){
 if ( isLabelVisible(lt_pp)){
 	min=(d_y[0]-offset)*dy;
 	max=(d_y[0]-offset)*dy;
-	for (int k=0;k<NDataSoll;k++){
+	for (int k=0; k < (int)NDataSoll; k++){
 		if (max<(d_y[k]-offset)*dy)
 			max=(d_y[k]-offset)*dy;
 		if (min>(d_y[k]-offset)*dy)
@@ -383,7 +383,7 @@ double  QPL_ScopeTrace::getOffset()
 double QPL_ScopeTrace::getAverage()
 {
 average=0.;
-	for (int k=0;k<NDataSoll;k++)
+	for (int k=0; k < (int)NDataSoll; k++)
 		average+=(d_y[k]-offset)*dy/((double)NDataSoll);
 
 return average;
@@ -627,7 +627,7 @@ void QPL_ScopeTrace::setName(const QString &text){
    void QPL_ScopeTrace::moveDataToRight(int time){
    
    
-   		for (unsigned int i = NDataSoll - 1; i > time; i-- ){
+   		for (int i = (int)(NDataSoll - 1); i > time; i-- ){
         		d_y[i] = d_y[i-1-time];
 		}
    
@@ -671,6 +671,7 @@ QDataStream& operator<<(QDataStream &out, const QPL_ScopeTrace *d){
 
 
 QDataStream& operator>>(QDataStream &in, QPL_ScopeTrace(*d)){
+	(void) d;
 	QSize s;QPoint p;bool b; QColor c; qint32 a;QFont f; double dd;
 	QString str; 
 

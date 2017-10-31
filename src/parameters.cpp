@@ -163,7 +163,7 @@ void QRL_Parameters::batchParameterDownload()
 	//	n += Parameters_Manager->update_parameter(Batch_Parameters[i].index, Batch_Parameters[i].mat_index, Batch_Parameters[i].value);
 	//}
 	if (targetthread->getBatchCounter() > 0) {
- 		qrl::RT_RPC(targetthread->getTask(), TargetThread::BATCH_DOWNLOAD, 0);
+ 		qrl::RT_RPC(targetthread->getTask(), TargetThread::BATCH_DOWNLOAD, NULL);
 		resetBatchMode();
 	}
 //  	uploadParameters();
@@ -173,7 +173,7 @@ void QRL_Parameters::updateParameterValue(int blk,int prm, int nr,int nc, double
 	int map_offset = targetthread->get_map_offset(blk,prm);
 	int ind = targetthread->get_parameter_ind(blk,prm,nr,nc);
 	if (targetthread->update_parameter(map_offset, ind, value)) {
-		qrl::RT_RPC(targetthread->getTask(), (ind << 20) | (map_offset << 4) | TargetThread::UPDATE_PARAM, 0);
+		qrl::RT_RPC(targetthread->getTask(), (ind << 20) | (map_offset << 4) | TargetThread::UPDATE_PARAM, NULL);
 	}
 	//printf("prm %d, nr %d nc %d\n",prm, nr, nc);
 	ParameterBlocks[blk]->setParameterValue(prm,nr,nc,targetthread->getParameterValue(blk,prm, nr, nc));
@@ -218,7 +218,7 @@ TargetName=QObject::tr(targetthread->getTargetName());
 
  void QRL_Parameters::uploadParameters()
  {
- 	qrl::RT_RPC(targetthread->getTask(), TargetThread::GET_PARAMS, 0);
+  qrl::RT_RPC(targetthread->getTask(), TargetThread::GET_PARAMS, NULL);
   for (int i=0; i<Num_Tunable_Blocks; ++i)
     for (int k=0; k<getNumberOfParameters(i);k++)
      	 for(int r=0; r<getParameterRows(i,k); r++)

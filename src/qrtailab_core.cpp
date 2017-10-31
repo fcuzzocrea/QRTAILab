@@ -49,7 +49,7 @@ QRtaiLabCore::QRtaiLabCore(QObject *parent, int Verbose)
 
     targetthread = new TargetThread();
     targetthread->setVerbose(Verbose);
-    unsigned int msg;
+    unsigned long msg;
 
    	rt_allow_nonroot_hrt();
     //mlockall(MCL_CURRENT | MCL_FUTURE);
@@ -80,27 +80,25 @@ QRtaiLabCore::~QRtaiLabCore(){
 
 int QRtaiLabCore::stopTarget()
 {
-if(targetthread->getIsTargetConnected()==1){
-	if (targetthread->getIsTargetRunning()==1) {
-		qrl::RT_RPC(Target_Interface_Task, TargetThread::STOP_TARGET, 0);
+if (targetthread->getIsTargetConnected() == 1) {
+	if (targetthread->getIsTargetRunning() == 1) {
+		qrl::RT_RPC(Target_Interface_Task, TargetThread::STOP_TARGET, NULL);
 	}
 }
-if (targetthread->getIsTargetRunning()==0)
+if (targetthread->getIsTargetRunning() == 0) {
 	statusBarMessage(tr("Ready..."));
-
+}
 return targetthread->getIsTargetRunning();
-
 }
 
 int QRtaiLabCore::startTarget()
 {
-if(targetthread->getIsTargetConnected()==1){
-	if (targetthread->getIsTargetRunning()==0) {
-		qrl::RT_RPC(Target_Interface_Task, TargetThread::START_TARGET, 0);
+if (targetthread->getIsTargetConnected() == 1) {
+	if (targetthread->getIsTargetRunning() == 0) {
+		qrl::RT_RPC(Target_Interface_Task, TargetThread::START_TARGET, NULL);
 	}
 }
 return !targetthread->getIsTargetRunning();
-
 }
 
 int QRtaiLabCore::connectToTarget()
@@ -108,10 +106,8 @@ int QRtaiLabCore::connectToTarget()
 	char buf[128];
 	sprintf(buf, "Trying to connect to %s", targetthread->getPreferences().Target_IP);
 	statusBarMessage(tr(buf));
-	qrl::RT_RPC(targetthread->getTask(), TargetThread::CONNECT_TO_TARGET, 0);
-	if (targetthread->getIsTargetConnected()==1){
-
-		
+	qrl::RT_RPC(targetthread->getTask(), TargetThread::CONNECT_TO_TARGET, NULL);
+	if (targetthread->getIsTargetConnected() == 1) {
 		sprintf(buf, "Target: %s.", targetthread->getTargetName());
 		statusBarMessage(tr(buf));
 	} else {
@@ -127,13 +123,12 @@ int QRtaiLabCore::connectToTarget()
 
 int QRtaiLabCore::disconnectFromTarget()
 {
-if(targetthread->getIsTargetConnected()==1){
-	qrl::RT_RPC(Target_Interface_Task, TargetThread::DISCONNECT_FROM_TARGET, 0);
-	if (targetthread->getIsTargetConnected()==0){
+if (targetthread->getIsTargetConnected() == 1) {
+	qrl::RT_RPC(Target_Interface_Task, TargetThread::DISCONNECT_FROM_TARGET, NULL);
+	if (targetthread->getIsTargetConnected() == 0) {
 		statusBarMessage(tr("Ready..."));
 	}
 }
-
 return targetthread->getIsTargetConnected();
 }
 
@@ -150,7 +145,7 @@ void QRtaiLabCore::closeTargetThread()
 
 // void QRtaiLabCore::uploadParameters()
 // {
-// 	qrl::RT_RPC(Target_Interface_Task, TargetThread::GET_PARAMS, 0);
+// 	qrl::RT_RPC(Target_Interface_Task, TargetThread::GET_PARAMS, NULL);
 // }
 
 
@@ -172,7 +167,7 @@ void QRtaiLabCore::batchParameterDownload()
 	//	n += Parameters_Manager->update_parameter(Batch_Parameters[i].index, Batch_Parameters[i].mat_index, Batch_Parameters[i].value);
 	//}
 	if (targetthread->getBatchCounter() > 0) {
-		qrl::RT_RPC(Target_Interface_Task, TargetThread::BATCH_DOWNLOAD, 0);
+		qrl::RT_RPC(Target_Interface_Task, TargetThread::BATCH_DOWNLOAD, NULL);
 		resetBatchMode();
 	}
 }
@@ -213,7 +208,7 @@ void QRtaiLabCore::updateParameterValue(int blk,int prm, int nr,int nc, double v
 	int map_offset = targetthread->get_map_offset(blk,prm);
 	int ind = targetthread->get_parameter_ind(blk,prm,nr,nc);
 	if (targetthread->update_parameter(map_offset, ind, value)) {
-		qrl::RT_RPC(Target_Interface_Task, (ind << 20) | (map_offset << 4) | TargetThread::UPDATE_PARAM, 0);
+		qrl::RT_RPC(Target_Interface_Task, (ind << 20) | (map_offset << 4) | TargetThread::UPDATE_PARAM, NULL);
 	}
 }
 

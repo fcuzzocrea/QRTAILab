@@ -83,6 +83,7 @@ void QRL_TargetsManager::stop(){
 }
 
 void QRL_TargetsManager::hrtModusChanged(int state){
+  (void) state;
   int hrtScope,hrtLog,hrtALog;
   if (scopesHRTCheckBox->checkState()==Qt::Checked)
     hrtScope=1;

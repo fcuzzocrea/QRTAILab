@@ -100,7 +100,7 @@ namespace qrl {
 
 // static volatile int GlobalRet[16];
 
-static inline void RT_RPC(RT_TASK *task, unsigned int msg, unsigned int *reply)
+static inline void RT_RPC(RT_TASK *task, unsigned int msg, unsigned long *reply)
 {
 // 	GlobalRet[msg & 0xf] = 0;
 	rt_send(task, msg);
@@ -117,7 +117,7 @@ static inline void RT_RETURN(RT_TASK *task, unsigned int reply)
 {
 // 	GlobalRet[reply] = 1;
 // 	printf("return reply %d GlobalRet %d\n",reply,GlobalRet[reply]);
-	rt_send(task,reply);
+	rt_send(task, reply);
 
 }
 
@@ -266,14 +266,14 @@ struct Batch_Parameters_Struct
 
 struct Preferences_Struct
 {
-	char *Target_IP;
-	char *Target_Interface_Task_Name;
-	char *Target_Scope_Mbx_ID;
-	char *Target_Log_Mbx_ID;
-	char *Target_ALog_Mbx_ID;
-	char *Target_Led_Mbx_ID;
-	char *Target_Meter_Mbx_ID;
-	char *Target_Synch_Mbx_ID;
+	const char *Target_IP;
+	const char *Target_Interface_Task_Name;
+	const char *Target_Scope_Mbx_ID;
+	const char *Target_Log_Mbx_ID;
+	const char *Target_ALog_Mbx_ID;
+	const char *Target_Led_Mbx_ID;
+	const char *Target_Meter_Mbx_ID;
+	const char *Target_Synch_Mbx_ID;
 	int MW_w, MW_h, MW_x, MW_y;
 	char *Current_Profile;
 	int Num_Profiles;

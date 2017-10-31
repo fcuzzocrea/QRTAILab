@@ -1,0 +1,48 @@
+#!/bin/sh
+
+prefix=`rtai-config --prefix`
+
+if test "$prefix" = ""; then
+echo "ERROR: please set your PATH variable to <rtai-install>/bin"
+exit
+fi
+
+MODULES=$prefix/modules
+
+libpath=`rtai-config --library-dir`
+
+if test "$libpath" = ""; then
+echo "ERROR: please set your PATH variable to <rtai-install>/lib"
+exit
+fi
+
+export LD_LIBRARY_PATH=$libpath:$LD_LIBRARY_PATH
+
+trap "./rem" INT TERM HUP ALARM 
+
+echo
+echo "*** QRTAILAB LAUNCHER ***"
+echo "Press <enter> to load RTAI modules:"
+read junk
+insmod $MODULES/rtai_hal.ko
+insmod $MODULES/rtai_sched.ko
+insmod $MODULES/rtai_sem.ko
+insmod $MODULES/rtai_mbx.ko
+insmod $MODULES/rtai_msg.ko
+insmod $MODULES/rtai_netrpc.ko
+echo "RTAI modules inserted."
+echo
+echo "Now start qrtailab:"
+read junk
+./qrtailab -v
+echo
+echo "qrtailab ended. Press <enter> to remove RTAI modules:"
+read junk
+rmmod rtai_netrpc.ko
+rmmod rtai_msg
+rmmod rtai_mbx
+rmmod rtai_sem
+rmmod rtai_sched
+rmmod rtai_hal
+echo "RTAI modules removed."
+echo

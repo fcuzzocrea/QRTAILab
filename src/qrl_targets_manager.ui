@@ -262,7 +262,7 @@
             <property name="checkable" >
              <bool>false</bool>
             </property>
-            <layout class="QGridLayout" name="gridLayout" >
+            <layout class="QGridLayout" name="gridLayout_1" >
              <item row="0" column="0" >
               <widget class="QCheckBox" name="scopesHRTCheckBox" >
                <property name="toolTip" >
@@ -332,7 +332,7 @@ Can block the cpu, if to many data are transmitted.
          <zorder>targetNameLineEdit_2</zorder>
          <zorder>statusGroupBox</zorder>
          <zorder>hartRTGroupBox</zorder>
-         <zorder>verticalSpacer</zorder>
+<!--         <zorder>verticalSpacer</zorder> -->
         </widget>
        </item>
        <item row="0" column="0" >

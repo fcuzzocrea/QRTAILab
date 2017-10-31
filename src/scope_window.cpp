@@ -116,6 +116,7 @@ QDataStream& operator<<(QDataStream &out, const QRL_ScopeWindow &d){
 
 out  << d.size()  << d.pos() << d.isVisible();
 out << *(d.qwtscope);
+return out;
 }
 
 QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
@@ -125,4 +126,5 @@ QDataStream& operator>>(QDataStream &in, QRL_ScopeWindow(&d)){
     in >> b; d.setVisible(b);
     d.qwtscope->setFileVersion(d.fileVersion);
     in >> *(d.qwtscope);
+    return in;
 }

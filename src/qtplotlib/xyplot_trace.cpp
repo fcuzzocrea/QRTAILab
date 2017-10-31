@@ -262,8 +262,7 @@ void QPL_XYPlotTrace::setName(const QString &text){
 
    void QPL_XYPlotTrace::moveDataToRight(int time){
 
-
-                for (unsigned int i = NDataSoll - 1; i > time; i-- ){
+                for (int i = NDataSoll - 1; i > time; i-- ){
                         d_x[i] = d_x[i-1-time];
                         d_y[i] = d_y[i-1-time];
                 }
@@ -282,21 +281,21 @@ void QPL_XYPlotTrace::setName(const QString &text){
 
 
 QDataStream& operator<<(QDataStream &out, const QPL_XYPlotTrace &d){
-        qint32 a;
-
-                out << d.dx;
-                out << d.dy;
-                out << d.xOffset;
-                out << d.yOffset;
+	out << d.dx;
+	out << d.dy;
+	out << d.xOffset;
+	out << d.yOffset;
+	return out;
 }
 
 
 QDataStream& operator>>(QDataStream &in, QPL_XYPlotTrace(&d)){
-        QSize s;QPoint p;bool b; QColor c; qint32 a;QFont f; double dd;
+        QSize s;QPoint p; QColor c; QFont f; double dd;
         QString str;
 
-            in>>dd; d.setDx(dd);
-            in>>dd; d.setDy(dd);
-            in>>dd; d.setXOffset(dd);
-            in>>dd; d.setYOffset(dd);
-    }
+	in>>dd; d.setDx(dd);
+	in>>dd; d.setDy(dd);
+	in>>dd; d.setXOffset(dd);
+	in>>dd; d.setYOffset(dd);
+	return in;
+}

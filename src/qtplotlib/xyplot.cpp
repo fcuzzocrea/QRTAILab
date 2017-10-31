@@ -234,7 +234,7 @@ void QPL_XYPlot::refresh()
 
 void QPL_XYPlot::setValue(const QVector< QVector< QVector<float> > >&v){
     for (int j=0;j<v.size();j++){
-        for (int i=0;i<Ncurve;i++){
+        for (int i=0;i<(int)Ncurve;i++){
             trace(i)->moveDataToRight(1);
             trace(i)->setValue(0,v.at(j).at(i).at(0),v.at(j).at(i).at(1));
     //        for (int j=0;j<v.at(i).size();j++){
@@ -257,11 +257,12 @@ QDataStream& operator<<(QDataStream &out, const QPL_XYPlot &d){
 
                 out << *(d.Traces[nn]);
         }
+	return out;
     }
 
 
 QDataStream& operator>>(QDataStream &in, QPL_XYPlot(&d)){
-    QSize s;QPoint p;bool b; QColor c; qint32 a,a2;QFont f; double dd;
+    QSize s;QPoint p; QColor c; qint32 a; QFont f;
     QString str; int Ncurve;
 //    in >> s;d.resize(s);
 //    in >> p; d.move(p);
@@ -269,8 +270,9 @@ QDataStream& operator>>(QDataStream &in, QPL_XYPlot(&d)){
     in >> a; Ncurve=(int)a;
     in >> a; d.changeDataPoints(a);
      for (int nn=0; nn<Ncurve;++nn){
-       if (nn<d.Ncurve) {
+       if (nn < (int)d.Ncurve) {
             in >> *(d.Traces[nn]);
        }
    }
+   return in;
 }

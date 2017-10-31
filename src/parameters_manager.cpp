@@ -136,14 +136,17 @@ void QRL_ParametersManager::showAllBlocks( bool  state){
 }
 
 void QRL_ParametersManager::showBlocks( bool  state){
+  (void) state;
   showAllBlocks(fineRadioButton->isChecked());
 }
 
 void QRL_ParametersManager::hideBlocks( bool  state){
+  (void) state;
    showAllBlocks(fineRadioButton->isChecked());
 }
 
 void QRL_ParametersManager::changeSearchText( const QString&  t){
+  (void) t;
 if (!fineRadioButton->isChecked())
   showAllBlocks(fineRadioButton->isChecked());
 }
@@ -184,7 +187,6 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 	      
 	}
 
-	int ind=0;
         int prm_row=item->row();
 	int prm_col=item->column()-1; //first column is paramter name
 	double data_value;
@@ -192,7 +194,7 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 	int jend;
 	int prm=prm_row;
 	int table_row=0;
-        int nrow=0,ncol;
+        int nrow=0,ncol=0;
 	
 	// get old value
 	jend=Parameters->getNumberOfParameters(blk);
@@ -201,7 +203,7 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
 		unsigned int nrows = Parameters->getParameterRows(blk,j);
 		for (unsigned int nr = 0; nr < nrows; nr++) {
 			for (unsigned int nc = 0; nc < ncols; nc++) {
-				if ((prm_row==table_row) && (prm_col==nc)){
+				if ((prm_row==table_row) && (prm_col==(int)nc)){
 					
 					nrow=nr;ncol=nc;
 					prm=j;
@@ -238,6 +240,7 @@ void QRL_ParametersManager::changeTunableParameter(QTableWidgetItem * item )
  */
 void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item ) 
 {
+	(void) item;
 	parameterTableWidget->blockSignals(true);
 	int i =0;
 	int blockCounter=-1;
@@ -251,7 +254,7 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 	}
         //std::cout << "i: "<<i << std::endl;
 	parameterTableWidget->clear();
-	int jend,val_idx;
+	int jend;
 	double data_value;
 	//const QIcon BlockIcon =QIcon(QString::fromUtf8(":/icons/parameters_icon.xpm"));
 	jend=Parameters->getNumberOfParameters(i);
@@ -265,7 +268,7 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 		parameterTableWidget->setItem(table_row,0,newItem);
 
 		unsigned int ncols = Parameters->getParameterCols(i,j);
-		if ((ncols+1)>parameterTableWidget->columnCount())
+		if ((int)(ncols+1)>parameterTableWidget->columnCount())
 			parameterTableWidget->setColumnCount(ncols+1);
 		unsigned int nrows =Parameters->getParameterRows(i,j);;
 		if (nrows>1)
@@ -300,7 +303,7 @@ void QRL_ParametersManager::showTunableParameter(QListWidgetItem * item )
 	qint32 mm,version;QString line;
 	in >> mm >> version;
 	
-	if (mm!=DATA_STREAM_MAGIC_NUMBER) {
+	if ((unsigned int)mm != DATA_STREAM_MAGIC_NUMBER) {
 		file.close();
 		QMessageBox::warning(NULL,"Error","Wrong file format! Could not load file!", QMessageBox::Ok );
 		return;
@@ -452,7 +455,7 @@ QDataStream& operator<<(QDataStream &out, const QRL_ParametersManager &d){
 
 
 QDataStream& operator>>(QDataStream &in, QRL_ParametersManager(&d)){
-	QSize s;QPoint p;bool b; int i;QString str;
+	QSize s;QPoint p;bool b; QString str;
 	in >> s;d.resize(s);
 	in >> p; d.move(p);
 	in >> b; d.setVisible(b);

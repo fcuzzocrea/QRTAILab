@@ -143,7 +143,7 @@
          <property name="title">
           <string>Blocks containing</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QGridLayout" name="gridLayout_1">
           <item row="1" column="0">
            <widget class="QLineEdit" name="paramLineEdit">
             <property name="toolTip">
@@ -214,7 +214,7 @@
   <zorder>batchCheckBox</zorder>
   <zorder>downloadPushButton</zorder>
   <zorder>uploadPushButton</zorder>
-  <zorder></zorder>
+<!--   <zorder></zorder> -->
   <zorder>tabWidget</zorder>
  </widget>
  <resources/>

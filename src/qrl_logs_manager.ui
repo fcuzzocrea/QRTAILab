@@ -32,7 +32,7 @@
    <string>Logs Manager</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="qrtailab.qrc">
     <normaloff>:/icons/log_icon.xpm</normaloff>:/icons/log_icon.xpm</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
@@ -152,8 +152,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>288</width>
-            <height>208</height>
+            <width>286</width>
+            <height>199</height>
            </rect>
           </property>
           <attribute name="label">
@@ -299,7 +299,7 @@
           <double>0.100000000000000</double>
          </property>
          <property name="maxValue">
-          <double>10000000.000000000000000</double>
+          <double>150.000000000000000</double>
          </property>
          <property name="value">
           <double>10.000000000000000</double>
@@ -731,7 +731,9 @@
    <header>qwt_counter.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="qrtailab.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>closeButton</sender>

@@ -1,7 +1,8 @@
-Version 0.1.13 
- - framerate of meters is loaded correctly now
- - framerate of meters is not limited to 50 anymore
- - sec/div is loaded and applyed correclty 
+Version 0.1.13
+2017-15-17 Tom <ventureg@163.com
+	src/qrtailab.h: set reply to an unsigned long pointer and let RTAI msg.c care of 
+	it being NULL.
+
 Version 0.1.12
  - old mdi window layout can be choosen
 

@@ -253,6 +253,7 @@ QDataStream& operator<<(QDataStream &out, const QPL_ThermoQwt &d){
         out << (qint32)d.pipeWidth();
         out << d.Min << d.Max;
         out << d.alarmLevel() << d.alarmEnabled();
+	return out;
     }
 
 QDataStream& operator>>(QDataStream &in, QPL_ThermoQwt(&d)){
@@ -269,4 +270,5 @@ QDataStream& operator>>(QDataStream &in, QPL_ThermoQwt(&d)){
         in >> dd;  d.setMax(dd);
         in >> dd;d.setAlarmLevel(dd);
         in >> b; d.setThermoAlarm(b);
+	return in;
     }

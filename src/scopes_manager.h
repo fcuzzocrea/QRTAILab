@@ -113,7 +113,7 @@ private:
   int Num_Scopes;
   QPL_ScopeData **Scopes;
   int verbose;
-  unsigned int currentScope;
+  int currentScope;
  // GetScopeDataThread* Get_Scope_Data_Thread;
   //QRtaiLabCore* qTargetInterface;
   //TargetThread* targetThread;

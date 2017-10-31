@@ -1,0 +1,7 @@
+vi src/target_thread.cpp
+go to 215
+Unico errore, corretto come qui sotto indicato.
+Possibile riuso gia esistente, adottato:
+src/target_thread.cpp:                                                printf("Scope: %s\n", Scopes[n]->getName().toLocal8Bit().constData());
+versione Masarati:
+src/target_thread.cpp:                                                        printf("Fatal Error, Scope %s sampling time is equal to %f,\n", (const char *)Scopes[n]->getName().constData(), Scopes[n]->getDt());

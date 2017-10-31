@@ -58,7 +58,7 @@ QMutex mutex;
 
 
 
-static void *rt_get_scope_data(void *arg)
+static __attribute__((__unused__)) void *rt_get_scope_data(void *arg)
 {
 	RT_TASK *GetScopeDataTask;
 	MBX *GetScopeDataMbx;
@@ -285,7 +285,7 @@ class GetMeterDataThread : public QThread
 
 
 
-static void *rt_get_meter_data(void *arg)
+static __attribute__((__unused__)) void *rt_get_meter_data(void *arg)
 {
 	RT_TASK *GetMeterDataTask;
 	MBX *GetMeterDataMbx;
@@ -414,13 +414,14 @@ QMutex mutex;
  };
 */
 
-static void *rt_get_led_data(void *arg)
+static __attribute__((__unused__)) void *rt_get_led_data(void *arg)
 {
 	RT_TASK *GetLedDataTask;
 	MBX *GetLedDataMbx;
 	char GetLedDataMbxName[7];
 	long GetLedDataPort;
-	int MsgData = 0, MsgLen, MaxMsgLen, DataBytes;
+	int __attribute__((__unused__)) MsgData = 0;
+	int MsgLen, MaxMsgLen, DataBytes;
 	unsigned int MsgBuf[MAX_MSG_LEN/sizeof(unsigned int)];	
 
 	int index = ((Args_T *)arg)->index;
@@ -498,7 +499,7 @@ end:
 
 
 
-static void *rt_get_alog_data(void *arg)
+static __attribute__((__unused__)) void *rt_get_alog_data(void *arg)
 {	
 	RT_TASK *GetALogDataTask;				
 	MBX *GetALogDataMbx;
@@ -602,7 +603,7 @@ end:
 
 
 
-static void *rt_get_log_data(void *arg)
+static __attribute__((__unused__)) void *rt_get_log_data(void *arg)
 {
 	RT_TASK *GetLogDataTask;
 	MBX *GetLogDataMbx;

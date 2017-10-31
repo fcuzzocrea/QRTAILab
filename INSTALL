@@ -18,7 +18,8 @@ Requirements
 =============
 
 - rtai-kernel
-- rtai in /usr/realtime
+- rtai in /usr/realtime, otherwise edit "qrtailab.config", 
+  macros INCLUDEPATH and LIBS, accordingly.
 - Qt4
 - qwt
 

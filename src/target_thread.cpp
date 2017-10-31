@@ -147,7 +147,7 @@ double TargetThread::get_parameter(Target_Parameters_T p, int nr, int nc, int *v
 }
  int TargetThread::get_parameter_ind(int blk, int prm, int prm_row,int prm_col){
 
-	int val_idx;
+	int val_idx = 0;
 	get_parameter(Tunable_Parameters[Tunable_Blocks[blk].offset+prm], prm_row, prm_col, &val_idx);
 	return val_idx;
 
@@ -212,7 +212,11 @@ void TargetThread::printBlocksInfo(){
                                                 }
                                                 printf(" Sampling time...%f\n", Scopes[n]->getDt());
                                                 if (Scopes[n]->getDt() <= 0.) {
-                                                        printf("Fatal Error, Scope %s sampling time is equal to %f,\n", Scopes[n]->getName().toLocal8Bit().constData(),Scopes[n]->getDt());
+#if 1 // adattamento, suggerito da linea 208 
+                                                        printf("Fatal Error, Scope %s sampling time is equal to %f,\n", Scopes[n]->getName().toLocal8Bit().constData(), Scopes[n]->getDt());
+#else // Versione Masarati
+                                                        printf("Fatal Error, Scope %s sampling time is equal to %f,\n", (const char *)Scopes[n]->getName().constData(), Scopes[n]->getDt());
+#endif
                                                         printf("while Rtai-lab needs a finite, positive sampling time\n");
                                                         printf("This error often occurs when the sampling time is inherited\n");
                                                         printf("from so-called time-continous simulink blocks\n");
@@ -306,9 +310,8 @@ void TargetThread::start()
 
 void TargetThread::run()
 {
-
-
-	unsigned int code, U_Request;
+	unsigned long code;
+	unsigned int U_Request;
 	Target_Port = 0;
 	RT_TASK *If_Task = NULL, *task;
 
@@ -334,7 +337,7 @@ void TargetThread::run()
 		  continue;
 		}
 		if (Verbose) {
-			printf("Received code %d from task %p\n", code, task);
+			printf("Received code %ld from task %p\n", code, task);
 		}
 		switch (code & 0xf) {
 
@@ -403,7 +406,7 @@ void TargetThread::run()
                                         RT_rpcx(Target_Node, Target_Port, If_Task, &c_req, &Tunable_Parameters[0], sizeof(char), sizeof(Target_Parameters_T));
                                         RLG_Target_Name = strdup(Tunable_Parameters[0].model_name);
 
-                                        for (unsigned int n = 0; n < Num_Tunable_Parameters; n++) {
+                                        for (int n = 0; n < Num_Tunable_Parameters; n++) {
                                                 RT_rpcx(Target_Node, Target_Port, If_Task, &c_req, &Tunable_Parameters[n], sizeof(char), sizeof(Target_Parameters_T));
                                                 if (n > 0) {
                                                         if (strcmp(Tunable_Parameters[n-1].block_name, Tunable_Parameters[n].block_name)) {
@@ -415,7 +418,7 @@ void TargetThread::run()
                                         }
                                         if (Num_Tunable_Blocks > 0) Tunable_Blocks = new Target_Blocks_T [Num_Tunable_Blocks];
                                         blk_index = 0;
-                                        for (unsigned int n = 0; n < Num_Tunable_Parameters; n++) {
+                                        for (int n = 0; n < Num_Tunable_Parameters; n++) {
                                                 if (n > 0) {
                                                         if (strcmp(Tunable_Parameters[n-1].block_name, Tunable_Parameters[n].block_name)) {
                                                                 blk_index++;
@@ -659,7 +662,7 @@ void TargetThread::run()
 
 				/*if (Num_Synchs > 0) Get_Synch_Data_Thread = new pthread_t [Num_Synchs];
 				for (int n = 0; n < Num_Synchs; n++) {
-					unsigned int msg;
+					unsigned long msg;
 					Args_T thr_args;
 					thr_args.index = n;
 					thr_args.mbx_id = strdup(Preferences.Target_Synch_Mbx_ID);
@@ -926,7 +929,7 @@ void TargetThread::startScopeThreads(  )//QRL_ScopeWindow** ScopeWindows)
 {
 
 	for (int n = 0; n < Num_Scopes; n++) {
-		unsigned int msg;
+		unsigned long msg;
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup((getPreferences()).Target_Scope_Mbx_ID);
@@ -976,7 +979,7 @@ void TargetThread::startMeterThreads()//QRL_MeterWindow** MeterWindows)
 	for (int n = 0; n < Num_Meters; n++) {
 // 		meterRefreshRate[n]=20.;
 // 		MeterValues[n]=0;
-		unsigned int msg;
+		unsigned long msg;
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup((getPreferences()).Target_Meter_Mbx_ID);
@@ -1021,7 +1024,7 @@ void TargetThread::startLedThreads()//QRL_LedWindow** LedWindows)
 {
 // 	LedValues.resize(Num_Leds);
 	for (int n = 0; n < Num_Leds; n++) {
-		unsigned int msg;
+		unsigned long msg;
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup(getPreferences().Target_Led_Mbx_ID);
@@ -1065,7 +1068,7 @@ void TargetThread::stopLedThreads()
 void TargetThread::startALogThreads()//QRL_LedWindow** LedWindows)
 {
 	for (int n = 0; n < Num_ALogs; n++) {
-		unsigned int msg;
+		unsigned long msg;
 		Alog_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup(getPreferences().Target_ALog_Mbx_ID);
@@ -1099,7 +1102,7 @@ void TargetThread::stopALogThreads()
 void TargetThread::startLogThreads()
 {
 	for (int n = 0; n < Num_Logs; n++) {
-		unsigned int msg;
+		unsigned long msg;
 		Args_T thr_args;
 		thr_args.index = n;
 		thr_args.mbx_id = strdup(getPreferences().Target_Log_Mbx_ID);
